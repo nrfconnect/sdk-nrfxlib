@@ -58,8 +58,8 @@
 
 #define NESTED_CRITICAL_SECTION_ALLOWED_PRIORITY_NONE (-1)
 
-static volatile uint8_t m_nested_critical_section_counter;          ///< Counter of nested critical sections
-static volatile int8_t  m_nested_critical_section_allowed_priority; ///< Indicator if nested critical sections are currently allowed
+static volatile uint8_t m_nested_critical_section_counter;         ///< Counter of nested critical sections
+static volatile int8_t m_nested_critical_section_allowed_priority; ///< Indicator if nested critical sections are currently allowed
 
 /***************************************************************************************************
  * @section Critical sections management

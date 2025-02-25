@@ -382,8 +382,8 @@ static void cst_ie_write_reset(void)
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 static uint8_t * mp_lm_rssi_addr;   ///< Cached Link Metrics information element RSSI field address
-static uint8_t * mp_lm_margin_addr;  ///< Cached Link Metrics information element link margin field address
-static uint8_t * mp_lm_lqi_addr; ///< Cached Link Metrics information element LQI field address
+static uint8_t * mp_lm_margin_addr; ///< Cached Link Metrics information element link margin field address
+static uint8_t * mp_lm_lqi_addr;    ///< Cached Link Metrics information element LQI field address
 
 static uint8_t rssi_scale(int8_t rssi)
 {

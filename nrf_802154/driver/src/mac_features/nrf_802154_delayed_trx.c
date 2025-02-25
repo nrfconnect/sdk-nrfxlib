@@ -795,9 +795,10 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
 
         p_dly_tx_data->tx.p_data             = p_data;
         p_dly_tx_data->tx.params.frame_props = p_metadata->frame_props;
-        (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(p_metadata->channel,
-                                                                     p_metadata->tx_power,
-                                                                     &p_dly_tx_data->tx.params.tx_power);
+        (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(
+            p_metadata->channel,
+            p_metadata->tx_power,
+            &p_dly_tx_data->tx.params.tx_power);
         p_dly_tx_data->tx.params.cca                = p_metadata->cca;
         p_dly_tx_data->tx.params.immediate          = true;
         p_dly_tx_data->tx.params.extra_cca_attempts = p_metadata->extra_cca_attempts;

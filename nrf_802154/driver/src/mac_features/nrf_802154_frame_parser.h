@@ -209,9 +209,10 @@ bool nrf_802154_frame_parser_data_init(const uint8_t                  * p_frame,
  * @retval  true  The parsing succeeded and requested parse level was achieved.
  * @retval  false The parsing failed or requested parse level could not be achieved.
  */
-bool nrf_802154_frame_parser_valid_data_extend(nrf_802154_frame_parser_data_t * p_parser_data,
-                                               uint8_t                          valid_data_len,
-                                               nrf_802154_frame_parser_level_t  requested_parse_level);
+bool nrf_802154_frame_parser_valid_data_extend(
+    nrf_802154_frame_parser_data_t * p_parser_data,
+    uint8_t                          valid_data_len,
+    nrf_802154_frame_parser_level_t  requested_parse_level);
 
 /**
  * @brief Gets current parse level of the provided parser data.

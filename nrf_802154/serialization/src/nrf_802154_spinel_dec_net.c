@@ -1551,8 +1551,9 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_buffer_free_raw(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_tx_power_set(const void * p_property_data,
-                                                                       size_t       property_data_len)
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_tx_power_set(
+    const void * p_property_data,
+    size_t       property_data_len)
 {
     spinel_ssize_t siz;
     int8_t         power;
@@ -1578,8 +1579,9 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_tx_power_set(const voi
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_tx_power_get(const void * p_property_data,
-                                                                       size_t       property_data_len)
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_tx_power_get(
+    const void * p_property_data,
+    size_t       property_data_len)
 {
     (void)p_property_data;
     (void)property_data_len;
