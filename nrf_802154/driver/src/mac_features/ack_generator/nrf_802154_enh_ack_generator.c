@@ -287,8 +287,8 @@ static uint8_t security_key_id_set(const nrf_802154_frame_parser_data_t * p_fram
 {
     const uint8_t * p_frame_key_id = nrf_802154_frame_parser_key_id_get(p_frame_data);
     uint8_t       * p_ack_key_id   = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_ack_data);
-    uint8_t         key_id_size    = key_id_size_get(nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(
-                                                         p_ack_data));
+    uint8_t         key_id_size    =
+        key_id_size_get(nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_ack_data));
 
     if ((p_ack_key_id != NULL) && (p_frame_key_id != NULL))
     {

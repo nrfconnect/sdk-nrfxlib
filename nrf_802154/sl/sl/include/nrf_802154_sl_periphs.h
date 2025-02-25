@@ -13,6 +13,7 @@
 #define NRF_802154_SL_PERIPHS_H__
 
 #include <nrfx.h>
+#include <nrf.h>
 
 #if NRF_802154_USE_INTERNAL_INCLUDES
 #include "nrf_802154_sl_periphs_internal.h"

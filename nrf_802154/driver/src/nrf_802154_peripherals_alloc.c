@@ -62,7 +62,7 @@
 #endif
 
 const uint32_t g_nrf_802154_used_nrf_ppi_channels = NRF_802154_PPI_CH_USED_MSK;
-const uint32_t g_nrf_802154_used_nrf_ppi_groups   = NRF_802154_PPI_GR_USED_MSK;
+const uint32_t g_nrf_802154_used_nrf_ppi_groups = NRF_802154_PPI_GR_USED_MSK;
 
 #if NRF_802154_VERIFY_PERIPHS_ALLOC_AGAINST_MPSL
 

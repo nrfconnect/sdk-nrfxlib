@@ -104,10 +104,11 @@ void nrf_802154_sl_atomic_list_init(nrf_802154_sl_atomic_list_t * p_list);
  *                                       returns -1. When such match is found the @p p_item is inserted
  *                                       before @c entry.
  */
-void nrf_802154_sl_atomic_list_insert_ordered(nrf_802154_sl_atomic_list_t * p_list,
-                                              void                        * p_item,
-                                              size_t                        offsetof_membership_capability,
-                                              nrf_802154_sl_compare_func_t  compare_func);
+void nrf_802154_sl_atomic_list_insert_ordered(
+    nrf_802154_sl_atomic_list_t * p_list,
+    void                        * p_item,
+    size_t                        offsetof_membership_capability,
+    nrf_802154_sl_compare_func_t  compare_func);
 
 /**@brief Atomically removes an item from a list.
  *
