@@ -24,6 +24,8 @@ Added
 Changes
 =======
 
+* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
+  This behavior was changed to accommodate ES-27170.
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
 * Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
 * Reduced latency when changing the list of subevents to which a Periodic Advertising with Responses Scanner is synchronized. (DRGN-24543)
@@ -31,6 +33,9 @@ Changes
 Bug fixes
 =========
 
+* Fixed an issue where the controller would fail to synchronize with a BIS Broadcaster. (DRGN-24670)
+  This would occur when the Broadcaster has set ``Num_Bis=1``, ``NSE > 1``, and ``Sub_Interval == BIS_Spacing``.
+  Previously, the controller would raise the LE BIG Sync Established event with status set to "Unsupported Feature or Parameter value (0x11)".
 * Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
 * Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
 
