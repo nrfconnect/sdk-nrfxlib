@@ -4,32 +4,23 @@ on: pull_request
 
 jobs:
   compliance_job:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Run compliance checks on patch series (PR)
     steps:
     - name: Checkout the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ncs/nrfxlib
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
 
-    - name: cache-pip
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-doc-pip
-
     - name: Install python dependencies
       run: |
-        pip3 install -U pip
-        pip3 install  -U setuptools
         export PATH="$HOME/.local/bin:$PATH"
-        pip3 install  -U wheel
         # TODO: add yamllint to scripts/requirements-fixed.txt
         pip3 install -U yamllint
-        pip3 install lxml==4.9.1
-        pip3 install  -U python-magic junitparser==2.8.0 gitlint pylint pykwalify
+        pip3 install lxml
+        pip3 install -U python-magic junitparser==2.8.0 gitlint pylint pykwalify
         pip3 install -U unidiff
         pip3 install --user -U west
         pip3 show -f west
