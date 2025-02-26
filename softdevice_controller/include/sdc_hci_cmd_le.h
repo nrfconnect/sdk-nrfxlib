@@ -289,6 +289,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_CS_TEST = 0x2095,
     /** @brief See @ref sdc_hci_cmd_le_cs_test_end(). */
     SDC_HCI_OPCODE_CMD_LE_CS_TEST_END = 0x2096,
+    /** @brief See @ref sdc_hci_cmd_le_set_host_feature_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE_V2 = 0x2097,
 };
 
 /** @brief LE subevent Code values. */
@@ -2718,6 +2720,13 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t override_params_length;
     uint8_t override_params_data[];
 } sdc_hci_cmd_le_cs_test_t;
+
+/** @brief LE Set Host Feature [v2] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t bit_number;
+    uint8_t bit_value;
+} sdc_hci_cmd_le_set_host_feature_v2_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -9422,6 +9431,41 @@ uint8_t sdc_hci_cmd_le_cs_test(const sdc_hci_cmd_le_cs_test_t * p_params);
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_cs_test_end(void);
+
+/** @brief LE Set Host Feature [v2].
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.115
+ *
+ * The HCI_LE_Set_Host_Feature command is used by the Host to set or clear a bit
+ * controlled by the Host in the Link Layer FeatureSet stored in the Controller (see [Vol 6]
+ * Part B, Section 4.6).
+ *
+ * The Bit_Number parameter specifies the bit position in the FeatureSet.
+ *
+ * The Bit_Value parameter specifies whether the feature is enabled or disabled.
+ *
+ * If Bit_Number specifies a feature bit that is not controlled by the Host, the Controller
+ * shall return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * If Bit_Value is set to 0x01 and Bit_Number specifies a feature bit that requires support of
+ * a feature that the Controller does not support, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host issues this command while the Controller has a connection to another
+ * device, the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Host_Feature command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature_v2_t * p_params);
 
 /** @} end of HCI_VS_API */
 

@@ -379,7 +379,6 @@ typedef void (*sdc_fault_handler_t)(const char * file, const uint32_t line);
  */
 typedef void (*sdc_callback_t)(void);
 
-#define CS_ANTENNA_SWITCH_CALLBACK_TYPE_DEFINED
 
 /** @brief Function prototype for antenna switching callback in Channel Sounding.
  *
