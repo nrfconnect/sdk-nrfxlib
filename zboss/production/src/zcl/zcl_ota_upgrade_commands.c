@@ -63,6 +63,8 @@
   For both the idea is: if no cluster, does not call.
  */
 
+LOG_MODULE_REGISTER(ota_upgrade_command, LOG_LEVEL_INF);
+
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_OTA_UPGRADE) || defined DOXYGEN
 
 #if defined ZB_HA_ENABLE_OTA_UPGRADE_CLIENT || defined DOXYGEN
@@ -522,6 +524,7 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
     TRACE_MSG(TRACE_ZCL2, "Error payload of ZB_ZCL_OTA_UPGRADE_GET_IMAGE_NOTIFY_REQ",
         (FMT__0));
     ret = RET_INVALID_PARAMETER_1;
+	LOG_INF("image_notify_handler(), status != ZB_ZCL_PARSE_STATUS_SUCCESS");
   }
   else
   {
@@ -540,12 +543,17 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
     {
       // note: no break this switch
       //        each value payload_type mean ALL low tests must be
+	  LOG_INF("image_notify_handler(), payload_type = %i", payload.payload_type);
       switch(payload.payload_type)
       {
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE_VER:
         is_agree_file = is_agree_file && 
                         ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
                         zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
+		LOG_INF("image_notify_handler(), zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID) = %i", zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
+        LOG_INF("image_notify_handler(), ZB_ZCL_OTA_UPGRADE_VERSION_CMP() = %i", ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
+                        zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID)));
+		LOG_INF("image_notify_handler(), is_agree_file = %i", is_agree_file);
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE:
         is_agree_file = is_agree_file &&
@@ -566,12 +574,16 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
 #endif /* ZB_STACK_REGRESSION_TESTING_API */
         TRACE_MSG(TRACE_ZCL2, "my_jitter_rnd %d", (FMT__H, my_jitter_rnd));
         is_agree_file = is_agree_file && (my_jitter_rnd <= payload.query_jitter);
+		
+		LOG_INF("image_notify_handler(), is_agree_file in my_jitter_rnd = %i", is_agree_file);
       }
     }
     else
     {
       is_agree_file = is_agree_file &&
                       (cmd_info.addr_data.common_data.dst_addr == zb_get_short_address());
+					  
+      LOG_INF("image_notify_handler(), not broadcast, is_agree_file = %i", is_agree_file);
     }
 
     if (zb_zcl_ota_upgrade_get_ota_status(endpoint) != ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL)
@@ -611,11 +623,14 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
       */
       TRACE_MSG(TRACE_ZCL2, "upgrade is in progress - skip image notify", (FMT__0));
       is_agree_file = ZB_FALSE;
+	  LOG_INF("image_notify_handler(), upgrade is in progress - skip image notify");
     }
 
     TRACE_MSG(TRACE_ZCL2, "is_agree_file %d", (FMT__H, is_agree_file));
     if(is_agree_file)
     {
+     LOG_INF("image_notify_handler(), sending Queet Next Image Request");
+      
       zb_uint16_t hw_ver = get_upgrade_client_variables(endpoint)->hw_version;
 
      /* For the case we didn't got it from the notify command */
