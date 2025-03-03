@@ -44,6 +44,7 @@
 #define ZB_TRACE_FILE_ID 2076
 
 #include "zb_common.h"
+#include <zephyr/logging/log.h>
 
 /** @internal
     @{
