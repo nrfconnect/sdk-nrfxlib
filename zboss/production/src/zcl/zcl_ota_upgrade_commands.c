@@ -557,15 +557,22 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
 		LOG_INF("image_notify_handler(), zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID) = %i", zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
         LOG_INF("image_notify_handler(), ZB_ZCL_OTA_UPGRADE_VERSION_CMP() = %i", ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
                         zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID)));
-		LOG_INF("image_notify_handler(), is_agree_file = %i", is_agree_file);
+		LOG_INF("image_notify_handler(), file version is_agree_file = %i", is_agree_file);
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE:
         is_agree_file = is_agree_file &&
             (payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID));
+        LOG_INF("image_notify_handler(), image type = %i, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID) = %i",
+                        payload.image_type, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID));
+		LOG_INF("image_notify_handler(), image type is_agree_file = %i", is_agree_file);
+
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE:
         is_agree_file = is_agree_file &&
         (payload.manufacturer==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID));
+		LOG_INF("image_notify_handler(), payload.manufacturer = %i, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID) = %i",
+                        payload.manufacturer, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID));
+		LOG_INF("image_notify_handler(), image type is_agree_file = %i", is_agree_file);
       }
       if(is_agree_file)
       {
@@ -655,6 +662,8 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
 
       ret = RET_BUSY;
     }
+	else
+		LOG_INF("image_notify_handler(), file not agree");
   }
 
   TRACE_MSG(TRACE_ZCL1, "< image_notify_handler ret %hx", (FMT__H, ret));
