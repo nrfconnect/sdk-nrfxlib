@@ -99,6 +99,7 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
 
 void zb_zcl_ota_upgrade_init_cli(void)
 {
+  LOG_INF("zb_zcl_ota_upgrade_init_cli()");
   zb_zcl_add_cluster_handlers(ZB_ZCL_CLUSTER_ID_OTA_UPGRADE,
                               ZB_ZCL_CLUSTER_CLIENT_ROLE,
                               zb_zcl_check_value_ota_upgrade,
@@ -529,6 +530,8 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
   }
   else
   {
+	LOG_INF("image_notify_handler(), status = ZB_ZCL_PARSE_STATUS_SUCCESS...");
+	
     zb_uint8_t endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
     zb_bool_t is_agree_file = ZB_TRUE;
@@ -1682,7 +1685,7 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
              (FMT__H_H, param, cmd_info.cmd_id));
 
   ZB_ASSERT(ZB_ZCL_CLUSTER_ID_OTA_UPGRADE == cmd_info.cluster_id);
-
+  LOG_INF("zb_zcl_process_ota_cli_upgrade_specific_commands() cmd_info.cmd_id  = %i", cmd_info.cmd_id );
   switch( cmd_info.cmd_id )
   {
     case ZB_ZCL_CMD_OTA_UPGRADE_IMAGE_NOTIFY_ID:
@@ -1794,6 +1797,7 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
 
 static zb_bool_t zb_zcl_process_ota_upgrade_specific_commands_cli(zb_uint8_t param)
 {
+  LOG_INF("zb_zcl_process_ota_upgrade_specific_commands_cli()");
   if ( ZB_ZCL_GENERAL_GET_CMD_LISTS_PARAM == param )
   {
     ZCL_CTX().zb_zcl_cluster_cmd_list = &gs_ota_upgrade_client_cmd_list;
