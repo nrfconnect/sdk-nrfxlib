@@ -416,35 +416,6 @@ static void ie_header_set(const uint8_t                  * p_ie_data,
 #endif
 }
 
-static uint8_t ie_header_terminate(const uint8_t                  * p_ie_data,
-                                   uint8_t                          ie_data_len,
-                                   nrf_802154_frame_parser_data_t * p_ack_data)
-{
-    if (p_ie_data == NULL)
-    {
-        // No IEs to terminate.
-        return 0U;
-    }
-
-    if ((nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data) == false) ||
-        (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_ack_data) == SECURITY_LEVEL_NONE))
-    {
-        // This code assumes that neither regular frame payload nor Payload IEs can be set by the
-        // driver. Therefore without security, the Ack has no payload, so termination is not necessary.
-        return 0U;
-    }
-
-    uint8_t * p_ack_ie = (uint8_t *)p_ack_data->p_frame + p_ack_data->helper.aux_sec_hdr_end_offset;
-    uint8_t   ie_hdr_term[IE_HEADER_SIZE];
-
-    NRF_802154_ASSERT(p_ack_ie != NULL);
-
-    host_16_to_little((IE_HT2) << IE_HEADER_ELEMENT_ID_OFFSET, ie_hdr_term);
-
-    memcpy(p_ack_ie + ie_data_len, ie_hdr_term, sizeof(ie_hdr_term));
-    return sizeof(ie_hdr_term);
-}
-
 /***************************************************************************************************
  * @section Authentication and encryption transformation
  **************************************************************************************************/
@@ -543,8 +514,8 @@ static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data)
     ie_header_set(mp_ie_data, m_ie_data_len, &m_ack_data);
     m_ack[PHR_OFFSET] += m_ie_data_len;
 
-    // Terminate the IE header if needed.
-    m_ack[PHR_OFFSET] += ie_header_terminate(mp_ie_data, m_ie_data_len, &m_ack_data) + FCS_SIZE;
+    // Add space for the FCS field.
+    m_ack[PHR_OFFSET] += FCS_SIZE;
 
     bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,

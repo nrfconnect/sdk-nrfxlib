@@ -1017,6 +1017,19 @@ static inline const uint8_t * nrf_802154_frame_parser_mfr_get(
 }
 
 /**
+ * @brief Gets the length of the MIC field.
+ *
+ * @param[in]   p_parser_data   Pointer to a frame parser data.
+ *
+ * @returns  Length of the MIC field.
+ */
+static inline uint8_t nrf_802154_frame_parser_mic_size_get(
+    const nrf_802154_frame_parser_data_t * p_parser_data)
+{
+    return p_parser_data->helper.mic_size;
+}
+
+/**
  * @brief Gets the length of the MAC payload.
  *
  * @param[in]   p_parser_data   Pointer to a frame parser data.
@@ -1026,8 +1039,9 @@ static inline const uint8_t * nrf_802154_frame_parser_mfr_get(
 static inline uint8_t nrf_802154_frame_parser_mac_payload_length_get(
     const nrf_802154_frame_parser_data_t * p_parser_data)
 {
+    uint8_t mic_len       = nrf_802154_frame_parser_mic_size_get(p_parser_data);
     uint8_t payload_start = nrf_802154_frame_parser_mac_payload_offset_get(p_parser_data);
-    uint8_t payload_end   = nrf_802154_frame_parser_mfr_offset_get(p_parser_data);
+    uint8_t payload_end   = nrf_802154_frame_parser_mfr_offset_get(p_parser_data) - mic_len;
 
     return payload_end - payload_start;
 }
@@ -1051,19 +1065,6 @@ static inline uint8_t nrf_802154_frame_parser_mac_header_length_get(
     }
 
     return mhr_end - mhr_start;
-}
-
-/**
- * @brief Gets the length of the MIC field.
- *
- * @param[in]   p_parser_data   Pointer to a frame parser data.
- *
- * @returns  Length of the MIC field.
- */
-static inline uint8_t nrf_802154_frame_parser_mic_size_get(
-    const nrf_802154_frame_parser_data_t * p_parser_data)
-{
-    return p_parser_data->helper.mic_size;
 }
 
 /**

@@ -51,6 +51,8 @@ Notable changes
 * The internal implementation of *notification* module is selected by the :c:macro:`NRF_802154_NOTIFICATION_IMPL` configuration macro.
   The internal implementation of *request* module is selected by the :c:macro:`NRF_802154_REQUEST_IMPL` configuration macro.
 * Introduced limited support for receiving and transmitting multipurpose frames. (KRKNWK-19492)
+* The driver no longer inserts HT2 termination into authenticated Enh-Acks when Information Element injection is performed.
+  When a frame has Header IEs, no Payload IEs, and no MAC payload, HT2 will not be inserted regardless of the frame security field. (KRKNWK-16856)
 
 Added
 =====
