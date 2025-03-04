@@ -554,25 +554,14 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
         is_agree_file = is_agree_file && 
                         ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
                         zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
-		LOG_INF("image_notify_handler(), zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID) = %i", zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
-        LOG_INF("image_notify_handler(), ZB_ZCL_OTA_UPGRADE_VERSION_CMP() = %i", ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
-                        zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID)));
-		LOG_INF("image_notify_handler(), file version is_agree_file = %i", is_agree_file);
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE:
         is_agree_file = is_agree_file &&
-            ((payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID)) || (payload.image_type==ZB_ZCL_OTA_UPGRADE_FILE_HEADER_MANUFACTURE_CODE_WILD_CARD));
-        LOG_INF("image_notify_handler(), image type = %i, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID) = %i",
-                        payload.image_type, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID));
-		LOG_INF("image_notify_handler(), image type is_agree_file = %i", is_agree_file);
-
+            ((payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID)) || (payload.image_type==zb_zcl_ota_upgrade_file_header_image_type_e.ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD));
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE:
         is_agree_file = is_agree_file &&
         (payload.manufacturer==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID));
-		LOG_INF("image_notify_handler(), payload.manufacturer = %i, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID) = %i",
-                        payload.manufacturer, zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID));
-		LOG_INF("image_notify_handler(), image type is_agree_file = %i", is_agree_file);
       }
       if(is_agree_file)
       {
@@ -645,7 +634,10 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
       zb_uint16_t hw_ver = get_upgrade_client_variables(endpoint)->hw_version;
 
      /* For the case we didn't got it from the notify command */
-      payload.image_type=zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID);
+	  if(payload.image_type != zb_zcl_ota_upgrade_file_header_image_type_e.ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD)
+	  {
+		payload.image_type=zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID);
+	  }
       payload.manufacturer=zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID);
       ZB_ZCL_OTA_UPGRADE_SEND_QUERY_NEXT_IMAGE_REQ(param,
             ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source.u.short_addr,
