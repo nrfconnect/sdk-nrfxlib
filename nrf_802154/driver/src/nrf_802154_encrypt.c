@@ -101,14 +101,13 @@ static bool a_data_and_m_data_prepare(
     // It is assumed that the provided frame has a placeholder of appropriate length for MIC
     // at the end. The algorithm inputs should only contain MAC payload, so the MIC placeholder
     // of the below length should be removed
-    uint8_t   mic_len     = nrf_802154_frame_parser_mic_size_get(p_frame_data);
     uint8_t * p_mac_hdr   = (uint8_t *)nrf_802154_frame_parser_psdu_get(p_frame_data);
     uint8_t   mac_hdr_len =
         nrf_802154_frame_parser_mac_header_length_get(p_frame_data) + open_payload_len;
     uint8_t * p_mac_payload =
         (uint8_t *)(nrf_802154_frame_parser_mac_payload_get(p_frame_data) + open_payload_len);
     uint8_t mac_payload_len =
-        nrf_802154_frame_parser_mac_payload_length_get(p_frame_data) - mic_len - open_payload_len;
+        nrf_802154_frame_parser_mac_payload_length_get(p_frame_data) - open_payload_len;
 
     switch (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data))
     {

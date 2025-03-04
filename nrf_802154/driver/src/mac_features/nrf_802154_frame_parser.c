@@ -305,6 +305,7 @@ static bool sec_ctrl_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_parser_data) == false)
     {
         p_parser_data->helper.aux_sec_hdr_end_offset = offset;
+        p_parser_data->helper.mic_size               = 0;
         return true;
     }
 
