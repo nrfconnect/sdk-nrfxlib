@@ -557,7 +557,7 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE:
         is_agree_file = is_agree_file &&
-            ((payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID)) || (payload.image_type==zb_zcl_ota_upgrade_file_header_image_type_e.ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD));
+            ((payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID)) || (payload.image_type==ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD));
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE:
         is_agree_file = is_agree_file &&
@@ -634,7 +634,7 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
       zb_uint16_t hw_ver = get_upgrade_client_variables(endpoint)->hw_version;
 
      /* For the case we didn't got it from the notify command */
-	  if(payload.image_type != zb_zcl_ota_upgrade_file_header_image_type_e.ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD)
+	  if(payload.image_type != ZB_ZCL_OTA_UPGRADE_FILE_HEADER_IMAGE_WILD_CARD)
 	  {
 		payload.image_type=zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID);
 	  }
