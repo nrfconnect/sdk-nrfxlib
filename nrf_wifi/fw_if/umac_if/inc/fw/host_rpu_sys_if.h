@@ -910,6 +910,17 @@ struct nrf_wifi_cmd_sys_init {
 	 *  alive frame.
 	 */
 	unsigned int keep_alive_period;
+	/** The RPU uses this value for the number of PS-POLL failures
+	 *  to switch from ps-poll power save mode to QoS null-based
+	 *  power save mode.
+	 *  MIN: 10 (default), MAX: 0xfffffffe.
+	 *  Set to 0xffffffff to disable this feature.
+	 */
+	unsigned int max_ps_poll_fail_cnt;
+        /** Enables or disables RX STBC in HT mode.
+	 *  By default, RX STBC is enabled.
+	 */
+	unsigned int stbc_enable_in_ht;
 } __NRF_WIFI_PKD;
 
 /**
