@@ -6,11 +6,18 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_constant_time Constant-time APIs
+/**
+ * @defgroup ocrypto_constant_time Constant-Time Functions
  * @ingroup ocrypto
  * @{
- * @brief Timing-invariant functions to use with cryptography.
+ * @brief Timing-invariant helper functions.
+ * 
+ * This file provides helper functions that can be used in constant-time code.
+ */
+
+/**
+ * @file
+ * @brief Timing-invariant helper functions.
  */
 
 #ifndef OCRYPTO_CONSTANT_TIME_H

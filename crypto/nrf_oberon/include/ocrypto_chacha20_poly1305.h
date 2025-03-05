@@ -6,19 +6,25 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
- * @ingroup ocrypto_chacha_poly
+/**
+ * @defgroup ocrypto_chacha_poly ChaCha20-Poly1305
+ * @ingroup ocrypto_auth_enc
  * @{
- * @brief Type declaration and APIs for authenticated encryption and additional data using
- *        the ChaCha20-Poly1305 algorithm in incremental steps.
+ * @brief ChaCha20-Poly1305 and XChaCha20 algorithms.
  *
  * ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
  * additional authenticated data developed by Daniel J.Bernstein.
  *
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
- *
- * @see [RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
+ * The XChaCha20 variant uses a 192-bit nonce instead of ChaCha20's 96-bit nonce.
+ * 
+ * @see [XChaCha](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03)
+ * @see [RFC - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
+ */
+
+/**
+ * @file
+ * @brief ChaCha20-Poly1305 and XChaCha20 algorithms.
  */
 
 #ifndef OCRYPTO_CHACHA20_POLY1305_INC_H
@@ -61,7 +67,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental ChaCha20-Poly1305 generator.
+/**
+ * @name Incremental ChaCha20-Poly1305 generator
  *
  * This group of functions can be used to incrementally encode and 
  * decode a message using the ChaCha20-Poly1305 stream cipher.
@@ -100,7 +107,7 @@ typedef struct {
  *
  * @param[out] ctx   Generator state.
  * @param      n     Nonce.
- * @param      n_len Length of @p n. 0 <= @p n_len <= @c ocrypto_chacha20_poly1305_NONCE_BYTES_MAX.
+ * @param      n_len Length of @p n. @p n_len = 8, 12, or 24.
  * @param      k     Encryption key.
  */
 void ocrypto_chacha20_poly1305_init(
@@ -124,6 +131,8 @@ void ocrypto_chacha20_poly1305_init(
  *
  * @remark @c ocrypto_chacha20_poly1305_update_aad must be called before any call to
  *         @c ocrypto_chacha20_poly1305_update_enc or @c ocrypto_chacha20_poly1305_update_dec.
+ * 
+ * @remark If @p n_len = 24, the XChaCha20-Poly1305 algorithm is used.
  */
 void ocrypto_chacha20_poly1305_update_aad(
     ocrypto_chacha20_poly1305_ctx *ctx,
@@ -227,7 +236,7 @@ int ocrypto_chacha20_poly1305_final_dec(
  * @param      a     Additional authenticated data.
  * @param      a_len Length of @p a. May be 0.
  * @param      n     Nonce.
- * @param      n_len Length of @p n. 0 <= @p n_len <= @c ocrypto_chacha20_poly1305_NONCE_BYTES_MAX.
+ * @param      n_len Length of @p n. @p n_len = 8, 12, or 24.
  * @param      k     Encryption key.
  *
  * @remark @p c may be same as @p m.
@@ -235,6 +244,8 @@ int ocrypto_chacha20_poly1305_final_dec(
  * @remark When reusing an encryption key @p k for a different message @p m or
  *         different additional authenticated data @p a, a different nonce @p n
  *         must be used.
+ * 
+ * @remark If @p n_len = 24, the XChaCha20-Poly1305 algorithm is used.
  */
 void ocrypto_chacha20_poly1305_encrypt(
     uint8_t tag[ocrypto_chacha20_poly1305_TAG_BYTES],

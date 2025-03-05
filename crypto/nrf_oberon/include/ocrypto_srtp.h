@@ -6,13 +6,10 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_srtp SRTP - Secure Real-Time Transport Protocol APIs
- * @ingroup ocrypto
- * @{
- * @brief Type declarations and APIs for SRTP - Secure Real-time Transport Protocol.
- *
- * SRTP is an extension of the RTP protocol with an enhanced security mechanism.
+/**
+ * @file
+ * @brief Secure Real-time Transport Protocol (SRTP) is an extension of the RTP
+ *        protocol with an enhanced security mechanism.
  */
 
 #ifndef OCRYPTO_SRTP_H
@@ -44,7 +41,7 @@ extern "C" {
  */
 #define ocrypto_srtp_MAX_KEY_SIZE   (ocrypto_aes256_KEY_BYTES)
 
-/**
+/**@cond
  * SRTP Context.
  */
 typedef struct {
@@ -75,6 +72,7 @@ typedef struct {
      */
     uint8_t salt_key[ocrypto_srtp_SALT_SIZE];
 } ocrypto_srtp_ctx;
+/**@endcond */
 
 /**
  * Setup SRTP contexts.
@@ -173,5 +171,3 @@ int ocrypto_srtp_verify_authentication(
 #endif
 
 #endif
-
-/** @} */

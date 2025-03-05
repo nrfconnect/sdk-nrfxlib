@@ -5,15 +5,28 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * The cSHAKE family is a variable output variant of the SHA-3 hash functions
- * with additional inputs.
+ 
+/**
+ * @defgroup ocrypto_sha_3_cshake cSHAKE
+ * @ingroup ocrypto_sha
+ * @brief cSHAKE variants of the SHA3 algorithms, with variable output lengths.
+ * 
+ * @{
+ * The cSHAKE family is a variable output variant of the SHA3 hash functions
+ * with additional inputs, with 128 and 256 bit security.
  *
  * A fixed-sized message digest is computed from variable length input data,
  * a function name, and a customization string. 
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ * 
+ * @see [FIPS - SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
+ * @see [NIST - SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash and ParallelHash](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf)
+ */
+
+/**
+ * @file
+ * @brief cSHAKE variants of the SHA3 algorithms, with variable output lengths.
  */
 
 #ifndef OCRYPTO_CSHAKE_H
@@ -35,12 +48,15 @@ typedef ocrypto_sha3_ctx ocrypto_cshake_ctx;
 /**@endcond */
 
 
-/**@name Incremental cSHAKE generator.
+/**
+ * @name Incremental cSHAKE generator
  * 
  * This group of functions can be used to incrementally compute the cSHAKE
  * hash for a given input.
+ * 
+ * @{
  */
-/**@{*/
+
 /**
  * cSHAKE128 initialization.
  *
@@ -237,3 +253,5 @@ void ocrypto_cshake256(
 #endif
 
 #endif
+
+/** @} */

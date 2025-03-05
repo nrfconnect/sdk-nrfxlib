@@ -6,23 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_ctr AES-CTR
+ * @ingroup ocrypto_unauth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
+ * @brief AES Counter Mode.
  *
- * @defgroup ocrypto_aes_ctr AES-CTR - AES counter Mode
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-CTR (AES counter mode).
- *
- * AES-CTR (AES counter mode) is an AES mode which effectively turns the block cipher into a stream
+ * AES-CTR (AES Counter Mode) is an AES mode which effectively turns the block cipher into a stream
  * cipher. The AES block encryption is used on a value which is incremented for each new block.
  * The resulting cipher stream is then xor combined with the plaintext to get the ciphertext.
  * In contrast to AES itself, encryption and decryption operations are identical for AES-CTR.
+ *
+ * @see [NIST - Special Publication 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+ */
+
+/**
+ * @file
+ * @brief AES Counter Mode.
  */
 
 #ifndef OCRYPTO_AES_CTR_H
@@ -48,7 +48,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-CTR encryption/decryption.
+/**
+ * @name Incremental AES-CTR encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-CTR encryption/decryption for a given message.
