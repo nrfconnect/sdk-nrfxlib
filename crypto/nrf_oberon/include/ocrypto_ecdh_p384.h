@@ -6,14 +6,20 @@
  */
 
 
-/**@file
- * ECDH P-384 is a specific implementation of a key agreement protocol.
- *
- * @defgroup ocrypto_ecdh_p384 ECDH P384 APIs
- * @ingroup ocrypto_ecdh
+/**
+ * @defgroup ocrypto_ecdh_p384 ECDH P-384
+ * @ingroup ocrypto_key_agreement
  * @{
- * @brief Type declarations and APIs for low-level elliptic curve point operations
- *        to do Elliptic Curve Diffie-Hellman based on the NIST secp384r1 curve.
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-384 curve (aka secp384r1).
+ *
+ * ECDH P-384 is a specific implementation of a key agreement protocol.
+ * 
+ * @see [NIST - SP 800-56A Rev. 3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-384 curve (aka secp384r1).
  */
 
 #ifndef OCRYPTO_ECDH_P384_H

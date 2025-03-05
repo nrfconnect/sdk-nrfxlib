@@ -6,14 +6,21 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_pbkdf2 PBKDF2 APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_pbkdf2_hmac_aes_cmac_prf_128 PBKDF2-AES-CMAC-PRF-128
+ * @ingroup ocrypto_kdf
  * @{
- * @brief Type declaration and APIs for PBKDF2 with AES-CMAC-PRF-128.
+ * @brief PBKDF2 algorithm based on AES-CMAC-PRF-128.
  *
- * PBKDF2 with HMAC-AES-CMAC-PRF-128 is password-based key derivation function defined
- * in RFC2898 and RFC4615.
+ * PBKDF2 with HMAC-AES-CMAC-PRF-128 is password-based key derivation function.
+ * 
+ * @see [RFC - PKCS #5: Password-Based Cryptography Specification Version 2.1](https://datatracker.ietf.org/doc/html/rfc8018)
+ * @see [RFC - The AES-CMAC-PRF-128 Algorithm for the Internet Key Exchange Protocol](https://datatracker.ietf.org/doc/html/rfc4615)
+ */
+
+/**
+ * @file
+ * @brief PBKDF2 algorithm based on AES-CMAC-PRF-128.
  */
 
 #ifndef OCRYPTO_PBKDF2_CMAC_PRF128_H

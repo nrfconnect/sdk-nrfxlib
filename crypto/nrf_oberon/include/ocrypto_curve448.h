@@ -6,11 +6,22 @@
  */
 
 
-/**@file
- * Curve448 is an elliptic curve offering 224 bits of security. It is designed
- * for use in the elliptic curve Diffie-Hellman (ECDH) key agreement scheme.
+/**
+ * @defgroup ocrypto_curve448 ECC X448
+ * @ingroup ocrypto_key_agreement
+ * @{
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the Curve448 curve.
  *
- * @see [RFC 7748 - Elliptic Curves for Security](https://tools.ietf.org/html/rfc7748)
+ * X448 is the combination of the Curve448 elliptic curve with the Diffie-Hellman
+ * operation.
+ * Curve448 is an elliptic curve offering 224 bits of security.
+ *
+ * @see [RFC - Elliptic Curves for Security](https://tools.ietf.org/html/rfc7748)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the Curve448 curve.
  */
 
 #ifndef OCRYPTO_CURVE448_H
@@ -77,3 +88,5 @@ void ocrypto_curve448_scalarmult(
 #endif
 
 #endif
+
+/** @} */
