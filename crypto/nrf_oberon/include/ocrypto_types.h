@@ -6,11 +6,18 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_types ocrypto internal types
+/**
+ * @defgroup ocrypto_types Context Types
  * @ingroup ocrypto
  * @{
- * @brief Declarations of internal types used in public interfaces. Their fields and sizes are subject to change.
+ * @brief Declaration of internal types used in public interfaces.
+ * 
+ * The fields and their sizes are subject to change.
+ */
+
+/**
+ * @file
+ * @brief Declaration of internal types used in public interfaces.
  */
 
 #ifndef OCRYPTO_TYPES_H

@@ -6,20 +6,39 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ecdsa ECDSA - Elliptic Curve Digital Signature Algorithm APIs
+/**
+ * @defgroup ocrypto_asym_sig Asymmetric Signature (Elliptic Curves)
  * @ingroup ocrypto
  * @{
- * @brief ECDSA (Elliptic Curve Digital Signature Algorith) Elliptic Curve Digital Signature Algorithm.
+ * @brief Digital signature algorithms based on elliptic curves.
+ * 
+ * These algorithms allow the receiver of a digitally signed message, having a
+ * public key from the sender, to verify that the message originates from this
+ * sender and has not been modified by a third party.
+ * 
+ * There are mainly four groups of algorithms: those based on the RSA standard,
+ * thosed based on the NIST standard secpXXX curves (usually referred to as ECDSA
+ * algorithms), those based on Twisted Edwards curves (usually referred to as
+ * EdDSA algorithms), and those based on hashing for post-quantum safety
+ * (LMS/HSS).
  * @}
  *
- * @defgroup ocrypto_ecdsa_p256 ECDSA secp256r1 low-level APIs
- * @ingroup ocrypto_ecdsa
+ * 
+ * @defgroup ocrypto_ecdsa_p256 ECDSA P-256
+ * @ingroup ocrypto_asym_sig
  * @{
- * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorithm using the
- *        NIST secp256r1 curve.
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-256 curve (aka secp256r1).
  *
  * ECDSA P-256 is a specific implementation of a digital signature scheme.
+ * 
+ * @see [FIPS - Digital Signature Standard (DSS)](https://csrc.nist.gov/pubs/fips/186-5/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-256 curve (aka secp256r1).
  */
 
 #ifndef OCRYPTO_ECDSA_P256_H

@@ -6,8 +6,20 @@
  */
 
 
-/**@file
+/**
+ * @defgroup ocrypto_ecdh_521 ECDH P-521
+ * @ingroup ocrypto_key_agreement
+ * @{
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-521 curve (aka secp521r1).
+ *
  * ECDH P-521 is a specific implementation of a key agreement protocol.
+ * 
+ * @see [NIST - SP 800-56A Rev. 3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-521 curve (aka secp521r1).
  */
 
 #ifndef OCRYPTO_ECDH_P521_H
@@ -89,3 +101,5 @@ int ocrypto_ecdh_p521_common_secret(uint8_t r[66], const uint8_t sk[66], const u
 #endif
 
 #endif
+
+/** @} */

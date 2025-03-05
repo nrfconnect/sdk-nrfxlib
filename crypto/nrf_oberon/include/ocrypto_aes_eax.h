@@ -6,22 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_eax AES-EAX
+ * @ingroup ocrypto_auth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_eax AES-EAX - AES Encrypt-then-authenticate-then-translate
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIS for AES-EAX (Encrypt-then-authenticate-then-translate)
- *
+ * @brief AES Encrypt-then-Authenticate-then-Translate.
+ * 
  * AES-EAX (encrypt-then-authenticate-then-translate) is an AES mode which effectively turns the
  * block cipher into a stream cipher. The AES block cipher primitive is used in CTR mode for
  * encryption and as OMAC for authentication over each block.
+ * 
+ * @see [FIPS - Advanced Encryption Standard (AES)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf)
+ * @see [The EAX Mode of Operation](https://web.cs.ucdavis.edu/~rogaway/papers/eax.pdf)
+ */
+
+/**
+ * @file
+ * @brief AES Encrypt-then-Authenticate-then-Translate.
  */
 
 #ifndef OCRYPTO_AES_EAX_H

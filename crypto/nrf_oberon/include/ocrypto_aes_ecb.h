@@ -6,20 +6,22 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_ecb AES-ECB
+ * @ingroup ocrypto_unauth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_ecb AES-ECB - AES Electronic Codebook
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-ECB (AES Electronic Codebook).
+ * @brief AES Electronic Codebook.
  *
  * AES-ECB (AES Electronic Codebook) is a simple AES block cipher mode.
+ * 
+ * @remark AES-ECB is not recommended for use in cryptographic protocols.
+ *
+ * @see [NIST - Special Publication 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+ */
+
+/**
+ * @file
+ * @brief AES Electronic Codebook.
  */
 
 #ifndef OCRYPTO_AES_ECB_H
@@ -42,7 +44,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-ECB encryption/decryption.
+/**
+ * @name Incremental AES-ECB encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-ECB encryption/decryption for a given message.

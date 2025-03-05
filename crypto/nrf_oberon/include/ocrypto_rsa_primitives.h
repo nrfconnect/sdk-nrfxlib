@@ -6,22 +6,35 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
+/**
+ * @defgroup ocrypto_rsa Asymmetric Signature and Encryption (RSA)
  * @ingroup ocrypto
  * @{
- * @brief RSA is a number theoretic public-key encryption and signature algorithm.
+ * @brief RSA public-key encryption and signature algorithm, API that supports flexible key sizes.
+ *
+ * RSA (Rivest-Shamir-Adleman) is a number theoretic public-key encryption and signature algorithm.
+ * 
+ * @see [RFC - PKCS #1: RSA Cryptography Specifications Version 2.2](https://datatracker.ietf.org/doc/html/rfc8017)
  * @}
  *
- * @defgroup ocrypto_rsa_primitives_api RSA key primitives APIs
+ * 
+ * @defgroup ocrypto_rsa_primitives RSA Primitives
  * @ingroup ocrypto_rsa
  * @{
- * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS.
+ * @brief RSA primitives, including key setup.
  *
  * These functions support RSA key setup and primitives.
  *
  * Supported key sizes (in bits) are: size >= 1024, size = 2^n or 3 * 2^n.
- * This includes the popular sizes: 1024, 2048, 3072, and 4096 bits.
+ * This includes the popular sizes: 2048, 3072, 4096, ... bits.
+ * 
+ * @remark 1024 bit keys are no longer considered secure;
+ *         use of at least 2048 bit keys is recommended.
+ */
+
+/**
+ * @file
+ * @brief RSA primitives, including key setup.
  */
 
 #ifndef OCRYPTO_RSA_PRIMITIVES_H
@@ -108,7 +121,8 @@ typedef struct {
 /**@}*/
 
 
-/**@name variable-bit RSA key setup.
+/**
+ * @name variable-bit RSA key setup
  *
  * This group of functions is used for generic RSA key setup.
  */
@@ -191,7 +205,8 @@ int ocrypto_rsa_init_crt_key(
 /**@}*/
 
 
-/**@name RSA primitives.
+/**
+ * @name RSA primitives
  *
  * This group of functions is used for basic RSA arithmetic.
  */

@@ -6,24 +6,32 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_hmac HMAC - Hash-based Message Authentication Code
+/**
+ * @defgroup ocrypto_mac Message Authentication Code (MAC)
  * @ingroup ocrypto
  * @{
- * @brief HMAC is a hash-based Message Authentication Code utilizing a secure hash function.
+ * @brief MAC algorithms.
+ *
+ * Message authentication codes are tags used for checking the authenticity and integrity of messages.
  * @}
  *
- * @defgroup ocrypto_hmac_sha256 HMAC APIs using SHA-256
- * @ingroup ocrypto_hmac
+ * 
+ * @defgroup ocrypto_hmac_sha256 HMAC-SHA256
+ * @ingroup ocrypto_mac
  * @{
- * @brief Type declarations and APIs for the HMAC-SHA256 algorithm.
+ * @brief HMAC algorithm based on SHA256.
  *
  * HMAC-SHA256 is an algorithm for message authentication using the
  * cryptographic hash function SHA256 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
  * message.
  *
- * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ * @see [RFC - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ */
+
+/**
+ * @file
+ * @brief HMAC algorithm based on SHA256.
  */
 
 #ifndef OCRYPTO_HMAC_SHA256_H
@@ -54,15 +62,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental HMAC-SHA-256 generator.
+/**
+ * @name Incremental HMAC-SHA256 generator
  *
- * This group of functions can be used to incrementally compute the HMAC-SHA-256
+ * This group of functions can be used to incrementally compute the HMAC-SHA256
  * authenticator for a given message.
  */
 /**@{*/
 
 /**
- * HMAC-SHA-256 initialization.
+ * HMAC-SHA256 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -75,7 +84,7 @@ void ocrypto_hmac_sha256_init(
     const uint8_t* key, size_t key_len);
 
 /**
- * HMAC-SHA-256 incremental data input.
+ * HMAC-SHA256 incremental data input.
  *
  * The generator state @p ctx is updated to authenticate a message chunk @p in.
  *
@@ -93,7 +102,7 @@ void ocrypto_hmac_sha256_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * HMAC-SHA-256 output.
+ * HMAC-SHA256 output.
  *
  * The generator state @p ctx is updated to finalize the HMAC for the previously
  * processed message chunks. The authenticator is put into @p r.

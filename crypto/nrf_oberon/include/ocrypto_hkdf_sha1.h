@@ -6,22 +6,21 @@
  */
 
 
+/**
+ * @defgroup ocrypto_hkdf_sha1 HKDF-SHA1
+ * @ingroup ocrypto_kdf
+ * @{
+ * @brief HKDF algorithm based on HMAC-SHA1.
+ *
+ * HKDFs are key derivation functions based on HMAC Extract-and-Expand.
+ * HKDF-SHA1 is a HKDF based on HMAC-SHA1.
+ *
+ * @see [RFC - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
+ */
 
-/**@file
- * @defgroup ocrypto_hkdf HKDF - HMAC-based Key Derivation Function
- * @ingroup ocrypto
- * @{
- * @brief HKDF is a key derivation function based on HMAC Extract-and-Expand
- * @}
- *
- * @defgroup ocrypto_hkdf_sha1 HKDF APIs using SHA-1
- * @ingroup ocrypto_hkdf
- * @{
- * @brief Type declaration and APIs for the HKDF-SHA1 algorithm.
- *
- * HKDF-SHA1 is a key derivation function based on HMAC-SHA1.
- *
- * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
+/**
+ * @file
+ * @brief HKDF algorithm based on HMAC-SHA1.
  */
 
 #ifndef OCRYPTO_HKDF_SHA1_H
