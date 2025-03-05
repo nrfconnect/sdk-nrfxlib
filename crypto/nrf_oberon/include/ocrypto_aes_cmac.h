@@ -6,22 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_cmac AES-CMAC
+ * @ingroup ocrypto_mac
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_cmac AES-CMAC - AES Cipher-based Message Authentication Code APIs
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-CMAC (AES Cipher-based Message Authentication Code).
+ * @brief AES Cipher-based Message Authentication Code algorithm.
  *
  * AES-CMAC (AES Cipher-based Message Authentication Code) is a block cipher-based message
  * authentication code algorithm. The AES block cipher primitive is used in variant of the
  * CBC mode to get the authentication tag.
+ *
+ * @see [RFC - The AES-CMAC Algorithm](http://tools.ietf.org/html/rfc4493)
+ * @see [NIST - Special Publication 800-38B](https://csrc.nist.gov/pubs/sp/800/38/b/upd1/final)
+ */
+
+/**
+ * @file
+ * @brief AES Cipher-based Message Authentication Code.
  */
 
 #ifndef OCRYPTO_AES_CMAC_H

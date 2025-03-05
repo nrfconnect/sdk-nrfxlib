@@ -6,11 +6,11 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_poly1305 Poly1305 APIs
- * @ingroup ocrypto_chacha_poly
+/**
+ * @defgroup ocrypto_poly1305 Poly1305
+ * @ingroup ocrypto_mac
  * @{
- * @brief Type declaration and APIs for the Poly1035 algorithm.
+ * @brief Poly1305 authentication algorithm.
  *
  * Poly1305 is a message authentication code created by Daniel J.
  *        Bernstein. It can be used to verify the data integrity and the
@@ -20,8 +20,13 @@
  * Since a key can only be used to authenticate a single message, a new key
  * needs to be derived for each message.
  *
- * @see [RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
+ * @see [RFC - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
  * @see [Poly1305-AES: a state-of-the-art message-authentication code](http://cr.yp.to/mac.html)
+ */
+
+/**
+ * @file
+ * @brief Poly1305 authentication algorithm.
  */
 
 #ifndef OCRYPTO_POLY1305_H
@@ -58,7 +63,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental Poly1305 generator.
+/**
+ * @name Incremental Poly1305 generator
  *
  * This group of functions can be used to incrementally compute 
  * the Poly1305 authenticator on a message.
@@ -74,6 +80,7 @@ typedef struct {
  * @endcode
  */
 /**@{*/
+
 /**
  * Poly1305 generator initialization.
  *

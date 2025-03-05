@@ -6,19 +6,25 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ed25519 Ed25519 APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_ed25519 EdDSA Ed25519
+ * @ingroup ocrypto_asym_sig
  * @{
- * @brief Type declarations and APIs for the Ed25519 algorithm.
+ * @brief Ed25519 algorithm, used for EdDSA without pre-hashing.
  *
  * Ed25519 is a specific implementation of EdDSA, a digital signature scheme.
  * EdDSA is based on Twisted Edwards curves and is designed to be faster than
  * existing digital signature schemes without sacrificing security. It was
  * developed by Daniel J. Bernstein, et al. Ed25519 is intended to provide
  * attack resistance comparable to quality 128-bit symmetric ciphers.
- *
+ * 
+ * @see [RFC - Edwards-Curve Digital Signature Algorithm (EdDSA)](https://datatracker.ietf.org/doc/html/rfc8032)
  * @see [Ed25519: high-speed high-security signatures](https://ed25519.cr.yp.to)
+ */
+
+/**
+ * @file
+ * @brief Ed25519 algorithm, used for EdDSA without pre-hashing.
  */
 
 #ifndef OCRYPTO_ED25519_H

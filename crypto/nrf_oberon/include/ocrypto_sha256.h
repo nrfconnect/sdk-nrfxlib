@@ -6,18 +6,37 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_sha_256 SHA-256 APIs
+/**
+ * @defgroup ocrypto ocrypto
+ *
+ * 
+ * @defgroup ocrypto_sha Message Digests (Hashes)
+ * @ingroup ocrypto
+ * @{
+ * @brief Hash algorithms.
+ * 
+ * Hash functions are one-way functions that map long inputs into usually shorter and fixed-sized outputs.
+ * @}
+ * 
+ * 
+ * @defgroup ocrypto_sha_256 SHA256
  * @ingroup ocrypto_sha
  * @{
- * @brief Type declarations and APIs for the SHA-256 algorithm.
+ * @brief SHA256 algorithm, a member of the SHA2 family, with 256 bit outputs.
  *
- * SHA-256 is part of the SHA-2 family that is a set of cryptographic hash
- * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
+ * SHA256 is part of the SHA2 family that is a set of cryptographic hash
+ * functions designed by the NSA. It is the successor of the SHA1 algorithm.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ *
+ * @see [FIPS - Secure Hash Standard (SHS)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA256 algorithm, a member of the SHA2 family, with 256 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA256_H
@@ -33,7 +52,7 @@ extern "C" {
 
 
 /**
- * Length of SHA-256 hash.
+ * Length of SHA256 hash.
  */
 #define ocrypto_sha256_BYTES (32)
 
@@ -48,14 +67,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental SHA-256 generator.
+/**
+ * @name Incremental SHA256 generator
  *
- * This group of functions can be used to incrementally compute the SHA-256
+ * This group of functions can be used to incrementally compute the SHA256
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-256 initialization.
+ * SHA256 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -65,7 +86,7 @@ void ocrypto_sha256_init(
     ocrypto_sha256_ctx *ctx);
 
 /**
- * SHA-256 incremental data input.
+ * SHA256 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -83,7 +104,7 @@ void ocrypto_sha256_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-256 output.
+ * SHA256 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -104,9 +125,9 @@ void ocrypto_sha256_final(
 /**@}*/
 
 /**
- * SHA-256 hash.
+ * SHA256 hash.
  *
- * The SHA-256 hash of a given input message @p in is computed and put into @p r.
+ * The SHA256 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.

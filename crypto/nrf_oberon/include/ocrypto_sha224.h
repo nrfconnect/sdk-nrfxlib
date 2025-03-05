@@ -5,19 +5,26 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * @defgroup ocrypto_sha_224 SHA-224 APIs
+ 
+/**
+ * @defgroup ocrypto_sha_224 SHA224
  * @ingroup ocrypto_sha
  * @{
- * @brief Type declarations and APIs for the SHA-224 algorithm.
- *
- * SHA-224 is part of the SHA-2 family that is a set of cryptographic hash
- * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
+ * @brief SHA224 algorithm, a member of the SHA2 family, with 224 bit outputs.
+ * 
+ * SHA224 is part of the SHA2 family that is a set of cryptographic hash
+ * functions designed by the NSA. It is the successor of the SHA1 algorithm.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ *
+ * @see [FIPS - Secure Hash Standard (SHS)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA224 algorithm, a member of the SHA2 family, with 224 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA224_H
@@ -35,7 +42,7 @@ extern "C" {
 
 
 /**
- * Length of SHA-224 hash.
+ * Length of SHA224 hash.
  */
 #define ocrypto_sha224_BYTES (28)
 
@@ -44,14 +51,16 @@ typedef ocrypto_sha256_ctx ocrypto_sha224_ctx;
 /**@endcond */
 
 
-/**@name Incremental SHA-224 generator.
+/**
+ * @name Incremental SHA224 generator
  *
- * This group of functions can be used to incrementally compute the SHA-224
+ * This group of functions can be used to incrementally compute the SHA224
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-224 initialization.
+ * SHA224 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -61,7 +70,7 @@ void ocrypto_sha224_init(
     ocrypto_sha224_ctx *ctx);
 
 /**
- * SHA-224 incremental data input.
+ * SHA224 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -79,7 +88,7 @@ void ocrypto_sha224_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-224 output.
+ * SHA224 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -100,9 +109,9 @@ void ocrypto_sha224_final(
 /**@}*/
 
 /**
- * SHA-224 hash.
+ * SHA224 hash.
  *
- * The SHA-224 hash of a given input message @p in is computed and put into @p r.
+ * The SHA224 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.

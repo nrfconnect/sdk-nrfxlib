@@ -6,15 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes_cbc_pkcs7 AES-CBC-PKCS7 - AES Cipher Block Chaining with PKCS7
- * @ingroup ocrypto_aes
+/**
+ * @defgroup ocrypto_aes_cbc_pkcs7 AES-CBC-PKCS7
+ * @ingroup ocrypto_unauth_enc
  * @{
- * @brief Type definitions and APIs for AES-CBC-PKCS7 (AES Cipher Block Chaining with PKCS7 padding).
+ * @brief AES Cipher Block Chaining with PKCS7 padding.
  *
  * AES-CBC (AES Cipher Block Chaining) is an AES block cipher mode which avoids the problems of the
  * ECB mode by xoring each plaintext block with the previous ciphertext block before being encrypted.
  * PKCS7 padding allows encoding/decoding of arbitrarily sized messages.
+ *
+ * @see [NIST - Special Publication 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+ * @see [RFC - PKCS #7: Cryptographic Message Syntax Version 1.5](http://tools.ietf.org/html/rfc2315)
+ */
+
+/**
+ * @file
+ * @brief AES Cipher Block Chaining with PKCS7 padding.
  */
 
 #ifndef OCRYPTO_AES_CBC_PKCS_H
@@ -42,7 +50,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-CBC encryption/decryption.
+/**
+ * @name Incremental AES-CBC encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-CBC encryption/decryption for a given message.

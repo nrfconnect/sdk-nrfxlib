@@ -6,12 +6,25 @@
  */
 
 
-/**@file
- * The KMAC family is a set of cryptographic MAC functions based on SHA-3 and CSHAKE.
+/**
+ * @defgroup ocrypto_kmax KMAC-SHA3
+ * @ingroup ocrypto_mac
+ * @{
+ * @brief KMAC algorithm based on SHA3, with 128 and 256 bit security.
+ * 
+ * The KMAC family is a set of cryptographic MAC functions based on SHA3 and cSHAKE.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ * 
+ * @see [FIPS - SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
+ * @see [NIST - SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash and ParallelHash](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf)
+ */
+
+/**
+ * @file
+ * @brief KMAC algorithm based on SHA3, with 128 and 256 bit security.
  */
 
 #ifndef OCRYPTO_KMAC_H
@@ -33,12 +46,14 @@ typedef ocrypto_sha3_ctx ocrypto_kmac_ctx;
 /**@endcond */
 
 
-/**@name Incremental KMAC generator.
+/**
+ * @name Incremental KMAC generator
  * 
  * This group of functions can be used to incrementally compute the KMAC
  * authenticator for a given message.
  */
 /**@{*/
+
 /**
  * KMAC128 initialization.
  *
@@ -195,3 +210,5 @@ void ocrypto_kmac256(
 #endif
 
 #endif
+
+/** @} */

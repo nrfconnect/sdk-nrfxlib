@@ -6,13 +6,13 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_srp SRP - Secure Remote Password APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_srp SRP
+ * @ingroup ocrypto_pake
  * @{
- * @brief Type declarations and APIs for the SRP key agreement protocol.
+ * @brief SRP (Secure Remote Password) algorithm based on SRP-6 3072 bit SHA512.
  *
- * SRP is an augmented password-authenticated key agreement protocol,
+ * SRP is an augmented password-authenticated key exchange protocol,
  * specifically designed to work around existing patents. SRP allows the use of
  * user names and passwords over unencrypted channels and supplies a shared
  * secret at the end of the authentication sequence that can be used to generate
@@ -26,9 +26,10 @@
  * attacker who steals the server data cannot masquerade as the client unless
  * they first perform a brute force search for the password.
  *
- * The specific variant implemented here is SRP-6 3072 bit SHA-512.
+ * The specific variant implemented here is SRP-6 3072 bit SHA512.
  *
- * @see [RFC 5054 - Using the Secure Remote Password (SRP) Protocol for TLS Authentication](https://tools.ietf.org/html/rfc5054)
+ * @see [RFC - The SRP Authentication and Key Exchange System](https://tools.ietf.org/html/rfc2945)
+ * @see [RFC - Using the Secure Remote Password (SRP) Protocol for TLS Authentication](https://tools.ietf.org/html/rfc5054)
  * @see [The Stanford SRP Homepage](http://srp.stanford.edu)
  *
  * **Basic protocol overview**
@@ -52,6 +53,11 @@
  *    session key to the client (see #ocrypto_srp_proof_m2).
  * 6. Client validates proof. Both parties know that they share the same private
  *    session key.
+ */
+
+/**
+ * @file
+ * @brief SRP (Secure Remote Password) algorithm based on SRP-6 3072 bit SHA512.
  */
 
 #ifndef OCRYPTO_SRP_H
@@ -106,7 +112,8 @@ extern "C" {
 #define ocrypto_srp_PROOF_BYTES (64)
 
 
-/**@name SRP-6 password verifier generation.
+/**
+ * @name SRP-6 password verifier generation
  *
  * A password verifier is generated from a user name and a password. The
  * password @p pass may be discarded, as only the verifier is used during later
@@ -133,7 +140,8 @@ void ocrypto_srp_verifier(
     const uint8_t *pass, size_t pass_len);
 /**@}*/
 
-/**@name SRP-6 public key generation.
+/**
+ * @name SRP-6 public key generation
  *
  * An ephemeral keypair can be generated based on the password verifier to be
  * used when opening a new session.
@@ -180,7 +188,8 @@ void ocrypto_srp_client_public_key(
     unsigned char pub_a[ocrypto_srp_PUBLIC_KEY_BYTES],
     const unsigned char *priv_a, size_t a_len);
 
-/**@name SRP-6 session key generation.
+/**
+ * @name SRP-6 session key generation
  *
  * A premaster secret can be derived from both the client's and server's public
  * keys, the server's private key and the password verifier. A shared session
@@ -290,7 +299,8 @@ void ocrypto_srp_session_key(
     const uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES]);
 /**@}*/
 
-/**@name SRP-6 proof exchange.
+/**
+ * @name SRP-6 proof exchange
  *
  * Proofs are exchanged from client to server and vice versa to ensure that both
  * parties computed the same shared session key. The proofs only match if the
@@ -344,7 +354,8 @@ void ocrypto_srp_proof_m2(
 /**@}*/
 
 
-/**@name SRP-6 password verifier generation with context.
+/**
+ * @name SRP-6 password verifier generation with context
  *
  * A password verifier is generated from a user name and a password. The
  * password @p pass may be discarded, as only the verifier is used in subsequent
@@ -373,7 +384,8 @@ void ocrypto_srp_verifier_ctx(
     const uint8_t *pass, size_t pass_len);
 /**@}*/
 
-/**@name SRP-6 public key generation with context.
+/**
+ * @name SRP-6 public key generation with context
  *
  * An ephemeral keypair can be generated based on the password verifier to be
  * used when opening a new session.
@@ -397,7 +409,8 @@ void ocrypto_srp_public_key_ctx(
     const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
 /**@}*/
 
-/**@name SRP-6 session key generation with context.
+/**
+ * @name SRP-6 session key generation with context
  *
  * A premaster secret can be derived from both the client's and server's public
  * keys, the server's private key and the password verifier. A shared session
@@ -465,7 +478,8 @@ void ocrypto_srp_session_key_ctx(
     const uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES]);
 /**@}*/
 
-/**@name SRP-6 proof exchange with context.
+/**
+ * @name SRP-6 proof exchange with context
  *
  * Proofs are exchanged from client to server and vice versa to ensure that both
  * parties computed the same shared session key. The proofs only match if the

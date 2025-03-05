@@ -6,12 +6,22 @@
  */
 
 
-/**@file
+/**
+ * @defgroup ocrypto_ed448 EdDSA Ed448
+ * @ingroup ocrypto_asym_sig
+ * @{
+ * @brief Ed448 algorithm, used for EdDSA without pre-hashing.
+ *
  * Ed448 is a specific implementation of EdDSA, a digital signature scheme.
  * EdDSA is based on Twisted Edwards curves and is designed to be faster than
  * existing digital signature schemes without sacrificing security.
- *
- * @see [RFC8032: Edwards-Curve Digital Signature Algorithm (EdDSA)]
+ * 
+ * @see [RFC - Edwards-Curve Digital Signature Algorithm (EdDSA)](https://datatracker.ietf.org/doc/html/rfc8032)
+ */
+
+/**
+ * @file
+ * @brief Ed448 algorithm, used for EdDSA without pre-hashing.
  */
 
 #ifndef OCRYPTO_ED448_H
@@ -98,3 +108,5 @@ int ocrypto_ed448_verify(
 #endif
 
 #endif
+
+/** @} */

@@ -5,19 +5,26 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * @defgroup ocrypto_sha_512 SHA-512 APIs
+ 
+/**
+ * @defgroup ocrypto_sha_512 SHA512
  * @ingroup ocrypto_sha
  * @{
- * @brief Type declarations and APIs for the SHA-512 algorithm.
+ * @brief SHA512 algorithm, a member of the SHA2 family, with 512 bit outputs.
  *
- * SHA-512 is part of the SHA-2 family that is a set of cryptographic hash
- * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
+ * SHA512 is part of the SHA2 family that is a set of cryptographic hash
+ * functions designed by the NSA. It is the successor of the SHA1 algorithm.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ *
+ * @see [FIPS - Secure Hash Standard (SHS)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA512 algorithm, a member of the SHA2 family, with 512 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA512_H
@@ -33,7 +40,7 @@ extern "C" {
 
 
 /**
- * Length of SHA-512 hash.
+ * Length of SHA512 hash.
  */
 #define ocrypto_sha512_BYTES (64)
 
@@ -48,14 +55,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental SHA-512 generator.
+/**
+ * @name Incremental SHA512 generator
  *
- * This group of functions can be used to incrementally compute the SHA-512
+ * This group of functions can be used to incrementally compute the SHA512
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-512 initialization.
+ * SHA512 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -65,7 +74,7 @@ void ocrypto_sha512_init(
     ocrypto_sha512_ctx *ctx);
 
 /**
- * SHA-512 incremental data input.
+ * SHA512 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -83,7 +92,7 @@ void ocrypto_sha512_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-512 output.
+ * SHA512 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -104,9 +113,9 @@ void ocrypto_sha512_final(
 /**@}*/
 
 /**
- * SHA-512 hash.
+ * SHA512 hash.
  *
- * The SHA-512 hash of a given input message @p in is computed and put into @p r.
+ * The SHA512 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
