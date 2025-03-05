@@ -6,11 +6,28 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ecjpake EC-JPAKE APIs
+/**
+ * @defgroup ocrypto_pake Password-Authenticated Key Exchange (PAKE)
  * @ingroup ocrypto
  * @{
- * @brief Type declarations and APIs for EC-JPAKE-P256.
+ * @brief Key exchange algorithms based on password authentication.
+ * 
+ * A PAKE agreement algorithm generates a shared secret key based on a password,
+ * in a way that makes it hard for an outside observer to determine the key.
+ * @}
+ *
+ * 
+ * @defgroup ocrypto_ecjpake EC-JPAKE
+ * @ingroup ocrypto_pake
+ * @{
+ * @brief EC-JPAKE algorithm based on P-256.
+ *
+ * @see [RFC - J-PAKE: Password-Authenticated Key Exchange by Juggling](https://tools.ietf.org/html/rfc8236)
+ */
+
+/**
+ * @file
+ * @brief EC-JPAKE algorithm based on P-256.
  */
 
 #ifndef OCRYPTO_ECJPAKE_P256_H

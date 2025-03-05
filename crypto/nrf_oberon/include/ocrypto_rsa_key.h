@@ -6,15 +6,35 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_rsa_key RSA key APIs
- * @ingroup ocrypto_rsa
+/**
+ * @defgroup ocrypto_rsa_orig Asymmetric Signature and Encryption (RSA Original API)
+ * @ingroup ocrypto
  * @{
- * @brief Type declarations for RSA APIs.
+ * @brief RSA public-key encryption and signature algorithm, original ocrypto API that supports 1024 and 2048 bit keys.
  *
- * RSA is a number theoretic public-key encryption and signature algorithm.
+ * RSA (Rivest-Shamir-Adleman) is a number theoretic public-key encryption and signature algorithm.
+ * 
+ * @see [PKCS #1: RSA Cryptography Specifications Version 2.2](https://datatracker.ietf.org/doc/html/rfc8017)
+ * @}
+ *
+ * 
+ * @defgroup ocrypto_rsa_key RSA Keys
+ * @ingroup ocrypto_rsa_orig
+ * @{
+ * @brief RSA key setup, for 1024 and 2048 bit keys.
  *
  * These functions support the setup of 1024 and 2048 RSA secret and public keys.
+ * 
+ * @remark 1024 bit keys are no longer considered secure;
+ *         use of at least 2048 bit keys is recommended.
+ * 
+ * @remark This is the original ocrypto API for RSA. See the newer API that
+ *         supports additional key sizes.
+ */
+
+/**
+ * @file
+ * @brief RSA key setup, for 1024 and 2048 bit keys.
  */
 
 #ifndef OCRYPTO_RSA_KEY_H
@@ -35,7 +55,8 @@ extern "C" {
 #define ocrypto_rsa_PUBLIC_EXPONENT 65537  // 2^16 + 1
 
 
-/**@name 1024-bit RSA Keys
+/**
+ * @name 1024-bit RSA Keys
  *
  * This group of keys is used for 1024-bit RSA.
  */
@@ -74,7 +95,8 @@ typedef struct {
 /**@}*/
 
 
-/**@name 2048-bit RSA Keys.
+/**
+ * @name 2048-bit RSA Keys
  *
  * This group of keys is used for 2048-bit RSA.
  */
@@ -112,7 +134,8 @@ typedef struct {
 } ocrypto_rsa2048_crt_key;
 /**@}*/
 
-/**@name 1024-bit RSA key setup.
+/**
+ * @name 1024-bit RSA key setup
  *
  * This group of functions is used for 1024-bit RSA key setup.
  */
@@ -177,7 +200,8 @@ int ocrypto_rsa1024_init_crt_key(
     const uint8_t *qinv, size_t qi_len);
 /**@}*/
 
-/**@name 2048-bit RSA key setup.
+/**
+ * @name 2048-bit RSA key setup
  *
  * This group of functions is used for 2048-bit RSA key setup.
  */

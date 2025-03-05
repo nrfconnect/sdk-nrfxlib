@@ -5,14 +5,26 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * The SHA-3 family is a set of cryptographic hash functions initiated
- * by the NSA. It is the successor of the SHA-1 and SHA-2 algorithms.
+ 
+/**
+ * @defgroup ocrypto_sha_3_sha_3 SHA3
+ * @ingroup ocrypto_sha
+ * @{
+ * @brief SHA3 algorithms, with 224, 256, 384 and 512 bit outputs.
+ *
+ * The SHA3 family is a set of cryptographic hash functions initiated
+ * by the NSA. It is the successor of the SHA1 and SHA2 algorithms.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ * 
+ * @see [FIPS - SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA3 algorithms, with 224, 256, 384 and 512 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA3_H
@@ -58,14 +70,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental SHA-3 generator.
+/**
+ * @name Incremental SHA3 generator
  * 
- * This group of functions can be used to incrementally compute the SHA-3
+ * This group of functions can be used to incrementally compute the SHA3
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-3 initialization.
+ * SHA3 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -75,7 +89,7 @@ void ocrypto_sha3_init(
     ocrypto_sha3_ctx *ctx);
 
 /**
- * SHA-3-224 incremental data input.
+ * SHA3-224 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -93,7 +107,7 @@ void ocrypto_sha3_224_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-256 incremental data input.
+ * SHA3-256 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -111,7 +125,7 @@ void ocrypto_sha3_256_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-384 incremental data input.
+ * SHA3-384 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -129,7 +143,7 @@ void ocrypto_sha3_384_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-512 incremental data input.
+ * SHA3-512 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -147,7 +161,7 @@ void ocrypto_sha3_512_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-224 output.
+ * SHA3-224 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -167,7 +181,7 @@ void ocrypto_sha3_224_final(
     uint8_t r[ocrypto_sha3_224_BYTES]);
 
 /**
- * SHA-3-256 output.
+ * SHA3-256 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -187,7 +201,7 @@ void ocrypto_sha3_256_final(
     uint8_t r[ocrypto_sha3_256_BYTES]);
 
 /**
- * SHA-3-384 output.
+ * SHA3-384 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -207,7 +221,7 @@ void ocrypto_sha3_384_final(
     uint8_t r[ocrypto_sha3_384_BYTES]);
 
 /**
- * SHA-3-512 output.
+ * SHA3-512 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -228,9 +242,9 @@ void ocrypto_sha3_512_final(
 /**@}*/
 
 /**
- * SHA-3-224 hash.
+ * SHA3-224 hash.
  *
- * The SHA-3-224 hash of a given input message @p in is computed and put into @p r.
+ * The SHA3-224 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
@@ -241,9 +255,9 @@ void ocrypto_sha3_224(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-256 hash.
+ * SHA3-256 hash.
  *
- * The SHA-3-256 hash of a given input message @p in is computed and put into @p r.
+ * The SHA3-256 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
@@ -254,9 +268,9 @@ void ocrypto_sha3_256(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-384 hash.
+ * SHA3-384 hash.
  *
- * The SHA-3-384 hash of a given input message @p in is computed and put into @p r.
+ * The SHA3-384 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
@@ -267,9 +281,9 @@ void ocrypto_sha3_384(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-3-512 hash.
+ * SHA3-512 hash.
  *
- * The SHA-3-512 hash of a given input message @p in is computed and put into @p r.
+ * The SHA3-512 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
@@ -284,3 +298,5 @@ void ocrypto_sha3_512(
 #endif
 
 #endif
+
+/** @} */

@@ -6,14 +6,20 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_pbkdf2 PBKDF2 APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_pbkdf2_hmac_sha256 PBKDF2-HMAC-SHA256
+ * @ingroup ocrypto_kdf
  * @{
- * @brief Type declaration and APIs for PBKDF2 with HMAC-SHA256.
+ * @brief PBKDF2 algorithm based on HMAC-SHA256.
  *
- * PBKDF2 with HMAC-SHA1 is password-based key derivation function defined in RFC2898.
+ * PBKDF2 with HMAC-SHA1 is password-based key derivation function.
+ * 
+ * @see [RFC - PKCS #5: Password-Based Cryptography Specification Version 2.1](https://datatracker.ietf.org/doc/html/rfc8018)
+ */
 
+/**
+ * @file
+ * @brief PBKDF2 algorithm based on HMAC-SHA256.
  */
 
 #ifndef OCRYPTO_PBKDF2_SHA256_H

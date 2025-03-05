@@ -6,24 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_hmac HMAC - Hash-based Message Authentication Code
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_hmac_sha1 HMAC-SHA1
+ * @ingroup ocrypto_mac
  * @{
- * @brief HMAC is a hash-based Message Authentication Code utilizing a secure hash function.
- * @}
- *
- * @defgroup ocrypto_hmac_sha1 HMAC APIs using SHA-1
- * @ingroup ocrypto_hmac
- * @{
- * @brief Type declarations and APIs for the HMAC-SHA1 algorithm.
+ * @brief HMAC algorithm based on SHA1.
  *
  * HMAC-SHA1 is an algorithm for message authentication using the
  * cryptographic hash function SHA1 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
  * message.
  *
- * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ * @see [RFC - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ */
+
+/**
+ * @file
+ * @brief HMAC algorithm based on SHA1.
  */
 
 #ifndef OCRYPTO_HMAC_SHA1_H
@@ -54,15 +53,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental HMAC-SHA-1 generator.
+/**
+ * @name Incremental HMAC-SHA1 generator
  *
- * This group of functions can be used to incrementally compute the HMAC-SHA-1
+ * This group of functions can be used to incrementally compute the HMAC-SHA1
  * authenticator for a given message.
  */
 /**@{*/
 
 /**
- * HMAC-SHA-1 initialization.
+ * HMAC-SHA1 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -75,7 +75,7 @@ void ocrypto_hmac_sha1_init(
     const uint8_t* key, size_t key_len);
 
 /**
- * HMAC-SHA-1 incremental data input.
+ * HMAC-SHA1 incremental data input.
  *
  * The generator state @p ctx is updated to authenticate a message chunk @p in.
  *
@@ -93,7 +93,7 @@ void ocrypto_hmac_sha1_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * HMAC-SHA-1 output.
+ * HMAC-SHA1 output.
  *
  * The generator state @p ctx is updated to finalize the HMAC for the previously
  * processed message chunks. The authenticator is put into @p r.

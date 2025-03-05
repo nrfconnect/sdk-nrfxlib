@@ -6,20 +6,51 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
+/**
+ * @defgroup ocrypto_unauth_enc Unauthenticated Ciphers
  * @ingroup ocrypto
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ * @brief Encryption algorithms without authentication.
+ * 
+ * Ciphers provide encryption/decryption, without authentication or integrity-checking.
  * @}
  *
- * @defgroup ocrypto_aes_key AES key sizes
- * @ingroup ocrypto_aes
+ * 
+ * @defgroup ocrypto_auth_enc Authenticated Encryption with Associated Data (AEAD)
+ * @ingroup ocrypto
  * @{
- * @brief Type definition of AES key sizes.
+ * @brief Encryption algorithms with authentication and support for additional data.
+ * 
+ * AEAD algorithms provide encryption with authentication, and support
+ * integrity-checking of additional unencrypted data.
+ * @}
+ * 
+ *
+ * @defgroup ocrypto_key_wrap Key Wrap
+ * @ingroup ocrypto
+ * @{
+ * @brief Key wrap algorithms, with and without padding.
+ * 
+ * Key wrap algorithms allow encryption of a key for secure transfer or storage.
+ * @}
+ * 
+ * 
+ * @defgroup ocrypto_aes_key AES Key Sizes
+ * @ingroup ocrypto_unauth_enc
+ * @{
+ * @brief Declaration of AES key sizes.
  *
  * AES key sizes in bytes.
+ * 
+ * The Advanced Encryption Standard (AES) is a block cipher with a block size of
+ * 128 bits. It supports key lengths of 128, 192 and 256 bits.
+ * 
+ * @see [FIPS - Advanced Encryption Standard (AES)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf)
+ */
+
+/**
+ * @file
+ * @brief Declaration of AES key sizes.
  */
 
 #ifndef OCRYPTO_AES_KEY_H

@@ -6,17 +6,24 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ed25519ph Ed25519ph APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_ed25519ph EdDSA Ed25519ph
+ * @ingroup ocrypto_asym_sig
  * @{
- * @brief Type declarations and APIs for the Ed25519ph algorithm.
+ * @brief Ed25519ph algorithm, used for EdDSA with pre-hashing.
  *
  * Ed25519ph is a specific implementation of EdDSA, a digital signature scheme with
  * prehashing. EdDSA is based on Twisted Edwards curves and is designed to be faster
  * than existing digital signature schemes without sacrificing security. It was
  * developed by Daniel J. Bernstein, et al. Ed25519ph is intended to provide
  * attack resistance comparable to quality 128-bit symmetric ciphers.
+ * 
+ * @see [RFC - Edwards-Curve Digital Signature Algorithm (EdDSA)](https://datatracker.ietf.org/doc/html/rfc8032)
+ */
+
+/**
+ * @file
+ * @brief Ed25519ph algorithm, used for EdDSA with pre-hashing.
  */
 
 #ifndef OCRYPTO_ED25519PH_H
@@ -74,7 +81,7 @@ void ocrypto_ed25519ph_public_key(
  * public key @p pk. The signature is put into @p sig.
  *
  * @param[out] sig         Generated signature.
- * @param      hash        Message hash, SHA-512(message).
+ * @param      hash        Message hash, SHA512(message).
  * @param      sk          Secret key.
  * @param      pk          Public key.
  */
@@ -91,7 +98,7 @@ void ocrypto_ed25519ph_sign(
  * public key @p pk.
  *
  * @param sig         Input signature.
- * @param hash        Message hash, SHA-512(message).
+ * @param hash        Message hash, SHA512(message).
  * @param pk          Signer's public key.
  *
  * @retval 0  If the signature is valid.
@@ -126,7 +133,7 @@ void ocrypto_ed25519ph_public_key_ctx(
  *
  * @param      ctx         Context.
  * @param[out] sig         Generated signature.
- * @param      hash        Message hash, SHA-512(message).
+ * @param      hash        Message hash, SHA512(message).
  * @param      sk          Secret key.
  * @param      pk          Public key.
  */
@@ -145,7 +152,7 @@ void ocrypto_ed25519ph_sign_ctx(
  *
  * @param ctx         Context.
  * @param sig         Input signature.
- * @param hash        Message hash, SHA-512(message).
+ * @param hash        Message hash, SHA512(message).
  * @param pk          Signer's public key.
  *
  * @retval 0  If the signature is valid.

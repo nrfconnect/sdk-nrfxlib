@@ -5,25 +5,26 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * @defgroup ocrypto_sha SHA APIs
- * @ingroup ocrypto
- * @{
- * @brief SHA algorithms.
- * @}
- *
- * @defgroup ocrypto_sha_1 SHA-1 APIs
+ 
+/**
+ * @defgroup ocrypto_sha_1 SHA1
  * @ingroup ocrypto_sha
  * @{
- * @brief Type declarations and APIs for the SHA-1 algorithm.
+ * @brief SHA1 algorithm, with 160 bit outputs.
  *
  * A fixed-sized message digest is computed from input data with arbitrary
  * length. The function is practically impossible to revert, and small changes
  * in the input message lead to major changes in the message digest.
+ * 
+ * @remark SHA1 is no longer considered secure; replacement by SHA2 or SHA3 is
+ *         recommended.
  *
- * SHA-1 is no longer considered secure against well-funded opponents;
- * replacement by SHA-2 or SHA-3 is recommended.
+ * @see [FIPS - Secure Hash Standard (SHS)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA1 algorithm, with 160 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA1_H
@@ -39,7 +40,7 @@ extern "C" {
 
 
 /**
- * Length of SHA-1 hash.
+ * Length of SHA1 hash.
  */
 #define ocrypto_sha1_BYTES (20)
 
@@ -54,14 +55,16 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental SHA-1 generator.
+/**
+ * @name Incremental SHA1 generator
  *
- * This group of functions can be used to incrementally compute the SHA-1
+ * This group of functions can be used to incrementally compute the SHA1
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-1 initialization.
+ * SHA1 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -71,7 +74,7 @@ void ocrypto_sha1_init(
     ocrypto_sha1_ctx *ctx);
 
 /**
- * SHA-1 incremental data input.
+ * SHA1 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -89,7 +92,7 @@ void ocrypto_sha1_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-1 output.
+ * SHA1 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -111,9 +114,9 @@ void ocrypto_sha1_final(
 
 
 /**
- * SHA-1 hash.
+ * SHA1 hash.
  *
- * The SHA-1 hash of a given input message @p in is computed and put into @p r.
+ * The SHA1 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.

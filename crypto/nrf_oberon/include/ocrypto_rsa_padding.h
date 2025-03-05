@@ -6,19 +6,18 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
- * @ingroup ocrypto
- * @{
- * @brief RSA is a number theoretic public-key encryption and signature algorithm.
- * @}
- *
- * @defgroup ocrypto_rsa_padding_api RSA padding APIs
+/**
+ * @defgroup ocrypto_rsa_padding RSA Padding
  * @ingroup ocrypto_rsa
  * @{
- * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS.
+ * @brief RSA padding for PKCS1 v1.5, OAEP and PSS.
  *
- * These functions support RSA PKCS1, OEAP, and PSS padding.
+ * These functions support RSA PKCS1, OAEP, and PSS padding.
+ */
+
+/**
+ * @file
+ * @brief RSA padding for PKCS1 v1.5, OAEP and PSS.
  */
 
 #ifndef OCRYPTO_RSA_PADDING_H
@@ -112,7 +111,7 @@ int ocrypto_rsa_oaep_sha256_check_padding(
 
 
 /**
- * RSA PKCS1 V1.5 SHA-256 signature encoding.
+ * RSA PKCS1 V1.5 SHA256 signature encoding.
  *
  * @param[out] em      The encoded message.
  * @param      em_len  Length of @p em.
@@ -128,7 +127,7 @@ int ocrypto_rsa_pkcs1_v15_sha256_encode(
 
 
 /**
-* RSA PSS SHA-256 signature encoding.
+* RSA PSS SHA256 signature encoding.
 *
 * @param[out] em      The encoded message.
 * @param      em_len  Length of @p em.
@@ -146,7 +145,7 @@ int ocrypto_rsa_pss_sha256_encode(
     const uint8_t *salt, size_t s_len);
 
 /**
-* RSA PSS SHA-256 signature decoding.
+* RSA PSS SHA256 signature decoding.
 *
 * @param em       The encoded message.
 * @param em_len   Length of @p em.

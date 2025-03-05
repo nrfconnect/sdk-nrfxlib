@@ -5,13 +5,25 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * The SHAKE family is a variable output variant of the SHA-3 hash functions.
+ 
+/**
+ * @defgroup ocrypto_sha_3_shake SHAKE
+ * @ingroup ocrypto_sha
+ * @{
+ * @brief SHAKE algorithms, variants of SHA3 with variable output lengths, with 128 and 256 bit security.
+ *
+ * The SHAKE family is a variable output variant of the SHA3 hash function family.
  *
  * A variable length message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ * 
+ * @see [FIPS - SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHAKE algorithms, variants of SHA3 with variable output lengths, with 128 and 256 bit security.
  */
 
 #ifndef OCRYPTO_SHAKE_H
@@ -33,12 +45,15 @@ typedef ocrypto_sha3_ctx ocrypto_shake_ctx;
 /**@endcond */
 
 
-/**@name Incremental SHAKE generator.
+/**
+ * @name Incremental SHAKE generator
  * 
  * This group of functions can be used to incrementally compute the SHAKE
  * hash for a given message.
+ * 
+ * @{
  */
-/**@{*/
+
 /**
  * SHAKE initialization.
  *
@@ -197,3 +212,5 @@ void ocrypto_shake256(
 #endif
 
 #endif
+
+/** @} */

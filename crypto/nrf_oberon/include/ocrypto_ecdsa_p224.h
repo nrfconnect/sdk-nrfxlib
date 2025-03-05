@@ -6,14 +6,22 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ecdsa_p224 ECDSA secp224r1 low-level APIs
- * @ingroup ocrypto_ecdsa
+/**
+ * @defgroup ocrypto_ecdsa_p224 ECDSA P-224
+ * @ingroup ocrypto_asym_sig
  * @{
- * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorithm using the
- *        NIST secp224r1 curve.
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-224 curve (aka secp224r1).
  *
  * ECDSA P-224 is a specific implementation of a digital signature scheme.
+ * 
+ * @see [FIPS - Digital Signature Standard (DSS)](https://csrc.nist.gov/pubs/fips/186-5/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-224 curve (aka secp224r1).
  */
 
 #ifndef OCRYPTO_ECDSA_P224_H

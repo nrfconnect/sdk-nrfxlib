@@ -6,20 +6,22 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ecdsa ECDSA - Elliptic Curve Digital Signature Algorithm APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_ecdsa_p256_det_sign ECDSA P-256 (Deterministic)
+ * @ingroup ocrypto_asym_sig
  * @{
- * @brief ECDSA (Elliptic Curve Digital Signature Algorith) Elliptic Curve Digital Signature Algorithm.
- * @}
- *
- * @defgroup ocrypto_ecdsa_p256 ECDSA secp256r1 low-level APIs
- * @ingroup ocrypto_ecdsa
- * @{
- * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorith using the
- *        NIST secp256r1 curve.
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-256 curve (aka secp256r1) (deterministic variant).
  *
  * ECDSA P-256 is a specific implementation of a digital signature scheme.
+ * 
+ * @see [FIPS - Digital Signature Standard (DSS)](https://csrc.nist.gov/pubs/fips/186-5/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve digital signature algorithm based on the
+ *        NIST P-256 curve (aka secp256r1) (deterministic variant).
  */
 
 #ifndef OCRYPTO_DET_ECDSA_P256_H

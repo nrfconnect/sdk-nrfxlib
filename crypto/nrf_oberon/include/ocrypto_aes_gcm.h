@@ -6,22 +6,22 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_gcm AES-GCM
+ * @ingroup ocrypto_auth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_gcm AES-GCM - AES Galois/Counter Mode APIs
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-GCM (AES Galois/Counter Mode).
- *
+ * @brief AES Galois/Counter Mode.
+ * 
  * AES-GCM (AES Galois/Counter Mode) is an AES mode which effectively turns the block cipher into
  * a stream cipher. The AES block cipher primitive is used in CTR mode for encryption and decryption.
  * In addition, 128-bit Galois Field multiplication is used for authentication.
+ * 
+ * @see [NIST - SP 800-38C](https://csrc.nist.gov/pubs/sp/800/38/d/final)
+ */
+
+/**
+ * @file
+ * @brief AES Galois/Counter Mode.
  */
 
 #ifndef OCRYPTO_AES_GCM_H
@@ -52,7 +52,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-GCM encryption/decryption.
+/**
+ * @name Incremental AES-GCM encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-GCM encryption/decryption for a given message.

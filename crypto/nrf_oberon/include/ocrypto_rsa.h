@@ -6,20 +6,25 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_rsa_api RSA Operations
+ * @ingroup ocrypto_rsa_orig
  * @{
- * @brief RSA is a number theoretic public-key encryption and signature algorithm.
- * @}
- *
- * @defgroup ocrypto_rsa_api RSA APIs
- * @ingroup ocrypto_rsa
- * @{
- * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS.
+ * @brief RSA encryption/decryption and sign/verify algorithms, for 1024 and 2048 bit RSA keys.
  *
  * These functions support RSA encryption and signatures with 1024 and 2048 bit
- * modulo, PKCS1 V1.5, OEAP and PSS padding.
+ * modulo, PKCS1 V1.5, OAEP and PSS padding.
+ * 
+ * @remark 1024 bit keys are no longer considered secure;
+ *         use of at least 2048 bit keys is recommended.
+ * 
+ * @remark This is the original ocrypto API for RSA. See the newer API that
+ *         supports additional key sizes.
+ */
+
+/**
+ * @file
+ * @brief RSA encryption/decryption and sign/verify algorithms, for 1024 and 2048 bit RSA keys.
  */
 
 #ifndef OCRYPTO_RSA_H
@@ -36,7 +41,8 @@ extern "C" {
 #endif
 
 
-/**@name 1024-bit RSA Functions.
+/**
+ * @name 1024-bit RSA Functions
  *
  * This group of functions is used for 1024-bit RSA.
  */
@@ -188,7 +194,7 @@ int ocrypto_rsa1024_oaep_sha256_crt_decrypt(
     const ocrypto_rsa1024_crt_key *sk);
 
 /**
- * 1024-bit RSA PKCS1 V1.5 SHA-256 sign.
+ * 1024-bit RSA PKCS1 V1.5 SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -208,7 +214,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_sign(
     const ocrypto_rsa1024_key *sk);
 
 /**
- * 1024-bit RSA PKCS1 V1.5 SHA-256 sign with CRT acceleration.
+ * 1024-bit RSA PKCS1 V1.5 SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -228,7 +234,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
     const ocrypto_rsa1024_crt_key *sk);
 
 /**
- * 1024-bit RSA PKCS1 V1.5 SHA-256 signature verify.
+ * 1024-bit RSA PKCS1 V1.5 SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *
@@ -248,7 +254,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_verify(
     const ocrypto_rsa1024_pub_key *pk);
 
 /**
- * 1024-bit RSA PSS SHA-256 sign.
+ * 1024-bit RSA PSS SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -272,7 +278,7 @@ int ocrypto_rsa1024_pss_sha256_sign(
     const ocrypto_rsa1024_key *sk);
 
 /**
- * 1024-bit RSA PSS SHA-256 sign with CRT acceleration.
+ * 1024-bit RSA PSS SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -296,7 +302,7 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
     const ocrypto_rsa1024_crt_key *sk);
 
 /**
- * 1024-bit RSA PSS SHA-256 signature verify.
+ * 1024-bit RSA PSS SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *
@@ -320,7 +326,8 @@ int ocrypto_rsa1024_pss_sha256_verify(
 /**@}*/
 
 
-/**@name 2048-bit RSA Functions.
+/**
+ * @name 2048-bit RSA Functions
  *
  * This group of functions is used for 2048-bit RSA.
  */
@@ -472,7 +479,7 @@ int ocrypto_rsa2048_oaep_sha256_crt_decrypt(
     const ocrypto_rsa2048_crt_key *sk);
 
 /**
- * 2048-bit RSA PKCS1 V1.5 SHA-256 sign.
+ * 2048-bit RSA PKCS1 V1.5 SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -492,7 +499,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_sign(
     const ocrypto_rsa2048_key *sk);
 
 /**
- * 2048-bit RSA PKCS1 V1.5 SHA-256 sign with CRT acceleration.
+ * 2048-bit RSA PKCS1 V1.5 SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -512,7 +519,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_crt_sign(
     const ocrypto_rsa2048_crt_key *sk);
 
 /**
- * 2048-bit RSA PKCS1 V1.5 SHA-256 signature verify.
+ * 2048-bit RSA PKCS1 V1.5 SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *
@@ -532,7 +539,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_verify(
     const ocrypto_rsa2048_pub_key *pk);
 
 /**
- * 2048-bit RSA PSS SHA-256 sign.
+ * 2048-bit RSA PSS SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -556,7 +563,7 @@ int ocrypto_rsa2048_pss_sha256_sign(
     const ocrypto_rsa2048_key *sk);
 
 /**
- * 2048-bit RSA PSS SHA-256 sign with CRT acceleration.
+ * 2048-bit RSA PSS SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -580,7 +587,7 @@ int ocrypto_rsa2048_pss_sha256_crt_sign(
     const ocrypto_rsa2048_crt_key *sk);
 
 /**
- * 2048-bit RSA PSS SHA-256 signature verify.
+ * 2048-bit RSA PSS SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *

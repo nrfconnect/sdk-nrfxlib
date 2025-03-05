@@ -6,18 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_curve25519 ECC Curve25519 low-level APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_curve25519 ECC X25519
+ * @ingroup ocrypto_key_agreement
  * @{
- * @brief Type declarations and APIs for low-level elliptic curve point operations
- * based on Curve25519.
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the Curve25519 curve.
  *
- * Curve25519 is an elliptic curve offering 128 bits of security. It is designed
- * for use in the Elliptic Curve Diffie-Hellman (ECDH) key agreement scheme.
+ * X25519 is the combination of the Curve25519 elliptic curve with the Diffie-Hellman
+ * operation.
+ * Curve25519 is an elliptic curve offering 128 bits of security.
  *
- * @see [RFC 7748 - Elliptic Curves for Security](https://tools.ietf.org/html/rfc7748)
+ * @see [RFC - Elliptic Curves for Security](https://tools.ietf.org/html/rfc7748)
  * @see [Curve25519: high-speed elliptic-curve cryptography](http://cr.yp.to/ecdh.html)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the Curve25519 curve.
  */
 
 #ifndef OCRYPTO_CURVE25519_H

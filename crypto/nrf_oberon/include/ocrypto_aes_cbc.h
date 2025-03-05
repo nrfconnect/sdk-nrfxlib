@@ -6,21 +6,21 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_cbc AES-CBC
+ * @ingroup ocrypto_unauth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_cbc AES-CBC - AES Cipher Block Chaining
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-CBC (AES Cipher Block Chaining).
+ * @brief AES Cipher Block Chaining.
  *
  * AES-CBC (AES Cipher Block Chaining) is an AES block cipher mode which avoids the problems of the
  * ECB mode by xoring each plaintext block with the previous ciphertext block before being encrypted.
+ *
+ * @see [NIST - Special Publication 800-38A](https://csrc.nist.gov/pubs/sp/800/38/a/final)
+ */
+
+/**
+ * @file
+ * @brief AES Cipher Block Chaining.
  */
 
 #ifndef OCRYPTO_AES_CBC_H
@@ -44,7 +44,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-CBC encryption/decryption.
+/**
+ * @name Incremental AES-CBC encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-CBC encryption/decryption for a given message.
