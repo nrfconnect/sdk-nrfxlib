@@ -18,6 +18,8 @@ Changes
 
 * Documented that the :c:func:`mpsl_clock_task_trigger_on_rtc_start_set` function is supported only on the nRF52 and nRF53 Series.
 * Added support for the nRF21540 GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-19928)
+* The activation of the nRF2220 Front-End Module CS pin now requires a call to the :c:func:`mpsl_fem_enable` function. (KRKNWK-19588)
+* Applied Errata 22 and Errata 24 to the Front-End Modules on the nRF54L15 SoC. (KRKNWK-19588)
 
 Added
 =====
@@ -33,6 +35,7 @@ Added
   This API makes it possible to use an external power management system, such as the one provided by the |NCS|, to request low latency mode and to request wakeup in time for a future event.
   Added the functions :c:func:`mpsl_pm_init` and :c:func:`mpsl_pm_uninit` to enable and disable integration.
   Added the functions :c:func:`mpsl_pm_params_get`, :c:func:`mpsl_pm_low_latency_requested`, :c:func:`mpsl_pm_low_latency_state_set` and :c:func:`mpsl_pm_low_latency_state_get` to register wakeup time and request low latency. (DRGN-17150)
+* Added the functions :c:func:`mpsl_fem_nrf2220_temperature_changed`, :c:func:`mpsl_fem_nrf2220_temperature_changed_update_request`, and :c:func:`mpsl_fem_nrf2220_temperature_changed_update_now` to compensate the temperature of the nRF2220 Front-End Module. (KRKNWK-19862)
 
 Removed
 =======
