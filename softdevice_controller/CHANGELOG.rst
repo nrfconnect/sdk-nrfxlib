@@ -29,6 +29,13 @@ Changes
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
 * Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
 * Reduced latency when changing the list of subevents to which a Periodic Advertising with Responses Scanner is synchronized. (DRGN-24543)
+* A CIS peripheral will now reject an invalid ``LL_CIS_REQ`` if one of the following condition is met:
+
+  * ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` is less than 255 µs.
+  * ``ISO_Interval`` is not an integer multiple of ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` when unframed PDU is used.
+  * ``BN_C_To_P`` or ``BN_P_To_C`` is smaller than the value required by the configuration when an unframed PDU is used.
+
+  This only applies when the burst number (BN) in the corresponding direction (``BN_C_To_P`` or ``BN_P_To_C``) is non-zero. (DRGN-23304)
 
 Bug fixes
 =========
@@ -72,6 +79,8 @@ Bug fixes
     * There are scheduling conflicts.
 * Fixed an issue where an application running on a nRF54L Series device would sometimes fail to receive an ACL packet after it had sent a packet on Coded PHY with S=2. (DRGN-23691)
   The issue would only happen when the application explicitly asked to use the coding scheme S=2.
+* Fixed an issue where a CIS Peripheral would assert when receiving an invalid ``LL_CIS_REQ``.
+  This would only happen if unframed PDUs were used. (DRGN-24706)
 
 nRF Connect SDK v2.9.0
 **********************

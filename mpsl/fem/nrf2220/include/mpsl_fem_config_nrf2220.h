@@ -70,7 +70,7 @@ typedef struct
 
     /** TWI communication fault handler.
      *
-     *  This handler is called when TWI communication with nRF2200 device fails.
+     *  This handler is called when TWI communication with nRF2220 device fails.
      *  When this pointer is NULL, the behavior is equivalent to an empty handler.
      */
     void (*p_on_twi_fault)(void);
