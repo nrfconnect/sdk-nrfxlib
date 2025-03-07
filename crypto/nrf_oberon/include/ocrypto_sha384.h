@@ -5,19 +5,26 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-
-/**@file
- * @defgroup ocrypto_sha_384 SHA-384 APIs
+ 
+/**
+ * @defgroup ocrypto_sha_384 SHA384
  * @ingroup ocrypto_sha
  * @{
- * @brief Type declarations and APIs for the SHA-384 algorithm.
+ * @brief SHA384 algorithm, a member of the SHA2 family, with 384 bit outputs.
  *
- * SHA-384 is part of the SHA-2 family that is a set of cryptographic hash
- * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
+ * SHA384 is part of the SHA2 family that is a set of cryptographic hash
+ * functions designed by the NSA. It is the successor of the SHA1 algorithm.
  *
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ *
+ * @see [FIPS - Secure Hash Standard (SHS)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
+ */
+
+/**
+ * @file
+ * @brief SHA384 algorithm, a member of the SHA2 family, with 384 bit outputs.
  */
 
 #ifndef OCRYPTO_SHA384_H
@@ -32,7 +39,7 @@ extern "C" {
 
 
 /**
- * Length of SHA-384 hash.
+ * Length of SHA384 hash.
  */
 #define ocrypto_sha384_BYTES (48)
 
@@ -41,14 +48,16 @@ typedef ocrypto_sha512_ctx ocrypto_sha384_ctx;
 /**@endcond */
 
 
-/**@name Incremental SHA-384 generator.
+/**
+ * @name Incremental SHA384 generator
  *
- * This group of functions can be used to incrementally compute the SHA-384
+ * This group of functions can be used to incrementally compute the SHA384
  * hash for a given message.
  */
 /**@{*/
+
 /**
- * SHA-384 initialization.
+ * SHA384 initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
@@ -58,7 +67,7 @@ void ocrypto_sha384_init(
     ocrypto_sha384_ctx *ctx);
 
 /**
- * SHA-384 incremental data input.
+ * SHA384 incremental data input.
  *
  * The generator state @p ctx is updated to hash a message chunk @p in.
  *
@@ -76,7 +85,7 @@ void ocrypto_sha384_update(
     const uint8_t *in, size_t in_len);
 
 /**
- * SHA-384 output.
+ * SHA384 output.
  *
  * The generator state @p ctx is updated to finalize the hash for the previously
  * processed message chunks. The hash is put into @p r.
@@ -97,9 +106,9 @@ void ocrypto_sha384_final(
 /**@}*/
 
 /**
- * SHA-384 hash.
+ * SHA384 hash.
  *
- * The SHA-384 hash of a given input message @p in is computed and put into @p r.
+ * The SHA384 hash of a given input message @p in is computed and put into @p r.
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.

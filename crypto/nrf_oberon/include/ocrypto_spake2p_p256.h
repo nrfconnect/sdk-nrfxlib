@@ -6,11 +6,21 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_spake2p SPAKE2+ APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_spake2p SPAKE2+
+ * @ingroup ocrypto_pake
  * @{
- * @brief Type declarations and APIs for SPAKE2+ P256.
+ * @brief SPAKE2+ algorithm based on P-256.
+ * 
+ * SPAKE2+ is a Password Authenticated Key Exchange (PAKE) protocol run between two
+ * parties for deriving a strong shared key with no risk of disclosing the password.
+ *
+ * @see [RFC - SPAKE2+, an Augmented Password-Authenticated Key Exchange (PAKE) Protocol](https://tools.ietf.org/html/rfc9383)
+ */
+
+/**
+ * @file
+ * @brief SPAKE2+ algorithm based on P-256.
  */
 
 #ifndef OCRYPTO_SPAKE2P_P256_H
@@ -26,7 +36,7 @@ extern "C" {
 
 
 /**
- * SPAKE2+ P256 secret key reduction.
+ * SPAKE2+ P-256 secret key reduction.
  *
  * @param[out] x       Reduced secret key.
  * @param      xs      Extended secret key.
@@ -37,7 +47,7 @@ void ocrypto_spake2p_p256_reduce(
     const uint8_t *xs, size_t xs_len);
 
 /**
- * SPAKE2+ P256 public key validation check.
+ * SPAKE2+ P-256 public key validation check.
  *
  * @param      K       Public key.
  *
@@ -48,7 +58,7 @@ int ocrypto_spake2p_p256_check_key(
     const uint8_t K[65]);
 
 /**
- * SPAKE2+ P256 key share calculation.
+ * SPAKE2+ P-256 key share calculation.
  *
  * @param[out] XY      Public key share.
  * @param      w0      First password hash.
@@ -65,7 +75,7 @@ int ocrypto_spake2p_p256_get_key_share(
     const uint8_t MN[65]);
 
 /**
- * SPAKE2+ P256 common value calculation.
+ * SPAKE2+ P-256 common value calculation.
  *
  * @param[out] Z       Common value Z.
  * @param[out] V       Common value V.
@@ -75,8 +85,11 @@ int ocrypto_spake2p_p256_get_key_share(
  * @param      YX      Peer key share.
  * @param      NM      Peer random element.
  * @param      L       Password registration. NULL on client side.
+ *
+ * @retval 0  If the common values are valid.
+ * @retval -1 Otherwise.
  */
-void ocrypto_spake2p_p256_get_ZV(
+int ocrypto_spake2p_p256_get_ZV(
     uint8_t Z[65],
     uint8_t V[65],
     const uint8_t w0[32],

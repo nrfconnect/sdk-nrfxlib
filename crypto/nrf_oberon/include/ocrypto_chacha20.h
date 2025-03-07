@@ -6,15 +6,15 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_chacha ChaCha20 APIs
- * @ingroup ocrypto_chacha_poly
+/**
+ * @defgroup ocrypto_chacha ChaCha20 and XChaCha20
+ * @ingroup ocrypto_unauth_enc
  * @{
- * @brief Type declaration and APIs for the Chacha20 stream cipher algorithm.
+ * @brief ChaCha20 and XChaCha20 algorithms.
  *
  * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher
  * Salsa20/20.
- *
+ * 
  * A 256-bit key is expanded into 2^64 randomly accessible streams, each
  * containing 2^64 randomly accessible 64-byte (512-bit) blocks.
  *
@@ -22,8 +22,16 @@
  * round, conjecturally increasing resistance to cryptanalysis, while
  * preserving - and often improving - time per round.
  *
- * @see [RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
+ * XChaCha20 uses a 192-bit nonce instead of ChaCha20's 96-bit nonce.
+ * 
+ * @see [XChaCha](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03)
+ * @see [RFC - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
  * @see [The ChaCha family of stream ciphers](http://cr.yp.to/chacha.html)
+ */
+
+/**
+ * @file
+ * @brief ChaCha20 and XChaCha20 algorithms.
  */
 
 #ifndef OCRYPTO_CHACHA20_H
@@ -58,7 +66,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental ChaCha20 Encoder.
+/**
+ * @name Incremental ChaCha20 Encoder
  *
  * This group of functions can be used to incrementally compute the ChaCha20 encryption
  * for a given message and key, by segmenting a message into smaller chunks.
@@ -74,6 +83,7 @@ typedef struct {
  * @endcode
  */
 /**@{*/
+
 /**
  * ChaCha20 encoder initialization.
  *
@@ -81,12 +91,13 @@ typedef struct {
  *
  * @param[out] ctx   Encoder state.
  * @param      n     Nonce. May be NULL.
- * @param      n_len Nonce length. 0 <= @p n_len <= @c ocrypto_chacha20_NONCE_BYTES_MAX.
+ * @param      n_len Nonce length. @p n_len = 8, 12, or 24.
  * @param      key   Authentication key. May be NULL.
  * @param      count Initial block counter, usually 0 or 1.
  *
  * @remark If @p key is NULL only @p n and @p count are set. If @p n is NULL only @p key is set.
-           Both @p key and @p n must be set before update is called.
+ *         Both @p key and @p n must be set before update is called.
+ * @remark If @p n_len = 24, the XChaCha20 algorithm is used.
  * @remark When reusing an encryption key @p key for a different message, a
  *         different nonce @p n or initial block counter @p count must be used.
  */
@@ -133,7 +144,7 @@ void ocrypto_chacha20_update(
  * @param      m     Input message.
  * @param      m_len Length of @p c and @p m.
  * @param      n     Nonce.
- * @param      n_len Nonce length. 0 <= @p n_len <= @c ocrypto_chacha20_NONCE_BYTES_MAX.
+ * @param      n_len Nonce length. @p n_len = 8, 12, or 24.
  * @param      key   Encryption key.
  * @param      count Initial block counter.
  *
@@ -141,6 +152,7 @@ void ocrypto_chacha20_update(
  *
  * @remark When reusing an encryption key @p key for a different message @p m, a
  *         different nonce @p n or initial block counter @p count must be used.
+ * @remark If @p n_len = 24, the XChaCha20 algorithm is used.
  */
 void ocrypto_chacha20_encode(
     uint8_t *c,

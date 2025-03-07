@@ -6,22 +6,22 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
- * @ingroup ocrypto
+/**
+ * @defgroup ocrypto_aes_ccm AES-CCM
+ * @ingroup ocrypto_auth_enc
  * @{
- * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
- * @}
- *
- * @defgroup ocrypto_aes_ccm AES-CCM - AES Counter mode with CBC-MAC
- * @ingroup ocrypto_aes
- * @{
- * @brief Type definitions and APIs for AES-CCM (AES Counter mode with CBC-MAC).
- *
- * AES-CCM (AES counter mode with CBC-MAC) is an AES mode which effectively turns the block
+ * @brief AES Counter Mode with CBC-MAC.
+ * 
+ * AES-CCM (AES Counter Mode with CBC-MAC) is an AES mode which effectively turns the block
  * cipher into a stream cipher. The AES block cipher primitive is used in CTR mode for
  * encryption and decryption. In addition an AES CBC-MAC is used for authentication.
+ * 
+ * @see [NIST - SP 800-38C](https://csrc.nist.gov/pubs/sp/800/38/c/upd1/final)
+ */
+
+/**
+ * @file
+ * @brief AES Counter Mode with CBC-MAC.
  */
 
 #ifndef OCRYPTO_AES_CCM_H
@@ -52,7 +52,8 @@ typedef struct {
 /**@endcond */
 
 
-/**@name Incremental AES-CCM encryption/decryption.
+/**
+ * @name Incremental AES-CCM encryption/decryption
  *
  * This group of functions can be used to incrementally compute the
  * AES-CCM encryption/decryption for a given message.
