@@ -9,6 +9,15 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.6.4
+**********************
+
+All the notable changes included in the |NCS| v2.6.4 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
 
 nRF Connect SDK v2.6.3
 **********************
