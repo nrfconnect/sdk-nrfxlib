@@ -6,19 +6,34 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_ecdh ECDH - Elliptic Curve Diffie-Hellman APIs
+/**
+ * @defgroup ocrypto_key_agreement Key Agreement
  * @ingroup ocrypto
  * @{
- * @brief ECDH (Elliptic Curve Diffie-Hellman) elliptic curve point operations
- *        to do Elliptic Curve Diffie-Hellman Algorithm.
+ * @brief Key agreement algorithms based on elliptic curves.
+ * 
+ * A key agreement algorithm generates a shared secret key, in a way that both
+ * parties contribute to its creation, and that make it hard for an outside
+ * observer to determine the key.
+ * 
+ * There are mainly two groups of algorithms: those based on the NIST standard
+ * secpXXX curves (P-256 etc.), and those based on Montgomery curves.
  * @}
  *
- * @defgroup ocrypto_ecdh_p256 ECDH P256 APIs
- * @ingroup ocrypto_ecdh
+ * 
+ * @defgroup ocrypto_ecdh_p256 ECDH P-256
+ * @ingroup ocrypto_key_agreement
  * @{
- * @brief Type declarations and APIs for low-level elliptic curve point operations
- *        to do Elliptic Curve Diffie-Hellman based on the NIST secp256r1 curve.
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-256 curve (aka secp256r1).
+ *
+ * ECDH P-256 is a specific implementation of a key agreement protocol.
+ * 
+ * @see [NIST - SP 800-56A Rev. 3](https://csrc.nist.gov/pubs/sp/800/56/a/r3/final)
+ */
+
+/**
+ * @file
+ * @brief Elliptic curve Diffie-Hellman algorithm based on the NIST P-256 curve (aka secp256r1).
  */
 
 #ifndef OCRYPTO_ECDH_P256_H
@@ -103,7 +118,8 @@ int ocrypto_ecdh_p256_public_key(uint8_t pk[64], const uint8_t sk[32]);
 int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const uint8_t pk[64]);
 
 
-/**@name Incremental ECDH P-256 calculation.
+/**
+ * @name Incremental ECDH P-256 calculation
  *
  * This group of functions can be used to incrementally calculate
  * the ECDH P-256 public key and common secret.

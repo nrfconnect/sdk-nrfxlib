@@ -6,21 +6,23 @@
  */
 
 
-/**@file
- * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
- * @ingroup ocrypto
- * @{
- * @brief RSA is a number theoretic public-key encryption and signature algorithm.
- * @}
- *
- * @defgroup ocrypto_rsa_operations_api RSA operations APIs
+/**
+ * @defgroup ocrypto_rsa_operations RSA Operations
  * @ingroup ocrypto_rsa
  * @{
- * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS.
+ * @brief RSA encryption/decryption and sign/verify algorithms.
  *
- * These functions support RSA encryption and signatures with OEAP and PSS padding.
+ * These functions support RSA encryption and signatures with PKCS1 v1.5, OAEP and PSS padding.
  *
  * Supported key sizes (in bits) are: 1024, 2048, 3072, 4096, ...
+ * 
+ * @remark 1024 bit keys are no longer considered secure;
+ *         use of at least 2048 bit keys is recommended.
+ */
+
+/**
+ * @file
+ * @brief RSA encryption/decryption and sign/verify algorithms.
  */
 
 #ifndef OCRYPTO_RSA_OPERATIONS_H
@@ -37,7 +39,8 @@ extern "C" {
 #endif
 
 
-/**@name RSA operations.
+/**
+ * @name RSA operations
  *
  * This group of functions is used for RSA with padding.
  */
@@ -207,7 +210,7 @@ int ocrypto_rsa_oaep_sha256_crt_decrypt(
     uint32_t *mem);
 
 /**
- * RSA PKCS1 V1.5 SHA-256 sign.
+ * RSA PKCS1 V1.5 SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -230,7 +233,7 @@ int ocrypto_rsa_pkcs1_v15_sha256_sign(
     uint32_t *mem);
 
 /**
- * RSA PKCS1 V1.5 SHA-256 sign with CRT acceleration.
+ * RSA PKCS1 V1.5 SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -253,7 +256,7 @@ int ocrypto_rsa_pkcs1_v15_sha256_crt_sign(
     uint32_t *mem);
 
 /**
- * RSA PKCS1 V1.5 SHA-256 signature verify.
+ * RSA PKCS1 V1.5 SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *
@@ -277,7 +280,7 @@ int ocrypto_rsa_pkcs1_v15_sha256_verify(
     uint32_t *mem);
 
 /**
- * RSA PSS SHA-256 sign.
+ * RSA PSS SHA256 sign.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -304,7 +307,7 @@ int ocrypto_rsa_pss_sha256_sign(
     uint32_t *mem);
 
 /**
- * RSA PSS SHA-256 sign with CRT acceleration.
+ * RSA PSS SHA256 sign with CRT acceleration.
  *
  * The message @p m is signed and the signature returned in @p s.
  *
@@ -331,7 +334,7 @@ int ocrypto_rsa_pss_sha256_crt_sign(
     uint32_t *mem);
 
 /**
- * RSA PSS SHA-256 signature verify.
+ * RSA PSS SHA256 signature verify.
  *
  * The signature @p s of the input message @p m is verified.
  *
