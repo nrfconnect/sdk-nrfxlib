@@ -196,6 +196,8 @@ enum nrf_wifi_sys_events {
 	NRF_WIFI_EVENT_RAW_TX_DONE,
 	/** Response to NRF_WIFI_CMD_GET_DEBUG_STATS */
 	NRF_WIFI_EVENT_DEBUG_STATS,
+	/** Event for lmac dynamic ed stats event */
+	NRF_WIFI_EVENT_DYNAMIC_ED_STATS,
 };
 
 /**
@@ -921,6 +923,8 @@ struct nrf_wifi_cmd_sys_init {
 	 *  By default, RX STBC is enabled.
 	 */
 	unsigned int stbc_enable_in_ht;
+        /** Enables or disables dynamic ed.*/
+	unsigned int disable_dynamic_ed;
 } __NRF_WIFI_PKD;
 
 /**
@@ -1642,6 +1646,13 @@ struct nrf_wifi_umac_event_debug_stats {
 	unsigned int rpu_hw_lockup_count;
 	/** RPU hardware lockup recovery completed count */
 	unsigned int rpu_hw_lockup_recovery_done;
+} __NRF_WIFI_PKD;
+
+struct nrf_wifi_umac_event_dynamic_ed_stats {
+	/** UMAC header, @ref nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+	char default_ed_threshold;
+	char adjusted_ed_threshold;
 } __NRF_WIFI_PKD;
 
 #endif /* __HOST_RPU_SYS_IF_H__ */
