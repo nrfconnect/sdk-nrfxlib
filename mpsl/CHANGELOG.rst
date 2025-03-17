@@ -42,6 +42,12 @@ Removed
 
 * Removed the deprecated function :c:func:`mpsl_fem_prepare_powerdown`. (KRKNWK-16691)
 
+Bug fixes
+=========
+
+* Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run. In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
+
+
 nRF Connect SDK v2.9.0
 **********************
 
