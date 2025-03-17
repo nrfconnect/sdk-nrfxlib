@@ -85,8 +85,6 @@ nrf_oberon crypto library
 AES - Advanced Encryption Standard
 ==================================
 
-.. doxygengroup:: ocrypto_aes
-
 AES-CBC - AES Cipher Block Chaining Mode
 ----------------------------------------
 
@@ -136,11 +134,6 @@ ChaCha20-Poly1305
 =================
 
 .. doxygengroup:: ocrypto_chacha_poly
-
-ChaCha20-Poly1305
------------------
-
-.. doxygengroup:: ocrypto_chacha_poly_inc
 
 ChaCha20
 --------
@@ -203,7 +196,10 @@ Ed25519
 HKDF - HMAC based Key Derivation Function
 =========================================
 
-.. doxygengroup:: ocrypto_hkdf
+HKDF using SHA-1
+------------------
+
+.. doxygengroup:: ocrypto_hkdf_sha1
 
 HKDF using SHA-256
 ------------------
@@ -213,12 +209,15 @@ HKDF using SHA-256
 HKDF using SHA-512
 ------------------
 
-.. doxygengroup:: ocrypto_hkdf_512
+.. doxygengroup:: ocrypto_hkdf_sha512
 
 HMAC - Hash-based Message Authentication Code
 =============================================
 
-.. doxygengroup:: ocrypto_hmac
+HMAC using SHA-1
+------------------
+
+.. doxygengroup:: ocrypto_hmac_sha1
 
 HMAC using SHA-256
 ------------------
@@ -233,7 +232,20 @@ HMAC using SHA-512
 PBKDF2
 ===========
 
-.. doxygengroup:: ocrypto_pbkdf2
+PBKDF2 using HMAC and SHA-1
+---------------------------
+
+.. doxygengroup:: ocrypto_pbkdf2_hmac_sha1
+
+PBKDF2 using HMAC and SHA-256
+-----------------------------
+
+.. doxygengroup:: ocrypto_pbkdf2_hmac_sha256
+
+PBKDF2 using CMAC
+------------------
+
+.. doxygengroup:: ocrypto_pbkdf2_hmac_aes_cmac_prf_128
 
 RSA - Rivest-Shamir-Adleman algorithm
 =====================================
@@ -287,11 +299,6 @@ SRP - Secure Remote Password
 ============================
 
 .. doxygengroup:: ocrypto_srp
-
-SRPT - Secure Real-Time Transport Protocol
-==========================================
-
-.. doxygengroup:: ocrypto_srtp
 
 ocrypto internal types
 ======================
