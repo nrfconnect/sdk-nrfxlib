@@ -40,6 +40,7 @@ Changes
 Bug fixes
 =========
 
+* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
 * Fixed an issue where the controller would fail to synchronize with a BIS Broadcaster. (DRGN-24670)
   This would occur when the Broadcaster has set ``Num_Bis=1``, ``NSE > 1``, and ``Sub_Interval == BIS_Spacing``.
   Previously, the controller would raise the LE BIG Sync Established event with status set to "Unsupported Feature or Parameter value (0x11)".
