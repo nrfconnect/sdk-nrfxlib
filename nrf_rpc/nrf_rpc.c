@@ -688,6 +688,12 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	group_data = (*group)->data;
 	first_init = group_data->dst_group_id == NRF_RPC_ID_UNKNOWN;
 	group_data->dst_group_id = hdr->src_group_id;
+	/*
+	 * Mark the transport as initialized in case `nrf_rpc_init` is preempted before doing this
+	 * and then an init packet is received. Without this, sending a response to this packet
+	 * would fail.
+	 */
+	group_data->transport_initialized = true;
 
 	NRF_RPC_DBG("Found corresponding local group. Remote id: %d, Local id: %d",
 		    group_data->dst_group_id, group_data->src_group_id);
@@ -757,9 +763,10 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 			goto cleanup_and_exit;
 		}
 
-		/* Mark the transport as initialized in case the first packet arrives sooner than
-		 * `nrf_rpc_init` does that. Without this, an attempt to allocate a buffer for the
-		 * response to this packet would fail.
+		/*
+		 * Mark the transport as initialized in case `nrf_rpc_init` is preempted before
+		 * doing this and then a packet is received. Without this line, sending a response
+		 * to this packet would fail.
 		 */
 		group->data->transport_initialized = true;
 	}
