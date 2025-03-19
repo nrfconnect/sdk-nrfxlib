@@ -172,12 +172,6 @@
       - "!crypto/doc/**/*"
       - "!crypto/*.rst"
 
-"CI-sidewalk-test":
-  - any:
-      - "crypto/**/*"
-      - "!crypto/doc/**/*"
-      - "!crypto/*.rst"
-
 "CI-audio-test":
   - "lc3/**/*"
   - "softdevice_controller/CMakeLists.txt"
