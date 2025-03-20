@@ -28,7 +28,6 @@ doc/*                                     @b-gent
 /nrf_modem/doc/images/                    @Avalei
 /nrf_rpc/doc/img/                         @Avalei
 /softdevice_controller/doc/pic/           @Avalei
-/zboss/doc/images/                        @Avalei
 
 # All subfolders
 /.github/                                 @thst-nordic
@@ -42,7 +41,6 @@ doc/*                                     @b-gent
 /nrf_802154/                              @ankuns @piotrkoziar
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @lmaciejonczyk @edmont @canisLupus1313
-/zboss/                                   @nrfconnect/ncs-zigbee
 /zephyr/                                  @carlescufi
 /nrf_rpc/                                 @doki-nordic @KAGA164
 /nrf_dm/                                  @Tschet1 @eriksandgren
