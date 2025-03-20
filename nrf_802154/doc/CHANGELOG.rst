@@ -21,7 +21,10 @@ Added
 Bug fixes
 =========
 
-* Fixed the constant describing the time between CCAIDLE and READY events. The constant is used for calculation of the time needed for a transmission using CCA for the nRF54L Series. (KRKNWK-19819)
+* Fixed the constant that describes the time between CCAIDLE and READY events.
+  This constant is used to calculate the transmission time when using CCA for the nRF54L Series. (KRKNWK-19819)
+* Fixed an issue where the timestamp of a received frame indicated a later time
+  than the actual end of the frame in the air. (KRKNWK-18121)
 
 Removed
 =======

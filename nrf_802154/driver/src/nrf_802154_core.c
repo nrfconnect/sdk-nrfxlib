@@ -2010,6 +2010,11 @@ void nrf_802154_trx_receive_frame_received(void)
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
         uint64_t ts = timer_coord_timestamp_get();
 
+        if (ts != NRF_802154_NO_TIMESTAMP)
+        {
+            ts -= RX_PHYEND_EVENT_LATENCY_US;
+        }
+
         nrf_802154_stat_timestamp_write(last_rx_end_timestamp, ts);
 #endif
 
