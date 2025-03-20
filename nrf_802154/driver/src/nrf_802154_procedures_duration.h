@@ -59,6 +59,9 @@
 #define RX_TX_TURNAROUND_TIME             (RX_TX_TURNAROUND_TIME_HW + \
                                            NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US)
 
+#define RX_PHYEND_EVENT_LATENCY_US        23 ///< Latency in us between the last bit on air and the PHYEND event.
+#define RSSI_SETTLE_TIME_US               15 ///< Time required for RSSI measurements to become valid after signal level change.
+
 #define A_CCA_DURATION_SYMBOLS            8  // sym
 #define A_TURNAROUND_TIME_SYMBOLS         12 // sym
 #define A_UNIT_BACKOFF_SYMBOLS            20 // sym

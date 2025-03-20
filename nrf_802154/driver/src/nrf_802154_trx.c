@@ -143,15 +143,11 @@
 #define CRC_LENGTH          2                                    ///< Length of CRC in 802.15.4 frames [bytes]
 #define CRC_POLYNOMIAL      0x011021                             ///< Polynomial used for CRC calculation in 802.15.4 frames
 
-#define TXRU_TIME           40                                   ///< Transmitter ramp up time [us]
-#define EVENT_LAT           23                                   ///< END event latency [us]
-
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 #define MAX_RAMPDOWN_CYCLES (50 * (SystemCoreClock / 1000000UL)) ///< Maximum number of busy wait loop cycles that radio ramp-down is allowed to take
 #else
 #define MAX_RAMPDOWN_CYCLES 20
 #endif
-#define RSSI_SETTLE_TIME_US 15           ///< Time required for RSSI measurements to become valid after signal level change.
 
 #if NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
 void nrf_802154_radio_irq_handler(void); ///< Prototype required by internal RADIO IRQ handler
@@ -1664,7 +1660,8 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
 {
     /* Assumptions on peripherals
      * TIMER is running, is counting from value saved in m_timer_value_on_radio_end_event,
-     * which trigered on END event, which happened EVENT_LAT us after frame on air receive was finished.
+     * which trigered on END event, which happened RX_PHYEND_EVENT_LATENCY_US us after frame
+     * on air receive was finished.
      * RADIO is DISABLED
      * PPIs are DISABLED
      */
@@ -1679,15 +1676,16 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
     m_trx_state = TRX_STATE_TXACK;
 
     // Set TIMER's CC to the moment when ramp-up should occur.
-    if (delay_us <= TXRU_TIME + EVENT_LAT)
+    if (delay_us <= TX_RAMP_UP_TIME + RX_PHYEND_EVENT_LATENCY_US)
     {
         timer_stop_and_clear();
         nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
         return result;
     }
 
-    uint32_t timer_cc_ramp_up_start = m_timer_value_on_radio_end_event + delay_us - TXRU_TIME -
-                                      EVENT_LAT;
+    uint32_t timer_cc_ramp_up_start = m_timer_value_on_radio_end_event + delay_us -
+                                      TX_RAMP_UP_TIME -
+                                      RX_PHYEND_EVENT_LATENCY_US;
 
     nrf_timer_cc_set(NRF_802154_TIMER_INSTANCE,
                      NRF_TIMER_CC_CHANNEL1,
@@ -1703,12 +1701,12 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
 
     // Set FEM
     // Note: the TIMER is running, ramp up will start in timer_cc_ramp_up_start tick
-    // Assumption here is that FEM activation takes no more than TXRU_TIME.
+    // Assumption here is that FEM activation takes no more than TX_RAMP_UP_TIME.
     m_activate_tx_cc0_timeshifted = m_activate_tx_cc0;
 
     // Set the moment for FEM at which real transmission starts.
     m_activate_tx_cc0_timeshifted.event.timer.counter_period.end = timer_cc_ramp_up_start +
-                                                                   TXRU_TIME;
+                                                                   TX_RAMP_UP_TIME;
 
     if (mpsl_fem_pa_configuration_set(&m_activate_tx_cc0_timeshifted, NULL) == 0)
     {
