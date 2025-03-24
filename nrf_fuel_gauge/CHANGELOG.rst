@@ -15,7 +15,7 @@ Main branch
 Changes
 =======
 
-* Updated to library version 1.0.0.
+* Updated to library version 1.0.1.
 * Simplified the :c:func:`nrf_fuel_gauge_process` function, as vbus state information is now gathered through the :c:func:`nrf_fuel_gauge_ext_state_update` function.
 * Simplified the :c:func:`nrf_fuel_gauge_ttf_get` function, as charger state information is now gathered through the :c:func:`nrf_fuel_gauge_ext_state_update` function.
 * Simplified the use of the :c:func:`nrf_fuel_gauge_param_adjust` function by allowing parameters to be set to "nan" to indicate that they should not be adjusted.
@@ -24,7 +24,7 @@ Added
 =====
 
 * Support for primary cell (non-recheargable) batteries.
-* Battery models for Alkaline AA, Alkaline AAA, Alkaline coin cell LR44, and Lithium-manganese dioxide coin cell CR2032 batteries.
+* Battery models for Alkaline AA (1S and 2S configuration), Alkaline AAA (1S and 2S configuration), Alkaline coin cell LR44, and Lithium-manganese dioxide coin cell CR2032 batteries.
 * A new :c:func:`nrf_fuel_gauge_ext_state_update` function to inform the library about external state changes.
   Such changes includes charger state, vbus connection status, and current measurement correction.
 * A functionality to retrieve and restore the library state, using the :c:func:`nrf_fuel_gauge_state_get` function and state member of the :c:struct:`nrf_fuel_gauge_init_parameters` structure.
