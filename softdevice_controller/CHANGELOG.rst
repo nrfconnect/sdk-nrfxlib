@@ -20,6 +20,7 @@ Added
 
   * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
   * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
+* Support for multiple packet pairs in an ACL event when using LLPM mode. (DRGN-16157)
 
 Changes
 =======

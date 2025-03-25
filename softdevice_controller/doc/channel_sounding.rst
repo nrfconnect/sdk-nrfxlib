@@ -37,6 +37,8 @@ The following LE CS commands are supported:
  * LE CS Test
  * LE CS Test End
 
+.. _cs_supported_capabilities:
+
 Supported capabilities
 ----------------------
 
@@ -60,13 +62,43 @@ The supported timing values for the |controller| are as follows:
  * A T_PM of 10 µs or greater.
  * A T_SW of 10 µs.
 
+.. note::
+   The T_SW time reported is based on the implementation of antenna switching in the |NCS|, as described in :ref:`cs_multiple_antenna_support`.
+   If users implement their own switching functions, they must ensure that the new implementation meets the timing requirements reported in :ref:`cs_supported_capabilities`.
+
+.. _cs_multiple_antenna_support:
+
 Multiple antennas support
 -------------------------
 
-Currently, the |controller| supports multiple antennas with a fixed pinout for the multi-antenna switch.
-In order to use the |controller| with multiple antennas, an external GPIO controlled multi-antenna switch needs to be set up with the following truth table:
+Users may define their own antenna switching behavior in the |NCS|.
+By using the :c:func:`cs_antenna_switch_func` function and devicetree, users can register GPIO-controlled antenna switches with the |controller|.
+The Channel Sounding implementation will then automatically use the registered pins to control an external antenna switch for multi-antenna designs.
+The pins assigned to a multi-antenna design will be reserved by the |controller| and cannot be used by other activity.
+If users do not want to use the implementation provided in the |NCS|, they must register their own callback function for antenna switching in :c:func:`sdc_support_channel_sounding`.
 
-.. list-table:: Antenna control for multi-antenna switching.
+.. note::
+   The |controller| requires an :c:type:`sdc_cs_antenna_switch_callback_t` antenna switching callback to :c:func:`sdc_support_channel_sounding` whenever it is configured with support for multiple antennas.
+   This is done automatically in the |NCS|.
+
+When using :c:func:`cs_antenna_switch_func`, users can register which pins control the antenna switch, as well as how the pins switch, using devicetree.
+An example declaration of an antenna switch in devicetree is as follows:
+
+.. code-block:: devicetree
+
+   cs_antenna_switch: cs-antenna-config {
+     status = "okay";
+     compatible = "nordic,bt-cs-antenna-switch";
+     ant-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH)>,
+                 <&gpio1 12 (GPIO_ACTIVE_HIGH)>,
+                 <&gpio1 13 (GPIO_ACTIVE_HIGH)>,
+                 <&gpio1 14 (GPIO_ACTIVE_HIGH)>;
+     multiplexing-mode = <0>;
+   };
+
+This setup corresponds to the following truth table:
+
+.. list-table:: Antenna control for multi-antenna switching without multiplexing mode.
    :widths: 30 5 5 5 5
    :header-rows: 1
 
@@ -96,9 +128,87 @@ In order to use the |controller| with multiple antennas, an external GPIO contro
      - 0
      - 1
 
+An alternative to the provided setup is to use multiplexing mode.
+This method allows fewer pins to control multiple antennas simultaneously:
+
+.. list-table:: Antenna control for multi-antenna switching using multiplexing mode.
+   :widths: 30 5 5
+   :header-rows: 1
+
+   * - Active Antenna:
+     - **P1.11**
+     - **P1.12**
+   * - Antenna 1
+     - 0
+     - 0
+   * - Antenna 2
+     - 0
+     - 1
+   * - Antenna 3
+     - 1
+     - 0
+   * - Antenna 4
+     - 1
+     - 1
+
+Multiplexing mode can be configured with devicetree as follows:
+
+.. code-block:: devicetree
+
+  cs_antenna_switch: cs-antenna-config {
+    status = "okay";
+    compatible = "nordic,bt-cs-antenna-switch";
+    ant-gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH)>,
+                <&gpio1 12 (GPIO_ACTIVE_HIGH)>;
+    multiplexing-mode = <1>;
+  };
+
+If a design does not use four antennas, users can register fewer pins to achieve the desired behavior:
+
+.. code-block:: devicetree
+
+  cs_antenna_switch: cs-antenna-config {
+    status = "okay";
+    compatible = "nordic,bt-cs-antenna-switch";
+    ant-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW)>,
+                <&gpio1 12 (GPIO_ACTIVE_LOW)>,
+                <&gpio1 13 (GPIO_ACTIVE_LOW)>;
+    multiplexing-mode = <0>;
+  };
+
+.. list-table:: Antenna control for multi-antenna switching with only 3 antennas.
+   :widths: 30 5 5 5
+   :header-rows: 1
+
+   * - Active Antenna:
+     - **P1.11**
+     - **P1.12**
+     - **P1.13**
+   * - Antenna 1
+     - 0
+     - 1
+     - 1
+   * - Antenna 2
+     - 1
+     - 0
+     - 1
+   * - Antenna 3
+     - 1
+     - 1
+     - 0
+
+
+Adding a custom antenna switch IC
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When using the provided :c:func:`cs_antenna_switch_func` implementation in the |NCS|, the |controller| uses a maximum of 4 µs to set a GPIO pin high.
+Therefore, a multi-antenna switch using this solution must switch within 6 µs to maintain the 10 µs T_SW reported in :ref:`cs_supported_capabilities`.
+
+In addition to switching fast enough to meet switch timings, any RF switch used for antenna switching in Channel Sounding must handle switching while the radio is active.
+This is because the switch time is too short to power-cycle the radio between tones.
+
 .. note::
-   Currently, the |controller| needs a maximum of 4 µs to trigger an antenna switch within the T_SW period.
-   This means that any multi-antenna switch with the correct pinout must switch within 6 µs to maintain 10 µs T_SW.
+ When registering multiple antennas with the |controller|, the first antenna in the antenna array will be used by default for |BLE| transmission.
 
 Experimental limitations
 ------------------------
