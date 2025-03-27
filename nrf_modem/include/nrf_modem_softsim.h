@@ -79,8 +79,9 @@ int nrf_modem_softsim_req_handler_set(nrf_modem_softsim_req_handler_t handler);
  * @retval 0 on success.
  * @retval -NRF_EINVAL If input data is invalid.
  * @retval -NRF_ENOMEM If memory allocation failed.
+ * @retval -NRF_EPERM The Modem library is not initialized.
  */
-int nrf_modem_softsim_res(enum nrf_modem_softsim_cmd cmd, uint16_t req_id, void *data,
+int nrf_modem_softsim_res(enum nrf_modem_softsim_cmd cmd, uint16_t req_id, const void *data,
 			  uint16_t data_len);
 
 /**
@@ -93,6 +94,7 @@ int nrf_modem_softsim_res(enum nrf_modem_softsim_cmd cmd, uint16_t req_id, void 
  *
  * @retval 0 on success.
  * @retval -NRF_ENOMEM If memory allocation failed.
+ * @retval -NRF_EPERM The Modem library is not initialized.
  */
 int nrf_modem_softsim_err(enum nrf_modem_softsim_cmd cmd, uint16_t req_id);
 

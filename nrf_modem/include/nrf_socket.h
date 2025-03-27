@@ -1122,17 +1122,13 @@ int nrf_getifaddrs(struct nrf_ifaddrs **ifa);
 void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
 
 /**
- * @brief Set a secondary DNS address.
+ * @brief Set a fallback DNS address.
  *
  * @details
- * The secondary DNS address is only used in case the primary DNS address is unreachable,
- * or if no DNS address is provided by the operator. The secondary DNS address does not
- * override the primary DNS address.
+ * The fallback DNS address is used only when the network-provided DNS addresses are
+ * missing or unreachable. The fallback DNS does not override the network-provided DNS.
  *
- * @note
- * It is not possible to unset a secondary DNS address set using this function.
- *
- * @param family    Address family.
+ * @param family    Address family, either NRF_AF_INET or NRF_AF_INET6.
  * @param in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
  *                  nrf_in6_addr structure, respectively.
  * @param in_size   Size of the structure pointed to by in_addr.
@@ -1142,8 +1138,8 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  *
  * The function may return -1 and set the following errno:
  * - [NRF_EPERM] The Modem library is not initialized.
- * - [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
  * - [NRF_EINVAL] Invalid parameters.
+ * - [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
  * - [NRF_ENOBUFS] Not enough shared memory for this request.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
