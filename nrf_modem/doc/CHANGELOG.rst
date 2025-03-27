@@ -15,9 +15,37 @@ nrf_modem
 Core library
 ============
 
-* Fixed a bug introduced in the :c:func:`nrf_modem_init()` function in version 2.3.0, where the library would use the function's input parameter after the function had returned.
+* Fixed a bug introduced in the :c:func:`nrf_modem_init` function in version 2.3.0, where the library would use the function's input parameter after the function had returned.
   This could cause several socket functions to return an error and set ``errno`` to ``NRF_EINVAL``.
   If you use a version of this library from v2.3.0 to v2.9.0 outside of the |NCS| and are initializing the library by calling the :c:func:`nrf_modem_init()` function, ensure that the parameter of the :c:func:`nrf_modem_init` function is always ``static``.
+
+AT interface
+============
+
+* Updated the :c:func:`nrf_modem_at_cmd_custom_set` function documentation to emphasize that the custom command list must be statically allocated.
+
+* Fixed:
+
+  * A bug where a custom AT command would not be recognized due to incompatible line ending in the terminal and application.
+  * A bug in the :c:func:`nrf_modem_at_scanf` function where calling :c:func:`nrf_modem_at_scanf` from within a CFUN hook triggered by another call to :c:func:`nrf_modem_at_scanf` could cause the modem to crash in some situations.
+
+Sockets
+=======
+
+* Updated the :c:func:`nrf_setdnsaddr` function documentation to clarify when the fallback DNS address is used and that the fallback DNS does not overwrite the network-provided DNS.
+
+* Fixed:
+
+  * A bug where setting the value of the :c:macro:`NRF_SO_SEC_HOSTNAME` socket option could led to a crash if the value had been previously cleared using the :c:func:`nrf_setsockopt` function and setting ``option_len`` equal to zero.
+  * A bug where getting the value of the :c:macro:`NRF_SO_SEC_ROLE` socket option would return an incorrect value for the client role.
+
+Softsim
+=======
+
+* Updated:
+
+  * The :c:func:`nrf_modem_softsim_res` and the :c:func:`nrf_modem_softsim_err` functions to now return ``-NRF_EPERM`` if the Modem library is not initialized.
+  * The ``data`` parameter of the :c:func:`nrf_modem_softsim_res` function with the `const` data type qualifier since the data is not modified by the function.
 
 DECT NR+
 ========
