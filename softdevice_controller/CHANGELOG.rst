@@ -9,8 +9,16 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v2.9.2
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
+
+nRF Connect SDK v2.9.0
+**********************
 
 Added
 =====
