@@ -212,8 +212,10 @@ struct nrf_modem_at_cmd_custom {
  * AT command in the list, will be redirected to the custom callback function instead
  * of being sent to the modem.
  *
- * @note The custom commands are disabled by passing NULL to the @c custom_commands and
+ * The custom commands can be disabled by passing NULL to the @c custom_commands and
  * 0 to the @c len.
+ *
+ * @note The list @c custom_commands must be statically allocated.
  *
  * @param custom_commands List of custom AT commands.
  * @param len Custom AT command list size.

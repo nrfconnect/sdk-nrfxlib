@@ -119,6 +119,7 @@ extern struct nrf_modem_os_rpc inst_data;
  */
 extern struct nrf_modem_os_rpc_signal inst_app_fault;
 extern struct nrf_modem_os_rpc_signal inst_modem_fault;
+extern struct nrf_modem_os_rpc_signal inst_modem_trace;
 extern struct nrf_modem_os_rpc_signal inst_modem_sysoff;
 
 /**
