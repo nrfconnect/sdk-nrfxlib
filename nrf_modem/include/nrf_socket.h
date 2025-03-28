@@ -173,7 +173,7 @@ extern "C" {
 #define NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE  7
 
 /** @brief
- * Write-only socket option to select the security tags to be used.
+ * Socket option to select the security tags to be used.
  * This option accepts a list of @sa nrf_sec_tag_t.
  */
 #define NRF_SO_SEC_TAG_LIST 1
@@ -186,14 +186,14 @@ extern "C" {
 #define NRF_SO_SEC_HOSTNAME 2
 
 /** @brief
- * Write-only socket option to select which ciphersuites to use.
+ * Socket option to select which ciphersuites to use.
  * This option accepts a prioritized array of selected cipher suites.
  * See @ref nrf_socket_tls_cipher_suites for a list of allowed values.
  */
 #define NRF_SO_SEC_CIPHERSUITE_LIST 3
 
 /** @brief
- * Socket option to retrieve the cipher suite used during the TLS/DTLS handshake.
+ * Read-only socket option to retrieve the cipher suite used during the TLS/DTLS handshake.
  *
  * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
  */
@@ -206,7 +206,7 @@ extern "C" {
 #define NRF_SO_SEC_PEER_VERIFY 5
 
 /** @brief
- * Write-only socket option to set role for the connection.
+ * Socket option to set role for the connection.
  * See @ref nrf_socket_sec_roles for a list of allowed values.
  */
 #define NRF_SO_SEC_ROLE 6
@@ -218,7 +218,7 @@ extern "C" {
 #define NRF_SO_SEC_SESSION_CACHE 12
 
 /** @brief
- * Socket option to purge session cache immediately.
+ * Write-only socket option to purge session cache immediately.
  * This option accepts any value.
  */
 #define NRF_SO_SEC_SESSION_CACHE_PURGE 13
@@ -238,7 +238,7 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_CID 15
 
 /** @brief
- * Socket option to get the connection ID status.
+ * Read-only socket option to get the connection ID status.
  * See @ref nrf_so_sec_dtls_cid_statuses for allowed values.
  *
  * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
@@ -246,7 +246,7 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_CID_STATUS 16
 
 /** @brief
- * Socket option to save DTLS connection.
+ * Write-only socket option to save DTLS connection.
  *
  * Serializes the socket and compresses it. After the socket option is successfully called, you must
  * call @c NRF_SO_SEC_DTLS_CONN_LOAD before continuing to communicate on the socket.
@@ -256,14 +256,14 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_CONN_SAVE 17
 
 /** @brief
- * Socket option to load DTLS connection.
+ * Write-only socket option to load DTLS connection.
  *
  * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
  */
 #define NRF_SO_SEC_DTLS_CONN_LOAD 18
 
 /** @brief
- * Socket option to get end status of last completed TLS/DTLS handshake procedure.
+ * Read-only socket option to get end status of last completed TLS/DTLS handshake procedure.
  * See @ref nrf_so_sec_handshake_statuses for allowed values.
  *
  * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
@@ -277,9 +277,9 @@ extern "C" {
  * @ingroup nrf_socket
  * @{
  */
-/** Enable reuse of server addresses */
+/** Enable reuse of server addresses (write-only). */
 #define NRF_SO_REUSEADDR 2
-/** Read and clear socket error status (read only). */
+/** Read and clear socket error status (read-only). */
 #define NRF_SO_ERROR 4
 /** Receive timeout. */
 #define NRF_SO_RCVTIMEO 20
@@ -297,15 +297,17 @@ extern "C" {
 #define NRF_SO_EXCEPTIONAL_DATA 33
 /** Keep socket open when its PDN connection is lost. */
 #define NRF_SO_KEEPOPEN 34
-/** Bind a socket to a Packet Data Network ID. */
+/** Bind a socket to a Packet Data Network ID (write-only). */
 #define NRF_SO_BINDTOPDN 40
 /** Configurable TCP server session timeout in minutes.
  *  Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
  */
 #define NRF_SO_TCP_SRV_SESSTIMEO 55
-/** Set a callback for poll events */
+/** Set a callback for poll events (write-only).
+ *  See @ref nrf_modem_pollcb_t for the callback function type.
+ */
 #define NRF_SO_POLLCB 60
-/** Release Assistance Indication (RAI).
+/** Release Assistance Indication (RAI) (write-only).
  *  See @ref nrf_socket_options_rai for allowed values.
  */
 #define NRF_SO_RAI 61
@@ -1122,17 +1124,13 @@ int nrf_getifaddrs(struct nrf_ifaddrs **ifa);
 void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
 
 /**
- * @brief Set a secondary DNS address.
+ * @brief Set a fallback DNS address.
  *
  * @details
- * The secondary DNS address is only used in case the primary DNS address is unreachable,
- * or if no DNS address is provided by the operator. The secondary DNS address does not
- * override the primary DNS address.
+ * The fallback DNS address is used only when the network-provided DNS addresses are
+ * missing or unreachable. The fallback DNS does not override the network-provided DNS.
  *
- * @note
- * It is not possible to unset a secondary DNS address set using this function.
- *
- * @param family    Address family.
+ * @param family    Address family, either NRF_AF_INET or NRF_AF_INET6.
  * @param in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
  *                  nrf_in6_addr structure, respectively.
  * @param in_size   Size of the structure pointed to by in_addr.
@@ -1142,8 +1140,8 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  *
  * The function may return -1 and set the following errno:
  * - [NRF_EPERM] The Modem library is not initialized.
- * - [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
  * - [NRF_EINVAL] Invalid parameters.
+ * - [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
  * - [NRF_ENOBUFS] Not enough shared memory for this request.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
