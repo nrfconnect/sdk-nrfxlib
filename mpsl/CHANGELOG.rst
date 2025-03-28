@@ -7,46 +7,23 @@ Changelog
    :local:
    :depth: 2
 
-
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Changes
-=======
-
-* Documented that the :c:func:`mpsl_clock_task_trigger_on_rtc_start_set` function is supported only on the nRF52 and nRF53 Series.
-* Added support for the nRF21540 GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-19928)
-* The activation of the nRF2220 Front-End Module CS pin now requires a call to the :c:func:`mpsl_fem_enable` function. (KRKNWK-19588)
-* Applied Errata 22 and Errata 24 to the Front-End Modules on the nRF54L15 SoC. (KRKNWK-19588)
-
-Added
-=====
-
-* Added the functions :c:func:`mpsl_clock_ctrl_source_register` and :c:func:`mpsl_clock_ctrl_source_unregister` to provide :ref:`Experimental <nrf:software_maturity>` support for running MPSL with an external clock driver.
-  The APIs are only supported on nR54H Series SoCs.
-  Using these functions makes it possible to use an external clock driver, such as one provided by the |NCS|.
-  This fixes an issue on nRF54H Series where MPSL would assert or get suboptimal performance when other application components attempt to use a clock. (DRGN-21843)
-* On the nRF54L15 SoC, Errata 39 is now applied.
-* Added the defines :c:macro:`MPSL_TIMER0` to clarify which timer is being used by MPSL and the timeslot implementation. (DRGN-24434)
-* New API provided for integration with an external power management system.
-  The API is only support on nRF54H Series SoCs.
-  This API makes it possible to use an external power management system, such as the one provided by the |NCS|, to request low latency mode and to request wakeup in time for a future event.
-  Added the functions :c:func:`mpsl_pm_init` and :c:func:`mpsl_pm_uninit` to enable and disable integration.
-  Added the functions :c:func:`mpsl_pm_params_get`, :c:func:`mpsl_pm_low_latency_requested`, :c:func:`mpsl_pm_low_latency_state_set` and :c:func:`mpsl_pm_low_latency_state_get` to register wakeup time and request low latency. (DRGN-17150)
-* Added the functions :c:func:`mpsl_fem_nrf2220_temperature_changed`, :c:func:`mpsl_fem_nrf2220_temperature_changed_update_request`, and :c:func:`mpsl_fem_nrf2220_temperature_changed_update_now` to compensate the temperature of the nRF2220 Front-End Module. (KRKNWK-19862)
-
-Removed
-=======
-
-* Removed the deprecated function :c:func:`mpsl_fem_prepare_powerdown`. (KRKNWK-16691)
+nRF Connect SDK v2.9.2
+**********************
 
 Bug fixes
 =========
 
 * Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run. In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
 
+nRF Connect SDK v2.9.1
+**********************
+
+Added
+=====
+
+* On the nRF54L15 SoC, Errata 39 is now applied.
 
 nRF Connect SDK v2.9.0
 **********************

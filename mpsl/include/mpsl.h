@@ -52,23 +52,12 @@ extern "C" {
 #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
 #define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
 #define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
-#elif defined(NRF54H_SERIES) || defined(GRTC_PRESENT)
+#elif defined(NRF54H) || defined(GRTC_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
 #define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
 #define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
 #else
 #error Unknown NRF series.
-#endif
-
-/* Defines which timer is being used by the MPSL implementation */
-#if defined(NRF52_SERIES)
-	#define MPSL_TIMER0 NRF_TIMER0
-#elif defined(NRF53_SERIES)
-	#define MPSL_TIMER0 NRF_TIMER0_NS
-#elif defined(NRF54L_SERIES)
-	#define MPSL_TIMER0 NRF_TIMER10
-#else
-	#define MPSL_TIMER0 NRF_TIMER020
 #endif
 
 /** @brief    Function prototype for the assert handler.
@@ -86,7 +75,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
                                  If NULL the LF clock will be configured as an RC source with rc_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_CTIV, .rc_temp_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_TEMP_CTIV, and .accuracy_ppm = @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.
-                                 The parameter is not used when external clock driver is registered @ref mpsl_clock_ctrl_source_register().
  * @param[in]  low_prio_irq      IRQ to pend when low priority processing should be executed. The application
  *                               shall call @ref mpsl_low_priority_process after this IRQ has occurred.
  * @param[in]  p_assert_handler  Pointer to MPSL assert handler.
@@ -95,10 +83,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *       never modify the SEVONPEND flag in the SCR register,
  *       while this function is executing.
  *       Doing so might lead to a deadlock.
- *
- * @note For nRF54h SoC series the function always waits for LFCLK to be ready. The LFCLK is handled by system controller
- *       so response must arrive from other domain. That shall be done in non-blocking context. To do not change
- *       requirements for other MPSL APIs delayed wait for LFCLK is not allowed for the nRF54h SoC series.
  *
  * @note If only Front End Module functionality is needed, @ref mpsl_fem_init can be called instead.
  *
@@ -144,17 +128,12 @@ void MPSL_IRQ_RADIO_Handler(void);
 
 /** @brief      RTC0 interrupt handler
  *
- * For nRF52 and nRF53 series the RTC timer is NRF_RTC0.
- * For nRF54 series devices, the RTC timer corresponds to NRF_GRTC.
- *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0
  */
 void MPSL_IRQ_RTC0_Handler(void);
 
 /** @brief      TIMER0 interrupt handler.
- *
- * The timer being used is defined by @ref MPSL_TIMER0.
  *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0
