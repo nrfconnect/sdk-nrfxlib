@@ -138,6 +138,22 @@ bool nrf_802154_delayed_trx_receive(uint64_t rx_time,
 bool nrf_802154_delayed_trx_receive_cancel(uint32_t id);
 
 /**
+ * @brief Cancels a scheduled reception scheduled by a call to @ref nrf_802154_delayed_trx_receive.
+ *
+ * If the receive window is currently ongoing, it will not be affected and a timeout event will
+ * be notified at scheduled time.
+ *
+ * @param[in]  id  Identifier of the delayed reception window to be cancelled. If the provided
+ *                 value does not refer to any scheduled or active receive window, the function
+ *                 returns true.
+ *
+ * @retval true     Successfully cancelled a scheduled transmission or no window
+ *                  with given ID is scheduled.
+ * @retval false    The receive window is currently ongoing.
+ */
+bool nrf_802154_delayed_trx_receive_scheduled_cancel(uint32_t id);
+
+/**
  * @brief Aborts an ongoing delayed reception procedure.
  *
  * @param[in]  term_lvl  Termination level set by the request to abort the ongoing operation.

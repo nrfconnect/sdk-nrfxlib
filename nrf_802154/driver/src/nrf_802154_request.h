@@ -255,6 +255,19 @@ bool nrf_802154_request_receive_at(uint64_t rx_time,
  */
 bool nrf_802154_request_receive_at_cancel(uint32_t id);
 
+/**
+ * @brief Requests a call to @ref nrf_802154_request_receive_at_scheduled_cancel.
+ *
+ * @param[in]  id  Identifier of the delayed reception window to be cancelled. If the provided
+ *                 value does not refer to any scheduled or active receive window, the function
+ *                 returns true.
+ *
+ * @retval  true    The delayed reception was scheduled and successfully cancelled
+ *                  or no receive window with given ID was found.
+ * @retval  false   No delayed reception was scheduled.
+ */
+bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id);
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 /**

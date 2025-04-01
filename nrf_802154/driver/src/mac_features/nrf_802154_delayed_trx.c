@@ -919,6 +919,36 @@ bool nrf_802154_delayed_trx_receive_cancel(uint32_t id)
     return stopped;
 }
 
+bool nrf_802154_delayed_trx_receive_scheduled_cancel(uint32_t id)
+{
+    dly_op_data_t * p_dly_op_data = dly_rx_data_by_id_search(id);
+
+    if (p_dly_op_data == NULL)
+    {
+        // Delayed receive window with provided ID could not be found.
+        return true;
+    }
+
+    bool result = nrf_802154_rsch_delayed_timeslot_cancel(id, false);
+
+    if (!result)
+    {
+        result =
+            nrf_802154_sl_atomic_load_u8((uint8_t *)&p_dly_op_data->state) ==
+            DELAYED_TRX_OP_STATE_STOPPED;
+    }
+
+    if (result)
+    {
+        p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
+
+        nrf_802154_sl_atomic_store_u8((uint8_t *)&p_dly_op_data->state,
+                                      DELAYED_TRX_OP_STATE_STOPPED);
+    }
+
+    return result;
+}
+
 bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);

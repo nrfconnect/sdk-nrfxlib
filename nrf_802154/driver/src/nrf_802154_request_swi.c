@@ -93,6 +93,7 @@ typedef enum
     REQ_TYPE_TRANSMIT_AT_CANCEL,
     REQ_TYPE_RECEIVE_AT,
     REQ_TYPE_RECEIVE_AT_CANCEL,
+    REQ_TYPE_RECEIVE_AT_SCHEDULED_CANCEL,
     REQ_TYPE_CSMA_CA_START,
 } nrf_802154_req_type_t;
 
@@ -655,6 +656,17 @@ static void swi_receive_at_cancel(uint32_t id, bool * p_result)
     req_exit();
 }
 
+static void swi_receive_at_scheduled_cancel(uint32_t id, bool * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                            = REQ_TYPE_RECEIVE_AT_SCHEDULED_CANCEL;
+    p_slot->data.receive_at_cancel.id       = id;
+    p_slot->data.receive_at_cancel.p_result = p_result;
+
+    req_exit();
+}
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 static void swi_csma_ca_start(uint8_t                                      * p_data,
@@ -813,6 +825,13 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id)
     REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_cancel, swi_receive_at_cancel, id);
 }
 
+bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
+{
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_scheduled_cancel,
+                     swi_receive_at_scheduled_cancel,
+                     id);
+}
+
 bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
                                       const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
@@ -940,6 +959,12 @@ static void irq_handler_req_event(void)
             case REQ_TYPE_RECEIVE_AT_CANCEL:
                 *(p_slot->data.receive_at_cancel.p_result) =
                     nrf_802154_delayed_trx_receive_cancel(p_slot->data.receive_at_cancel.id);
+                break;
+
+            case REQ_TYPE_RECEIVE_AT_SCHEDULED_CANCEL:
+                *(p_slot->data.receive_at_cancel.p_result) =
+                    nrf_802154_delayed_trx_receive_scheduled_cancel(
+                        p_slot->data.receive_at_cancel.id);
                 break;
 
             case REQ_TYPE_CSMA_CA_START:

@@ -17,6 +17,7 @@ Added
 =====
 
 * For the nRF54L Series, added the :c:macro:`NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US` configuration macro that allows to extend the time between the CCAIDLE event and the trigger of the TXEN task. (KRKNWK-19819)
+* Added the :c:func:`nrf_802154_delayed_trx_receive_scheduled_cancel` function, enabling cancellation of a scheduled reception window without impacting reception windows already in progress. (KRKNWK-19969)
 
 Bug fixes
 =========

@@ -586,6 +586,8 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_CANCEL:
         // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL:
+        // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA:
             // fall through
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
