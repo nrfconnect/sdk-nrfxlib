@@ -193,6 +193,11 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id)
     REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_cancel, id);
 }
 
+bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_scheduled_cancel, id);
+}
+
 #endif
 
 bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,

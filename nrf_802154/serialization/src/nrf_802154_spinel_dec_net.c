@@ -191,6 +191,38 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at_cancel(
         result);
 }
 
+/**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at_scheduled_cancel(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    uint32_t       id;
+    spinel_ssize_t siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL,
+                                 &id);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    bool result = nrf_802154_receive_at_scheduled_cancel(id);
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL,
+        SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL_RET,
+        result);
+}
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_channel_get(const void * p_property_data,
@@ -1940,6 +1972,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_CANCEL:
             return spinel_decode_prop_nrf_802154_receive_at_cancel(p_property_data,
                                                                    property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL:
+            return spinel_decode_prop_nrf_802154_receive_at_scheduled_cancel(p_property_data,
+                                                                             property_data_len);
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_GET:

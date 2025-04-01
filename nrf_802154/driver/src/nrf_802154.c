@@ -561,6 +561,18 @@ bool nrf_802154_receive_at_cancel(uint32_t id)
     return result;
 }
 
+bool nrf_802154_receive_at_scheduled_cancel(uint32_t id)
+{
+    bool result;
+
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    result = nrf_802154_request_receive_at_scheduled_cancel(id);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+    return result;
+}
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 bool nrf_802154_energy_detection(uint32_t time_us)
