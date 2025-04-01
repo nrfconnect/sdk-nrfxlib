@@ -25,3 +25,4 @@ Refer to their respective documentation for more information.
    openthread/README
    nrf_rpc/README
    softdevice_controller/README
+   softperipheral/README
