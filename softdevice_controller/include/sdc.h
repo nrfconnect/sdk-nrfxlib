@@ -453,14 +453,14 @@ typedef struct
 /** @brief Buffer configuration. */
 typedef struct
 {
-    uint8_t tx_packet_size;   /**< Link Layer TX packet size. Valid range: 27-251.
-                                   Default: @ref SDC_DEFAULT_TX_PACKET_SIZE. */
-    uint8_t rx_packet_size;   /**< Link Layer RX packet size. Valid range: 27-251.
-                                   Default: @ref SDC_DEFAULT_RX_PACKET_SIZE. */
-    uint8_t tx_packet_count;  /**< Link Layer TX packet count per link. Minimum of 1.
-                                   Default: @ref SDC_DEFAULT_TX_PACKET_COUNT. */
-    uint8_t rx_packet_count;  /**< Link Layer RX packet count per link. Minimum of 1.
-                                   Default: @ref SDC_DEFAULT_RX_PACKET_COUNT. */
+    uint16_t tx_packet_size; /**< Link Layer TX packet size. Valid range: 27-251.
+                                  Default: @ref SDC_DEFAULT_TX_PACKET_SIZE. */
+    uint16_t rx_packet_size; /**< Link Layer RX packet size. Valid range: 27-251.
+                                  Default: @ref SDC_DEFAULT_RX_PACKET_SIZE. */
+    uint8_t tx_packet_count; /**< Link Layer TX packet count per link. Minimum of 1.
+                                  Default: @ref SDC_DEFAULT_TX_PACKET_COUNT. */
+    uint8_t rx_packet_count; /**< Link Layer RX packet count per link. Minimum of 1.
+                                  Default: @ref SDC_DEFAULT_RX_PACKET_COUNT. */
 } sdc_cfg_buffer_cfg_t;
 
 
