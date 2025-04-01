@@ -7,6 +7,8 @@
 
 .. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
 
+.. _`sdk-nrfxlib`: https://github.com/nrfconnect/sdk-nrfxlib
+
 .. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
 
 .. _`zcbor`: https://github.com/NordicSemiconductor/zcbor
