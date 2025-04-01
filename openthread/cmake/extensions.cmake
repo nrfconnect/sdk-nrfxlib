@@ -7,7 +7,7 @@
 # The Build the path of the library taking in nrf_security backend type,
 # OpenThread version and feature set
 function(openthread_calculate_lib_path ot_version lib_path)
-  set(OPENTHREAD_LIB_BASE_DIR "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread")
+  set(lib_base_dir "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/lib")
 
   if(CONFIG_OPENTHREAD_NORDIC_LIBRARY_MASTER)
     set(ot_feature_set "master")
@@ -15,23 +15,36 @@ function(openthread_calculate_lib_path ot_version lib_path)
     set(ot_feature_set "ftd")
   elseif(CONFIG_OPENTHREAD_NORDIC_LIBRARY_MTD)
     set(ot_feature_set "mtd")
-  elseif(CONFIG_OPENTHREAD_NORDIC_LIBRARY_RCP)
-    set(ot_feature_set "rcp")
   else()
     set(ot_feature_set "custom")
   endif()
 
-  nrfxlib_calculate_lib_path(nrfxlib_path BASE_DIR ${OPENTHREAD_LIB_BASE_DIR} SOFT_FLOAT_FALLBACK SOC_MODE)
-
-  if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
-    set(${lib_path}
-      "${nrfxlib_path}/${ot_version}/rcp"
-      PARENT_SCOPE)
-  else()
-    set(${lib_path}
-      "${nrfxlib_path}/${ot_version}/${ot_feature_set}/${nrf_security_backend}"
-      PARENT_SCOPE)
+  # Override feature set if RCP is enabled
+  if(CONFIG_OPENTHREAD_NORDIC_LIBRARY_RCP OR CONFIG_OPENTHREAD_COPROCESSOR_RCP)
+    set(ot_feature_set "rcp")
   endif()
+
+  # Set common soc dir for nRF54L family
+  if(CONFIG_SOC_SERIES_NRF54LX)
+    set(soc_dir "nrf54lx")
+  else()
+    string(REGEX REPLACE "_[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]$" "" soc_dir ${CONFIG_SOC})
+  endif()
+
+  if(CONFIG_FPU)
+    if(CONFIG_FP_HARDABI)
+      set(float_dir hard-float)
+    elseif(CONFIG_FP_SOFTABI)
+      set(float_dir softfp-float)
+    else()
+      assert(0 "Unreachable code")
+    endif()
+  else()
+    set(float_dir soft-float)
+  endif()
+
+  set(${lib_path} "${lib_base_dir}/${soc_dir}/${float_dir}/${ot_version}/${ot_feature_set}"
+      PARENT_SCOPE)
 
 endfunction()
 
