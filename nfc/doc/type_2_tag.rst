@@ -244,7 +244,7 @@ Data
 ====
 
 Application data is organized in TLV blocks.
-The data area can contain one or more TVL blocks, up to a maximum data size of 992 bytes.
+The data area can contain one or more TLV blocks, up to a maximum data size of 992 bytes.
 
 A TLV block contains the following fields:
 
