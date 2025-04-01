@@ -54,7 +54,7 @@ typedef void (* nfc_lib_cb_resolve_t)(const void * p_ctx, const uint8_t * p_data
  *
  * This function sets up clock managing interface, interrupts, callback
  * and other platform-specific components that are required for correct operation of
- * the NFC library. The function should save the nfc_lib_cb_call function pointer and set
+ * the NFC library. The function should save the nfc_lib_cb_resolve function pointer and set
  * the interrupt priority for NFC.
  *
  * @param[in]      nfc_lib_cb_resolve Pointer to the callback resolution function.
@@ -77,9 +77,9 @@ nrfx_err_t nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t *
  *
  * @retval NRFX_SUCCESS              The operation was successful.
  * @retval NRFX_ERROR_INVALID_LENGTH Length of the NFCID buffer is different than
- *                                   NRFX_NFCT_NFCID1_SINGLE_SIZE,
- *                                   NRFX_NFCT_NFCID1_DOUBLE_SIZE, or
- *                                   NRFX_NFCT_NFCID1_TRIPLE_SIZE.
+ *                                   @ref NRFX_NFCT_NFCID1_SINGLE_SIZE,
+ *                                   @ref NRFX_NFCT_NFCID1_DOUBLE_SIZE, or
+ *                                   @ref NRFX_NFCT_NFCID1_TRIPLE_SIZE.
  */
 nrfx_err_t nfc_platform_nfcid1_default_bytes_get(uint8_t * const p_nfcid1_buff,
                                                  uint32_t        nfcid1_buff_len);
@@ -131,7 +131,10 @@ void nfc_platform_cb_request(const void    * p_ctx,
  * The buffer size varies for different NFC tag types:
  *
  *   - NFC Type 2 Tag: 16 bytes @ref NFC_PLATFORM_T2T_BUFFER_SIZE
- *   - NFC Type 4 Tag: 259 bytes @ref NFC_PLATFORM_T4T_BUFFER_SIZE
+ *   - NFC Type 4 Tag: 2*259 bytes @ref NFC_PLATFORM_T4T_BUFFER_SIZE
+ *
+ * The allocated buffer for NFC Type 4 Tag has separate areas for TX (transmit) and RX (receive) data.
+ * Therefore, the required size is doubled.
  *
  * @param[in] size Size of the requested buffer in bytes.
  *
