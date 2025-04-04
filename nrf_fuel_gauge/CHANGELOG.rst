@@ -23,7 +23,7 @@ Changes
 Added
 =====
 
-* Support for primary cell (non-recheargable) batteries.
+* Support for primary cell (non-rechargeable) batteries.
 * Battery models for Alkaline AA (1S and 2S configuration), Alkaline AAA (1S and 2S configuration), Alkaline coin cell LR44, and Lithium-manganese dioxide coin cell CR2032 batteries.
 * A new :c:func:`nrf_fuel_gauge_ext_state_update` function to inform the library about external state changes.
   Such changes includes charger state, vbus connection status, and current measurement correction.

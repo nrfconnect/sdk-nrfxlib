@@ -17,13 +17,17 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Add support for LMS verify and HSS verify (PQC signature algorithms). Based on NIST SP 800-208. With support for SHA256 and SHAKE256 hashing.
-* Add AES key wrap algorithms with and without padding based on NIST standard Methods for Key Wrapping.
-* Add support for XChaCha20 and XChaCha20-Poly1305. Based on XChaCha.
-* Add support for secp256k1 (Koblitz curves). Based on NIST SP 800-56A Rev. 3 and FIPS 186-5.
-* Add AES key wrap algorithms with and without padding based on NIST standard Methods for Key Wrapping.
-* Add experimental support for WPA3-SAE/WPA3-SAE-H2E based on IEEE standard P802.11-REVme/D7.0, Part 11.
-* Add experimental support for Ascon-Hash256 (fixed size, XOF, CXOF) and Ascon-AEAD128. Based on NIST SP 800-232.
+* Added support for LMS verify and HSS verify (PQC signature algorithms).
+  This is based on NIST SP 800-208 with support for SHA256 and SHAKE256 hashing.
+* Added AES key wrap algorithms with and without padding based on NIST standard Methods for Key Wrapping.
+* Added support for XChaCha20 and XChaCha20-Poly1305.
+  This is based on XChaCha.
+* Added support for secp256k1 (Koblitz curves).
+  This is based on NIST SP 800-56A Rev. 3 and FIPS 186-5.
+* Added AES key wrap algorithms with and without padding based on NIST standard Methods for Key Wrapping.
+* Added experimental support for WPA3-SAE/WPA3-SAE-H2E based on IEEE standard P802.11-REVme/D7.0, Part 11.
+* Added experimental support for Ascon-Hash256 (fixed size, XOF, CXOF) and Ascon-AEAD128. 
+  This is based on NIST SP 800-232.
 
 Library built against Mbed TLS version 3.6.2.
 

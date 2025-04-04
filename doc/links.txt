@@ -70,13 +70,11 @@
 
 .. _`Zephyr`: https://www.zephyrproject.org
 
-.. _`LC3 API documentation file`: https://developer.nordicsemi.com/nRF_Connect_SDK/nrf5340_audio/lc3_api/T2_LC3_API_Documentation_1.5.pdf
 .. _`Bluetooth® LE Audio specifications`: https://www.bluetooth.com/learn-about-bluetooth/recent-enhancements/le-audio/le-audio-specifications/
 
 .. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
 
 .. _`Mbed TLS backend`: https://tls.mbed.org/
-.. _`article on reducing Mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
 .. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
