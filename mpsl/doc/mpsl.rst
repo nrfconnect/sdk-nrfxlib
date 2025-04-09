@@ -127,6 +127,9 @@ The following interrupts do not have real-time requirements:
    The interrupt is selected using the :kconfig:option:`CONFIG_MPSL_LOW_PRIO_IRQN` Kconfig option.
    This Kconfig option can be used to resolve conflicts with other software modules and should be left to the default value if possible.
 
+The reserved interrupt handlers for the ``RADIO``, ``GRTC``, ``RTC``, and ``TIMER`` peripheral instances must not be reconfigured while MPSL is enabled.
+In the |NCS|, it is possible to reconfigure these interrupt handlers when MPSL is disabled using the :kconfig:option:`CONFIG_MPSL_DYNAMIC_INTERRUPTS` Kconfig option.
+
 .. _mpsl_lib_scheduling:
 
 Scheduling
