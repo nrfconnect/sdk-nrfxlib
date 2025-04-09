@@ -12,6 +12,9 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+nRF Connect SDK v3.0.0
+**********************
+
 Added
 =====
 
@@ -25,6 +28,7 @@ Added
 Changes
 =======
 
+* The Channel Sounding feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-24060)
 * The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
   This behavior was changed to accommodate ES-27170.
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
