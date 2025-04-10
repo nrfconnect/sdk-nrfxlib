@@ -184,7 +184,7 @@ static dly_op_data_t * dly_rx_data_by_id_search(rsch_dly_ts_id_t id)
         if (m_dly_rx_data[i].id == id)
         {
             // Slot with a matching identifier found
-            if ((p_dly_op_data == NULL))
+            if (p_dly_op_data == NULL)
             {
                 // It's the first matching slot found
                 p_dly_op_data = &m_dly_rx_data[i];
