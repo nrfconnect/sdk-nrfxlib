@@ -1,0 +1,65 @@
+@startuml
+
+!define NordicSky #6ad1e3
+!define NordicBlue #00A9CE
+!define NordicLake #0077C8
+!define NordicBlueslate #0033A0
+!define NordicLightGrey #D9E1E2
+
+<style>
+timingDiagram {
+    LineColor black
+}
+</style>
+
+scale 5 as 30 pixels
+
+concise "RADIO" as RADIO
+binary "PDN" as PDN
+binary "RX_EN" as RX_EN
+binary "Deactivation event" as DE
+
+
+RADIO is Disabled
+PDN is 0
+RX_EN is 0
+
+@40 as :RADIO_READY
+@:RADIO_READY-40 as :RADIO_RXRU_START
+@:RADIO_RXRU_START-10 as :PDN_SET_HIGH
+@:RADIO_READY-13 as :RX_EN_HIGH
+@:RADIO_READY+40 as :RADIO_RXEND
+
+@:PDN_SET_HIGH-10
+PDN is 0
+
+@:PDN_SET_HIGH
+PDN is 1
+
+@:RADIO_RXRU_START
+RADIO is RxRu
+
+@:RX_EN_HIGH
+RX_EN is 1
+
+@:RADIO_READY
+RADIO is Rx
+
+@:RADIO_RXEND
+DE is 1
+RX_EN is 0
+RADIO is Disabled
+
+@:RADIO_RXEND+5 as :PDN_SET_LOW
+PDN is 0
+
+@:RADIO_RXEND+15
+
+@:PDN_SET_HIGH <-> @:RX_EN_HIGH : >= 18 us
+@:RX_EN_HIGH <-> @:RADIO_READY : 13 us
+
+highlight :PDN_SET_HIGH to :RX_EN_HIGH NordicSky;line:DimGrey : FEM ramp-up
+highlight :RX_EN_HIGH to :RADIO_READY NordicBlue;line:DimGrey : LNA ramp-up
+highlight :RADIO_RXEND to :PDN_SET_LOW NordicLake;line:DimGrey : SW Latency
+
+@enduml
