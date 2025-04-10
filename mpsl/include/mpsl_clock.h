@@ -149,6 +149,8 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  *       See also @ref mpsl_clock_ctrl_source_register().
  *
  * @param[in] hfclk_started_callback Function to be called when the high frequency clock is started.
+ *                                   On nRF54L series SoCs the callback is called when the clock
+ *                                   has started and is stable (EVENT_XOTUNED has occurred).
  *                                   The callback will be executed in the context as
  *                                   @ref mpsl_low_priority_process.
  * @retval 0  Success
