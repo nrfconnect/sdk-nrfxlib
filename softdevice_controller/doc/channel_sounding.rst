@@ -11,31 +11,32 @@ LE Channel Sounding (CS) is a feature defined in the `Bluetooth Core Specificati
 CS allows two devices in a connection to perform measurements of their communication channel, both the round trip time (RTT), and the phase and magnitude (as in-phase and quadrature (IQ) values) can be measured.
 The RTT and IQ values can then be sent to an application to calculate the distance between devices.
 
+Tested configurations
+*********************
+
+The CS feature is highly configurable and it is not feasible to test all possible configurations and role combinations.
+Since there is currently no standardized profile for CS, testing has been focused on covering the strictest possible parameters.
+The :ref:`cs_supported_capabilities` sections document the CS timings supported by the |controller|.
+The shortest supported timings and the mandatory timings, as specified in the `Bluetooth Core Specification`_, have been tested extensively.
+
+In CS, the |BLE| parameters selected have a considerable impact on the performance.
+The connection interval is relevant, as it affects CS scheduling and the maximum duration of CS subevents that do not interfere with the ACL.
+In the |controller|, CS has been tested with the following connection intervals:
+
+ * 7.5 ms
+ * 10 ms
+ * 20 ms
+ * 50 ms
+
+In all tests, the CS subevent length has been set to less than the ACL connection interval.
+
+
 Support status
 **************
 
-Channel Sounding currently has :ref:`Experimental <nrf:software_maturity>` support in the |controller| for the nRF54L15 SoC.
+Channel Sounding is currently supported only on the nRF54L15 SoC.
 CS can be enabled by building with the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option enabled.
-
-Command support
----------------
-
-The following LE CS commands are supported:
-
- * LE CS Read Local Supported Capabilities
- * LE CS Read Remote Supported Capabilities
- * LE CS Write Cached Remote Supported Capabilities
- * LE CS Security Enable
- * LE CS Set Default Settings
- * LE CS Read Remote FAE Table
- * LE CS Write Cached Remote FAE Table
- * LE CS Create Config
- * LE CS Remove Config
- * LE CS Set Channel Classification
- * LE CS Set Procedure Parameters
- * LE CS Procedure Enable
- * LE CS Test
- * LE CS Test End
+When enabling CS in the |controller|, all CS-related commands are supported.
 
 .. _cs_supported_capabilities:
 
@@ -44,23 +45,98 @@ Supported capabilities
 
 The |controller| currently has the following supported capabilities:
 
- * One CS Configuration per ACL connection.
- * Indefinite Procedure Repeats.
- * Four Antennas and Four Antenna Paths.
- * CS Reflector and CS Initiator Roles.
- * Step modes 1, 2, and 3.
- * 150 ns time-of-flight precision
- * RTT with AA-only and 32, 64, 96, and 128 bits random payloads
- * 1M and 2M CS Sync Phy
- * No Transmitter Frequency Actuation Error
+.. list-table:: CS feature support for the |controller|
+   :widths: 20 20 20
+   :header-rows: 1
 
-The supported timing values for the |controller| are as follows:
+   * - Feature
+     - Supported
+     - Not Supported
+   * - CS Initiator
+     - X
+     -
+   * - CS Reflector
+     - X
+     -
+   * - Step Mode 0
+     - X
+     -
+   * - Step Mode 1
+     - X
+     -
+   * - Step Mode 2
+     - X
+     -
+   * - Step Mode 3
+     - X
+     -
+   * - Multiple Antenna paths
+     - Yes, up to 4 antenna paths
+     -
+   * - Multiple Antenna elements
+     - Yes, up to 4 antenna elements
+     -
+   * - Indefinite Procedure Repeats
+     - X
+     -
+   * - RTT with AA-only
+     - X
+     -
+   * - RTT with Sounding Sequence
+     -
+     - X
+   * - RTT with Random Payload
+     - Yes, 32, 64, 96, and 128 bits payloads
+     -
+   * - 150 ns time-of-flight precision
+     - X
+     -
+   * - 10 ns time-of-flight precision
+     -
+     - X
+   * - Channel Sounding Tone Quality Indicator
+     - X
+     -
+   * - Channel Selection Algorithm #3C
+     -
+     - X
+   * - Normalized Attack Detection Metric
+     -
+     - X
+   * - 1M CS Sync PHY
+     - X
+     -
+   * - 2M CS Sync PHY
+     - X
+     -
+   * - 2M 2BT CS Sync PHY
+     -
+     - X
+   * - Zero Transmitter Frequency Actuation Error
+     - X
+     -
+   * - Multiple Configurations per ACL
+     -
+     - X
 
- * A T_IP1 of 60 µs or greater.
- * A T_IP2 of 30 µs or greater.
- * A T_FCS of 60 µs or greater.
- * A T_PM of 10 µs or greater.
- * A T_SW of 10 µs.
+In addition to the supported capabilities listed above, the |controller| supports the following step timings:
+
+.. list-table:: Supported step timing values for the |controller|
+   :widths: 30 30
+   :header-rows: 1
+
+   * - Timing Parameter
+     - Supported Times
+   * - T_IP1
+     - 60 µs or greater.
+   * - T_IP2
+     - 20 µs or greater.
+   * - T_FCS
+     - 60 µs or greater.
+   * - T_PM
+     - 10 µs or greater.
+   * - T_SW
+     - 10 µs.
 
 .. note::
    The T_SW time reported is based on the implementation of antenna switching in the |NCS|, as described in :ref:`cs_multiple_antenna_support`.

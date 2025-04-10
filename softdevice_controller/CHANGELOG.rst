@@ -9,8 +9,8 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v3.0.0
+**********************
 
 Added
 =====
@@ -90,6 +90,8 @@ Bug fixes
     * A feature requiring long control packets is enabled, for example, CIS, Sync Transfer, or Channel Sounding.
     * A short event length is used.
     * The data length is not updated
+* Fixed an issue where the central would disconnect without sending a ``LL_TERMINATE_IND`` when the user sent the Disconnect HCI command.
+  This issue occurred when the central was blocked by another higher-priority role for extended periods. (DRGN-24784)
 
 nRF Connect SDK v2.9.0
 **********************
