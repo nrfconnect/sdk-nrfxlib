@@ -118,20 +118,13 @@ nrfx_err_t nrfx_qspi2_init(const nrfx_qspi2_t * p_qspi, const nrfx_qspi2_cfg_t *
     p_cb->prepared_pending     = false;
 
     //Formatting default values
-    //Formatting default values
     p_cb->conf.format.pixels   = 0;
     p_cb->conf.format.dfs      = 7;
     p_cb->conf.ctrlr0.dfs      = 7;
-    p_cb->conf.format.bpp      = 0;
+    p_cb->conf.format.bpp      = 8;
     p_cb->conf.format.padding  = 0;
     p_cb->conf.format.bitorder = 0;
     p_cb->conf.format.cilen    = 0;
-
-    nrf_qspi2_format_dfs(p_qspi->p_reg, (uint8_t)(p_cb->conf.format.dfs - 1U));
-    nrf_qspi2_core_dr_x(p_qspi->p_reg, (uint32_t)(32 - p_cb->conf.format.dfs), 22); //Hijacking DR[22] as red_dfs
-    nrf_qspi2_format_bpp(p_qspi->p_reg, (uint8_t)(p_cb->conf.format.bpp));
-    nrf_qspi2_format_bitorder(p_qspi->p_reg, (int)p_cb->conf.format.bitorder,
-                              (int)p_cb->conf.format.bitorder);
 
     // Set all pins to unused.
     for (int i = 0; i < 6; i++)
@@ -241,6 +234,12 @@ nrfx_err_t nrfx_qspi2_init(const nrfx_qspi2_t * p_qspi, const nrfx_qspi2_cfg_t *
         }
     }
 
+    nrf_qspi2_format_dfs(p_qspi->p_reg, (uint8_t)(p_cb->conf.format.dfs));
+    nrf_qspi2_core_dr_x(p_qspi->p_reg, (uint32_t)(32 - p_cb->conf.format.padding), 22); //Hijacking DR[22] as red_dfs
+    nrf_qspi2_format_bpp(p_qspi->p_reg, (uint8_t)(p_cb->conf.format.bpp));
+    nrf_qspi2_format_bitorder(p_qspi->p_reg, (int)p_cb->conf.format.bitorder,
+                              (int)p_cb->conf.format.bitorder);
+
     NRFX_IRQ_PRIORITY_SET(SP_VPR_IRQn, 1);
     NRFX_IRQ_ENABLE(SP_VPR_IRQn);
 
@@ -298,6 +297,19 @@ void nrfx_qspi2_uninit(const nrfx_qspi2_t * p_qspi)
 
     // Stop VPR.
     nrf_vpr_cpurun_set(NRF_VPR, false);
+#if defined(NRF54H20_XXAA)
+    // Reset VPR.
+    nrf_vpr_debugif_dmcontrol_mask_set(NRF_VPR,
+                                       (VPR_DEBUGIF_DMCONTROL_NDMRESET_Active
+                                        << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
+                                        VPR_DEBUGIF_DMCONTROL_DMACTIVE_Enabled
+                                        << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
+    nrf_vpr_debugif_dmcontrol_mask_set(NRF_VPR,
+                                       (VPR_DEBUGIF_DMCONTROL_NDMRESET_Inactive
+                                        << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
+                                        VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled
+                                        << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
+#endif
 
     p_cb->state = NRFX_DRV_STATE_UNINITIALIZED;
 }
@@ -429,6 +441,10 @@ nrfx_err_t nrfx_qspi2_dev_data_fmt_set(const nrfx_qspi2_t *    p_qspi,
                                        nrfx_qspi2_data_fmt_t * p_data_fmt)
 {
     if (p_data_fmt->addr_bit_order != p_data_fmt->cmd_bit_order)
+    {
+        return NRFX_ERROR_INVALID_PARAM;
+    }
+    if (p_data_fmt->data_bit_reorder_unit != p_data_fmt->data_swap_unit)
     {
         return NRFX_ERROR_INVALID_PARAM;
     }
@@ -630,7 +646,7 @@ nrfx_err_t nrfx_qspi2_xfer(const nrfx_qspi2_t *      p_qspi,
 {
     if (flags == NRFX_QSPI2_FLAG_HOLD_XFER)
     {
-        return nrfx_qspi2_xfer_prepare(p_qspi, p_xfer, xfer_count);
+        return NRFX_ERROR_NOT_SUPPORTED;
     }
 
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
@@ -646,7 +662,6 @@ nrfx_err_t nrfx_qspi2_xfer(const nrfx_qspi2_t *      p_qspi,
 
     if (retval == NRFX_SUCCESS)
     {
-
         nrf_qspi2_core_enable(p_qspi->p_reg);
         __ASB(p_qspi->p_reg);
 
