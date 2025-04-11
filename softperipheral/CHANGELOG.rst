@@ -9,6 +9,9 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.0.0
+**********************
+
 This is an initial release for soft peripherals.
 See the following list of changes:
 
