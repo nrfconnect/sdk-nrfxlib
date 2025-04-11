@@ -1,0 +1,43 @@
+@startuml
+
+!define NordicSky #6ad1e3
+!define NordicBlue #00A9CE
+!define NordicLake #0077C8
+!define NordicBlueslate #0033A0
+!define NordicLightGrey #D9E1E2
+
+skinparam sequence {
+    ParticipantBackgroundColor NordicBlue
+    ParticipantFontColor white
+}
+
+participant "Application" as App
+participant "FEM module" as FEM
+participant "Hardware" as HW
+
+App -> FEM : mpsl_fem_enable()
+FEM -> HW  : activate PDN pin
+App -> FEM : mpsl_fem_lna_configuration_set()\nconfigure LNA\ntime = 40us\ntimer=TIMER0\nevent=rx_end
+FEM -> FEM : calculate timings
+FEM -> HW  : configure TIMER0 to 27us
+
+App -> HW : start Rx\nstart TIMER0
+
+...Waiting for TIMER0 event...
+
+HW -> HW : TIMER0 event\nactivate RX_EN pin
+HW -> HW : RADIO READY event
+
+
+...RX operation...
+
+App -> HW : stop Rx
+HW -> HW : rx_end event\ndeactivate RX_EN pin
+
+
+App -> FEM : mpsl_fem_lna_configuartion_clear()
+FEM -> HW : deconfigure TIMER0
+App -> FEM : mpsl_fem_disable()
+FEM -> HW : deactivate PDN pin
+
+@enduml

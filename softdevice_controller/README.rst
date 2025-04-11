@@ -67,7 +67,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 | Connection Subrating           |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Channel Sounding               |                 |              | X         |
-| (experimental support)         |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 
 .. note::
@@ -78,7 +77,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
    * For the nRF54H series, all Bluetooth features are experimental.
-   * For the Channel Sounding feature, support is experimental and only available for nRF54L Series devices.
+   * Support for the Channel Sounding feature is only available on the nRF54L15 device.
 
 .. _sdc_proprietary_feature_support:
 

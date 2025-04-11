@@ -13,6 +13,9 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+nRF Connect SDK v3.0.0
+**********************
+
 Changes
 =======
 
@@ -20,6 +23,10 @@ Changes
 * Added support for the nRF21540 GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-19928)
 * The activation of the nRF2220 Front-End Module CS pin now requires a call to the :c:func:`mpsl_fem_enable` function. (KRKNWK-19588)
 * Applied Errata 22 and Errata 24 to the Front-End Modules on the nRF54L15 SoC. (KRKNWK-19588)
+* The activation of the nRF21540 Front-End Module PDN pin (in both GPIO and GPIO+SPI modes) now requires a call to the :c:func:`mpsl_fem_enable` function.
+  The ``PA time gap`` configuration parameter of the nRF21540 Front-End Module can now have greater values, that allow to activate the ``TX_EN`` pin earlier during the ramp-up of the RADIO.
+  The nRF21540 Front-End Module now requires fewer resources (PPI/DPPI channels, EGU channels).
+  For the nRF21540 Front-End Module, only one compare channel of a TIMER is required to configure PA or LNA activation for the :c:enumerator:`MPSL_FEM_EVENT_TYPE_TIMER` event type.
 
 Added
 =====
@@ -46,7 +53,10 @@ Bug fixes
 =========
 
 * Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run. In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
-
+* Fixed an issue where :c:func:`mpsl_constlat_request_callback` would be called more often than :c:func:`mpsl_lowpower_request_callback`. (DRGN-25031)
+  This would only occur under rare conditions when two timing events are spaced very close to each other.
+  This may cause an assertion if the nrfx power driver is used to implement these callbacks.
+  The issue causes the power consumption to increase, and may eventually lead to the assertion.
 
 nRF Connect SDK v2.9.0
 **********************

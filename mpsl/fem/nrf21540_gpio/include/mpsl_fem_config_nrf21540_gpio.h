@@ -26,6 +26,13 @@
 extern "C" {
 #endif
 
+#if defined(NRF52_SERIES)
+#define MPSL_FEM_CONFIG_NRF21540_GPIO_PPI_CHANNELS_COUNT  2
+#else
+#define MPSL_FEM_CONFIG_NRF21540_GPIO_DPPI_CHANNELS_COUNT 3
+#define MPSL_FEM_CONFIG_NRF21540_GPIO_EGU_CHANNELS_COUNT  3
+#endif
+
 /** @brief Configuration parameters for the Power Amplifier (PA) and Low Noise
  *  Amplifier (LNA) interface in the nRF21540 GPIO variant.
  */
@@ -47,15 +54,15 @@ typedef struct
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      ppi_channels[3];
+    uint8_t                      ppi_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_PPI_CHANNELS_COUNT];
 #else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      dppi_channels[4];
+    uint8_t                      dppi_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_DPPI_CHANNELS_COUNT];
     /** Number of EGU instance for which @c egu_channels apply. */
     uint8_t                      egu_instance_no;
     /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
      *  need to be provided to Front End Module to operate. */
-    uint8_t                      egu_channels[3];
+    uint8_t                      egu_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_EGU_CHANNELS_COUNT];
 #endif
 
 } mpsl_fem_nrf21540_gpio_interface_config_t;
