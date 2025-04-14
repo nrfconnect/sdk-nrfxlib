@@ -118,6 +118,9 @@ The |controller| currently has the following supported capabilities:
    * - Multiple Configurations per ACL
      -
      - X
+   * - TX SNR Control
+     -
+     - X
 
 In addition to the supported capabilities listed above, the |controller| supports the following step timings:
 

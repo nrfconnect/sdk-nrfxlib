@@ -16,6 +16,7 @@ Added
 =====
 
 * Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
+* Initial prototype support for the nRF54LM20 device (DRGN-24919).
 
 nRF Connect SDK v3.0.0
 **********************
