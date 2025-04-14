@@ -26,6 +26,7 @@ Bug fixes
   This constant is used to calculate the transmission time when using CCA for the nRF54L Series. (KRKNWK-19819)
 * Fixed an issue where the timestamp of a received frame indicated a later time
   than the actual end of the frame in the air. (KRKNWK-18121)
+* Fixed an issue where an assertion could occur on nRF54L Series SoCs when RADIO shorts were triggered immediately after the DISABLE task, by ensuring shorts are cleared first. (KRKNWK-19574)
 
 Removed
 =======
