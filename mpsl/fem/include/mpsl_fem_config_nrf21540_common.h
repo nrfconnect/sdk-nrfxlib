@@ -26,7 +26,7 @@ extern "C" {
  */
 
 /** @brief Time in microseconds when PA GPIO is activated before the radio is ready for transmission. */
-#define MPSL_FEM_NRF21540_DEFAULT_PA_TIME_IN_ADVANCE_US  13
+#define MPSL_FEM_NRF21540_DEFAULT_PA_TIME_IN_ADVANCE_US  26
 
 /** @brief Time in microseconds when LNA GPIO is activated before the radio is ready for reception. */
 #define MPSL_FEM_NRF21540_DEFAULT_LNA_TIME_IN_ADVANCE_US 13
