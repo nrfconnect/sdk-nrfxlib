@@ -271,6 +271,8 @@ typedef struct
   int32_t (*lfclk_release)(void);
 
   /** @brief Value of available LFCLK accuracy
+   *
+   * The value is mandatory for all supported platforms.
    */
   uint16_t accuracy_ppm;
 
@@ -318,7 +320,7 @@ typedef struct
 
   /** @brief Value of a HFXO startup time.
    *
-   * The value is only used for nRF52 and nRF53 series.
+   * The value is mandatory for all supported platforms.
    */
   uint16_t startup_time_us;
 } mpsl_clock_hfclk_ctrl_source_t;
