@@ -118,6 +118,9 @@ The |controller| currently has the following supported capabilities:
    * - Multiple Configurations per ACL
      -
      - X
+   * - TX SNR Control
+     -
+     - X
 
 In addition to the supported capabilities listed above, the |controller| supports the following step timings:
 
@@ -286,10 +289,10 @@ This is because the switch time is too short to power-cycle the radio between to
 .. note::
  When registering multiple antennas with the |controller|, the first antenna in the antenna array will be used by default for |BLE| transmission.
 
-Experimental limitations
+Limitations
 ------------------------
 
-Currently, the following limitations apply to the :ref:`Experimental <nrf:software_maturity>` support of Channel Sounding:
+Currently, the following limitations apply to the support of Channel Sounding:
 
  * :ref:`radio coexistence <nrf:ug_radio_coex>` and :ref:`front-end modules <mpsl_fem>` are not supported.
 

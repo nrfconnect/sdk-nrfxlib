@@ -25,6 +25,7 @@ Added
 Changes
 =======
 
+* The Channel Sounding feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-24060)
 * The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
   This behavior was changed to accommodate ES-27170.
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
@@ -92,6 +93,11 @@ Bug fixes
     * The data length is not updated
 * Fixed an issue where the central would disconnect without sending a ``LL_TERMINATE_IND`` when the user sent the Disconnect HCI command.
   This issue occurred when the central was blocked by another higher-priority role for extended periods. (DRGN-24784)
+* Fixed a rare assert when stopping a CIG or BIG.
+  This issue would only occur when another CIG or BIG role was active at the same time. (DRGN-24938)
+* Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
+  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
+  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
 
 nRF Connect SDK v2.9.0
 **********************
