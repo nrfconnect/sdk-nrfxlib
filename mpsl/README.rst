@@ -34,5 +34,6 @@ To enable MPSL in |NCS| applications, use the :kconfig:option:`CONFIG_MPSL` Kcon
    doc/tx_power_control
    doc/fem
    doc/cx
+   doc/pm
    CHANGELOG
    doc/api
