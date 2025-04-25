@@ -780,6 +780,9 @@ struct nrf_ifaddrs {
  */
 typedef uint32_t nrf_sec_tag_t;
 
+/** Placeholder value for security tags. Needed for various checks in SDK code. */
+#define NRF_SEC_TAG_INVALID 0xFFFFFFFF
+
 /** @} */
 
 /**
