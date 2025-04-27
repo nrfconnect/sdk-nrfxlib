@@ -9,6 +9,15 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.0.1
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
+  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
+
 nRF Connect SDK v3.0.0
 **********************
 
