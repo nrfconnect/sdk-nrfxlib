@@ -148,6 +148,21 @@ The host can influence the parameters with any of the following actions:
    This in turn limits the number of subevents that can be fitted in a BIG event.
    This value can be configured with the :kconfig:option:`BT_CTLR_SDC_BIG_RESERVED_TIME_US` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_big_reserved_time_set`.
 
+.. _bis_parameter_evaluation:
+
+BIS Parameter Evaluation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+   The tool provided below enables you to explore how various ISO parameter settings impact the transport latency and synchronization delay of the created stream.
+   Additionally, it allows you to visualize the subevent layout of BIG events.
+
+   .. raw:: html
+      :file: gui/bis_gui.html
+
+   .. note::
+      * The calculated values for the sync delay and the transport latency are approximations and the actual values may differ depending on the platform.
+      * Event layout is only shown for a single BIS.
+
 CIS
 -----------
 
