@@ -149,6 +149,8 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  *       See also @ref mpsl_clock_ctrl_source_register().
  *
  * @param[in] hfclk_started_callback Function to be called when the high frequency clock is started.
+ *                                   On nRF54L series SoCs the callback is called when the clock
+ *                                   has started and is stable (EVENT_XOTUNED has occurred).
  *                                   The callback will be executed in the context as
  *                                   @ref mpsl_low_priority_process.
  * @retval 0  Success
@@ -269,6 +271,8 @@ typedef struct
   int32_t (*lfclk_release)(void);
 
   /** @brief Value of available LFCLK accuracy
+   *
+   * The value is mandatory for all supported platforms.
    */
   uint16_t accuracy_ppm;
 
@@ -316,7 +320,7 @@ typedef struct
 
   /** @brief Value of a HFXO startup time.
    *
-   * The value is only used for nRF52 and nRF53 series.
+   * The value is mandatory for all supported platforms.
    */
   uint16_t startup_time_us;
 } mpsl_clock_hfclk_ctrl_source_t;
