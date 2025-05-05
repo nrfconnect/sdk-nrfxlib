@@ -18,6 +18,20 @@ Added
 * Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
 * Initial prototype support for the nRF54LM20 device (DRGN-24919).
 
+Bug fixes
+=========
+
+* Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
+  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
+
+Changes
+=======
+
+* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
+  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
+  This reverts the changes done by DRGN-21085. (DRGN-24882)
+
 nRF Connect SDK v3.0.0
 **********************
 
