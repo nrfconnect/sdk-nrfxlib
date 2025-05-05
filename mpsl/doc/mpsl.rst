@@ -82,6 +82,7 @@ For the nRF54L Series:
   * ``CLOCK``
   * ``TEMP``
   * ``DPPIC10`` channel ``0``
+  * ``DPPIC20`` channel ``0``
   * ``PPIB21`` channel ``0``
   * ``PPIB11`` channel ``0``
 
@@ -95,6 +96,9 @@ Limited access to some of these peripherals is provided through the following AP
   * ``ECB`` through :file:`mpsl_ecb.h`
   * ``CLOCK`` through :file:`mpsl_clock.h`
   * ``TEMP`` through :file:`mpsl_temp.h`
+
+
+On the nRF54L Series, the CPU clock frequency must be 128 MHz.
 
 Thread and interrupt safety
 ***************************

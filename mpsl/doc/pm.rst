@@ -100,7 +100,7 @@ This change must be applied to the system as soon as possible, to make sure it i
 
 Only the MPSL will change the value returned by the :c:func:`mpsl_pm_low_latency_requested` function.
 
-There are fours states for the low latency request described by :c:enum:`mpsl_pm_low_latency_state_t`.
+There are four states for the low latency request described by :c:enum:`mpsl_pm_low_latency_state_t`.
 They reflect the state of a system reconfiguration according to the recent request.
 Only a low latency request handler can update the state.
 
