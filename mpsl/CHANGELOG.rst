@@ -27,6 +27,7 @@ Changes
   The ``PA time gap`` configuration parameter of the nRF21540 Front-End Module can now have greater values, that allow to activate the ``TX_EN`` pin earlier during the ramp-up of the RADIO.
   The nRF21540 Front-End Module now requires fewer resources (PPI/DPPI channels, EGU channels).
   For the nRF21540 Front-End Module, only one compare channel of a TIMER is required to configure PA or LNA activation for the :c:enumerator:`MPSL_FEM_EVENT_TYPE_TIMER` event type.
+* The callback passed to the :c:func:`mpsl_clock_hfclk_request` function will be executed when the HFCLK has started and is stable (EVENT_XOTUNED has occurred). (KRKNWK-19689)
 
 Added
 =====
