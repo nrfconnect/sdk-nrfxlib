@@ -16,6 +16,9 @@ Bug fixes
 =========
 
 * Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
+* Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
+  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
+  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
 
 nRF Connect SDK v2.9.0
 **********************
