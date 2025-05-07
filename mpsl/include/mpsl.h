@@ -46,7 +46,7 @@ extern "C" {
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
 /* This corresponds to the DPPI channels 0, 1, and 2. */
 #define MPSL_DPPIC_CHANNELS_USED_MASK (0x00000007)
-#elif defined(NRF54L_SERIES)
+#elif defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
 #define MPSL_DPPIC10_CHANNELS_USED_MASK (0x00000001)
 #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
@@ -65,7 +65,7 @@ extern "C" {
 	#define MPSL_TIMER0 NRF_TIMER0
 #elif defined(NRF53_SERIES)
 	#define MPSL_TIMER0 NRF_TIMER0_NS
-#elif defined(NRF54L_SERIES)
+#elif defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 	#define MPSL_TIMER0 NRF_TIMER10
 #else
 	#define MPSL_TIMER0 NRF_TIMER020
