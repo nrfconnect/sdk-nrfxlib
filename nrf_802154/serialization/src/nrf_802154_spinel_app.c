@@ -657,6 +657,43 @@ bail:
     return;
 }
 
+void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address)
+{
+    nrf_802154_ser_err_t res;
+
+    bool    data_valid      = p_short_address != NULL;
+    uint8_t invalid_addr[2] = {0xff, 0xff};
+
+    if (!data_valid)
+    {
+        p_short_address = invalid_addr;
+    }
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_BUFF(p_short_address, SHORT_ADDRESS_SIZE);
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ALTERNATE_SHORT_ADDRESS_SET,
+        SPINEL_DATATYPE_NRF_802154_ALTERNATE_SHORT_ADDRESS_SET,
+        data_valid,
+        p_short_address,
+        SHORT_ADDRESS_SIZE);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
 void nrf_802154_extended_address_set(const uint8_t * p_extended_address)
 {
     nrf_802154_ser_err_t res;

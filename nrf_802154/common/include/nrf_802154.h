@@ -348,6 +348,29 @@ void nrf_802154_extended_address_set(const uint8_t * p_extended_address);
  */
 void nrf_802154_short_address_set(const uint8_t * p_short_address);
 
+/**
+ * @brief Sets the alternate short address of the device.
+ *
+ * The alternate short address should be used when you need to change the
+ * device short address without loss of connectivity.
+ * The API addresses a race condition, where a remote peer sends a frame destined
+ * to the old device address, but this device has already changed the short address
+ * to a new one. The alternate address should be cleared after a while, after the new
+ * short address becomes known to the peers.
+ *
+ * The API is meant to be used as follows:
+ * 1. Set the alternate short address to the current old address.
+ * 2. Set the primary short address (@ref nrf_802154_short_address_set) to the new address.
+ * 3. Wait until the new short address becomes known among the peers.
+ * 4. Clear the alternate short address.
+ *
+ * @param[in]  p_short_address  Pointer to the short address (2 bytes, little-endian).
+ *                              Setting this value to NULL clears the alternate address.
+ *
+ * This function makes a copy of the address.
+ */
+void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address);
+
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 /**
  * @}

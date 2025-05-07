@@ -191,6 +191,24 @@ const uint8_t * nrf_802154_pib_short_address_get(void);
 void nrf_802154_pib_short_address_set(const uint8_t * p_short_address);
 
 /**
+ * @brief Gets the alternate short address of this device.
+ *
+ * @returns Pointer to the buffer containing the short address (2 bytes, little-endian)
+ *          or NULL if the alternate address is cleared.
+ */
+const uint8_t * nrf_802154_pib_alternate_short_address_get(void);
+
+/**
+ * @brief Sets the alternate short address of the device.
+ *
+ * @param[in]  p_short_address  Pointer to the short address (2 bytes, little-endian).
+ *                              Setting this value to NULL clears the alternate address.
+ *
+ * This function makes a copy of the address.
+ */
+void nrf_802154_pib_alternate_short_address_set(const uint8_t * p_short_address);
+
+/**
  * @brief Sets the radio CCA mode and threshold.
  *
  * @param[in] p_cca_cfg Pointer to the CCA configuration structure. Only fields relevant

@@ -10,6 +10,14 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Added
+=====
+
+* Added the :c:func:`nrf_802154_alternate_short_address_set` function, which allows for setting the secondary short address that will be accepted by the frame filter. (KRKNWK-20051)
+
 nRF Connect SDK v3.0.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
