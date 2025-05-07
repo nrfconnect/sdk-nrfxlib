@@ -363,7 +363,7 @@ static int group_init_send(const struct nrf_rpc_group *group)
 	return send(group, tx_buf, NRF_RPC_HEADER_SIZE + len);
 }
 
-static inline bool packet_validate(const uint8_t *packet)
+static inline __attribute__((unused)) bool packet_validate(const uint8_t *packet)
 {
 	uintptr_t addr = (uintptr_t)packet;
 	/* Checking NULL may be sometimes not enough, because pointer can be
