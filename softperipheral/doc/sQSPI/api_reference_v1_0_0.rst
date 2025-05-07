@@ -1,4 +1,4 @@
 API Reference
 #############
 
-.. doxygengroup:: nrfx_qspi2
+.. doxygengroup:: nrf_sqspi
