@@ -187,6 +187,11 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address)
     nrf_802154_pib_short_address_set(p_short_address);
 }
 
+void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address)
+{
+    nrf_802154_pib_alternate_short_address_set(p_short_address);
+}
+
 void nrf_802154_init(void)
 {
     static const nrf_802154_sl_crit_sect_interface_t crit_sect_int =

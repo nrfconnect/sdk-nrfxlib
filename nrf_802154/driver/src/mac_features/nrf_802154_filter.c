@@ -337,19 +337,20 @@ static bool dst_pan_id_check(const uint8_t * p_panid, uint8_t frame_type)
  */
 static bool dst_short_addr_check(const uint8_t * p_dst_addr)
 {
-    bool result;
-
     if ((0 == memcmp(p_dst_addr, nrf_802154_pib_short_address_get(), SHORT_ADDRESS_SIZE)) ||
         (0 == memcmp(p_dst_addr, BROADCAST_ADDRESS, SHORT_ADDRESS_SIZE)))
     {
-        result = true;
-    }
-    else
-    {
-        result = false;
+        return true;
     }
 
-    return result;
+    const uint8_t * alternate_address = nrf_802154_pib_alternate_short_address_get();
+
+    if (alternate_address && (0 == memcmp(p_dst_addr, alternate_address, SHORT_ADDRESS_SIZE)))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 /**

@@ -47,6 +47,7 @@
 
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_sl_atomics.h"
 
 #define CSMACA_BE_MAXIMUM 8 ///< The maximum allowed CSMA-CA backoff exponent (BE) that results from the implementation
 
@@ -89,6 +90,7 @@ typedef struct
     int8_t                  tx_power;                             ///< Transmit power.
     uint8_t                 pan_id[PAN_ID_SIZE];                  ///< Pan Id of this node.
     uint8_t                 short_addr[SHORT_ADDRESS_SIZE];       ///< Short Address of this node.
+    uint8_t                 alt_short_addr[SHORT_ADDRESS_SIZE];   ///< Alternate short address of this node.
     uint8_t                 extended_addr[EXTENDED_ADDRESS_SIZE]; ///< Extended Address of this node.
     nrf_802154_cca_cfg_t    cca;                                  ///< CCA mode and thresholds.
     bool                    promiscuous : 1;                      ///< Indicating if radio is in promiscuous mode.
@@ -97,6 +99,7 @@ typedef struct
     uint8_t                 channel     : 5;                      ///< Channel on which the node receives messages.
     bool                    rx_on_when_idle;                      ///< Indicating if radio is in RxOnWhenIdle mode.
     nrf_802154_pib_coex_t   coex;                                 ///< Coex-related fields.
+    uint8_t                 alt_short_addr_present;               ///< Indicates if the alternate short address is configured.
 
 #if NRF_802154_CSMA_CA_ENABLED
     nrf_802154_pib_csmaca_t csmaca;                               ///< CSMA-CA related fields.
@@ -212,6 +215,7 @@ void nrf_802154_pib_init(void)
     m_data.test_modes.csmaca_backoff = NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM;
 #endif
 
+    nrf_802154_sl_atomic_store_u8(&m_data.alt_short_addr_present, false);
 }
 
 bool nrf_802154_pib_promiscuous_get(void)
@@ -302,6 +306,29 @@ const uint8_t * nrf_802154_pib_short_address_get(void)
 void nrf_802154_pib_short_address_set(const uint8_t * p_short_address)
 {
     memcpy(m_data.short_addr, p_short_address, SHORT_ADDRESS_SIZE);
+}
+
+const uint8_t * nrf_802154_pib_alternate_short_address_get(void)
+{
+    if (false == nrf_802154_sl_atomic_load_u8(&m_data.alt_short_addr_present))
+    {
+        return NULL;
+    }
+
+    return m_data.alt_short_addr;
+}
+
+void nrf_802154_pib_alternate_short_address_set(const uint8_t * p_short_address)
+{
+    if (p_short_address)
+    {
+        memcpy(m_data.alt_short_addr, p_short_address, SHORT_ADDRESS_SIZE);
+        nrf_802154_sl_atomic_store_u8(&m_data.alt_short_addr_present, true);
+    }
+    else
+    {
+        nrf_802154_sl_atomic_store_u8(&m_data.alt_short_addr_present, false);
+    }
 }
 
 void nrf_802154_pib_cca_cfg_set(const nrf_802154_cca_cfg_t * p_cca_cfg)
