@@ -37,12 +37,14 @@ The following table shows which soft peripherals and their versions are supporte
    :widths: auto
    :header-rows: 1
 
-   * - soft peripheral
+   * - Soft peripheral
      - Hardware platform
-     - Versions
+     - Version
    * - sQSPI
-     - nRF54L15 SoC
-     - v0.1.0
-   * - sQSPI
-     - nRF54H20 SoC
-     - v0.1.0
+     - - nRF54L15 SoC
+       - nRF54H20 SoC
+     - - nRF54L15 SoC:
+          - v0.1.0 with NCS v3.0.0
+          - v1.0.0 with NCS v3.1.0
+       - nRF54H20 SoC:
+          - v0.1.0 with NCS v3.0.0
