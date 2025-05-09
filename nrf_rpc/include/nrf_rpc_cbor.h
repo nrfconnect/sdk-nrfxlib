@@ -49,7 +49,6 @@ typedef void (*nrf_rpc_cbor_handler_t)(const struct nrf_rpc_group *group,
 struct _nrf_rpc_cbor_decoder {
 	nrf_rpc_cbor_handler_t handler;
 	void *handler_data;
-	bool decoding_done_required;
 };
 
 /** @brief Context for encoding and sending commands, events and responses.
@@ -79,7 +78,6 @@ struct nrf_rpc_cbor_ctx {
 	struct _nrf_rpc_cbor_decoder NRF_RPC_CONCAT(_name, _cbor_data) = {     \
 		.handler = _handler,					       \
 		.handler_data = _data,					       \
-		.decoding_done_required = true,				       \
 	};								       \
 	NRF_RPC_CMD_DECODER(_group, _name, _cmd, _nrf_rpc_cbor_proxy_handler,  \
 			    (void *)&NRF_RPC_CONCAT(_name, _cbor_data))
@@ -98,7 +96,6 @@ struct nrf_rpc_cbor_ctx {
 	struct _nrf_rpc_cbor_decoder NRF_RPC_CONCAT(_name, _cbor_data) = {     \
 		.handler = _handler,					       \
 		.handler_data = _data,					       \
-		.decoding_done_required = true,				       \
 	};								       \
 	NRF_RPC_EVT_DECODER(_group, _name, _evt, _nrf_rpc_cbor_proxy_handler,  \
 			    (void *)&NRF_RPC_CONCAT(_name, _cbor_data))
