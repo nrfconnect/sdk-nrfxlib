@@ -34,7 +34,6 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 	const struct _nrf_rpc_cbor_decoder cbor_handler = {
 		.handler = handler,
 		.handler_data = handler_data,
-		.decoding_done_required = false,
 	};
 
 	if (!zcbor_nil_put(ctx->zs, NULL)) {
