@@ -23,6 +23,7 @@ Bug fixes
 
 * Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
   The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
+* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
 
 Changes
 =======

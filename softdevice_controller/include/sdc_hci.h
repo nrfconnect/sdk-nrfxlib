@@ -35,22 +35,28 @@ extern "C" {
 #include "nrf_errno.h"
 
 /** @brief The size of a command packet header. */
-#define HCI_CMD_HEADER_SIZE   (3)
+#define HCI_CMD_HEADER_SIZE      (3)
 
 /** @brief The size of a data packet header. */
-#define HCI_DATA_HEADER_SIZE  (4)
+#define HCI_DATA_HEADER_SIZE     (4)
+
+/** @brief The maximum size of an ISO data packet header. */
+#define HCI_ISO_DATA_HEADER_SIZE (12)
 
 /** @brief The size of an event packet header. */
-#define HCI_EVENT_HEADER_SIZE (2)
+#define HCI_EVENT_HEADER_SIZE    (2)
 
 /** @brief The maximum size of a command. */
-#define HCI_CMD_MAX_SIZE    (255)
+#define HCI_CMD_MAX_SIZE         (255)
 
 /** @brief The maximum size of data. */
-#define HCI_DATA_MAX_SIZE   (251)
+#define HCI_DATA_MAX_SIZE        (251)
+
+ /** @brief The maximum size of the SDU-data inside an HCI ISO data packet */
+#define HCI_ISO_DATA_MAX_SIZE    (4095)
 
 /** @brief The maximum size of an event. */
-#define HCI_EVENT_MAX_SIZE  (255)
+#define HCI_EVENT_MAX_SIZE       (255)
 
 /** @brief The maximum size of an HCI command packet. */
 #define HCI_CMD_PACKET_MAX_SIZE         (HCI_CMD_MAX_SIZE + HCI_CMD_HEADER_SIZE)
@@ -58,11 +64,17 @@ extern "C" {
 /** @brief The maximum size of an HCI data packet. */
 #define HCI_DATA_PACKET_MAX_SIZE        (HCI_DATA_MAX_SIZE + HCI_DATA_HEADER_SIZE)
 
+/** @brief The maximum size of an HCI ISO data packet. */
+#define HCI_ISO_DATA_PACKET_MAX_SIZE    (HCI_ISO_DATA_MAX_SIZE + HCI_ISO_DATA_HEADER_SIZE)
+
 /** @brief The maximum size of an HCI event packet. */
 #define HCI_EVENT_PACKET_MAX_SIZE       (HCI_EVENT_MAX_SIZE + HCI_EVENT_HEADER_SIZE)
 
 /** @brief The maximum size of an HCI packet. */
-#define HCI_MSG_BUFFER_MAX_SIZE HCI_CMD_PACKET_MAX_SIZE
+#define HCI_MSG_BUFFER_MAX_SIZE     HCI_CMD_PACKET_MAX_SIZE
+
+/** @brief The maximum size of an HCI packet when isochronous channels is supported. */
+#define HCI_MSG_BUFFER_ISO_MAX_SIZE HCI_ISO_DATA_PACKET_MAX_SIZE
 
 /** @brief The arrival margin in microseconds the controller needs to receive an ISO SDU before it can be sent on air.
  *
@@ -110,6 +122,8 @@ int32_t sdc_hci_iso_data_put(uint8_t const * p_data_in);
  *
  * @note The application should ensure that the size of the provided buffer is at least
  *       @ref HCI_MSG_BUFFER_MAX_SIZE bytes.
+ *       For Isochronous Channels the provided buffer should be large enough to contain the maximum supported SDU size.
+ *       See also @ref sdc_cfg_iso_buffer_cfg_t::rx_sdu_buffer_size and @ref HCI_ISO_DATA_PACKET_MAX_SIZE.
  *
  * @param[in,out] p_packet_out Buffer where the HCI packet will be stored.
  *                             If an event is retrieved, the first byte corresponds to the Event Code.
