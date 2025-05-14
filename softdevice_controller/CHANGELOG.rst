@@ -9,115 +9,20 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Added
-=====
-
-* Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
-* Initial prototype support for the nRF54LM20 device (DRGN-24919).
+nRF Connect SDK v2.9-branch
+***************************
 
 Bug fixes
 =========
+* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
 
-* Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
-  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
-
-Changes
-=======
-
-* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
-  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
-  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
-  This reverts the changes done by DRGN-21085. (DRGN-24882)
-
-nRF Connect SDK v3.0.0
+nRF Connect SDK v2.9.2
 **********************
-
-Added
-=====
-
-* Support generating the HCI LE CIS Established v2 event. (DRGN-24112)
-* Support for the Advertising Coding Selection feature as an advertiser or scanner. (DRGN-23744)
-
-  * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
-  * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
-* Support for multiple packet pairs in an ACL event when using LLPM mode. (DRGN-16157)
-
-Changes
-=======
-
-* The Channel Sounding feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-24060)
-* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
-  This behavior was changed to accommodate ES-27170.
-* The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
-* Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
-* Reduced latency when changing the list of subevents to which a Periodic Advertising with Responses Scanner is synchronized. (DRGN-24543)
-* A CIS peripheral will now reject an invalid ``LL_CIS_REQ`` if one of the following condition is met:
-
-  * ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` is less than 255 µs.
-  * ``ISO_Interval`` is not an integer multiple of ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` when unframed PDU is used.
-  * ``BN_C_To_P`` or ``BN_P_To_C`` is smaller than the value required by the configuration when an unframed PDU is used.
-
-  This only applies when the burst number (BN) in the corresponding direction (``BN_C_To_P`` or ``BN_P_To_C``) is non-zero. (DRGN-23304)
 
 Bug fixes
 =========
 
 * Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
-* Fixed an issue where the controller would fail to synchronize with a BIS Broadcaster. (DRGN-24670)
-  This would occur when the Broadcaster has set ``Num_Bis=1``, ``NSE > 1``, and ``Sub_Interval == BIS_Spacing``.
-  Previously, the controller would raise the LE BIG Sync Established event with status set to "Unsupported Feature or Parameter value (0x11)".
-* Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
-* Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
-
-  The issue would only happen if all the following conditions are met:
-
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
-    * :kconfig:option:`BT_CTLR_SDC_SCAN_BUFFER_COUNT` is set to the non-default value 2.
-    * The initiator has received a connectable ``ADV_EXT_IND``.
-    * The initiator is canceled.
-* Fixed an issue where the central device would disconnect 40 s after responding to a ``LL_SUBRATE_REQ`` with reason "LMP Response Timeout (0x22)".
-  This would only occur on nRF52 Series and nRF53 Series devices. (DRGN-24310)
-* Fixed a very rare issue where the scanner would assert, hang or stop producing reports when scanning and initiating at the same time. (DRGN-24370)
-
-  The issue would only happen if all the following conditions are met:
-
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
-    * The timing events are not combined for the scanner and the initiator.
-    * The initiator is canceled or the scanner is stopped after receiving an extended advertising PDU pointing to a AUX_ADV_IND or AUX_CHAIN_IND PDU, but the AUX_ADV_IND or AUX_CHAIN_IND PDU was not received yet.
-      The issue may also occur if the reception of the AUX_ADV_IND or AUX_CHAIN_IND fails to be scheduled.
-
-    See :ref:`concurrent_scanner_initiator_timing` for information on how to select parameters where the timing events are combined.
-* Fixed a rare issue where the scanner would fail to receive a secondary channel packet. (DRGN-24300)
-  The issue would only happen if all the conditions are met:
-
-    * The configured scan window is larger than 500 milliseconds.
-    * The ``ADV_EXT_IND`` is received at the very end of the scan window.
-* Fixed an issue where the CIS peripheral would not be able to receive after the first subevent.
-  This would only happen if the subevent interval is large or if the CIS is configured with interleaved packing. (DRGN-24359)
-* Fixed an issue where the CIS peripheral would report wrong SDU sequence numbers upon receiving. (DRGN-24359)
-
-  The issue would only happen if all the following conditions are met:
-
-    * The subevent interval is large, or if the CIS is configured with interleaved packing.
-    * There are scheduling conflicts.
-* Fixed an issue where an application running on a nRF54L Series device would sometimes fail to receive an ACL packet after it had sent a packet on Coded PHY with S=2. (DRGN-23691)
-  The issue would only happen when the application explicitly asked to use the coding scheme S=2.
-* Fixed an issue where a CIS Peripheral would assert when receiving an invalid ``LL_CIS_REQ``.
-  This would only happen if unframed PDUs were used. (DRGN-24706)
-* Fixed a rare issue where the controller would assert when in a connection. (DRGN-24749)
-
-  The issue would only happen if all the following conditions are met:
-
-    * A feature requiring long control packets is enabled, for example, CIS, Sync Transfer, or Channel Sounding.
-    * A short event length is used.
-    * The data length is not updated
-* Fixed an issue where the central would disconnect without sending a ``LL_TERMINATE_IND`` when the user sent the Disconnect HCI command.
-  This issue occurred when the central was blocked by another higher-priority role for extended periods. (DRGN-24784)
-* Fixed a rare assert when stopping a CIG or BIG.
-  This issue would only occur when another CIG or BIG role was active at the same time. (DRGN-24938)
 * Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
   This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
   The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
@@ -141,7 +46,6 @@ Changes
 =======
 
 * The vendor-specific Set Connection Event Trigger HCI command has been removed. (DRGN-23981)
-* The documentation for the vendor-specific ISO Read TX Timestamp command has been updated to represent the returned value. (DRGN-23708)
 
 Bug fixes
 =========
