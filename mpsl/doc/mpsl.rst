@@ -66,12 +66,6 @@ For the nRF54L Series:
   Interrupts:
 
   * ``GRTC`` channels ``7`` to ``11``, interrupt ``GRTC_3_IRQn``
-
-    .. note::
-       The ``GRTC`` must be started by the application before calling :c:func:`mpsl_init` function.
-       Additionally, the ``SYSCOUNTER`` must be enabled in the ``MODE`` register.
-       This is done automatically when using the |NCS|.
-
   * ``TIMER10``
   * ``TIMER20``
   * ``ECB00``
@@ -82,7 +76,6 @@ For the nRF54L Series:
   * ``CLOCK``
   * ``TEMP``
   * ``DPPIC10`` channel ``0``
-  * ``DPPIC20`` channel ``0``
   * ``PPIB21`` channel ``0``
   * ``PPIB11`` channel ``0``
 
@@ -96,9 +89,6 @@ Limited access to some of these peripherals is provided through the following AP
   * ``ECB`` through :file:`mpsl_ecb.h`
   * ``CLOCK`` through :file:`mpsl_clock.h`
   * ``TEMP`` through :file:`mpsl_temp.h`
-
-
-On the nRF54L Series, the CPU clock frequency must be 128 MHz.
 
 Thread and interrupt safety
 ***************************
@@ -130,9 +120,6 @@ The following interrupts do not have real-time requirements:
    The interrupt is enabled with :c:func:`mpsl_init` and disabled with :c:func:`mpsl_uninit` by MPSL.
    The interrupt is selected using the :kconfig:option:`CONFIG_MPSL_LOW_PRIO_IRQN` Kconfig option.
    This Kconfig option can be used to resolve conflicts with other software modules and should be left to the default value if possible.
-
-The reserved interrupt handlers for the ``RADIO``, ``GRTC``, ``RTC``, and ``TIMER`` peripheral instances must not be reconfigured while MPSL is enabled.
-In the |NCS|, it is possible to reconfigure these interrupt handlers when MPSL is disabled using the :kconfig:option:`CONFIG_MPSL_DYNAMIC_INTERRUPTS` Kconfig option.
 
 .. _mpsl_lib_scheduling:
 
