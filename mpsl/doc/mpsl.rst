@@ -52,7 +52,7 @@ For the nRF54H Series:
   * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_2_IRQn``
   * ``TIMER020``
   * ``TIMER021``
-  * ``ECB030``
+  * ``ECB031``
 
   No interrupts:
 
