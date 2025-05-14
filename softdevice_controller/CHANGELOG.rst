@@ -9,6 +9,13 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.9-branch
+***************************
+
+Bug fixes
+=========
+* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
+
 nRF Connect SDK v2.9.2
 **********************
 
