@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if NET_L2_OPENTHREAD
+if OPENTHREAD
 
 menu "OpenThread"
 
