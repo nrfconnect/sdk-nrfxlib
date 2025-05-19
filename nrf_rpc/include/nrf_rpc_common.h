@@ -109,9 +109,9 @@ extern "C" {
  *                   @a NRF_RPC_AUTO_ARR_ITEM.
  */
 #define NRF_RPC_AUTO_ARR(_name, _array_key)				       \
-	const uint8_t NRF_RPC_CONCAT(_name, _auto_arr_end) __used	       \
+	const uint8_t NRF_RPC_CONCAT(_name, _auto_arr_end) __attribute__((used))	       \
 	__attribute__((__section__(".nrf_rpc." _array_key ".c")));	       \
-	const uint8_t *const _name __used				       \
+	const uint8_t *const _name __attribute__((used))				       \
 	__attribute__((__section__(".nrf_rpc." _array_key ".a"))) =	       \
 		&NRF_RPC_CONCAT(_name, _auto_arr_end)
 
@@ -123,7 +123,7 @@ extern "C" {
  * @param _item_key  String item key.
  */
 #define NRF_RPC_AUTO_ARR_ITEM(_type, _name, _array_key, _item_key)	       \
-	_type _name __used						       \
+	_type _name __attribute__((used))						       \
 	__attribute__((__section__(".nrf_rpc." _array_key ".b." _item_key)))
 
 /** @brief Iterate over array items.
