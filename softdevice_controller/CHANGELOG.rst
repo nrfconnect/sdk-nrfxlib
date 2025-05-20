@@ -24,6 +24,8 @@ Bug fixes
 * Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
   The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
 * Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
+* Fixed an issue where the controller could assert when receiving on the Coded PHY over an ACL connection. (DRGN-24930)
+  This would occur when coding indicator or length byte was corrupted, causing the controller to listen for more than 27 bytes on S8 Coded PHY.
 
 Changes
 =======
@@ -32,6 +34,8 @@ Changes
   The controller no longer validates the handles provided in the Host Number of Complete Packets command.
   That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
   This reverts the changes done by DRGN-21085. (DRGN-24882)
+* The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
+  This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
 
 nRF Connect SDK v3.0.0
 **********************
