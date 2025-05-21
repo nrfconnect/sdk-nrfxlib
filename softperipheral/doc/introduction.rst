@@ -39,7 +39,7 @@ The following table shows which soft peripherals and their versions are supporte
 
    * - soft peripheral
      - Hardware platform
-     - Version(s)
+     - Versions
    * - sQSPI
      - nRF54L15 SoC
      - v0.1.0

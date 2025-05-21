@@ -350,7 +350,7 @@ NRF_SO_SEC_DTLS_CONN_SAVE
    This option require a DTLS v1.2 connection with renegotiation disabled.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
 
-   Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD`.
+   Once the DTLS context is saved, the socket cannot be used before the DTLS context is loaded with :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD`.
 
    This option fails with ``errno`` set to ``NRF_EAGAIN`` if an error happened during serialization of the SSL context.
    This can occur, for instance, when the modem cannot allocate enough memory or if the socket is busy sending or receiving data.
