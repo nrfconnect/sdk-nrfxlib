@@ -657,7 +657,7 @@ Scanner, observer, and initiator events can therefore cause connection packets t
 To reduce the chance of colliding connections, configure all connection intervals to have a common factor.
 This common factor should be greater than or equal to :math:`\mathsf{\sum{t_{event-Cx}}}`.
 For example, for eight connections with an event length of 2.5 ms, the lowest recommended connection interval is 20 ms.
-This means all connections would then have a connection interval of 20 ms or a multiple of 20 ms, such as 40 ms, 60 ms, and so on.
+This means all connections would then have a connection interval of 20 ms or a multiple of 20 ms, such as 40 ms or 60 ms.
 
 To summarize, when only Central roles are running, all central role intervals (such as connection interval and Scanner interval) should have a common factor.
 This common factor should be greater than or equal to :math:`\mathsf{\sum{t_{event-Cx}} + scanWindow}`.

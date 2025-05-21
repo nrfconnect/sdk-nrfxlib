@@ -187,7 +187,7 @@ nrf_modem 2.6.1
 Sockets
 =======
 
-* Fixed a bug where the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions erroneously returned ``-1`` and set ``errno`` to ``NRF_EAGAIN`` instead of returning ``0`` when these three conditions were met:
+* Fixed a bug where the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions erroneously returned ``–1`` and set ``errno`` to ``NRF_EAGAIN`` instead of returning ``0`` when these three conditions were met:
 
   * The :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions were called with the :c:macro:`NRF_MSG_DONTWAIT` flag or when the socket is non-blocking (``NRF_O_NONBLOCK`` is set on the socket).
   * The socket was closed by the server.
@@ -547,7 +547,7 @@ nrf_modem 1.5.0
 nrf_modem 1.4.1
 ***************
 
-* Fixed a bug in :c:func:`nrf_send` which could result in the function incorrectly returning -1 and setting the errno to ``NRF_EINPROGRESS``.
+* Fixed a bug in :c:func:`nrf_send` which could result in the function incorrectly returning –1 and setting the errno to ``NRF_EINPROGRESS``.
 
 nrf_modem 1.4.0
 ***************
@@ -570,7 +570,7 @@ nrf_modem 1.4.0
 * Fixed a potential concurrency issue in :c:func:`nrf_getaddrinfo` that would cause the output ``hints`` structure to contain no address upon successful completion.
 * Fixed a bug in :c:func:`nrf_getsockopt` that would let the function return an incorrect value in case of error when called on TLS and DTLS sockets.
 * Added a parameter to :c:func:`nrf_setdnsaddr` to specify the size of the supplied address.
-* Updated :c:func:`nrf_setdnsaddr` to return -1 and set errno on error.
+* Updated :c:func:`nrf_setdnsaddr` to return –1 and set errno on error.
 * The :c:func:`nrf_modem_os_application_irq_handler` and :c:func:`nrf_modem_os_trace_irq_handler` functions have been renamed to :c:func:`nrf_modem_application_irq_handler` and :c:func:`nrf_modem_trace_irq_handler` respectively, and their definition has been moved to :file:`nrf_modem.h`.
 * Added support for APN rate control feature of modem firmware v1.3.1.
 * The glue layer now defines a few new functions used for logging.
@@ -747,7 +747,7 @@ bsdlib 0.7.0
 
 * Major rewrite of the lower transport layer to fix an issue where packages were lost in a high bandwidth application.
 * Added support for GPS priority setting to give the GPS module priority over LTE to generate a fix.
-* Added parameter checking and only return -1 on error for the PDN set socket option function.
+* Added parameter checking and only return –1 on error for the PDN set socket option function.
 * Added support for send timeout on TCP, UDP (including secure sockets), and AT sockets.
 * Added support for MSG_TRUNC on AT, GNSS, TCP, and UDP sockets.
 * Allocating more sockets than available will now return ENOBUFS instead of ENOMEM.

@@ -24,7 +24,7 @@ Configuration
 *************
 
 In the |NCS|, you can enable the GZLL library using the :kconfig:option:`CONFIG_GZLL` Kconfig option.
-Look for the menu item "Enable Gazell Link Layer".
+Look for the menu item :guilabel:`Enable Gazell Link Layer`.
 The build system will link in the appropriate library for your SoC.
 
 .. _gzll_glue_layer:
