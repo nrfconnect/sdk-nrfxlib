@@ -13,6 +13,12 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Bug fixes
+=========
+
+* Fixed a rare issue where radio events would be dropped if high-frequency crystal tuning was needed due to a large temperature change when starting the HFXO.
+  In the worst-case scenario, MPSL would not recover from this state and continue to drop radio events. (DRGN-25261)
+
 nRF Connect SDK v3.0.0
 **********************
 
