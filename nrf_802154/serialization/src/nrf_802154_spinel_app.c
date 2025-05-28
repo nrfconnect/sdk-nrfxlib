@@ -399,7 +399,7 @@ static nrf_802154_ser_err_t cca_cfg_await(uint32_t               timeout,
 
     NRF_802154_SPINEL_LOG_BANNER_RESPONSE();
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->mode, "Mode");
-    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->ed_threshold, "ED threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%d", p_cfg->ed_threshold, "ED threshold");
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_threshold, "Corr threshold");
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_limit, "Corr limit");
 
@@ -1884,7 +1884,7 @@ void nrf_802154_cca_cfg_set(const nrf_802154_cca_cfg_t * p_cfg)
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->mode, "Mode");
-    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->ed_threshold, "ED threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%d", p_cfg->ed_threshold, "ED threshold");
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_threshold, "Corr threshold");
     NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_limit, "Corr limit");
 

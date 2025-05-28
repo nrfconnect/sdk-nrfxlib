@@ -49,7 +49,7 @@
 #if defined(NRF52_SERIES)
 
 /* Implementation for nRF52 family. */
-int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
+static int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
 {
     (void)rssi_sample;
 
@@ -99,7 +99,7 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
     return result;
 }
 
-#else
+#elif defined(NRF53_SERIES)
 
 /** Macro for calculating x raised to the power of 2. */
 #define POW_2(x)        ((x) * (x))
@@ -137,7 +137,7 @@ static int8_t normalize_rssi(int32_t rssi_value)
 }
 
 /* Implementation based on Errata 87 for nRF53 family. */
-int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
+static int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
 {
     int32_t temp;
     int32_t rssi_sample_i32;
@@ -152,6 +152,13 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
                                       - (RSSI_COEFF_TEMP * temp) - RSSI_COEFF_A0);
 
     return compensated_rssi - (int8_t)rssi_sample;
+}
+
+#else
+
+static int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
+{
+    return 0;
 }
 
 #endif
@@ -212,4 +219,14 @@ int8_t nrf_802154_rssi_ed_sample_to_dbm_convert(uint8_t ed_sample)
     result = ED_RSSIOFFS + result;
 
     return result;
+}
+
+uint8_t nrf_802154_rssi_dbm_to_hw(int8_t dbm)
+{
+    return dbm - ED_RSSIOFFS;
+}
+
+int8_t nrf_802154_rssi_hw_to_dbm(uint8_t hwval)
+{
+    return hwval + ED_RSSIOFFS;
 }

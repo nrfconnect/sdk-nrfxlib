@@ -45,17 +45,6 @@
  */
 
 /**
- * @brief Gets the RSSISAMPLE temperature correction value.
- *
- * The correction value is based on the last temperature value reported by the platform.
- *
- * @param[in]  rssi_sample  Value read from the RSSISAMPLE register.
- *
- * @returns RSSISAMPLE temperature correction value.
- */
-int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample);
-
-/**
  * @brief Adjusts the given RSSISAMPLE value by a temperature correction factor.
  *
  * @param[in]  rssi_sample  Value read from the RSSISAMPLE register.
@@ -119,6 +108,24 @@ int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level);
  * @return  Result of the energy detection procedure in dBm.
  */
 int8_t nrf_802154_rssi_ed_sample_to_dbm_convert(uint8_t ed_sample);
+
+/**
+ * @brief  Converts the a dBm value to radio hardware value.
+ *
+ * @param[in]  dbm  The dBm value.
+ *
+ * @return  Value in hardware units.
+ */
+uint8_t nrf_802154_rssi_dbm_to_hw(int8_t dbm);
+
+/**
+ * @brief  Converts the a radio hardware value to dBm value.
+ *
+ * @param[in]  hwval  The radio hardware value.
+ *
+ * @return  Value in dBm.
+ */
+int8_t nrf_802154_rssi_hw_to_dbm(uint8_t hwval);
 
 /**
  *@}

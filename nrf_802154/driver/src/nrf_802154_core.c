@@ -67,6 +67,7 @@
 #include "nrf_802154_tx_power.h"
 #include "nrf_802154_types_internal.h"
 #include "nrf_802154_utils.h"
+#include "nrf_802154_nrfx_addons.h"
 #include "drivers/nrfx_errors.h"
 #include "hal/nrf_radio.h"
 #include "mac_features/nrf_802154_filter.h"
@@ -94,10 +95,10 @@
 /// Overhead of hardware preparation for ED procedure (aTurnaroundTime) [number of iterations]
 #define ED_ITERS_OVERHEAD           2U
 
-#define MAX_CRIT_SECT_TIME          60   ///< Maximal time that the driver spends in single critical section.
+#define MAX_CRIT_SECT_TIME          60           ///< Maximal time that the driver spends in single critical section.
 
-#define LQI_VALUE_FACTOR            4    ///< Factor needed to calculate LQI value based on data from RADIO peripheral
-#define LQI_MAX                     0xff ///< Maximal LQI value
+#define LQI_VALUE_FACTOR            ED_RSSISCALE ///< Factor needed to calculate LQI value based on data from RADIO peripheral
+#define LQI_MAX                     0xff         ///< Maximal LQI value
 
 /** Get LQI of given received packet. If CRC is calculated by hardware LQI is included instead of CRC
  *  in the frame. Length is stored in byte with index 0; CRC is 2 last bytes.
@@ -122,7 +123,7 @@ static rx_buffer_t * const mp_current_rx_buffer = &nrf_802154_rx_buffers[0];
 static uint8_t                       * mp_ack;                  ///< Pointer to Ack frame buffer.
 static uint8_t                       * mp_tx_data;              ///< Pointer to the data to transmit.
 static uint32_t                        m_ed_time_left;          ///< Remaining time of the current energy detection procedure [us].
-static uint8_t                         m_ed_result;             ///< Result of the current energy detection procedure.
+static int8_t                          m_ed_result;             ///< Result of the current energy detection procedure.
 static uint8_t                         m_last_lqi;              ///< LQI of the last received non-ACK frame, corrected for the temperature.
 static nrf_802154_fal_tx_power_split_t m_tx_power;              ///< Power to be used to transmit the current frame split into components.
 static uint8_t                         m_tx_channel;            ///< Channel to be used to transmit the current frame.
@@ -241,11 +242,7 @@ static void rssi_measurement_wait(void)
  */
 static int8_t rssi_last_measurement_get(void)
 {
-    uint8_t rssi_sample = nrf_802154_trx_rssi_last_sample_get();
-
-    rssi_sample = nrf_802154_rssi_sample_corrected_get(rssi_sample);
-
-    return -((int8_t)rssi_sample);
+    return nrf_802154_trx_rssi_last_sample_get();
 }
 
 /** Get LQI of a received frame.
@@ -2500,15 +2497,11 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
+void nrf_802154_trx_energy_detection_finished(int8_t ed_sample_dbm)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    if (m_ed_result < ed_sample)
-    {
-        // Collect maximum value of samples provided by trx
-        m_ed_result = ed_sample;
-    }
+    m_ed_result = MAX(m_ed_result, ed_sample_dbm);
 
     if (m_ed_time_left >= ED_ITER_DURATION)
     {
@@ -2536,7 +2529,7 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
 
         nrf_802154_energy_detected_t ed_result = {};
 
-        ed_result.ed_dbm = nrf_802154_rssi_ed_sample_to_dbm_convert(m_ed_result);
+        ed_result.ed_dbm = m_ed_result;
 
         energy_detected_notify(&ed_result);
     }
@@ -2844,7 +2837,7 @@ bool nrf_802154_core_energy_detection(nrf_802154_term_t term_lvl, uint32_t time_
             }
 
             m_ed_time_left = time_us;
-            m_ed_result    = 0;
+            m_ed_result    = ED_RSSIOFFS;
 
             state_set(RADIO_STATE_ED);
             ed_init();

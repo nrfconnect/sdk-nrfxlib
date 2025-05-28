@@ -572,11 +572,17 @@ static void channel_set(uint8_t channel)
 static void cca_configuration_update(void)
 {
     nrf_802154_cca_cfg_t cca_cfg;
+    uint8_t              threshold_hw;
+    int8_t               lna_gain_db = 0;
 
     nrf_802154_pib_cca_cfg_get(&cca_cfg);
+    mpsl_fem_lna_is_configured(&lna_gain_db);
+
+    threshold_hw = nrf_802154_rssi_dbm_to_hw(cca_cfg.ed_threshold + lna_gain_db);
+
     nrf_radio_cca_configure(NRF_RADIO,
                             cca_cfg.mode,
-                            nrf_802154_rssi_cca_ed_threshold_corrected_get(cca_cfg.ed_threshold),
+                            nrf_802154_rssi_cca_ed_threshold_corrected_get(threshold_hw),
                             cca_cfg.corr_threshold,
                             cca_cfg.corr_limit);
 }
@@ -1514,7 +1520,15 @@ bool nrf_802154_trx_rssi_measure_is_started(void)
 
 uint8_t nrf_802154_trx_rssi_last_sample_get(void)
 {
-    return nrf_radio_rssi_sample_get(NRF_RADIO);
+    int8_t  lna_gain_db                     = 0;
+    uint8_t rssi_sample_minus_dbm           = nrf_radio_rssi_sample_get(NRF_RADIO);
+    uint8_t rssi_sample_corrected_minus_dbm =
+        nrf_802154_rssi_sample_corrected_get(rssi_sample_minus_dbm);
+    int8_t rssi_sample_corrected_dbm = -((int8_t)rssi_sample_corrected_minus_dbm);
+
+    mpsl_fem_lna_is_configured(&lna_gain_db);
+
+    return rssi_sample_corrected_dbm - lna_gain_db;
 }
 
 bool nrf_802154_trx_rssi_sample_is_available(void)
@@ -2848,12 +2862,16 @@ static void irq_handler_edend(void)
 
     NRF_802154_ASSERT(m_trx_state == TRX_STATE_ENERGY_DETECTION);
 
-    uint8_t ed_sample = nrf_radio_ed_sample_get(NRF_RADIO);
+    int8_t  lna_gain_db   = 0;
+    uint8_t ed_sample_hw  = nrf_radio_ed_sample_get(NRF_RADIO);
+    int8_t  ed_sample_dbm = nrf_802154_rssi_ed_sample_to_dbm_convert(ed_sample_hw);
 
     energy_detection_finish();
     m_trx_state = TRX_STATE_FINISHED;
 
-    nrf_802154_trx_energy_detection_finished(ed_sample);
+    mpsl_fem_lna_is_configured(&lna_gain_db);
+
+    nrf_802154_trx_energy_detection_finished(ed_sample_dbm - lna_gain_db);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
