@@ -753,7 +753,7 @@ typedef enum
  */
 #define SPINEL_DATATYPE_NRF_802154_CCA_CFG_S     \
     SPINEL_DATATYPE_UINT8_S /* mode */           \
-    SPINEL_DATATYPE_UINT8_S /* ed_threshold */   \
+    SPINEL_DATATYPE_INT8_S  /* ed_threshold */   \
     SPINEL_DATATYPE_UINT8_S /* corr_threshold */ \
     SPINEL_DATATYPE_UINT8_S /* corr_limit */
 

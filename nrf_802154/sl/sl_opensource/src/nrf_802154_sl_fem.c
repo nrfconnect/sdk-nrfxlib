@@ -238,6 +238,11 @@ uint32_t mpsl_tx_power_dbm_to_radio_register_convert(mpsl_tx_power_t req_radio_p
     return to_radio_tx_power_convert(req_radio_power).reg;
 }
 
+void mpsl_fem_lna_is_configured(int8_t * const p_gain)
+{
+    *p_gain = 0;
+}
+
 #ifdef __cplusplus
 }
 #endif

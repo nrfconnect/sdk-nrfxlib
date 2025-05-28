@@ -408,6 +408,14 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
  */
 int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control);
 
+/** @brief Returns LNA gain if the LNA signal is configured and enabled, 0 otherwise.
+ *
+ * @param[out] p_gain The configured gain in dB if LNA is configured and enabled.
+ *                    If there is no LNA present or the LNA does not affect
+ *                    the signal gain, returns 0 dB.
+ */
+void mpsl_fem_lna_is_configured(int8_t * const p_gain);
+
 #endif // MPSL_FEM_PROTOCOL_API_H__
 
 /**@} */

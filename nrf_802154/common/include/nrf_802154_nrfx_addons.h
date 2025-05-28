@@ -36,7 +36,6 @@
 #define NRF_802154_NRFX_ADDONS_H__
 
 #include "nrfx.h"
-#include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 
 /* The usage of ED_RSSISCALE is described imprecisely in the nRF product specifications. The meaning of

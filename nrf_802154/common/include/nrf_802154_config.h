@@ -40,6 +40,7 @@
 #endif
 
 #include <nrfx.h>
+#include "nrf_802154_nrfx_addons.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,13 +69,20 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CCA_ED_THRESHOLD_DEFAULT
+ * @def NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT
  *
- * Energy detection threshold used in the CCA procedure.
+ * Energy detection threshold in dBm used in the CCA procedure.
+ *
+ * Note: NRF_802154_CCA_ED_THRESHOLD_DEFAULT is deprecated.
  *
  */
-#ifndef NRF_802154_CCA_ED_THRESHOLD_DEFAULT
-#define NRF_802154_CCA_ED_THRESHOLD_DEFAULT 0x14
+#ifdef NRF_802154_CCA_ED_THRESHOLD_DEFAULT
+#undef NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT
+#define NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT (ED_RSSIOFFS + NRF_802154_CCA_ED_THRESHOLD_DEFAULT)
+#else
+#ifndef NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT
+#define NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT (-75)
+#endif
 #endif
 
 /**

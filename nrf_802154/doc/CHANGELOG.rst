@@ -13,6 +13,14 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Notable changes
+===============
+
+* The configuration macro :c:macro:`NRF_802154_CCA_ED_THRESHOLD_DEFAULT` is deprecated.
+  It is superseded by the :c:macro:`NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT` macro, which specifies the absolute value of the CCA ED threshold in dBm. (KRKNWK-19974)
+* The Energy Detection (ED) sample, Received Signal Strength Indicator (RSSI), and Clear Channel Assessment (CCA) threshold now account for Low-Noise Amplifier (LNA) gain.
+  These values now represent the power at the antenna connector, rather than at the radio. (KRKNWK-19974)
+
 Added
 =====
 

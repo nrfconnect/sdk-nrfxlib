@@ -192,7 +192,7 @@ void nrf_802154_pib_init(void)
     memset(m_data.extended_addr, 0, sizeof(m_data.extended_addr));
 
     m_data.cca.mode           = NRF_802154_CCA_MODE_DEFAULT;
-    m_data.cca.ed_threshold   = NRF_802154_CCA_ED_THRESHOLD_DEFAULT;
+    m_data.cca.ed_threshold   = NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT;
     m_data.cca.corr_threshold = NRF_802154_CCA_CORR_THRESHOLD_DEFAULT;
     m_data.cca.corr_limit     = NRF_802154_CCA_CORR_LIMIT_DEFAULT;
 
