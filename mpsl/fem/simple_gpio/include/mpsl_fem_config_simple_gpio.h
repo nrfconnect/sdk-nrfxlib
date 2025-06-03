@@ -25,6 +25,13 @@
 extern "C" {
 #endif
 
+#if defined(NRF52_SERIES)
+#define MPSL_FEM_CONFIG_SIMPLE_GPIO_PPI_CHANNELS_COUNT  2
+#else
+#define MPSL_FEM_CONFIG_SIMPLE_GPIO_DPPI_CHANNELS_COUNT 3
+#define MPSL_FEM_CONFIG_SIMPLE_GPIO_EGU_CHANNELS_COUNT  3
+#endif
+
 /** @brief Configuration parameters for the Front End Module Simple GPIO variant.
  *
  *  A Simple GPIO Front End Module may be used with all Front End Modules
@@ -55,15 +62,15 @@ typedef struct
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      ppi_channels[2];
+    uint8_t                      ppi_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_PPI_CHANNELS_COUNT];
 #else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      dppi_channels[3];
+    uint8_t                      dppi_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_DPPI_CHANNELS_COUNT];
     /** Number of EGU instance for which @c egu_channels apply. */
     uint8_t                      egu_instance_no;
     /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
      *  need to be provided to Front End Module to operate. */
-    uint8_t                      egu_channels[3];
+    uint8_t                      egu_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_EGU_CHANNELS_COUNT];
 #endif
 
 } mpsl_fem_simple_gpio_interface_config_t;
@@ -82,21 +89,6 @@ typedef struct
  *
  */
 int32_t mpsl_fem_simple_gpio_interface_config_set(mpsl_fem_simple_gpio_interface_config_t const * const p_config);
-
-/** @brief Returns the PA and LNA device configuration.
- *
- * This function gets device interface parameters for the PA/LNA module.
- *
- * If the passed pointer is incorrect, the function returns the error code.
- * If the corresponding setter was not called beforehand, the function returns the error code.
- *
- * @param[out] p_config Pointer to the interface parameters for the PA/LNA device to populate.
- *
- * @retval   0             PA/LNA configuration successfully populated.
- * @retval   -NRF_EPERM    PA/LNA was not configured beforehand.
- *
- */
-int32_t mpsl_fem_simple_gpio_interface_config_get(mpsl_fem_simple_gpio_interface_config_t * const p_config);
 
 /**
  * @brief Simple GPIO Front End Module Timings
