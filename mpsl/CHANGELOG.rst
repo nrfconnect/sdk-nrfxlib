@@ -17,7 +17,13 @@ Bug fixes
 =========
 
 * Fixed a rare issue where radio events would be dropped if high-frequency crystal tuning was needed due to a large temperature change when starting the HFXO.
-  In the worst-case scenario, MPSL would not recover from this state and continue to drop radio events. (DRGN-25261)
+  In the worst-case scenario, MPSL would not recover from this state and continue to drop radio events.
+  This issue applies only to the nRF54L Series devices. (DRGN-25261)
+
+Removed
+=======
+
+* Removed the deprecated function :c:func:`mpsl_fem_simple_gpio_interface_config_get`.
 
 nRF Connect SDK v3.0.0
 **********************
