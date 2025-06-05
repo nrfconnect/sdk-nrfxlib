@@ -9,6 +9,18 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.0.99
+***********************
+
+Added
+=====
+
+* Added a timeout feature for awaiting command responses.
+  This change required making the following changes to the nRF RPC OS abstraction layer:
+
+  * Introduced the :c:struct:`nrf_rpc_os_mutex` structure to protect the nRF RPC thread-local context.
+  * Updated the :c:func:`nrf_rpc_os_msg_get` function to unlock the thread-local context mutex and to allow returning no data from the function if a timeout occurs.
+
 nRF Connect SDK v2.8.0
 **********************
 

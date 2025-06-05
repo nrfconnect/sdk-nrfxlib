@@ -32,6 +32,9 @@ extern "C" {
 /** @brief Structure to pass events between threads. */
 struct nrf_rpc_os_event;
 
+/** @brief Stucture to assure exclusive access to thread contexts. */
+struct nrf_rpc_os_mutex;
+
 /** @brief Structure to pass messages between threads. */
 struct nrf_rpc_os_msg;
 
@@ -94,6 +97,26 @@ void nrf_rpc_os_event_set(struct nrf_rpc_os_event *event);
  */
 int nrf_rpc_os_event_wait(struct nrf_rpc_os_event *event, int32_t timeout);
 
+/** @brief Initialize mutex structure.
+ *
+ * @param mutex Pointer to mutex structure.
+ *
+ * @return    0 on success or negative error code.
+ */
+int nrf_rpc_os_mutex_init(struct nrf_rpc_os_mutex *mutex);
+
+/** @brief Lock mutex.
+ *
+ * @param mutex Pointer to mutex structure.
+ */
+void nrf_rpc_os_mutex_lock(struct nrf_rpc_os_mutex *mutex);
+
+/** @brief Unlock mutex.
+ *
+ * @param mutex Pointer to mutex structure.
+ */
+void nrf_rpc_os_mutex_unlock(struct nrf_rpc_os_mutex *mutex);
+
 /** @brief Initialize message passing structure.
  *
  * @param msg Structure to initialize.
@@ -118,14 +141,19 @@ void nrf_rpc_os_msg_set(struct nrf_rpc_os_msg *msg, const uint8_t *data,
 /** @brief Get a message.
  *
  * If message was not set yet then this function waits.
+ * When this function starts waiting, it atomically unlocks the passed mutex.
  *
- * @param[in]  msg  Message passing structure.
- * @param[out] data Received data pointer. Data is passed as a pointer, so no
- *                  copying is done.
- * @param[out] len  Length of the `data`.
+ * This function MAY time out, which is indicated by returning a NULL data
+ * pointer.
+ *
+ * @param[in]  msg   Message passing structure.
+ * @param[in]  mutex Pointer to mutex to unlock before entering the wait state.
+ * @param[out] data  Received data pointer. Data is passed as a pointer, so no
+ *                   copying is done.
+ * @param[out] len   Length of the `data`.
  */
-void nrf_rpc_os_msg_get(struct nrf_rpc_os_msg *msg, const uint8_t **data,
-			size_t *len);
+void nrf_rpc_os_msg_get(struct nrf_rpc_os_msg *msg, struct nrf_rpc_os_mutex *mutex,
+			const uint8_t **data, size_t *len);
 
 /** @brief Get TLS (Thread Local Storage) for nRF RPC.
  *
