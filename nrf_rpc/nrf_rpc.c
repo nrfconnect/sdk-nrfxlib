@@ -52,6 +52,8 @@ struct nrf_rpc_cmd_ctx {
 				    */
 	nrf_rpc_handler_t handler; /* Response handler provided be the user. */
 	void *handler_data;	   /* Pointer for the response handler. */
+	struct nrf_rpc_os_mutex mutex; /* Mutex for protecting all context
+					* members. */
 	struct nrf_rpc_os_msg recv_msg;
 				   /* Message passing between transport
 				    * receive callback and a thread that waits
@@ -187,6 +189,7 @@ static struct nrf_rpc_cmd_ctx *cmd_ctx_alloc(void)
 	NRF_RPC_ASSERT(index < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE);
 
 	ctx = &cmd_ctx_pool[index];
+	nrf_rpc_os_mutex_lock(&ctx->mutex);
 	ctx->handler = NULL;
 	ctx->remote_id = NRF_RPC_ID_UNKNOWN;
 	ctx->use_count = 1;
@@ -200,6 +203,7 @@ static struct nrf_rpc_cmd_ctx *cmd_ctx_alloc(void)
 
 static void cmd_ctx_free(struct nrf_rpc_cmd_ctx *ctx)
 {
+	nrf_rpc_os_mutex_unlock(&ctx->mutex);
 	nrf_rpc_os_tls_set(NULL);
 	nrf_rpc_os_ctx_pool_release(ctx->id);
 }
@@ -741,7 +745,7 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 	int err;
 	int remote_err;
 	struct header hdr;
-	struct nrf_rpc_cmd_ctx *cmd_ctx;
+	struct nrf_rpc_cmd_ctx *cmd_ctx = NULL;
 	const struct nrf_rpc_group *group = NULL;
 
 	err = header_decode(packet, len, &hdr);
@@ -797,6 +801,17 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 			err = -NRF_EBADMSG;
 			goto cleanup_and_exit;
 		}
+
+		nrf_rpc_os_mutex_lock(&cmd_ctx->mutex);
+
+		if (cmd_ctx->use_count == 0) {
+			/* Context initiator has likely timed out and is no longer interested
+			 * in receiving messages for this conversation.
+			 */
+			nrf_rpc_os_mutex_unlock(&cmd_ctx->mutex);
+			goto cleanup_and_exit;
+		}
+
 		if (cmd_ctx->handler != NULL &&
 		    hdr.type == NRF_RPC_PACKET_TYPE_RSP &&
 		    auto_free_rx_buf(transport)) {
@@ -805,16 +820,17 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 					 cmd_ctx->handler_data);
 			nrf_rpc_os_msg_set(&cmd_ctx->recv_msg,
 					   RESPONSE_HANDLED_PTR, 0);
+			nrf_rpc_os_mutex_unlock(&cmd_ctx->mutex);
 			goto cleanup_and_exit;
 
 		} else {
 			nrf_rpc_os_msg_set(&cmd_ctx->recv_msg, packet, len);
+			nrf_rpc_os_mutex_unlock(&cmd_ctx->mutex);
 
 			if (auto_free_rx_buf(transport)) {
 				nrf_rpc_os_event_wait(&group->data->decode_done_event,
 						      NRF_RPC_OS_WAIT_FOREVER);
 			}
-
 		}
 		return;
 
@@ -895,7 +911,7 @@ void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *pac
  * @param[out] rsp_len    If not NULL contains response packet length.
  * @return 0 on success or negative error code.
  */
-static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_cmd_ctx *cmd_ctx,
+static int wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_cmd_ctx *cmd_ctx,
 			      const uint8_t **rsp_packet, size_t *rsp_len)
 {
 	size_t len;
@@ -907,12 +923,14 @@ static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_
 	NRF_RPC_DBG("Waiting for a response");
 
 	do {
-		nrf_rpc_os_msg_get(&cmd_ctx->recv_msg, &packet, &len);
+		nrf_rpc_os_msg_get(&cmd_ctx->recv_msg, &cmd_ctx->mutex, &packet, &len);
 
-		NRF_RPC_ASSERT(packet != NULL);
+		if (packet == NULL) {
+			return -NRF_ETIMEDOUT;
+		}
 
 		if (packet == RESPONSE_HANDLED_PTR) {
-			return;
+			return 0;
 		}
 
 		type = parse_incoming_packet(cmd_ctx, packet, len);
@@ -934,6 +952,8 @@ static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_
 
 		nrf_rpc_decoding_done(group, &packet[NRF_RPC_HEADER_SIZE]);
 	}
+
+	return 0;
 }
 
 int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
@@ -986,7 +1006,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 	if (err >= 0) {
-		wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
+		err = wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
 	}
 
 	cmd_ctx->handler = old_handler;
@@ -1153,6 +1173,10 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 
 	for (i = 0; i < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE; i++) {
 		cmd_ctx_pool[i].id = i;
+		err = nrf_rpc_os_mutex_init(&cmd_ctx_pool[i].mutex);
+		if (err < 0) {
+			return err;
+		}
 		err = nrf_rpc_os_msg_init(&cmd_ctx_pool[i].recv_msg);
 		if (err < 0) {
 			return err;
