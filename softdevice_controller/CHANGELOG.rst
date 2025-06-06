@@ -17,6 +17,7 @@ Added
 
 * Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
 * Initial prototype support for the nRF54LM20 device (DRGN-24919).
+* Support for generating paEventCounter reports using the VS Enable Periodic Advertising Event Counter Reports command (DRGN-25444).
 
 Bug fixes
 =========
