@@ -25,6 +25,10 @@ Added
 =====
 
 * Added the :c:func:`nrf_802154_alternate_short_address_set` function, which allows for setting the secondary short address that will be accepted by the frame filter. (KRKNWK-20051)
+* Added the :c:func:`nrf_802154_clock_hfclk_latency_set` function, which sets the HFXO startup latency.
+  Currently, it is supported only on nRF54L Series SoCs.
+  Use this API during clock platform initialization.
+  If the latency is not set, the driver assumes a default worst-case startup latency of 1650 us.
 
 nRF Connect SDK v3.0.0 - nRF 802.15.4 Radio Driver
 **************************************************

@@ -49,6 +49,7 @@
 #define NRF_802154_CLOCK_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,6 +127,26 @@ extern void nrf_802154_clock_hfclk_ready(void);
  * @brief Callback function executed when the Low Frequency Clock is ready.
  */
 extern void nrf_802154_clock_lfclk_ready(void);
+
+#ifdef NRF54L_SERIES
+
+/**
+ * @brief Informs the nRF 802.15.4 Radio Driver about the HFXO startup latency.
+ *
+ * This function sets the clock latency that will be taken into account during timing
+ * calculations. Lower latencies result in lower power consumption and an ability to
+ * schedule TX/RX windows earlier in the future, but require a crystal oscillator with better
+ * parameters. The default clock latency assumes the worst-case crystal oscillator and should
+ * be adjusted to achieve better power efficiency.
+ *
+ * Note: This API is available only on nRF54L series SoCs.
+ *
+ * @param[in]  latency_us    Time difference in microseconds between start event of the HFXO
+ *                           and the HFXO started/tuned event.
+ */
+extern void nrf_802154_clock_hfclk_latency_set(uint32_t latency_us);
+
+#endif
 
 /**
  *@}

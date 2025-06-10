@@ -195,3 +195,13 @@ uint32_t nrf_802154_rsch_delayed_timeslot_time_to_hw_trigger_get(void)
 }
 
 #endif
+
+#ifdef NRF54L_SERIES
+
+void nrf_802154_clock_hfclk_latency_set(uint32_t latency_us)
+{
+    /* Intentionally empty. */
+    (void)latency_us;
+}
+
+#endif

@@ -66,6 +66,12 @@
         (ticks) * (NRF_802154_SL_US_PER_S >> NRF_802154_SL_FREQUENCY_US_PER_S_GCD_BITS), \
         (NRF_802154_SL_RTC_FREQUENCY >> NRF_802154_SL_FREQUENCY_US_PER_S_GCD_BITS))
 
+/**@brief Maximum of two values. */
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
+/**@brief Minimum of two values. */
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
 /**@brief Converts microseconds (us) to RTC ticks.
  *
  * @param time      Time is us to be converted to RTC ticks.
