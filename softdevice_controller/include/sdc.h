@@ -1362,7 +1362,7 @@ int32_t sdc_support_connection_subrating_peripheral(void);
  */
 int32_t sdc_support_channel_sounding_test(void);
 
-/** @brief
+/** @brief Support Channel Sounding Step Mode 3
  *
  * After this API is called, the controller will support Channel Sounding Step Mode 3
  *
@@ -1371,6 +1371,26 @@ int32_t sdc_support_channel_sounding_test(void);
  * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
  */
 int32_t sdc_support_channel_sounding_mode3(void);
+
+/** @brief  Support Channel Sounding Initiator role
+ *
+ * After this API is called, the controller will support Channel Sounding Initiator role
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ */
+int32_t sdc_support_channel_sounding_initiator_role(void);
+
+/** @brief  Support Channel Sounding Reflector role
+ *
+ * After this API is called, the controller will support Channel Sounding Reflector role
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ */
+int32_t sdc_support_channel_sounding_reflector_role(void);
 
 /** @brief Support LE Channel Sounding
  *

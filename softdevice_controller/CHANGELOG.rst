@@ -22,6 +22,13 @@ Added
 Bug fixes
 =========
 
+* Fixed a rare issue where the controller would assert when scanning and initiating simultaneously. (DRGN-25478)
+
+  The issue would only happen if all the following conditions are met:
+
+    * The scan interval and scan window used by the initiator were not equal to those used by the scanner.
+    * The Bluetooth host temporarily stopped pulling HCI events.
+    * The initiator received a connectable ``ADV_EXT_IND``.
 * Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
   The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
 * Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
