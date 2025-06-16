@@ -921,6 +921,8 @@ struct nrf_wifi_cmd_sys_init {
 	 *  By default, RX STBC is enabled.
 	 */
 	unsigned int stbc_enable_in_ht;
+	/* Enables(1) or Disables(0) Dynamic bandwidth signalling control */
+	unsigned int dbs_war_ctrl;
 } __NRF_WIFI_PKD;
 
 /**
