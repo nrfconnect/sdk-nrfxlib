@@ -13,6 +13,16 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Changes
+=======
+
+* The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` added by the :file:`mpsl_hwres.h` file need to be implemented by MPSL users. (KRKNWK-15977)
+
+Added
+=====
+
+* Added the :file:`mpsl_hwres.h` file, which defines an API for hardware resources allocation. (KRKNWK-15977)
+
 Bug fixes
 =========
 
