@@ -244,6 +244,9 @@ typedef struct
  *       @ref MPSL_TIMESLOT_SIGNAL_INVALID_RETURN event will be sent.
  * @note The returned struct pointer must remain valid after the signal callback
  *       function returns. For instance, this means that it must not point to a stack variable.
+ * @note The signal callback is executed from high priority context. It is not advised to use
+ *       blocking operations in it. Use of kernel APIs may be also disallowed. Please check your
+ *       operating system documentation.
  *
  * @param[in] session_id Session id as returned by @ref mpsl_timeslot_session_open.
  * @param[in] signal     Type of signal, see @ref MPSL_TIMESLOT_SIGNAL.
