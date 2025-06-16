@@ -29,6 +29,7 @@ Added
   Currently, it is supported only on nRF54L Series SoCs.
   Use this API during clock platform initialization.
   If the latency is not set, the driver assumes a default worst-case startup latency of 1650 us.
+* When the FEM power amplifier is configured, the Errata 56 for nRF54L15 is automatically applied. (KRKNWK-20409)
 
 nRF Connect SDK v3.0.0 - nRF 802.15.4 Radio Driver
 **************************************************

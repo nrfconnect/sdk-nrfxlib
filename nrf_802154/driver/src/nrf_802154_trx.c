@@ -48,6 +48,7 @@
 #include "nrf_802154_trx_ppi_api.h"
 #include "nrf_802154_utils.h"
 
+#include <nrf_erratas.h>
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"
@@ -764,11 +765,12 @@ static void device_config_254_apply_tx(void)
 
 #endif
 
+#if defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+
 /** @brief Applies ERRATA-117
  *
  * Shall be called after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
  */
-#if defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 static void errata_117_apply(void)
 {
     /* Register at 0x01FF0084. */
@@ -779,8 +781,7 @@ static void errata_117_apply(void)
     *p_radio_reg = ficr_reg;
 }
 
-static uint32_t m_pa_mod_filter_latched    = 0;
-static bool     m_pa_mod_filter_is_latched = false;
+#endif /* defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)*/
 
 /** @brief Applies modulation fix when PA is used.
  *
@@ -791,7 +792,19 @@ static bool     m_pa_mod_filter_is_latched = false;
  */
 static void pa_modulation_fix_apply(bool enable)
 {
-    volatile uint32_t * p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x584UL);
+#if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+#if (defined(NRF5340_XXAA) || defined(NRF54L_CONFIGURATION_56_ENABLE))
+    static uint32_t     m_pa_mod_filter_latched    = 0;
+    static bool         m_pa_mod_filter_is_latched = false;
+    volatile uint32_t * p_radio_reg;
+
+#if defined(NRF5340_XXAA)
+    p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x584UL);
+#elif defined(NRF54L_CONFIGURATION_56_ENABLE)
+    p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x8C4UL);
+#else
+    #error Unknown SoC
+#endif
 
     if (enable)
     {
@@ -801,9 +814,16 @@ static void pa_modulation_fix_apply(bool enable)
 
         if ((fem_caps.flags & MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED) != 0)
         {
+#if defined(NRF5340_XXAA)
             m_pa_mod_filter_latched    = *(p_radio_reg);
             m_pa_mod_filter_is_latched = true;
             *(p_radio_reg)             = 0x40081B08;
+#elif defined(NRF54L_CONFIGURATION_56_ENABLE)
+            // MLTPAN-56
+            m_pa_mod_filter_latched    = *(p_radio_reg);
+            m_pa_mod_filter_is_latched = true;
+            *(p_radio_reg)             = 0x01280001ul;
+#endif
         }
     }
     else if (m_pa_mod_filter_is_latched)
@@ -811,9 +831,11 @@ static void pa_modulation_fix_apply(bool enable)
         *(p_radio_reg)             = m_pa_mod_filter_latched;
         m_pa_mod_filter_is_latched = false;
     }
+#endif /* (defined(NRF5340_XXAA) || defined(NRF54L_CONFIGURATION_56_ENABLE)) */
+#else /* !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
+    (void)enable;
+#endif /* !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
 }
-
-#endif
 
 void nrf_802154_trx_module_reset(void)
 {
@@ -890,8 +912,9 @@ void nrf_802154_trx_enable(void)
 #if defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     // Apply ERRATA-117 after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
     errata_117_apply();
-    pa_modulation_fix_apply(true);
 #endif
+
+    pa_modulation_fix_apply(true);
 
     memset(&packet_conf, 0, sizeof(packet_conf));
     packet_conf.lflen  = 8;
@@ -1013,9 +1036,7 @@ void nrf_802154_trx_disable(void)
 
     if (m_trx_state != TRX_STATE_DISABLED)
     {
-#if defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
         pa_modulation_fix_apply(false);
-#endif
 
 #if defined(RADIO_POWER_POWER_Msk)
         nrf_radio_power_set(NRF_RADIO, false);
