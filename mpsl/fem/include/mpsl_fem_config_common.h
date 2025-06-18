@@ -25,6 +25,18 @@
 extern "C" {
 #endif
 
+/** @brief Indicates next version of FEM configuration API (API change macro).
+ *
+ *  This is transitional macro. When defined it informs that:
+ *  - For nRF54L Series the struct @c mpsl_fem_gpiote_pin_config_t no more contains the @c ppib_channels field.
+ *  - For nRF54L Series the mpsl_hwres.h API implementation is required. The API is used
+ *    during boot-time configuration (functions @c mpsl_fem_<fem_type>_interface_config_set) to
+ *    allocate necessary resources.
+ *
+ *  The macro is to be removed shortly after transition in nRF Connect SDK.
+ */
+#define _MPSL_FEM_CONFIG_API_NEXT
+
 /** @brief GPIO pin and port to be used by Front End Module.
  */
 typedef struct
@@ -60,15 +72,6 @@ typedef struct
     uint8_t         gpiote_ch_id;
 
 #if defined(NRF54L_SERIES)
-    /** The PPIB channel numbers of PPIB11 that can be subscribed within Radio Power Domain to trigger GPIOTE tasks.
-     *
-     *  It is a responsibility of an user of the FEM API to provide the cross-domain DPPI/PPIB connections that
-     *  fulfill the following requirements:
-     *  - The PPIB11 channel number @c ppib_channels[0] triggers the TASKS_CLR[gpiote_ch_id] of the GPIOTE.
-     *  - The PPIB11 channel number @c ppib_channels[1] triggers the TASKS_SET[gpiote_ch_id] of the GPIOTE.
-     */
-    uint8_t         ppib_channels[2];
-
     /** The pointer to the GPIOTE instance used to toggle the GPIO pin.
      *
      *  It is a responsibility of an user of the FEM API to provide proper instance
