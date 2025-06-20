@@ -349,3 +349,30 @@ int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint1
 
 	return 0;
 }
+
+int sw_codec_lc3_get_coded_size(uint16_t pcm_sample_rate, uint32_t bitrate_bps,
+                                uint16_t framesize_us, uint16_t *coded_bytes) {
+  int ret;
+  LC3FrameSize_t framesize;
+
+  switch (framesize_us) {
+  case 7500:
+    framesize = LC3FrameSize7_5Ms;
+    break;
+  case 10000:
+    framesize = LC3FrameSize10Ms;
+    break;
+  default:
+    LOG_ERR("Unsupported framesize: %d", framesize_us);
+    return -EINVAL;
+  }
+
+  *coded_bytes =
+      LC3BitstreamBuffersize(pcm_sample_rate, bitrate_bps, framesize, &ret);
+  if (coded_bytes == 0) {
+    LOG_ERR("Required coded bytes to LC3 instance is zero");
+    return -EPERM;
+  }
+
+  return 0;
+}
