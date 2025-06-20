@@ -322,7 +322,8 @@ Use the following Kconfig options to enable and configure the CS feature:
 
  * Set :kconfig:option:`BT_CTLR_CHANNEL_SOUNDING` to ``y`` to enable the Channel Sounding feature.
  * Set :kconfig:option:`BT_CTLR_SDC_CS_COUNT` to a value between ``1`` and :kconfig:option:`BT_MAX_CONN` to set the number of connections that can use CS procedures.
-
+ * The :kconfig:option:`BT_CTLR_CHANNEL_SOUNDING_TEST` can be set to ``n`` to disable the Channel Sounding Test and Channel Sounding Test End commands.
+   This can help reduce the flash size of the |controller|.
 
 Use the following Kconfig options to enable the desired optional CS capabilities:
 
