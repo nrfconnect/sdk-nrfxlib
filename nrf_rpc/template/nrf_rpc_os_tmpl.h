@@ -94,6 +94,26 @@ void nrf_rpc_os_event_set(struct nrf_rpc_os_event *event);
  */
 int nrf_rpc_os_event_wait(struct nrf_rpc_os_event *event, int32_t timeout);
 
+/** @brief Initialize mutex structure.
+ *
+ * @param mutex Pointer to mutex structure.
+ *
+ * @return    0 on success or negative error code.
+ */
+int nrf_rpc_os_mutex_init(struct nrf_rpc_os_mutex *mutex);
+
+/** @brief Lock mutex.
+ *
+ * @param mutex Pointer to mutex structure.
+ */
+void nrf_rpc_os_mutex_lock(struct nrf_rpc_os_mutex *mutex);
+
+/** @brief Unlock mutex.
+ *
+ * @param mutex Pointer to mutex structure.
+ */
+void nrf_rpc_os_mutex_unlock(struct nrf_rpc_os_mutex *mutex);
+
 /** @brief Initialize message passing structure.
  *
  * @param msg Structure to initialize.
@@ -119,13 +139,14 @@ void nrf_rpc_os_msg_set(struct nrf_rpc_os_msg *msg, const uint8_t *data,
  *
  * If message was not set yet then this function waits.
  *
- * @param[in]  msg  Message passing structure.
- * @param[out] data Received data pointer. Data is passed as a pointer, so no
- *                  copying is done.
- * @param[out] len  Length of the `data`.
+ * @param[in]  msg   Message passing structure.
+ * @param[in]  mutex Pointer to mutex to unlock before entering the wait state.
+ * @param[out] data  Received data pointer. Data is passed as a pointer, so no
+ *                   copying is done.
+ * @param[out] len   Length of the `data`.
  */
-void nrf_rpc_os_msg_get(struct nrf_rpc_os_msg *msg, const uint8_t **data,
-			size_t *len);
+void nrf_rpc_os_msg_get(struct nrf_rpc_os_msg *msg, struct nrf_rpc_os_mutex *mutex,
+			const uint8_t **data, size_t *len);
 
 /** @brief Get TLS (Thread Local Storage) for nRF RPC.
  *
