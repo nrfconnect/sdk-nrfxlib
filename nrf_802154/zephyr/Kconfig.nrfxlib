@@ -19,6 +19,25 @@ config NRF_802154_ENCRYPTION
 	bool "nRF 802.15.4 AES-CCM* authentication & encryption"
 	depends on !CRYPTO_NRF_ECB
 
+config NRF_802154_CSMA_CA_MIN_BE_DEFAULT
+	int "Minimum CSMA-CA backoff exponent (BE)"
+	default 3
+	help
+		The default minimum value of the backoff exponent (BE) in the CSMA-CA algorithm.
+
+config NRF_802154_CSMA_CA_MAX_BE_DEFAULT
+	int "Maximum CSMA-CA backoff exponent (BE)"
+	default 5
+	help
+		The default maximum value of the backoff exponent (BE) in the CSMA-CA algorithm.
+
+config NRF_802154_CSMA_CA_MAX_CSMA_BACKOFFS_DEFAULT
+	int "Maximum CSMA-CA backoff attempts"
+	default 4
+	help
+		The default maximum number of backoffs that the CSMA-CA algorithm will attempt
+		before declaring a channel access failure.
+
 choice NRF_802154_SL_TYPE
 	prompt "nRF 802.15.4 Service Layer selection"
 	default NRF_802154_SL
