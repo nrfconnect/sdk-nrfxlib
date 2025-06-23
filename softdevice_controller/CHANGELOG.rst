@@ -9,43 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Added
-=====
-
-* Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
-* Support for generating paEventCounter reports using the VS Enable Periodic Advertising Event Counter Reports command (DRGN-25444).
+nRF Connect SDK v3.0.1
+**********************
 
 Bug fixes
 =========
 
-* Fixed a rare issue where the controller would assert when scanning and initiating simultaneously. (DRGN-25478)
-
-  The issue would only happen if all the following conditions are met:
-
-    * The scan interval and scan window used by the initiator were not equal to those used by the scanner.
-    * The Bluetooth host temporarily stopped pulling HCI events.
-    * The initiator received a connectable ``ADV_EXT_IND``.
-
-* Fixed an issue where mode-0 steps in a Channel Sounding subevent would compensate for a random frequency actuation error when using the LE CS Test HCI command (DRGN-25522).
-* Fixed an issue where the controller would assert when terminating a connection created from PAwR.
-  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled. (DRGN-25200)
-* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
-* Fixed an issue where the controller could assert when receiving on the Coded PHY over an ACL connection.
-  This would occur when coding indicator or length byte was corrupted, causing the controller to listen for more than 27 bytes on S8 Coded PHY. (DRGN-24930)
-
-Changes
-=======
-
-* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x0F`` to indicate compatibility with Bluetooth Core Specification v6.1 (DRGN-25531).
-* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
-  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
-  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
-  This reverts the changes done by DRGN-21085. (DRGN-24882)
-* The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
-  This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
+* Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
+  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
 
 nRF Connect SDK v3.0.0
 **********************
@@ -64,8 +35,8 @@ Changes
 =======
 
 * The Channel Sounding feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-24060)
-* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands.
-  This behavior was changed to accommodate ES-27170. (DRGN-24660)
+* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
+  This behavior was changed to accommodate ES-27170.
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
 * Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
 * Reduced latency when changing the list of subevents to which a Periodic Advertising with Responses Scanner is synchronized. (DRGN-24543)
@@ -82,9 +53,8 @@ Bug fixes
 
 * Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
 * Fixed an issue where the controller would fail to synchronize with a BIS Broadcaster. (DRGN-24670)
-
   This would occur when the Broadcaster has set ``Num_Bis=1``, ``NSE > 1``, and ``Sub_Interval == BIS_Spacing``.
-  Previously, the controller would raise the LE BIG Sync Established event with status set to ``Unsupported Feature or Parameter value (0x11)``.
+  Previously, the controller would raise the LE BIG Sync Established event with status set to "Unsupported Feature or Parameter value (0x11)".
 * Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
 * Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
 
@@ -94,7 +64,7 @@ Bug fixes
     * :kconfig:option:`BT_CTLR_SDC_SCAN_BUFFER_COUNT` is set to the non-default value 2.
     * The initiator has received a connectable ``ADV_EXT_IND``.
     * The initiator is canceled.
-* Fixed an issue where the central device would disconnect 40 s after responding to a ``LL_SUBRATE_REQ`` with reason ``LMP Response Timeout (0x22)``.
+* Fixed an issue where the central device would disconnect 40 s after responding to a ``LL_SUBRATE_REQ`` with reason "LMP Response Timeout (0x22)".
   This would only occur on nRF52 Series and nRF53 Series devices. (DRGN-24310)
 * Fixed a very rare issue where the scanner would assert, hang or stop producing reports when scanning and initiating at the same time. (DRGN-24370)
 
@@ -107,7 +77,6 @@ Bug fixes
 
     See :ref:`concurrent_scanner_initiator_timing` for information on how to select parameters where the timing events are combined.
 * Fixed a rare issue where the scanner would fail to receive a secondary channel packet. (DRGN-24300)
-
   The issue would only happen if all the conditions are met:
 
     * The configured scan window is larger than 500 milliseconds.
@@ -120,8 +89,8 @@ Bug fixes
 
     * The subevent interval is large, or if the CIS is configured with interleaved packing.
     * There are scheduling conflicts.
-* Fixed an issue where an application running on a nRF54L Series device would sometimes fail to receive an ACL packet after it had sent a packet on Coded PHY with S=2.
-  The issue would only happen when the application explicitly asked to use the coding scheme S=2. (DRGN-23691)
+* Fixed an issue where an application running on a nRF54L Series device would sometimes fail to receive an ACL packet after it had sent a packet on Coded PHY with S=2. (DRGN-23691)
+  The issue would only happen when the application explicitly asked to use the coding scheme S=2.
 * Fixed an issue where a CIS Peripheral would assert when receiving an invalid ``LL_CIS_REQ``.
   This would only happen if unframed PDUs were used. (DRGN-24706)
 * Fixed a rare issue where the controller would assert when in a connection. (DRGN-24749)
@@ -136,8 +105,8 @@ Bug fixes
 * Fixed a rare assert when stopping a CIG or BIG.
   This issue would only occur when another CIG or BIG role was active at the same time. (DRGN-24938)
 * Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
-  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection.
-  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled. (DRGN-24929)
+  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
+  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
 
 nRF Connect SDK v2.9.0
 **********************
@@ -232,7 +201,7 @@ Changes
 * Generating the Number of Completed Packets event is now prioritized above all other events.
   The event is generated irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
 * When a link disconnects, the controller will now raise one or more Number Of Completed Packets events for data packets not ACKed by the peer device. (DRGN-23302)
-* Isochronous roles may now produce HCI ISO data with SDUs containing the ``0b01`` packet status flag which indicates possibly invalid data.
+* Isochronous roles may now produce HCI ISO data with SDUs containing the ``0b01`` packet status flag which indicates "possibly invalid data".
   This is the case if the peer sends invalid data. (DRGN-23420)
 
 Bug fixes
@@ -350,7 +319,7 @@ Bug fixes
   This could happen with both the LL Create BIG and LL Create BIG Test commands (DRGN-21912).
 * Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
 * Fixed an issue where the |controller| could assert if a BIS Receiver stops receiving packets from the BIS Broadcaster. (DRGN-21949)
-* Fixed an issue where the |controller| could in some rare cases generate an LE Periodic Advertising Subevent Data Request for a subevent it did not have the memory capacity for. (DRGN-21839)
+* Fixed an issue where the |controller| could in some rare cases generate an LE Periodic Advertising Subevent Data Request for a subevent it didn't have the memory capacity for. (DRGN-21839)
 * Fixed an issue where an assert could happen if the peripheral received a connection update indication.
   This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
 * Fixed an issue where the |controller| could assert when scanning or advertising on Coded PHY using SPI FEM on the nRF53 series. (DRGN-21962)
@@ -397,7 +366,7 @@ Changes
   :c:func:`sdc_hci_cmd_vs_set_power_control_apr_handling` have been replaced by
   :c:func:`sdc_hci_cmd_vs_set_power_control_request_params` (DRGN-17355).
 * The controller now always returns the error code ``0x0D`` if a connection attempt is made while another is still pending.
-  Previously, this was not the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
+  Previously, this wasn't the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
 * The scheduling priority for initiator events where the scan window is equal to the scan interval is lowered to the third scheduling priority.
   For other configurations of scan window and scan interval the priority is unchanged. (DRGN-20831)
 * The vendor-specific Set event length for ACL connections HCI command now accepts values lower than 1250 us. (DRGN-20796)
@@ -735,8 +704,8 @@ Bug fixes
 
 * Fixed an issue where Advertiser Address Type in the LE Periodic Advertising Sync Established event was never set to 0x02 or 0x03, even if the advertiser's address was resolved (DRGN-17110).
 * Fixed an issue where Advertiser Address Type was not set in the LE Periodic Advertising Sync Established event when using the Periodic Advertiser List (DRGN-17110).
-* Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned ``Unknown Advertiser Identifier (0x42)``.
-* Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned ``Unknown Advertiser Identifier (0x42)``.
+* Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unknown Advertiser Identifier (0x42)".
+* Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned "Unknown Advertiser Identifier (0x42)".
 * Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).
 * Fixed an issue where the advertiser would incorrectly set Offset Adjust in the SyncInfo when the offset to the ``AUX_SYNC_IND`` is large (DRGN-16887).
 * Fixed an issue where issuing a legitimate connection update could result in an ``BT_HCI_ERR_INVALID_PARAM`` error (DRGN-17324).
@@ -884,7 +853,7 @@ Bug fixes
 * Fixed an issue where, in rare cases, an assert could occur when receiving a packet as a slave.
   This could only occur after performing a data length procedure on Coded PHY (DRGN-15251).
 * Fixed an issue where "HCI Read RSSI" would always return a Command Disallowed (0x0C) error code (DRGN-15310).
-* Fixed an issue where setting radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned ``Unsupported Feature or Parameter value (0x11)``.
+* Fixed an issue where setting radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unsupported Feature or Parameter value (0x11)".
   Now the controller will select an output power level that is lower or equal to the one requested.
   The command returns success and the selected power level (DRGN-15369).
 * Fixed an issue where an assert could occur when running an extended advertiser with maximum data length and minimum interval on Coded PHY.
@@ -929,7 +898,7 @@ Bug fixes
 * Fixed an issue where a directed advertiser used a resolvable address as the ``TargetA`` when the local device address was set to public or random device address (DRGN-13921).
 * Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data that was longer than it could fit within the advertising interval.
   Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
-* Fixed an issue where the link would disconnect with reason ``LMP Response Timeout (0x22)``.
+* Fixed an issue where the link would disconnect with reason "LMP Response Timeout (0x22)".
   This would occur if the "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
@@ -1034,7 +1003,7 @@ Changes
 * The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
 * The previously implemented Vendor Specific HCI command opcodes are now offset with 0x100.
 * The previously implemented Vendor Specific HCI event codes are now offset with 0x80.
-* When the controller receives an unknown command, it will raise ``Command Status event`` instead of ``Command Complete event``.
+* When the controller receives an unknown command, it will raise "Command Status event" instead of "Command Complete event".
 * When in slave latency, the controller now picks up data from the host for transmission earlier than it used to.
 * In the LE Extended Advertising Report, the Direct Address Type values 0x02, 0x03, and 0xFE will only be used when the Scanning Filter Policy is equal to 0x02 or 0x03 and TargetA is a resolvable private address.
   If the address is resolved, then the Direct Address Type will contain the same value as the Own Address Type parameter of the command LE Set Extended Scan Parameters.

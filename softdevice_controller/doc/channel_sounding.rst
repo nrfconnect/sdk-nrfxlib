@@ -315,16 +315,10 @@ The following samples are recommended for getting started with Channel Sounding:
 
       west build -b nrf54l15dk/nrf54l15/cpuapp --pristine -- -DCONFIG_BT_CTLR_CHANNEL_SOUNDING=y
 
-CS Kconfigs
+Optional CS Kconfigs
 --------------------
 
-Use the following Kconfig options to enable and configure the CS feature:
-
- * Set :kconfig:option:`BT_CTLR_CHANNEL_SOUNDING` to ``y`` to enable the Channel Sounding feature.
- * Set :kconfig:option:`BT_CTLR_SDC_CS_COUNT` to a value between ``1`` and :kconfig:option:`BT_MAX_CONN` to set the number of connections that can use CS procedures.
-
-
-Use the following Kconfig options to enable the desired optional CS capabilities:
+Use the following Kconfig options to enable the desired optional CS features:
 
  * Set :kconfig:option:`BT_CTLR_SDC_CS_STEP_MODE3` to ``y`` to enable Channel Sounding step mode-3 support.
 

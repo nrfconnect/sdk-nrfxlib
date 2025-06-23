@@ -89,6 +89,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_LONG_TERM_KEY_REQUEST_NEGATIVE_REPLY = 0x201b,
     /** @brief See @ref sdc_hci_cmd_le_read_supported_states(). */
     SDC_HCI_OPCODE_CMD_LE_READ_SUPPORTED_STATES = 0x201c,
+    /** @brief See @ref sdc_hci_cmd_le_test_end(). */
+    SDC_HCI_OPCODE_CMD_LE_TEST_END = 0x201f,
     /** @brief See @ref sdc_hci_cmd_le_set_data_length(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DATA_LENGTH = 0x2022,
     /** @brief See @ref sdc_hci_cmd_le_read_suggested_default_data_length(). */
@@ -1568,6 +1570,12 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief See the table in Core v6.0, Vol 4, Part E, Section 7.8.27. */
     uint8_t le_states[8];
 } sdc_hci_cmd_le_read_supported_states_return_t;
+
+/** @brief LE Test End return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t num_packets;
+} sdc_hci_cmd_le_test_end_return_t;
 
 /** @brief LE Set Data Length command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -3736,6 +3744,27 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_negative_reply(const sdc_hci_cmd_le
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_read_supported_states(sdc_hci_cmd_le_read_supported_states_return_t * p_return);
+
+/** @brief LE Test End.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.30
+ *
+ * This command is used to stop any test which is in progress. The Num_Packets for a
+ * transmitter test shall be reported as 0x0000. The Num_Packets is an unsigned number
+ * and contains the number of received packets.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Test_End command has completed, an HCI_Command_Complete
+ * event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_test_end(sdc_hci_cmd_le_test_end_return_t * p_return);
 
 /** @brief LE Set Data Length.
  *

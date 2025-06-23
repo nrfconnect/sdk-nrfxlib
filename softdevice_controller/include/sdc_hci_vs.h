@@ -105,8 +105,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_EVENT_START_TASK = 0xfd1e,
     /** @brief See @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(). */
     SDC_HCI_OPCODE_CMD_VS_CONN_ANCHOR_POINT_UPDATE_EVENT_REPORT_ENABLE = 0xfd1f,
-    /** @brief See @ref sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(). */
-    SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
 };
 
 /** @brief VS subevent Code values. */
@@ -118,8 +116,6 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
     /** @brief See @ref sdc_hci_subevent_vs_conn_anchor_point_update_report_t. */
     SDC_HCI_SUBEVENT_VS_CONN_ANCHOR_POINT_UPDATE_REPORT = 0x82,
-    /** @brief See @ref sdc_hci_subevent_vs_periodic_adv_event_counter_report_t. */
-    SDC_HCI_SUBEVENT_VS_PERIODIC_ADV_EVENT_COUNTER_REPORT = 0x84,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -287,22 +283,6 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Absolute time of the new anchor point in microseconds. */
     uint64_t anchor_point_us;
 } sdc_hci_subevent_vs_conn_anchor_point_update_report_t;
-
-/** @brief Periodic Advertising Event Counter Report.
- *
- * This event indicates that the controller updated the event counter for a periodic advertisement.
- *
- * These will only be generated if enabled through the
- * @ref sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports command.
- */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Advertising handle for the periodic advertisement whose event counter was updated.
-     */
-    uint8_t adv_handle;
-    /** @brief Event counter. */
-    uint16_t pa_event_counter;
-} sdc_hci_subevent_vs_periodic_adv_event_counter_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -713,13 +693,6 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
     uint8_t enable;
 } sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t;
-
-/** @brief Enable Periodic Advertising Event Counter Reports command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Set to 1 to enable, 0 to disable. */
-    uint8_t enable;
-} sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1648,27 +1621,6 @@ uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t * p_params);
-
-/** @brief Enable Periodic Advertising Event Counter Reports.
- *
- * This command can be used to enable generation
- * of @ref sdc_hci_subevent_vs_periodic_adv_event_counter_report_t events.
- *
- * The event will be generated whenever the controller sends
- * the first sync packet in a periodic advertising event.
- *
- * If the application does not pull a report in time, it will be overwritten.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t * p_params);
 
 /** @} end of HCI_VS_API */
 
