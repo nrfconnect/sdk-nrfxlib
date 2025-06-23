@@ -120,7 +120,6 @@ The recommended practice is to set up a timer interrupt that expires before the 
 Such a timer interrupt can also be used to request an extension of the timeslot, but there must still be enough time to clean up if the extension is not granted.
 
 .. note::
-
    The scheduler uses the LFCLK source for time calculations when scheduling events.
    If the application uses a TIMER (sourced from the current HFCLK source) to calculate and signal the end of a timeslot, it must account for the possible clock drift between the HFCLK source and the LFCLK source.
 
@@ -131,14 +130,8 @@ Depending on the signal type, a signal arrives at interrupt priority level 0, or
 Therefore, in order to invoke MPSL APIs inside the signal handler, thread safety must be taken into account.
 
 .. note::
-
    Processing of high priority signals cannot exceed the granted time of the timeslot.
    If it does, the behavior is undefined and the MPSL might malfunction.
-
-.. note::
-
-   If the MPSL is integrated with an operating system, the use of kernel APIs in the signal handler may not be allowed.
-   In such a case, the behavior is undefined, and the MPSL might malfunction.
 
 API usage scenarios
 ===================
@@ -179,7 +172,6 @@ Blocked scenario
 Timeslot requests might be blocked due to an overlap with activities already scheduled by the MPSL.
 
 .. note::
-
    It is possible to issue a timeslot request when getting blocked.
    However, it is likely that the new request will get blocked as well.
    This may cause the CPU to become less available for other processing.

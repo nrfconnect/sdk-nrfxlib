@@ -10,35 +10,6 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Changes
-=======
-
-* The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` added by the :file:`mpsl_hwres.h` file need to be implemented by MPSL users. (KRKNWK-15977)
-* For the nRF54L Series devices, the inter-domain PPIB connections for Front-End Modules are configured internally in the MPSL.
-  You no longer need to configure the PPIB connections.
-  The field ``ppib_channels`` of the :c:struct:`mpsl_fem_gpiote_pin_config_t` structure is removed. (KRKNWK-15977)
-
-Added
-=====
-
-* Added the :file:`mpsl_hwres.h` file, which defines an API for hardware resources allocation. (KRKNWK-15977)
-* Added support for the nRF21540 Front-End Module in GPIO/SPI mode on the nRF54L Series SoCs. (KRKNWK-15977)
-
-Bug fixes
-=========
-
-* Fixed a rare issue where radio events would be dropped if high-frequency crystal tuning was needed due to a large temperature change when starting the HFXO.
-  In the worst-case scenario, MPSL would not recover from this state and continue to drop radio events.
-  This issue applies only to the nRF54L Series devices. (DRGN-25261)
-
-Removed
-=======
-
-* Removed the deprecated function :c:func:`mpsl_fem_simple_gpio_interface_config_get`.
-
 nRF Connect SDK v3.0.0
 **********************
 
