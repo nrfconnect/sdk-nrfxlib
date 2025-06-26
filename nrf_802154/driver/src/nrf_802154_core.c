@@ -382,6 +382,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     }
     else
     {
+        metadata.data.transmitted.length = p_ack[0];
         nrf_802154_stat_timestamp_read(&metadata.data.transmitted.time, last_ack_end_timestamp);
     }
 
