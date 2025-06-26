@@ -160,7 +160,7 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    747
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    755
 #define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 867
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 112) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 151) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
