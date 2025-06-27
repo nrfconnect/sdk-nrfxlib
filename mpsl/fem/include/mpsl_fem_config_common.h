@@ -25,6 +25,18 @@
 extern "C" {
 #endif
 
+/** @brief Indicates next version of FEM configuration API (API change macro).
+ *
+ *  This is transitional macro. When defined it informs that:
+ *  - For nRF54L Series the struct @c mpsl_fem_gpiote_pin_config_t no more contains the @c ppib_channels field.
+ *  - For nRF54L Series the mpsl_hwres.h API implementation is required. The API is used
+ *    during boot-time configuration (functions @c mpsl_fem_<fem_type>_interface_config_set) to
+ *    allocate necessary resources.
+ *
+ *  The macro is to be removed shortly after transition in nRF Connect SDK.
+ */
+#define _MPSL_FEM_CONFIG_API_NEXT
+
 /** @brief GPIO pin and port to be used by Front End Module.
  */
 typedef struct
