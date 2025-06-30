@@ -793,14 +793,14 @@ static void errata_117_apply(void)
 static void pa_modulation_fix_apply(bool enable)
 {
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-#if (defined(NRF5340_XXAA) || defined(NRF54L_CONFIGURATION_56_ENABLE))
+#if (defined(NRF5340_XXAA) || NRF54L_CONFIGURATION_56_ENABLE)
     static uint32_t     m_pa_mod_filter_latched    = 0;
     static bool         m_pa_mod_filter_is_latched = false;
     volatile uint32_t * p_radio_reg;
 
 #if defined(NRF5340_XXAA)
     p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x584UL);
-#elif defined(NRF54L_CONFIGURATION_56_ENABLE)
+#elif NRF54L_CONFIGURATION_56_ENABLE
     p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x8C4UL);
 #else
     #error Unknown SoC
@@ -818,7 +818,7 @@ static void pa_modulation_fix_apply(bool enable)
             m_pa_mod_filter_latched    = *(p_radio_reg);
             m_pa_mod_filter_is_latched = true;
             *(p_radio_reg)             = 0x40081B08;
-#elif defined(NRF54L_CONFIGURATION_56_ENABLE)
+#elif NRF54L_CONFIGURATION_56_ENABLE
             // MLTPAN-56
             m_pa_mod_filter_latched    = *(p_radio_reg);
             m_pa_mod_filter_is_latched = true;
@@ -831,7 +831,7 @@ static void pa_modulation_fix_apply(bool enable)
         *(p_radio_reg)             = m_pa_mod_filter_latched;
         m_pa_mod_filter_is_latched = false;
     }
-#endif /* (defined(NRF5340_XXAA) || defined(NRF54L_CONFIGURATION_56_ENABLE)) */
+#endif /* (defined(NRF5340_XXAA) || NRF54L_CONFIGURATION_56_ENABLE) */
 #else /* !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
     (void)enable;
 #endif /* !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
