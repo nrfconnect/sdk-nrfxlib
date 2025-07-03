@@ -20,6 +20,7 @@ Changes
 * For the nRF54L Series devices, the inter-domain PPIB connections for Front-End Modules are configured internally in the MPSL.
   You no longer need to configure the PPIB connections.
   The field ``ppib_channels`` of the :c:struct:`mpsl_fem_gpiote_pin_config_t` structure is removed. (KRKNWK-15977)
+* Added the ``phy`` parameter to the function :c:func:`mpsl_fem_tx_power_split` and to the function type :c:type:`mpsl_fem_power_model_output_fetch_t`. (KRKNWK-20435)
 
 Added
 =====

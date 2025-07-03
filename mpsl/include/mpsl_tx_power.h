@@ -31,7 +31,7 @@ extern "C" {
 /** @brief The number of channels for 802.15.4 protocol. */
 #define MPSL_TOTAL_NUM_OF_802154_CHANNELS 16
 
-/** @brief PHYs supported for limiting channel TX power */
+/** @brief Type enumerating PHYs. */
 typedef enum
 {
     MPSL_PHY_BLE_1M,
@@ -39,6 +39,13 @@ typedef enum
     MPSL_PHY_BLE_LR125Kbit,
     MPSL_PHY_BLE_LR500Kbit,
     MPSL_PHY_Ieee802154_250Kbit,
+    MPSL_PHY_NRF_1Mbit,
+    MPSL_PHY_NRF_2Mbit,
+    MPSL_PHY_NRF_250Kbit,
+    MPSL_PHY_NRF_4Mbit0_5,
+    MPSL_PHY_NRF_4Mbit0_25,
+    MPSL_PHY_NRF_4Mbit_0BT6,
+    MPSL_PHY_NRF_4Mbit_0BT4,
 } mpsl_phy_t;
 
 /** TX power, dBm. */
@@ -47,7 +54,13 @@ typedef int8_t mpsl_tx_power_t;
 /** @brief Max TX power envelope. It is up to the application to allocate memory for an envelope. */
 typedef struct
 {
-    mpsl_phy_t phy; /**< The PHY that this envelope applies to. */
+    /** @brief The PHY that this envelope applies to.
+     *
+     *  The function @ref mpsl_tx_power_channel_map_set supports only the following @c phy values:
+     *  @c MPSL_PHY_BLE_1M, @c MPSL_PHY_BLE_2M, @c MPSL_PHY_BLE_LR125Kbit, @c MPSL_PHY_BLE_LR500Kbit,
+     *  @c MPSL_PHY_Ieee802154_250Kbit .
+     */
+    mpsl_phy_t phy;
     union
     {
         /** Tx power per channel when @ref mpsl_tx_power_envelope_t::phy is a Bluetooth LE PHY. */

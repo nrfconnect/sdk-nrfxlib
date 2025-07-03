@@ -372,6 +372,7 @@ void mpsl_fem_cleanup(void);
  *                                  a value representing maximum achievable power. If the requested
  *                                  @p power is too low, the split will be set to a value representing
  *                                  minimum achievable power.
+ * @param[in]  phy                  PHY to calculate the split for.
  * @param[in]  freq_mhz             Frequency in MHz to calculate the split for.
  * @param[in]  tx_power_ceiling     Flag to get ceiling or floor of requested transmit power level.
  *
@@ -380,6 +381,7 @@ void mpsl_fem_cleanup(void);
  */
 int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                mpsl_tx_power_split_t * const p_tx_power_split,
+                               mpsl_phy_t                    phy,
                                uint16_t                      freq_mhz,
                                bool                          tx_power_ceiling);
 

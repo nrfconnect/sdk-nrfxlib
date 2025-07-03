@@ -24,6 +24,7 @@
 #include <stdbool.h>
 
 #include "mpsl_fem_types.h"
+#include "mpsl_tx_power.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,6 +57,7 @@ typedef struct
  *          Failing to meet this requirement will lead to undefined behavior of the protocol stacks.
  *
  * @param[in]   requested_power   Requested power on the antenna in dBm.
+ * @param[in]   phy               PHY for which output is to be retrieved.
  * @param[in]   freq_mhz          Frequency in MHz.
  * @param[out]  p_output          Output of the model. For details, refer to
  *                                @ref mpsl_fem_power_model_output_t.
@@ -63,6 +65,7 @@ typedef struct
  */
 typedef void (*mpsl_fem_power_model_output_fetch_t)(
     int8_t                          requested_power,
+    mpsl_phy_t                      phy,
     uint16_t                        freq_mhz,
     mpsl_fem_power_model_output_t * p_output,
     bool                            tx_power_ceiling);
