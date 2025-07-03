@@ -28,6 +28,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "nrf.h"
 
 #if defined(NRF52_SERIES)
   /* PPI channels 17 - 31, for the nRF52 Series */
@@ -35,7 +36,7 @@ extern "C" {
 #elif defined(NRF53_SERIES)
   /* PPI channels 3 - 12, for the nRF53 Series */
   #define SDC_DPPI_CHANNELS_USED_MASK     (0x00001ff8)
-#elif defined(NRF54L_SERIES) || defined(NRF71_SERIES)
+#elif defined(LUMOS_XXAA)
   #define SDC_DPPIC10_CHANNELS_USED_MASK  (0x00000ffe)
   #define SDC_DPPIC00_CHANNELS_USED_MASK  (0x0000000a)
   #define SDC_PPIB00_CHANNELS_USED_MASK   (0x0000000f)
