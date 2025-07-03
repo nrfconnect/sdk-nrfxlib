@@ -602,6 +602,15 @@ extern "C" {
 /** @} */
 
 /**
+ * @defgroup nrf_so_sec_tag_tls_invalid Invalid security tag
+ * @brief Designated value that represents an invalid @sa nrf_sec_tag_t.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+#define NRF_SEC_TAG_TLS_INVALID 0xFFFFFFFF
+/** @} */
+
+/**
  * @addtogroup nrf_socket_api
  * @{
  */
@@ -773,7 +782,7 @@ struct nrf_ifaddrs {
 /** @brief
  * Security tags used on the TLS socket.
  *
- * More than one security tags may be used on a socket.
+ * More than one security tag may be used on a socket.
  * If more than one tag is used on the socket, pass an array of security tags.
  *
  * A maximum of @ref NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE tags can be set per socket.
@@ -1146,6 +1155,34 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_setdnsaddr(int family, const void *in_addr, nrf_socklen_t in_size);
+
+/**
+ * @brief Enable or disable data traffic through the socket interface.
+ *
+ * @details
+ * This function can be used to disable all data traffic through the socket interface.
+ *
+ * When enabled is set to false, all sockets are closed and no new sockets can be opened.
+ * DNS operations are also disabled. The affected functions indicate an error and set @c errno
+ * to NRF_EACCES when data is disabled.
+ *
+ * @param enabled Whether to enable or disable data.
+ *
+ * @retval 0 on success.
+ * @retval -1 on error, and set @c errno to indicate the reason.
+ */
+int nrf_socket_data_enabled_set(bool enabled);
+
+/**
+ * @brief Get the current data enabled state.
+ *
+ * @details
+ * This function is used to get the current data enabled state.
+ *
+ * @retval true if data is enabled.
+ * @retval false if data is disabled.
+ */
+bool nrf_socket_data_enabled_get(void);
 
 /** @} */
 
