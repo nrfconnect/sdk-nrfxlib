@@ -98,6 +98,40 @@ int sw_codec_lc3_dec_run(uint8_t const *const lc3_data, uint16_t lc3_data_size,
 			 uint16_t pcm_data_buf_size, uint8_t audio_ch, void *const pcm_data,
 			 uint16_t *const pcm_data_wr_size, bool bad_frame);
 
+/**@brief 	Calculates the number of encoded bytes of data required to decode a
+ * single frame for one channel.
+ *
+ * @param[in]	pcm_sample_rate		Sample rate in Hz (typ. 16000 or 48000).
+ * @param[in]	bitrate_bps  		Bitrate of the coded stream.
+ * @param[in]	framesize_us		Frame size in microseconds.
+ * @param[out]  enc_size			Maximum bytes per coded frame.
+ *
+ * @note	The return codes from Zephyr and LC3 may overlap.
+ *
+ * @return 0 on success, otherwise an error.
+ *				Other errors. Refer to LC3 documentation.
+ */
+int sw_codec_lc3_enc_size_get(uint16_t pcm_sample_rate,
+			  uint32_t bitrate_bps, uint16_t framesize_us,
+			  size_t *enc_size);
+
+/**@brief 	Calculates the number of samples in bytes of data required to encode a
+ * single frame for one channel.
+ *
+ * @param[in]	pcm_sample_rate		Sample rate in Hz (typ. 16000 or 48000).
+ * @param[in]	bit_depth			Bit depth of generated PCM data.
+ * @param[in]	framesize_us		Frame size in microseconds.
+ * @param[out]  dec_size			Maximum bytes per decoded frame.
+ *
+ * @note	The return codes from Zephyr and LC3 may overlap.
+ *
+ * @return 0 on success, otherwise an error.
+ *				Other errors. Refer to LC3 documentation.
+ */
+int sw_codec_lc3_dec_size_get(uint16_t pcm_sample_rate,
+			  uint8_t bit_depth, uint16_t framesize_us,
+			  size_t *dec_size);
+
 /**@brief	Closes the LC3 encoder and frees allocated RAM
  *
  * @return 0 on success.	-EALREADY if already un-initialized.
@@ -110,12 +144,20 @@ int sw_codec_lc3_enc_uninit_all(void);
  */
 int sw_codec_lc3_dec_uninit_all(void);
 
-/**@brief Initializes the LC3 Codec
+/**@brief 	Initializes the LC3 decoder and allocates required RAM
  *
- * @note: For documentation, see LC3API.h (/codec/inc/LC3API.h)
+ * @param[in]	pcm_sample_rate		Sample rate in Hz (typ. 16000 or 48000)
+ * @param[in]	pcm_bit_depth		Output PCM bits per sample.
+ * @param[in]	framesize_us		Frame size in microseconds
+ * @param[in]   num_channels		Number of channels to initialize
+ *
+ * @note	The return codes from Zephyr and LC3 may overlap.
+ *
+ * @return 0 on success.	-EALREADY if already initialized.
+ *				Other errors. Refer to LC3 documentation.
  */
-int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffer_size,
-		      uint16_t framesize_us);
+int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
+			  uint8_t num_channels);
 
 /**@brief	Initializes the LC3 encoder and allocates required RAM
  *
@@ -139,20 +181,12 @@ int sw_codec_lc3_enc_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint1
 			  uint32_t enc_bitrate, uint8_t num_channels,
 			  uint16_t *const pcm_bytes_req);
 
-/**@brief 	Initializes the LC3 decoder and allocates required RAM
+/**@brief Initializes the LC3 Codec
  *
- * @param[in]	pcm_sample_rate		Sample rate in Hz (typ. 16000 or 48000)
- * @param[in]	pcm_bit_depth		Output PCM bits per sample.
- * @param[in]	framesize_us		Frame size in microseconds
- * @param[in]   num_channels		Number of channels to initialize
- *
- * @note	The return codes from Zephyr and LC3 may overlap.
- *
- * @return 0 on success.	-EALREADY if already initialized.
- *				Other errors. Refer to LC3 documentation.
+ * @note: For documentation, see LC3API.h (/codec/inc/LC3API.h)
  */
-int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
-			  uint8_t num_channels);
+int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffer_size,
+		      uint16_t framesize_us);
 
 /*! \} */    /* LC3_translation */
 
