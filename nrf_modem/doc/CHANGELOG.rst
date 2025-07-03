@@ -9,6 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 3.0.99
+****************
+
+Sockets
+=======
+
+* Added:
+
+  * The :c:func:`nrf_socket_data_enabled_set` function to enable and disable data traffic through the socket interface.
+  * The :c:func:`nrf_socket_data_enabled_get` function to retrieve the current data enabled state.
+  * The :c:macro:`NRF_SEC_TAG_TLS_INVALID` macro as a designated value to represent an invalid :c:type:`nrf_sec_tag_t`.
+
 nrf_modem 3.0.0
 ***************
 
