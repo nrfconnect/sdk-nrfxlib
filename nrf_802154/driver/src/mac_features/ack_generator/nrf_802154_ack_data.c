@@ -120,8 +120,8 @@ static int8_t extended_addr_compare(const uint8_t * p_first_addr, const uint8_t 
     // Compare extended address in two steps to prevent unaligned access error.
     for (uint32_t i = 0; i < EXTENDED_ADDRESS_SIZE / sizeof(uint32_t); i++)
     {
-        first_addr  = *(uint32_t *)(p_first_addr + (i * sizeof(uint32_t)));
-        second_addr = *(uint32_t *)(p_second_addr + (i * sizeof(uint32_t)));
+        first_addr  = *(const uint32_t *)(p_first_addr + (i * sizeof(uint32_t)));
+        second_addr = *(const uint32_t *)(p_second_addr + (i * sizeof(uint32_t)));
 
         if (first_addr < second_addr)
         {
@@ -148,8 +148,8 @@ static int8_t extended_addr_compare(const uint8_t * p_first_addr, const uint8_t 
  */
 static int8_t short_addr_compare(const uint8_t * p_first_addr, const uint8_t * p_second_addr)
 {
-    uint16_t first_addr  = *(uint16_t *)(p_first_addr);
-    uint16_t second_addr = *(uint16_t *)(p_second_addr);
+    uint16_t first_addr  = *(const uint16_t *)(p_first_addr);
+    uint16_t second_addr = *(const uint16_t *)(p_second_addr);
 
     if (first_addr < second_addr)
     {

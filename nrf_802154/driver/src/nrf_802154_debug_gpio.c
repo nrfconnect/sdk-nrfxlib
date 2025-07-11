@@ -78,15 +78,15 @@ static void radio_event_gpio_toggle_init(void)
 
     nrf_ppi_channel_endpoint_setup(NRF_PPI,
                                    (nrf_ppi_channel_t)PPI_DBG_RADIO_EVT_END,
-                                   (uint32_t)&NRF_RADIO->EVENTS_END,
+                                   nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_END),
                                    nrf_gpiote_task_address_get(NRF_GPIOTE, NRF_GPIOTE_TASK_OUT_0));
     nrf_ppi_channel_endpoint_setup(NRF_PPI,
                                    (nrf_ppi_channel_t)PPI_DBG_RADIO_EVT_DISABLED,
-                                   (uint32_t)&NRF_RADIO->EVENTS_DISABLED,
+                                   nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
                                    nrf_gpiote_task_address_get(NRF_GPIOTE, NRF_GPIOTE_TASK_OUT_1));
     nrf_ppi_channel_endpoint_setup(NRF_PPI,
                                    (nrf_ppi_channel_t)PPI_DBG_RADIO_EVT_READY,
-                                   (uint32_t)&NRF_RADIO->EVENTS_RXREADY,
+                                   nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_RXREADY),
                                    nrf_gpiote_task_address_get(NRF_GPIOTE, NRF_GPIOTE_TASK_OUT_2));
 
     nrf_ppi_channel_enable(NRF_PPI, (nrf_ppi_channel_t)PPI_DBG_RADIO_EVT_END);
