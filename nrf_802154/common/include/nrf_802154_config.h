@@ -387,16 +387,6 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
- *
- * The default timeout in microseconds (us) for the ACK timeout feature.
- *
- */
-#ifndef NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
-#define NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT 7000
-#endif
-
-/**
  * @def NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT
  *
  * The default timeout in microseconds (us) for the precise ACK timeout feature.

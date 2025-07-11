@@ -89,4 +89,15 @@ config NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US
 	  configuration macro of the nRF 802.15.4 Radio Driver.
 	  Please refer to the documentation of that macro.
 
+config NRF_802154_ACK_TIMEOUT_CUSTOM_US
+	int "nRF 802.15.4 ACK timeout"
+	default 0
+	range 0 2000
+	help
+	  Set the custom value of ACK timeout in the nRF 802.15.4 Radio Driver module.
+	  It is not recommended to change this setting for anything but testing purposes.
+	  Setting this value too low will cause the Radio Driver to never receive ACK frames
+	  and setting it too high will increase current consumption. Set this value to 0 to
+	  use the default and recommended value of the ACK timeout.
+
 endif # NRF_802154_RADIO_DRIVER || NRF_802154_SERIALIZATION
