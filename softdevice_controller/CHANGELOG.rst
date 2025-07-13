@@ -17,6 +17,7 @@ Added
 
 * Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
 * Support for generating paEventCounter reports using the VS Enable Periodic Advertising Event Counter Reports command (DRGN-25444).
+* The :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` functions, which can reduce the NVM usage of Channel Sounding by removing support for the Initiator or Reflector role (DRGN-23607).
 
 Bug fixes
 =========

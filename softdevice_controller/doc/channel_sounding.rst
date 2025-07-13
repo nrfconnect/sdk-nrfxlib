@@ -296,17 +296,10 @@ Currently, the following limitations apply to the support of Channel Sounding:
 
  * :ref:`radio coexistence <nrf:ug_radio_coex>` and :ref:`front-end modules <mpsl_fem>` are not supported.
 
-Developing with CS
-******************
+Testing CS implementation
+*************************
 
-The following samples are recommended for getting started with Channel Sounding:
-
-1. Using the Ranging Service samples:
-
-   * :ref:`Bluetooth: Channel Sounding Initiator with Ranging Requestor <nrf:channel_sounding_ras_initiator>`.
-   * :ref:`Bluetooth: Channel Sounding Reflector with Ranging Responder <nrf:channel_sounding_ras_reflector>`.
-
-2. Using the :zephyr:code-sample:`bluetooth_hci_uart` sample and running HCI commands over UART.
+:zephyr:code-sample:`bluetooth_hci_uart` sample allows running HCI commands over UART and can be used to run conformance tests, such as RFPHY, CS, HCI, or LL tests.
 
 .. note::
    To build the :zephyr:code-sample:`bluetooth_hci_uart` sample with Channel Sounding enabled, set :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` to ``y``.
@@ -314,6 +307,16 @@ The following samples are recommended for getting started with Channel Sounding:
    .. code-block:: console
 
       west build -b nrf54l15dk/nrf54l15/cpuapp --pristine -- -DCONFIG_BT_CTLR_CHANNEL_SOUNDING=y
+
+
+Developing with CS
+******************
+
+The following samples are recommended for getting started with Channel Sounding:
+
+   * :ref:`Bluetooth: Channel Sounding Initiator with Ranging Requestor <nrf:channel_sounding_ras_initiator>`.
+   * :ref:`Bluetooth: Channel Sounding Reflector with Ranging Responder <nrf:channel_sounding_ras_reflector>`.
+
 
 CS Kconfigs
 --------------------
@@ -328,6 +331,10 @@ Use the following Kconfig options to enable and configure the CS feature:
 Use the following Kconfig options to enable the desired optional CS capabilities:
 
  * Set :kconfig:option:`BT_CTLR_SDC_CS_STEP_MODE3` to ``y`` to enable Channel Sounding step mode-3 support.
+
+ * Set :kconfig:option:`BT_CTLR_SDC_CS_ROLE_BOTH` to ``y`` to enable Channel Sounding Initiator role and Reflector role.
+ * Set :kconfig:option:`BT_CTLR_SDC_CS_ROLE_INITIATOR_ONLY` to ``y`` to enable Channel Sounding Initiator role only.
+ * Set :kconfig:option:`BT_CTLR_SDC_CS_ROLE_REFLECTOR_ONLY` to ``y`` to enable Channel Sounding Reflector role only.
 
  * Set :kconfig:option:`BT_CTLR_SDC_CS_MAX_ANTENNA_PATHS` to a value between ``2`` and ``4`` to enable Channel Sounding multiple antenna paths support.
  * Set :kconfig:option:`BT_CTLR_SDC_CS_NUM_ANTENNAS` to a value between ``2`` and :kconfig:option:`BT_CTLR_SDC_CS_MAX_ANTENNA_PATHS` to enable Channel Sounding multiple antennas support.
