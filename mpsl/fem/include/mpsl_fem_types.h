@@ -18,9 +18,6 @@
 
 #include <stdint.h>
 
-/** @brief Transitional macro, @c mpsl_fem_tx_power_split has @c phy parameter. */
-#define _MPSL_FEM_TX_POWER_SPLIT_HAS_PHY
-
 #ifdef __cplusplus
 extern "C" {
 #endif
