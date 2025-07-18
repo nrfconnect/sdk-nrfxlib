@@ -165,7 +165,7 @@
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
 
-"CI-suit-dfu-test":
+"CI-dfu-test":
   - "softdevice_controller/CMakeLists.txt"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
