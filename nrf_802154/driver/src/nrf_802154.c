@@ -90,24 +90,6 @@ static uint8_t m_tx_buffer[RAW_PAYLOAD_OFFSET + MAX_PACKET_SIZE];
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
-/**
- * @brief Fill the transmit buffer with given data in order to use it with the
- * modulated carrier functionality.
- *
- * @param[in]  p_data   Pointer to array containing modulating data.
- */
-static void tx_buffer_fill_for_modulated_carrier(const uint8_t * p_data)
-{
-    uint8_t length = p_data[RAW_LENGTH_OFFSET];
-
-    NRF_802154_ASSERT(length <= MAX_PACKET_SIZE);
-
-    memcpy(m_tx_buffer, p_data, RAW_PAYLOAD_OFFSET + length);
-}
-
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
-
 static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame_props_t * p_props)
 {
     return p_props->dynamic_data_is_set || !(p_props->is_secured);
@@ -620,13 +602,16 @@ bool nrf_802154_continuous_carrier(void)
 
 bool nrf_802154_modulated_carrier(const uint8_t * p_data)
 {
-    bool result;
-
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    tx_buffer_fill_for_modulated_carrier(p_data);
+    bool    result = false;
+    uint8_t length = p_data[RAW_LENGTH_OFFSET];
 
-    result = nrf_802154_request_modulated_carrier(NRF_802154_TERM_NONE, m_tx_buffer);
+    if (length <= MAX_PACKET_SIZE)
+    {
+        memcpy(m_tx_buffer, p_data, RAW_PAYLOAD_OFFSET + length);
+        result = nrf_802154_request_modulated_carrier(NRF_802154_TERM_NONE, m_tx_buffer);
+    }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;

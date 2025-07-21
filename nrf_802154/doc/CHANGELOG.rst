@@ -20,6 +20,9 @@ Notable changes
   It is superseded by the :c:macro:`NRF_802154_CCA_ED_THRESHOLD_DBM_DEFAULT` macro, which specifies the absolute value of the CCA ED threshold in dBm. (KRKNWK-19974)
 * The Energy Detection (ED) sample, Received Signal Strength Indicator (RSSI), and Clear Channel Assessment (CCA) threshold now account for Low-Noise Amplifier (LNA) gain.
   These values now represent the power at the antenna connector, rather than at the radio. (KRKNWK-19974)
+* The reliability of timestamping on nRF52 and nRF53 Series SoCs was improved.
+  The driver no longer reports :c:macro:`NRF_802154_NO_TIMESTAMP` for received
+  frames and ACKs in rare cases. (KRKNWK-20539)
 
 Added
 =====
