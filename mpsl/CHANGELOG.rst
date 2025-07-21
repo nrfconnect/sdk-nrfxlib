@@ -28,6 +28,7 @@ Added
 * Added the :file:`mpsl_hwres.h` file, which defines an API for hardware resources allocation. (KRKNWK-15977)
 * Added support for the nRF21540 Front-End Module in GPIO/SPI mode on the nRF54L Series SoCs. (KRKNWK-15977)
 * Added support for the Simple GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-20506)
+* Added support for boosting the current timeslot priority for the nRF 802.15.4 Radio Driver. (KRKNWK-19125)
 
 Bug fixes
 =========
