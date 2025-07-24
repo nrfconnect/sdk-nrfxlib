@@ -92,12 +92,3 @@ void nrf_802154_co_transmitted_raw(uint8_t                                   * p
 void nrf_802154_co_transmit_failed(uint8_t                                   * p_frame,
                                    nrf_802154_tx_error_t                       error,
                                    const nrf_802154_transmit_done_metadata_t * p_metadata);
-
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-/** @brief Calls @ref nrf_802154_tx_started.
- *  @note See @ref nrf_802154_tx_started for documentation of parameters.
- */
-void nrf_802154_co_tx_started(const uint8_t * p_frame);
-
-#endif // !NRF_802154_SERIALIZATION_HOST

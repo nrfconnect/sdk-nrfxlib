@@ -371,18 +371,11 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address);
  */
 void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address);
 
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 /**
  * @}
- * @defgroup nrf_802154_transitions Functions to request FSM transitions and check current state
+ * @defgroup nrf_802154_transitions Functions to request FSM transitions
  * @{
  */
-
-/**
- * @brief Gets the current state of the radio.
- */
-nrf_802154_state_t nrf_802154_state_get(void);
-#endif // !NRF_802154_SERIALIZATION_HOST
 
 /**
  * @brief Changes the radio state to the @ref RADIO_STATE_SLEEP state.
@@ -720,31 +713,13 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data);
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
  *
  * @note The buffer pointed to by @p p_data may be modified by this function.
- * @note This function can be safely called only from the main context. To free the buffer from
- *       a callback or the IRQ context, use @ref nrf_802154_buffer_free_immediately_raw.
+ * @note This function can be safely called from the main context or callouts running on the
+ *       same core as the driver. Do not call this function directly in the serialized callouts.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
  */
 void nrf_802154_buffer_free_raw(uint8_t * p_data);
-
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-/**
- * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
- *
- * @note The buffer pointed to by @p p_data may be modified by this function.
- * @note This function can be safely called from any context. If the driver is busy processing
- *       a request called from a context with lower priority, this function returns false and
- *       the caller should free the buffer later.
- *
- * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
- *                     by the higher layer.
- *
- * @retval true   Buffer was freed successfully.
- * @retval false  Buffer cannot be freed right now due to ongoing operation.
- */
-bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data);
-#endif // !NRF_802154_SERIALIZATION_HOST
 
 /**
  * @}
@@ -1086,10 +1061,7 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  * @note The driver may be configured to automatically time out waiting for an ACK frame depending
  *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
  *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
- *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
- *       to time out waiting for the ACK frame. This timer can be started
- *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
- *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ *       with the ACK request bit set was transmitted.
  * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
  *
  * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.

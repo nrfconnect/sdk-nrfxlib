@@ -52,13 +52,9 @@
  * @brief Starts the CSMA-CA procedure for the transmission of a given frame.
  *
  * If the CSMA-CA procedure is successful and the frame is transmitted,
- * the @ref nrf_802154_tx_started() function is called. If the procedure failed and the frame
- * cannot be transmitted due to busy channel, the @ref nrf_802154_transmit_failed() function
- * is called.
- *
- * @note CSMA-CA does not time out automatically when waiting for ACK. Waiting for ACK must be
- *       timed out by the next layer. The ACK timeout timer must start when
- *       the @ref nrf_802154_tx_started() function is called.
+ * the @ref nrf_802154_transmitted_raw function is called. If the procedure
+ * failed and the frame cannot be transmitted due to busy channel,
+ * the @ref nrf_802154_transmit_failed function is called.
  *
  * @param[in]  p_data      Pointer to a buffer the contains PHR and PSDU of the frame that is
  *                         to be transmitted.

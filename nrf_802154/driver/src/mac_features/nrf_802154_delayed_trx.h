@@ -67,13 +67,10 @@ void nrf_802154_delayed_trx_deinit(void);
 /**
  * @brief Requests transmission of a frame at a given time.
  *
- * If the requested transmission is successful and the frame is transmitted, the
- * @ref nrf_802154_tx_started function is called. If the requested frame cannot be transmitted
- * at the given time, the @ref nrf_802154_transmit_failed function is called.
- *
- * @note The delayed transmission does not time out automatically when waiting for ACK.
- *       Waiting for ACK must be timed out by the next higher layer or the ACK timeout module.
- *       The ACK timeout timer must start when the @ref nrf_802154_tx_started function is called.
+ * If the requested transmission is successful and the frame is transmitted,
+ * the @ref nrf_802154_transmitted_raw function is called. If the requested frame
+ * cannot be transmitted at the given time, the @ref nrf_802154_transmit_failed
+ * function is called.
  *
  * @param[in]  p_data       Pointer to a buffer containing PHR and PSDU of the frame to be
  *                          transmitted.
