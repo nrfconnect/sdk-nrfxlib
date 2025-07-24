@@ -34,6 +34,13 @@ Added
   If the latency is not set, the driver assumes a default worst-case startup latency of 1650 us.
 * When the FEM power amplifier is configured, the Errata 56 for nRF54L15 is automatically applied. (KRKNWK-20409)
 
+Removed
+=======
+
+* Removed the deprecated :c:func:`nrf_802154_state_get` function. (KRKNWK-17467)
+* Removed the deprecated :c:func:`nrf_802154_tx_started` callout function. (KRKNWK-17467)
+* Removed the deprecated :c:func:`nrf_802154_buffer_free_immediately_raw` function. (KRKNWK-17467)
+
 nRF Connect SDK v3.0.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

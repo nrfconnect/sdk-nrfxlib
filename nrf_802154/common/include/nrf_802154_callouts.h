@@ -210,21 +210,6 @@ extern void nrf_802154_transmit_failed(uint8_t                                  
 
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 /**
- * @brief Notifies that transmitting a frame has started.
- *
- * @note Currently this callout is only available on the CPU which is running the core of the radio driver.
- *       If the higher layer runs on a different core it should use nrf_802154_received_timestamp_raw instead.
- * @note Usually, @ref nrf_802154_transmitted_raw is called shortly after this function.
- *       However, if the transmit procedure is interrupted, it might happen that
- *       @ref nrf_802154_transmitted_raw is not called.
- * @note This function should be very short to prevent dropping frames by the driver.
- *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame being
- *                      transmitted.
- */
-extern void nrf_802154_tx_started(const uint8_t * p_frame);
-
-/**
  * @brief Perform some additional operations during initialization of the RADIO peripheral.
  *
  * By implementing this function the higher layer can provide some additional operations

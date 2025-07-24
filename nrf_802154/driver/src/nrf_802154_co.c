@@ -113,14 +113,3 @@ void nrf_802154_co_transmit_failed(uint8_t                                   * p
     nrf_802154_transmit_failed(p_frame, error, p_metadata);
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
-
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-void nrf_802154_co_tx_started(const uint8_t * p_frame)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-    nrf_802154_tx_started(p_frame);
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-#endif // !NRF_802154_SERIALIZATION_HOST
