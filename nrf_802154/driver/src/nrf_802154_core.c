@@ -329,20 +329,13 @@ static void receive_failed_notify(nrf_802154_rx_error_t error)
 /** Notify MAC layer that transmission of requested frame has started. */
 static void transmit_started_notify(void)
 {
-    uint8_t * p_frame = mp_tx_data;
-
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     /**
      * TX started hooks were executed before transmission started. Use latched result
      */
-    if (m_flags.tx_started_notify)
 #else
-    if (nrf_802154_core_hooks_tx_started(p_frame))
+    (void)nrf_802154_core_hooks_tx_started(mp_tx_data);
 #endif
-    {
-        nrf_802154_tx_started(p_frame);
-    }
-
 }
 
 /** Notify MAC layer that transmission of ACK frame has started. */

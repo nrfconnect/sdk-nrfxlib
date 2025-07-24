@@ -342,43 +342,6 @@ void nrf_802154_antenna_diversity_timer_irq_handler(void)
 #endif
 }
 
-nrf_802154_state_t nrf_802154_state_get(void)
-{
-    switch (nrf_802154_core_state_get())
-    {
-        case RADIO_STATE_SLEEP:
-        case RADIO_STATE_FALLING_ASLEEP:
-            return NRF_802154_STATE_SLEEP;
-
-        case RADIO_STATE_RX:
-        case RADIO_STATE_TX_ACK:
-            return NRF_802154_STATE_RECEIVE;
-
-        case RADIO_STATE_CCA_TX:
-        case RADIO_STATE_TX:
-        case RADIO_STATE_RX_ACK:
-            return NRF_802154_STATE_TRANSMIT;
-
-        case RADIO_STATE_ED:
-            return NRF_802154_STATE_ENERGY_DETECTION;
-
-        case RADIO_STATE_CCA:
-            return NRF_802154_STATE_CCA;
-
-#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
-
-        case RADIO_STATE_CONTINUOUS_CARRIER:
-            return NRF_802154_STATE_CONTINUOUS_CARRIER;
-
-        case RADIO_STATE_MODULATED_CARRIER:
-            return NRF_802154_STATE_MODULATED_CARRIER;
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
-
-    }
-
-    return NRF_802154_STATE_INVALID;
-}
-
 bool nrf_802154_sleep(void)
 {
     bool result;
@@ -634,22 +597,6 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data)
     (void)result;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    bool          result;
-    rx_buffer_t * p_buffer = (rx_buffer_t *)p_data;
-
-    NRF_802154_ASSERT(p_buffer->free == false);
-    (void)p_buffer;
-
-    result = nrf_802154_request_buffer_free(p_data);
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
 }
 
 bool nrf_802154_rssi_measure_begin(void)
@@ -1007,11 +954,6 @@ __WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     (void)error;
     (void)id;
-}
-
-__WEAK void nrf_802154_tx_started(const uint8_t * p_frame)
-{
-    (void)p_frame;
 }
 
 __WEAK void nrf_802154_transmitted_raw(uint8_t                                   * p_frame,
