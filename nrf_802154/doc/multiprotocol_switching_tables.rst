@@ -8,7 +8,7 @@ Disclaimer
 
 
 Radio Transition Measurements
-------------------------------------------
+-----------------------------
 
 The following measurement utilizes the nRF21540 Front-End Module (FEM) connected to a Nordic SoC, which provides
 essential timing data via GPIO pins. The RX_EN pin manages the Low-Noise Amplifier (LNA) function of the
@@ -26,8 +26,8 @@ Radio Switching Time:
         - Start: RADIO DISABLED event (Bluetooth radio turning off)
         - End: RADIO READY event for 802.15.4 operation (802.15.4 radio turned on and ready)
 
-The measurements are collected during Bluetooth advertisement, scanning, and connection activities during
-802.15.4 radio state set to receive mode.
+The measurements are collected during Bluetooth advertisement, scanning, and connection activities while
+the nRF 802.15.4 Radio Driver is in the receive state.
 
 
 Multiprotocol radio switching time comparison by device family
