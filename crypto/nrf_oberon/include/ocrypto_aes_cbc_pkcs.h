@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -85,15 +85,15 @@ void ocrypto_aes_cbc_pkcs_init(
  * Calculates the length of the output written to @p out in a call to @c ocrypto_aes_cbc_pkcs_update. 
  *
  * @param   ctx    Context.
- * @param   pt_len Length of data to be added.
+ * @param   in_len Length of input data for @c ocrypto_aes_cbc_pkcs_update.
  * 
- * @returns The length of the output.
+ * @returns The exact length of the output data of @c ocrypto_aes_cbc_pkcs_update.
  *
  * @remark @c ocrypto_aes_cbc_pkcs_output_size must be called before @c ocrypto_aes_cbc_pkcs_update.
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_ctr_init is required before this function can be called.
  */
-size_t ocrypto_aes_cbc_pkcs_output_size(ocrypto_aes_cbc_pkcs_ctx *ctx, size_t pt_len);
+size_t ocrypto_aes_cbc_pkcs_output_size(ocrypto_aes_cbc_pkcs_ctx *ctx, size_t in_len);
 
 /**
  * AES-CBC incremental encryption/decryption.
@@ -103,19 +103,19 @@ size_t ocrypto_aes_cbc_pkcs_output_size(ocrypto_aes_cbc_pkcs_ctx *ctx, size_t pt
  * This function can be called repeatedly until the whole message is processed.
  *
  * @param      ctx     Context.
- * @param[out] out     Output, ciphertext for encryption, plaintext for decryption.
+ * @param[out] out     Output, ciphertext for encryption, plaintext for decryption. 
  * @param      in      Input, plaintext for encryption, ciphertext for decryption.
  * @param      in_len  Length of @p in.
  *
  * @remark @p in may be same as @p out.
+ * @remark The exact length of @p out is returned by @c ocrypto_aes_cbc_pkcs_output_size.
+ * @remark The maximum length of @p out is @p in_len + 15.
  * @remark A single common buffer may be used for the whole plaintext and ciphertext
            if @p in and @p out of the first call are equal and incremented individually
            by the input and output size for each further call (meaning the plaintext
            and ciphertext are stored contiguously in the common buffer).
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_ctr_init is required before this function can be called.
- * @remark The maximum length of @p out is @p in_len + 15.
- * @remark The exact length of @p out is returned by @c ocrypto_aes_cbc_pkcs_output_size.
  */
 void ocrypto_aes_cbc_pkcs_update(
     ocrypto_aes_cbc_pkcs_ctx *ctx,

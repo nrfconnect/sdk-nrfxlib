@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -25,13 +25,38 @@
 #ifndef OCRYPTO_ECDH_P256K1_H
 #define OCRYPTO_ECDH_P256K1_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_p256.h"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
+/**
+ * ECDH secp256k1 secret key check.
+ *
+ * @param     sk Secret key to check.
+ *
+ * @retval 0  If @p sk is a valid secret key.
+ * @retval -1 Otherwise.
+ *
+ * @remark To generate a valid secret key use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdh_p256k1_secret_key_check(sk));
+ *            @endcode
+ */
+int ocrypto_ecdh_p256k1_secret_key_check(const uint8_t sk[32]);
+
+/**
+ * ECDH secp256k1 public key check.
+ *
+ * @param     pk Public key to check.
+ *
+ * @retval 0  If @p pk is a valid public key.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecdh_p256k1_public_key_check(const uint8_t pk[64]);
 
 /**
  * ECDH secp256k1 public key generation `r = n * p`.

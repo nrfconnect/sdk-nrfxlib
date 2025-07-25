@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -30,7 +30,7 @@
 #ifndef OCRYPTO_ED25519_H
 #define OCRYPTO_ED25519_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_25519.h"
 
 
 #ifdef __cplusplus

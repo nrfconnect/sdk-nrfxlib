@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -7,12 +7,12 @@
 
 
 /**
- * @defgroup ocrypto_lms_shake256 LMS-SHAKE256 / HSS-SHAKE256
+ * @defgroup ocrypto_lms_shake256 LMS / HSS (SHAKE)
  * @ingroup ocrypto_asym_sig
  * @{
  * @brief LMS and HSS are stateful signature algorithms (SHAKE hashing used).
  *
- * All SHAKE256 based parameter sets defined by NIST.SP.800-208 are supported.
+ * All SHAKE256 based parameter sets defined by NIST SP800-208 are supported.
  * Both SHAKE256-192 and SHAKE256-256 are supported.
  *
  * @see [NIST - Special Publication 800-208](https://csrc.nist.gov/pubs/sp/800/208/final)
@@ -22,7 +22,7 @@
  * @file
  * @brief LMS-SHAKE256 / HSS-SHAKE256.
  *
- * LMS and HSS are stateful PQC signature algorithms.
+ * LMS-SHAKE256 and HSS-SHAKE256 are stateful PQC signature algorithms.
  */
 
 #ifndef OCRYPTO_LMS_SHAKE256_H
@@ -45,8 +45,8 @@ extern "C" {
  *
  * @param sig     Input signature.
  * @param sig_len Length of @p sig.
- * @param msg     Input message.
- * @param msg_len Length of @p msg.
+ * @param m       Input message.
+ * @param m_len   Length of @p msg.
  * @param pk      Signer's public key.
  * @param pk_len  Length of @p pk.
  *
@@ -55,7 +55,7 @@ extern "C" {
  */
 int ocrypto_lms_shake256_verify(
     const uint8_t *sig, size_t sig_len,
-    const uint8_t *msg, size_t msg_len,
+    const uint8_t *m,   size_t m_len,
     const uint8_t *pk,  size_t pk_len);
 
 /**
@@ -66,8 +66,8 @@ int ocrypto_lms_shake256_verify(
  *
  * @param sig     Input signature.
  * @param sig_len Length of @p sig.
- * @param msg     Input message.
- * @param msg_len Length of @p msg.
+ * @param m       Input message.
+ * @param m_len   Length of @p msg.
  * @param pk      Signer's public key.
  * @param pk_len  Length of @p pk.
  *
@@ -76,7 +76,7 @@ int ocrypto_lms_shake256_verify(
  */
 int ocrypto_hss_shake256_verify(
     const uint8_t *sig, size_t sig_len,
-    const uint8_t *msg, size_t msg_len,
+    const uint8_t *m,   size_t m_len,
     const uint8_t *pk,  size_t pk_len);
 
 
