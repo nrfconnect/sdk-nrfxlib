@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -14,7 +14,7 @@ extern "C" {
 
 #include <stdint.h>
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_p256.h"
 
 // 32 byte value to scalar
 // return 0 if x < group order

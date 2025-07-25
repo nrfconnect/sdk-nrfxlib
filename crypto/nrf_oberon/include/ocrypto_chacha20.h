@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -70,7 +70,7 @@ typedef struct {
  * @name Incremental ChaCha20 Encoder
  *
  * This group of functions can be used to incrementally compute the ChaCha20 encryption
- * for a given message and key, by segmenting a message into smaller chunks.
+ * or decryption for a given message and key, by segmenting a message into smaller chunks.
  *
  * Use pattern:
  *
@@ -85,12 +85,12 @@ typedef struct {
 /**@{*/
 
 /**
- * ChaCha20 encoder initialization.
+ * ChaCha20 encoder/decoder initialization.
  *
  * The generator state @p ctx is initialized by this function.
  *
- * @param[out] ctx   Encoder state.
- * @param      n     Nonce. May be NULL.
+ * @param[out] ctx   Encoder/decoder state.
+ * @param      n     Nonce (or IV). May be NULL.
  * @param      n_len Nonce length. @p n_len = 8, 12, or 24.
  * @param      key   Authentication key. May be NULL.
  * @param      count Initial block counter, usually 0 or 1.
@@ -108,16 +108,19 @@ void ocrypto_chacha20_init(
     uint32_t count);
 
 /**
- * ChaCha20 encoder.
+ * ChaCha20 encoder/decoder.
  *
  * The message @p m is ChaCha20 encrypted and the resulting cipher stream
- * is writen to @p c.
+ * is written to @p c. 
+ *
+ * For decryption, the ciphertext is used as input message @p m and the 
+ * resulting decrypted message is written to @p c.
  *
  * This function can be called repeatedly on arbitrarily small chunks of a larger
  * message until the whole message has been processed.
  *
- * @param      ctx   Encoder state.
- * @param[out] c     Generated ciphertext. Same length as input message.
+ * @param      ctx   Encoder/decoder state.
+ * @param[out] c     Generated output (ciphertext or plaintext). Same length as input message.
  * @param      m     Input message.
  * @param      m_len Length of @p c and @p m; @p m_len < 2^38 bytes.
 
@@ -131,19 +134,19 @@ void ocrypto_chacha20_update(
 /**@}*/
 
 /**
- * ChaCha20 cipher stream encoder.
+ * ChaCha20 cipher stream encoder/decoder.
  *
  * The message @p m is encrypted by applying the XOR operation with a pseudo
  * random cipher stream derived from the encryption key @p key, the nonce @p n, and
  * the initial block counter @p count.
  *
- * Calling the function a second time with the generated ciphertext as input
- * message @p m decrypts it back to the original message.
+ * For decryption, the ciphertext is used as input message @p m and the 
+ * resulting decrypted message is written to @p c.
  *
  * @param[out] c     Generated ciphertext. Same length as input message.
  * @param      m     Input message.
  * @param      m_len Length of @p c and @p m.
- * @param      n     Nonce.
+ * @param      n     Nonce (or IV).
  * @param      n_len Nonce length. @p n_len = 8, 12, or 24.
  * @param      key   Encryption key.
  * @param      count Initial block counter.

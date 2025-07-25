@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -7,6 +7,15 @@
 
 
 /**
+ * @defgroup ocrypto_key_wrap Key Wrap
+ * @ingroup ocrypto
+ * @{
+ * @brief Key wrap algorithms, with and without padding.
+ * 
+ * Key wrap algorithms allow encryption of a key for secure transfer or storage.
+ * @}
+ * 
+ * 
  * @defgroup ocrypto_aes_key_wrap AES Key Wrap
  * @ingroup ocrypto_key_wrap
  * @{

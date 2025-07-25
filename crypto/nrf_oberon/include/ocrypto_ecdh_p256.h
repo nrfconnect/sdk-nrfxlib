@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -39,7 +39,7 @@
 #ifndef OCRYPTO_ECDH_P256_H
 #define OCRYPTO_ECDH_P256_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_p256.h"
 
 
 #ifdef __cplusplus

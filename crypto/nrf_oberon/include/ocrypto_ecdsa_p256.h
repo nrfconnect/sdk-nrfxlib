@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -7,23 +7,24 @@
 
 
 /**
- * @defgroup ocrypto_asym_sig Asymmetric Signature (Elliptic Curves)
+ * @defgroup ocrypto_asym_sig Asymmetric Signature
  * @ingroup ocrypto
  * @{
- * @brief Digital signature algorithms based on elliptic curves.
+ * @brief Digital signature algorithms based on elliptic curves or hash-based algorithms.
  * 
  * These algorithms allow the receiver of a digitally signed message, having a
  * public key from the sender, to verify that the message originates from this
  * sender and has not been modified by a third party.
  * 
  * There are mainly four groups of algorithms: those based on the RSA standard,
- * thosed based on the NIST standard secpXXX curves (usually referred to as ECDSA
- * algorithms), those based on Twisted Edwards curves (usually referred to as
- * EdDSA algorithms), and those based on hashing for post-quantum safety
- * (LMS/HSS).
+ * thosed based on the NIST standard secpXXX elliptic curves (usually referred to
+ * as ECDSA algorithms), those based on Twisted Edwards elliptic curves (usually
+ * referred to as EdDSA algorithms), and those based on hashing for post-quantum
+ * resistance (LMS/HSS/XMSS/XMSSˆMT).
  * @}
- *
- * 
+ */
+
+/**
  * @defgroup ocrypto_ecdsa_p256 ECDSA P-256
  * @ingroup ocrypto_asym_sig
  * @{

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -106,7 +106,7 @@ typedef struct {
  * The generator state @p ctx is initialized by this function.
  *
  * @param[out] ctx   Generator state.
- * @param      n     Nonce.
+ * @param      n     Nonce (or IV).
  * @param      n_len Length of @p n. @p n_len = 8, 12, or 24.
  * @param      k     Encryption key.
  */
@@ -235,7 +235,7 @@ int ocrypto_chacha20_poly1305_final_dec(
  * @param      m_len Length of @p m and @p c.
  * @param      a     Additional authenticated data.
  * @param      a_len Length of @p a. May be 0.
- * @param      n     Nonce.
+ * @param      n     Nonce (or IV).
  * @param      n_len Length of @p n. @p n_len = 8, 12, or 24.
  * @param      k     Encryption key.
  *
@@ -269,7 +269,7 @@ void ocrypto_chacha20_poly1305_encrypt(
  * @param      c_len Length of @p c and @p m.
  * @param      a     Received additional authenticated data.
  * @param      a_len Length of @p a. May be 0.
- * @param      n     Nonce.
+ * @param      n     Nonce (or IV).
  * @param      n_len Length of @p n. 0 <= @p n_len <= @c ocrypto_chacha20_poly1305_NONCE_BYTES_MAX.
  * @param      k     Encryption key.
  *

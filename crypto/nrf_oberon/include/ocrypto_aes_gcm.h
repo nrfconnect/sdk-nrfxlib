@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2025 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -16,7 +16,7 @@
  * a stream cipher. The AES block cipher primitive is used in CTR mode for encryption and decryption.
  * In addition, 128-bit Galois Field multiplication is used for authentication.
  * 
- * @see [NIST - SP 800-38C](https://csrc.nist.gov/pubs/sp/800/38/d/final)
+ * @see [NIST - SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)
  */
 
 /**
