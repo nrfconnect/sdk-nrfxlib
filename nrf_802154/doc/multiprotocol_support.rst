@@ -81,6 +81,7 @@ Multiprotocol measurements
 ==========================
 
 .. include:: multiprotocol_switching_tables.rst
+   :start-line: 1
 
 .. _rd_multiprotocol_support_hf_clock:
 

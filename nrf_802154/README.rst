@@ -62,8 +62,3 @@ The libraries are compatible with the following SoCs:
   doc/rd_limitations
   doc/CHANGELOG
   doc/api
-
-.. toctree::
-  :hidden:
-
-  doc/multiprotocol_switching_tables
