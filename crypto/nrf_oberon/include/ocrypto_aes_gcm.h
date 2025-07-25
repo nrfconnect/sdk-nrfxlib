@@ -16,7 +16,7 @@
  * a stream cipher. The AES block cipher primitive is used in CTR mode for encryption and decryption.
  * In addition, 128-bit Galois Field multiplication is used for authentication.
  * 
- * @see [NIST - SP 800-38C](https://csrc.nist.gov/pubs/sp/800/38/d/final)
+ * @see [NIST - SP 800-38D](https://csrc.nist.gov/pubs/sp/800/38/d/final)
  */
 
 /**

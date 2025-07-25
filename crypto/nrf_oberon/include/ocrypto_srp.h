@@ -63,7 +63,7 @@
 #ifndef OCRYPTO_SRP_H
 #define OCRYPTO_SRP_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_srp.h"
 
 
 #ifdef __cplusplus

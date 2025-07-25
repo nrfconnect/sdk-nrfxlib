@@ -39,7 +39,7 @@
 #ifndef OCRYPTO_ECDH_P256_H
 #define OCRYPTO_ECDH_P256_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_p256.h"
 
 
 #ifdef __cplusplus

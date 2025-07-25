@@ -26,15 +26,6 @@
  * @}
  * 
  *
- * @defgroup ocrypto_key_wrap Key Wrap
- * @ingroup ocrypto
- * @{
- * @brief Key wrap algorithms, with and without padding.
- * 
- * Key wrap algorithms allow encryption of a key for secure transfer or storage.
- * @}
- * 
- * 
  * @defgroup ocrypto_aes_key AES Key Sizes
  * @ingroup ocrypto_unauth_enc
  * @{
