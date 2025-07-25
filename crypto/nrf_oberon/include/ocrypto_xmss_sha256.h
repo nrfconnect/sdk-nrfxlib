@@ -7,26 +7,26 @@
 
 
 /**
- * @defgroup ocrypto_lms_shake256 LMS / HSS (SHAKE)
+ * @defgroup ocrypto_xmss_sha256 XMSS / XMSS^MT (SHA)
  * @ingroup ocrypto_asym_sig
  * @{
- * @brief LMS and HSS are stateful signature algorithms (SHAKE hashing used).
+ * @brief XMSS and XMSS^MT are stateful signature algorithms (SHA hashing used).
  *
- * All SHAKE256 based parameter sets defined by NIST SP800-208 are supported.
- * Both SHAKE256-192 and SHAKE256-256 are supported.
+ * All SHA256 based parameter sets defined by NIST SP800-208 are supported.
+ * Both SHA256-192 and SHA256-256 are supported.
  *
  * @see [NIST - Special Publication 800-208](https://csrc.nist.gov/pubs/sp/800/208/final)
  */
 
 /**
  * @file
- * @brief LMS-SHAKE256 / HSS-SHAKE256.
+ * @brief XMSS-SHA256 / XMSS^MT-SHA256.
  *
- * LMS-SHAKE256 and HSS-SHAKE256 are stateful PQC signature algorithms.
+ * XMSS-SHA256 and XMSS^MT-SHA256 are stateful PQC signature algorithms.
  */
 
-#ifndef OCRYPTO_LMS_SHAKE256_H
-#define OCRYPTO_LMS_SHAKE256_H
+#ifndef OCRYPTO_XMSS_SHA256_H
+#define OCRYPTO_XMSS_SHA256_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -36,9 +36,9 @@
 extern "C" {
 #endif
 
-  
+
 /**
- * LMS-SHAKE256 signature verification.
+ * XMSS-SHA256 signature verification.
  *
  * The signature @p sig of the input message @p msg is verified using the
  * signer's public key @p pk.
@@ -53,13 +53,13 @@ extern "C" {
  * @retval 0  If the signature is valid.
  * @retval -1 Otherwise.
  */
-int ocrypto_lms_shake256_verify(
+int ocrypto_xmss_sha256_verify(
     const uint8_t *sig, size_t sig_len,
     const uint8_t *m,   size_t m_len,
     const uint8_t *pk,  size_t pk_len);
 
 /**
- * HSS-SHAKE256 hierarchical signature verification.
+ * XMSS^MT-SHA256 hierarchical signature verification.
  *
  * The signature @p sig of the input message @p msg is verified using the
  * signer's public key @p pk.
@@ -74,7 +74,7 @@ int ocrypto_lms_shake256_verify(
  * @retval 0  If the signature is valid.
  * @retval -1 Otherwise.
  */
-int ocrypto_hss_shake256_verify(
+int ocrypto_xmssmt_sha256_verify(
     const uint8_t *sig, size_t sig_len,
     const uint8_t *m,   size_t m_len,
     const uint8_t *pk,  size_t pk_len);

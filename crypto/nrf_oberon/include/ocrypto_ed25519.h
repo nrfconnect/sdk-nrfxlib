@@ -30,7 +30,7 @@
 #ifndef OCRYPTO_ED25519_H
 #define OCRYPTO_ED25519_H
 
-#include "ocrypto_types.h"
+#include "ocrypto_types_25519.h"
 
 
 #ifdef __cplusplus
