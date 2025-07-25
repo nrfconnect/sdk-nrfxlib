@@ -48,17 +48,22 @@ The libraries are compatible with the following SoCs:
 * nRF54LM20A
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Subpages:
+  :maxdepth: 2
+  :caption: Subpages:
 
-   doc/architecture
-   doc/feature_description
-   doc/wifi_coex_module
-   doc/hardware_resources
-   doc/multiprotocol_support
-   doc/antenna_diversity
-   doc/rd_including
-   doc/rd_service_layer_lib
-   doc/rd_limitations
-   doc/CHANGELOG
-   doc/api
+  doc/architecture
+  doc/feature_description
+  doc/wifi_coex_module
+  doc/hardware_resources
+  doc/multiprotocol_support
+  doc/antenna_diversity
+  doc/rd_including
+  doc/rd_service_layer_lib
+  doc/rd_limitations
+  doc/CHANGELOG
+  doc/api
+
+.. toctree::
+  :hidden:
+
+  doc/multiprotocol_switching_tables
