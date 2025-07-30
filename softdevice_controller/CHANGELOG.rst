@@ -36,6 +36,7 @@ Bug fixes
 * Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
 * Fixed an issue where the controller could assert when receiving on the Coded PHY over an ACL connection.
   This would occur when coding indicator or length byte was corrupted, causing the controller to listen for more than 27 bytes on S8 Coded PHY. (DRGN-24930)
+* Fixed a rare issue where the controller could stop responding when using coexistence interfaces with the SoftDevice Controller on nRF52 or nRF53 Series devices. (DRGN-25846)
 
 Changes
 =======
