@@ -12,6 +12,9 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+nRF Connect SDK v3.1.0
+**********************
+
 Added
 =====
 
@@ -31,14 +34,13 @@ Bug fixes
     * The initiator received a connectable ``ADV_EXT_IND``.
 
 * Fixed an issue where mode-0 steps in a Channel Sounding subevent would compensate for a random frequency actuation error when using the LE CS Test HCI command (DRGN-25522).
-* Fixed an issue where the controller would assert when terminating a connection created from PAwR.
-  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled. (DRGN-25200)
 * Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
 * Fixed an issue where the controller could assert when receiving on the Coded PHY over an ACL connection.
   This would occur when coding indicator or length byte was corrupted, causing the controller to listen for more than 27 bytes on S8 Coded PHY. (DRGN-24930)
 * Fixed a rare issue where the controller could stop responding when using coexistence interfaces with the SoftDevice Controller on nRF52 or nRF53 Series devices. (DRGN-25846)
 * Fixed a rare issue where the controller acting as a central would cause the link to time out.
   This would occur when a connection subrate factor greater than ``1`` was used, and a conflicting scheduling activity was running. (DRGN-25801)
+* Fixed an issue where the controller would stop generating advertising reports while running an extended scanner. (DRGN-25859)
 
 Changes
 =======
@@ -50,6 +52,15 @@ Changes
   This reverts the changes done by DRGN-21085. (DRGN-24882)
 * The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
   This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
+
+nRF Connect SDK v3.0.1
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would assert when terminating a connection created from PAwR.
+  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled. (DRGN-25200)
 
 nRF Connect SDK v3.0.0
 **********************
