@@ -31,16 +31,16 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_qspi2.h
           │   ├── nrf54h20
           │   │   ├── sqspi_firmware.h
-          │   │   ├── sqspi_firmware_v0.1.0.h
+          │   │   ├── sqspi_firmware_v1.0.0.h
           │   │   └── ...
+          │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
-          │   ├── nrfx_config_qspi2.h
-          │   ├── nrfx_qspi2.h
+          │   ├── nrf_sqspi.h
           └── src
               └── nrfx_qspi2.c
 
 .. note::
-   The main interface for sQSPI is the :file:`nrfx_qspi2.h` file.
+   The main interface for sQSPI is the :file:`nrf_sqspi.h` file.
 
 Header files
 ============
@@ -69,18 +69,19 @@ The following list is a detailed breakdown of the necessary paths:
          #ifndef NRFX_CONFIG_H__
          #define NRFX_CONFIG_H__
 
-         #include "softperipheral_regif.h" // To Resolve correct VPR IRQn for the SoC.
-         #define nrfx_qspi2_irq_handler        SP_VPR_IRQHandler
-
-         #define NRFX_QSPI2_ENABLED            (1)
-         #define NRFX_QSPI2_MAX_NUM_DATA_LINES (4)
+         #define nrf_sqspi_irq_handler        SP_VPR_IRQHandler
+         
+         #define NRF_SQSPI_ENABLED            (1)
+         #define NRF_SQSPI_MAX_NUM_DATA_LINES (4)
+         #define NRF_SQSPI_SP_FIRMWARE_ADDR 0x2f890200
+         //^ This address is user defined, the location for the sQSPI firmware
 
          #endif // NRFX_CONFIG_H__
 
 Compiling source files
 ======================
 
-For an sQSPI application to function properly, you must compile the driver implementation from the source file :file:`nrfx_qspi2.c`.
+For an sQSPI application to function properly, you must compile the driver implementation from the source file :file:`nrf_sqspi.c`.
 
 Application core and FLPR configuration
 ***************************************
@@ -202,7 +203,7 @@ The following options are available, assuming that the FLPR core has access to t
 
 .. note::
    sQSPI driver provides a default GPIO configuration and multiplexing.
-   You can apply this setup by setting :c:var:`nrfx_qspi2_cfg_t.skip_gpio_cfg` and :c:var:`nrfx_qspi2_cfg_t.skip_pmux_cfg` to ``false``.
+   You can apply this setup by setting :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` and :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` to ``false``.
 
 Configuring pins
 ================
@@ -211,9 +212,9 @@ In some cases you might have to modify the sQSPI driver configuration.
 For example, when changing pin drive strength to guarantee signal integrity for a new PCB design.
 You must address these cases on the sQSPI application code:
 
-* If you set the :c:var:`nrfx_qspi2_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application. 
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application. 
   This is a requirement for the nRF54H20 device.
-* If you set the :c:var:`nrfx_qspi2_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application. 
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application. 
   This is a requirement for the nRF54H20 device.
 
 GPIO multiplexing must be handled by setting the correct ``CTRLSEL`` value in UICR.
@@ -226,6 +227,13 @@ RAM configuration
 *****************
 
 The sQSPI Soft Peripheral operates from RAM.
+
+.. note::
+   Starting from sQSPI 1.0.0, Position Independent Code (PIC) is supported.
+   This allows an application to determine where to load the Soft Peripheral firmware.
+   The start address default value is defined in the :file:`nrf_config_sqspi.h` file but you can override it, for example, in :file:`nrfx_config.h`.
+   Start address has been verified to work as described in the provided example configuration for :file:`nrfx_config.h` and is ready for production, while other locations should be considered experimental.
+
 Your build environment must reserve the required RAM and ensure that it is readable and writable by both the application core and the FLPR core.
 This table details the memory region, it should be non-cacheable:
 
@@ -233,10 +241,18 @@ This table details the memory region, it should be non-cacheable:
    :widths: auto
    :header-rows: 1
 
-   * - Start Address
+   * - Component
+     - Address offset
      - Size
-   * - 0x2f890000
-     - 0x4000
+   * - sQSPI firmware
+     - `NRF_SQSPI_SP_FIRMWARE_ADDR`
+     - 0x3740
+   * - sQSPI RAM
+     - `NRF_SQSPI_SP_FIRMWARE_ADDR` + 0x3740
+     - 0x600
+   * - Context saving
+     - 0x2f890000
+     - 0x200 (but the entire block should be retained)
 
 The build environment described in the :ref:`nrf54h20_porting_guide_code` section must comply with these requirements.
 This includes proper settings in linker scripts, device tree specifications (DTS), and resource allocation.

@@ -99,7 +99,7 @@ The following features are supported:
    * Number of SCLK cycles for dummy data
    * Number of bytes for data
 
-  For details on how to adjust these values, see the :c:struct:`nrfx_qspi2_xfer_t` struct.
+  For details on how to adjust these values, see the :c:struct:`nrf_sqspi_xfer_t` struct.
 
 * Dual lane distribution
 
