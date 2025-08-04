@@ -18,15 +18,15 @@ During protocol transitions, radio switching timing metric is measured in both d
 
 Radio switching time:
     802.15.4 to Bluetooth transition:
-        - Start: FEM RX_EN pin event (802.15.4 radio turning off on the end of 802.15.4 activity)
-        - End: RADIO READY event for Bluetooth operation (Bluetooth LE radio turned on and ready)
+        * Start: FEM RX_EN pin event (802.15.4 radio turning off on the end of 802.15.4 activity)
+        * End: RADIO READY event for Bluetooth operation (Bluetooth LE radio turned on and ready)
 
     Bluetooth to 802.15.4 transition:
-        - Start: RADIO DISABLED event (Bluetooth radio turning off)
-        - End: RADIO READY event for 802.15.4 operation (802.15.4 radio turned on and ready)
+        * Start: RADIO DISABLED event (Bluetooth radio turning off)
+        * End: RADIO READY event for 802.15.4 operation (802.15.4 radio turned on and ready)
 
-The measurements are collected during Bluetooth advertisement, scanning, and connection activities while
-the nRF 802.15.4 Radio Driver is in the receive state.
+The measurements are collected during Bluetooth advertisement, scanning, and connection activities while the
+nRF 802.15.4 radio driver is in the receive state.
 
 
 Multiprotocol radio switching time comparison by device family
