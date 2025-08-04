@@ -1,7 +1,5 @@
 :orphan:
 
-Disclaimer
-----------
 .. note::
    The following data and tables are provided for informational purposes only, do not constitute requirements,
    and were obtained from measurements on Nordic DK development kits.
@@ -10,19 +8,20 @@ Disclaimer
 Radio Transition Measurements
 -----------------------------
 
-The following measurement utilizes the nRF21540 Front-End Module (FEM) connected to a Nordic SoC, which provides
-essential timing data via GPIO pins. The RX_EN pin manages the Low-Noise Amplifier (LNA) function of the
-FEM. When RX_EN is low (deactivated), the LNA is disabled, signaling that receive operations are ending or the
-radio is being deactivated at the conclusion of a time slot.
+The following measurement uses the nRF21540 Front-End Module (FEM) connected to a Nordic SoC, which provides
+essential timing data through GPIO pins.
+The RX_EN pin manages the Low-Noise Amplifier (LNA) function of the FEM.
+When RX_EN is low (deactivated), the LNA is disabled, indicating that receive operations are ending or the
+radio is being deactivated at the end of a time slot.
 
 During protocol transitions, radio switching timing metric is measured in both directions:
 
-Radio Switching Time:
-    802.15.4 to Bluetooth Transition:
+Radio switching time:
+    802.15.4 to Bluetooth transition:
         - Start: FEM RX_EN pin event (802.15.4 radio turning off on the end of 802.15.4 activity)
-        - End: RADIO READY event for Bluetooth operation (ble radio turned on and ready)
+        - End: RADIO READY event for Bluetooth operation (Bluetooth LE radio turned on and ready)
 
-    Bluetooth to 802.15.4 Transition:
+    Bluetooth to 802.15.4 transition:
         - Start: RADIO DISABLED event (Bluetooth radio turning off)
         - End: RADIO READY event for 802.15.4 operation (802.15.4 radio turned on and ready)
 
@@ -34,7 +33,7 @@ Multiprotocol radio switching time comparison by device family
 --------------------------------------------------------------
 
 +--------------------+---------------------+-----------------+-----------------+------------------+
-| Bluetooth activity |      Direction      | nRF52 mean [us] | nRF53 mean [us] | nRF54L mean [us] |
+| Bluetooth activity |      Direction      | nRF52 mean [µs] | nRF53 mean [µs] | nRF54L mean [µs] |
 +====================+=====================+=================+=================+==================+
 |   advertisement    | 802.15.4→Bluetooth  |       324       |       346       |       268        |
 +--------------------+---------------------+-----------------+-----------------+------------------+
@@ -55,8 +54,9 @@ Multiprotocol radio switching time measurements by device family
 
 nRF52 family
 ^^^^^^^^^^^^
+
 +--------------------+---------------------+---------------------------------+
-| Bluetooth activity |      Direction      | Timings (min | mean | max) [us] |
+| Bluetooth activity |      Direction      | Timings (min | mean | max) [µs] |
 +====================+=====================+=================================+
 |   advertisement    | 802.15.4→Bluetooth  |         305 | 324 | 427         |
 +--------------------+---------------------+---------------------------------+
@@ -74,8 +74,9 @@ nRF52 family
 
 nRF53 family
 ^^^^^^^^^^^^
+
 +--------------------+---------------------+---------------------------------+
-| Bluetooth activity |      Direction      | Timings (min | mean | max) [us] |
+| Bluetooth activity |      Direction      | Timings (min | mean | max) [µs] |
 +====================+=====================+=================================+
 |   advertisement    | 802.15.4→Bluetooth  |         320 | 346 | 505         |
 +--------------------+---------------------+---------------------------------+
@@ -93,8 +94,9 @@ nRF53 family
 
 nRF54L family
 ^^^^^^^^^^^^^
+
 +--------------------+---------------------+---------------------------------+
-| Bluetooth activity |      Direction      | Timings (min | mean | max) [us] |
+| Bluetooth activity |      Direction      | Timings (min | mean | max) [µs] |
 +====================+=====================+=================================+
 |   advertisement    | 802.15.4→Bluetooth  |         184 | 268 | 273         |
 +--------------------+---------------------+---------------------------------+
