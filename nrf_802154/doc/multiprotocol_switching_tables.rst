@@ -2,7 +2,7 @@
 
 .. note::
    The following data and tables are provided for informational purposes only, do not constitute requirements,
-   and were obtained from measurements on Nordic DK development kits.
+   and were obtained from measurements on Nordic development kits.
 
 
 Radio Transition Measurements
