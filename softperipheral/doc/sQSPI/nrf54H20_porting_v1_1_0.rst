@@ -31,13 +31,13 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_qspi2.h
           │   ├── nrf54h20
           │   │   ├── sqspi_firmware.h
-          │   │   ├── sqspi_firmware_v1.0.0.h
+          │   │   ├── sqspi_firmware_v1.1.0.h
           │   │   └── ...
           │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
           │   ├── nrf_sqspi.h
           └── src
-              └── nrfx_qspi2.c
+              └── nrf_sqspi.c
 
 .. note::
    The main interface for sQSPI is the :file:`nrf_sqspi.h` file.
