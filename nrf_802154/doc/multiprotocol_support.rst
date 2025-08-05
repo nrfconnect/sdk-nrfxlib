@@ -75,6 +75,14 @@ Because of the nature of the Bluetooth Low Energy protocol (TDMA), the Bluetooth
    Dropped packets are common in wireless networks, and IEEE 802.15.4 based protocols are usually resilient to that.
    To mitigate the number of packets lost on IEEE 802.15.4 based protocol, prolong the timing parameters for Bluetooth Low Energy, such as the advertising interval or the connection interval.
 
+.. _rd_multiprotocol_support_measurements:
+
+Multiprotocol measurements
+==========================
+
+.. include:: multiprotocol_switching_tables.rst
+   :start-line: 1
+
 .. _rd_multiprotocol_support_hf_clock:
 
 Handling high-frequency clock
