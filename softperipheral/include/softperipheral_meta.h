@@ -208,6 +208,8 @@ typedef struct
         uint32_t w3_raw;
     };
 
+    uint32_t w4_raw;
+
     union
     {
         uint32_t
@@ -225,6 +227,7 @@ typedef struct
 
         uint32_t w6_raw;
     };
+    uint32_t w7_raw;
 } softperipheral_metadata_t;
 
 #endif //SOFTPERIPHERAL_META_HEADER_VERSION

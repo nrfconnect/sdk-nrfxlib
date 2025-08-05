@@ -39,6 +39,7 @@ typedef enum
 typedef enum
 {
     NRF_QSPI2_EVENT_DMA_DONE    = offsetof(NRF_QSPI2_Type, EVENTS_DMA.DONE),
+    NRF_QSPI2_EVENT_DMA_DONEJOB = offsetof(NRF_QSPI2_Type, EVENTS_DMA.EVENTS_DONE.JOB),
     NRF_QSPI2_EVENT_DMA_ABORTED = offsetof(NRF_QSPI2_Type, EVENTS_DMA.ABORTED),
 } nrf_qspi2_event_t;
 
