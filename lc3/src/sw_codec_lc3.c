@@ -138,6 +138,7 @@ int sw_codec_lc3_dec_run(uint8_t const *const lc3_data, uint16_t lc3_data_size,
 		LOG_ERR("LC3 dec ch:%d is not initialized", audio_ch);
 		return -EPERM;
 	}
+
 	ret = LC3DecodeSessionData(dec_handle_ch[audio_ch], &LC3DecodeInput, &LC3DecodeOutput);
 	if (ret) {
 		return ret;
@@ -153,6 +154,76 @@ int sw_codec_lc3_dec_run(uint8_t const *const lc3_data, uint16_t lc3_data_size,
 	}
 
 	*pcm_data_wr_size = LC3DecodeOutput.bytesWritten;
+
+	return 0;
+}
+
+int sw_codec_lc3_enc_size_get(uint16_t pcm_sample_rate, uint32_t bitrate_bps,
+			  uint16_t framesize_us, size_t *enc_size) 
+{
+	int ret;
+	LC3FrameSize_t framesize;
+
+	if (enc_size == NULL) {
+		LOG_ERR("encoded_size pointer is NULL");
+		return -EINVAL;
+	}
+
+	*enc_size = 0;
+	
+	switch (framesize_us) {
+	case 7500:
+		framesize = LC3FrameSize7_5Ms;
+		break;
+	case 10000:
+		framesize = LC3FrameSize10Ms;
+		break;
+	default:
+		LOG_ERR("Unsupported framesize: %d", framesize_us);
+		return -EINVAL;
+	}
+
+	*enc_size =
+			LC3BitstreamBuffersize(pcm_sample_rate, bitrate_bps, framesize, &ret);
+	if (*enc_size == 0) {
+		LOG_ERR("Required coded bytes to LC3 instance is zero");
+		return -EPERM;
+	}
+
+	return 0;
+}
+
+int sw_codec_lc3_dec_size_get(uint16_t pcm_sample_rate, uint8_t bit_depth,
+			  uint16_t framesize_us, size_t *dec_size) 
+{
+	int ret;
+	LC3FrameSize_t framesize;
+
+	if (dec_size == NULL) {
+		LOG_ERR("decoded_size pointer is NULL");
+		return -EINVAL;
+	}
+
+	*dec_size = 0;
+
+	switch (framesize_us) {
+	case 7500:
+		framesize = LC3FrameSize7_5Ms;
+		break;
+	case 10000:
+		framesize = LC3FrameSize10Ms;
+		break;
+	default:
+		LOG_ERR("Unsupported framesize: %d", framesize_us);
+		return -EINVAL;
+	}
+
+	*dec_size =
+			LC3PCMBuffersize(pcm_sample_rate, bit_depth, framesize, &ret);
+	if (*dec_size == 0) {
+		LOG_ERR("Required un-coded bytes to LC3 instance is zero");
+		return -EPERM;
+	}
 
 	return 0;
 }
@@ -185,6 +256,96 @@ int sw_codec_lc3_dec_uninit_all(void)
 	}
 
 	return 0;
+}
+
+int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
+		  uint8_t num_channels)
+{
+	int ret;
+
+	LC3FrameSize_t framesize;
+
+	switch (framesize_us) {
+	case 7500:
+		framesize = LC3FrameSize7_5Ms;
+		break;
+	case 10000:
+		framesize = LC3FrameSize10Ms;
+		break;
+	default:
+		LOG_ERR("Unsupported framesize: %d", framesize_us);
+		return -EINVAL;
+	}
+
+	for (uint8_t i = 0; i < num_channels; i++) {
+		if (dec_handle_ch[i]) {
+			LOG_ERR("LC3 dec ch: %d already initialized", i);
+			return -EALREADY;
+		}
+		dec_handle_ch[i] = LC3DecodeSessionOpen(pcm_sample_rate, pcm_bit_depth, framesize,
+							NULL, NULL, &ret);
+		if (ret) {
+			return ret;
+		}
+	}
+
+	dec_num_instances = num_channels;
+
+	return 0;
+}
+
+int sw_codec_lc3_enc_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
+			  uint32_t enc_bitrate, uint8_t num_channels, uint16_t *const pcm_bytes_req)
+{
+	int ret;
+	LC3FrameSize_t framesize;
+
+	switch (framesize_us) {
+	case 7500:
+		framesize = LC3FrameSize7_5Ms;
+		break;
+	case 10000:
+		framesize = LC3FrameSize10Ms;
+		break;
+	default:
+		LOG_ERR("Unsupported framesize: %d", framesize_us);
+		return -EINVAL;
+	}
+
+	if (enc_bitrate == 0) {
+		LOG_ERR("LC3 enc_bitrate is 0");
+		return -EINVAL;
+	} else if (enc_bitrate <= ENC_BITRATE_WRN_LVL_LOW) {
+		LOG_WRN("LC3 enc_bitrate: %d : likely too low", enc_bitrate);
+	} else if (enc_bitrate >= ENC_BITRATE_WRN_LVL_HIGH) {
+		LOG_WRN("LC3 enc_bitrate: %d : likely too high", enc_bitrate);
+	}
+
+	enc_pcm_bytes_req = LC3PCMBuffersize(pcm_sample_rate, pcm_bit_depth, framesize, &ret);
+	*pcm_bytes_req = enc_pcm_bytes_req;
+
+	if (enc_pcm_bytes_req == 0) {
+		LOG_ERR("Required PCM bytes to encode LC3 is zero.");
+		return -EPERM;
+	}
+
+	for (uint8_t i = 0; i < num_channels; i++) {
+		if (enc_handle_ch[i]) {
+			LOG_ERR("LC3 enc ch: %d already initialized", i);
+			return -EALREADY;
+		}
+		enc_handle_ch[i] = LC3EncodeSessionOpen(pcm_sample_rate, pcm_bit_depth, framesize,
+							NULL, NULL, &ret);
+		if (ret) {
+			return ret;
+		}
+	}
+
+	m_enc_bitrate = enc_bitrate;
+
+	enc_num_instances = num_channels;
+
+	return ret;
 }
 
 int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffer_size,
@@ -258,94 +419,4 @@ int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffe
 	ret = LC3Initialize(enc_sample_rates, dec_sample_rates, framesize, unique_session,
 			    sw_codec_lc3_buffer, sw_codec_lc3_buffer_size);
 	return ret;
-}
-
-int sw_codec_lc3_enc_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
-			  uint32_t enc_bitrate, uint8_t num_channels, uint16_t *const pcm_bytes_req)
-{
-	int ret;
-	LC3FrameSize_t framesize;
-
-	switch (framesize_us) {
-	case 7500:
-		framesize = LC3FrameSize7_5Ms;
-		break;
-	case 10000:
-		framesize = LC3FrameSize10Ms;
-		break;
-	default:
-		LOG_ERR("Unsupported framesize: %d", framesize_us);
-		return -EINVAL;
-	}
-
-	if (enc_bitrate == 0) {
-		LOG_ERR("LC3 enc_bitrate is 0");
-		return -EINVAL;
-	} else if (enc_bitrate <= ENC_BITRATE_WRN_LVL_LOW) {
-		LOG_WRN("LC3 enc_bitrate: %d : likely too low", enc_bitrate);
-	} else if (enc_bitrate >= ENC_BITRATE_WRN_LVL_HIGH) {
-		LOG_WRN("LC3 enc_bitrate: %d : likely too high", enc_bitrate);
-	}
-
-	enc_pcm_bytes_req = LC3PCMBuffersize(pcm_sample_rate, pcm_bit_depth, framesize, &ret);
-	*pcm_bytes_req = enc_pcm_bytes_req;
-
-	if (enc_pcm_bytes_req == 0) {
-		LOG_ERR("Required PCM bytes to encode LC3 is zero.");
-		return -EPERM;
-	}
-
-	for (uint8_t i = 0; i < num_channels; i++) {
-		if (enc_handle_ch[i]) {
-			LOG_ERR("LC3 enc ch: %d already initialized", i);
-			return -EALREADY;
-		}
-		enc_handle_ch[i] = LC3EncodeSessionOpen(pcm_sample_rate, pcm_bit_depth, framesize,
-							NULL, NULL, &ret);
-		if (ret) {
-			return ret;
-		}
-	}
-
-	m_enc_bitrate = enc_bitrate;
-
-	enc_num_instances = num_channels;
-
-	return ret;
-}
-
-int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
-			  uint8_t num_channels)
-{
-	int ret;
-
-	LC3FrameSize_t framesize;
-
-	switch (framesize_us) {
-	case 7500:
-		framesize = LC3FrameSize7_5Ms;
-		break;
-	case 10000:
-		framesize = LC3FrameSize10Ms;
-		break;
-	default:
-		LOG_ERR("Unsupported framesize: %d", framesize_us);
-		return -EINVAL;
-	}
-
-	for (uint8_t i = 0; i < num_channels; i++) {
-		if (dec_handle_ch[i]) {
-			LOG_ERR("LC3 dec ch: %d already initialized", i);
-			return -EALREADY;
-		}
-		dec_handle_ch[i] = LC3DecodeSessionOpen(pcm_sample_rate, pcm_bit_depth, framesize,
-							NULL, NULL, &ret);
-		if (ret) {
-			return ret;
-		}
-	}
-
-	dec_num_instances = num_channels;
-
-	return 0;
 }
