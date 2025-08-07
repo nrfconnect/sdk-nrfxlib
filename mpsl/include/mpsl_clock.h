@@ -165,6 +165,8 @@ typedef enum
 typedef void (*mpsl_clock_hfclk_callback_t)(void);
 
 /** @brief Request the high frequency crystal oscillator.
+ * 
+ * @deprecated Use ::mpsl_clock_hfclk_src_request instead. This function will be removed in a future release.
  *
  * Will start the high frequency crystal oscillator, the startup time of the crystal varies
  * and the ::mpsl_clock_hfclk_is_running function can be polled to check if it has started.
@@ -189,6 +191,8 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
 int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callback);
 
 /** @brief Releases the high frequency crystal oscillator.
+ * 
+ * @deprecated Use ::mpsl_clock_hfclk_src_release instead. This function will be removed in a future release.
  *
  * Indicates that the high frequency crystal oscillator is not needed by the application.
  * MPSL may continue to use the high frequency clock if it is requested by protocol stacks.
@@ -209,6 +213,8 @@ int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callb
 int32_t mpsl_clock_hfclk_release(void);
 
 /** @brief Checks if the high frequency crystal oscillator is running.
+ * 
+ * @deprecated Use ::mpsl_clock_hfclk_src_is_running instead. This function will be removed in a future release.
  *
  * @see mpsl_clock_hfclk_request
  * @see mpsl_clock_hfclk_release
