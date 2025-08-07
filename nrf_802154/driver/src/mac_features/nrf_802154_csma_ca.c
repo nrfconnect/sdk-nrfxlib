@@ -79,7 +79,10 @@ static uint8_t                            * mp_data;      ///< Pointer to a buff
 static nrf_802154_transmitted_frame_props_t m_data_props; ///< Structure containing detailed properties of data in buffer.
 static nrf_802154_fal_tx_power_split_t      m_tx_power;   ///< Power to be used when transmitting the frame split into components.
 static uint8_t                              m_tx_channel; ///< Channel to be used to transmit the current frame.
-static csma_ca_state_t                      m_state;      ///< The current state of the CSMA-CA procedure.
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+static bool m_tx_timestamp_encode;                        ///< Tx timestamp request flag for the current transmission attempt.
+#endif
+static csma_ca_state_t m_state;                           ///< The current state of the CSMA-CA procedure.
 
 /**
  * @brief Perform appropriate actions for busy channel conditions.
@@ -198,6 +201,11 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
             .cca                = true,
             .immediate          = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
             .extra_cca_attempts = 0,
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+            .tx_timestamp_encode = m_tx_timestamp_encode,
+#else
+            .tx_timestamp_encode = false,
+#endif
         };
 
         if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,
@@ -372,6 +380,9 @@ bool nrf_802154_csma_ca_start(uint8_t                                      * p_d
     m_nb         = 0;
     m_be         = nrf_802154_pib_csmaca_min_be_get();
     m_tx_channel = channel;
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+    m_tx_timestamp_encode = p_metadata->tx_timestamp_encode;
+#endif
     (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
                                                                  p_metadata->tx_power,
                                                                  &m_tx_power);
@@ -427,7 +438,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
         // Below errors mean a failure occurred during the frame processing and the frame cannot be
         // transmitted unless a higher layer takes appropriate actions, hence the CSMA-CA procedure
         // shall be stopped.
-
+        case NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR:
         case NRF_802154_TX_ERROR_KEY_ID_INVALID:
         /* Fallthrough. */
         case NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR:

@@ -604,7 +604,8 @@ typedef enum
     SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */ \
     SPINEL_DATATYPE_BOOL_S                               /* cca */         \
     SPINEL_DATATYPE_NRF_802154_TX_POWER_METADATA_S       /* tx_power */    \
-    SPINEL_DATATYPE_NRF_802154_TX_CHANNEL_METADATA_S     /* tx_channel */
+    SPINEL_DATATYPE_NRF_802154_TX_CHANNEL_METADATA_S     /* tx_channel */  \
+    SPINEL_DATATYPE_BOOL_S                               /* tx_timestamp_encode */
 
 /**
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S data type.
@@ -613,7 +614,8 @@ typedef enum
     NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_metadata).frame_props), \
     ((tx_metadata).cca),                                                  \
     NRF_802154_TX_POWER_METADATA_ENCODE((tx_metadata).tx_power),          \
-    NRF_802154_TX_CHANNEL_METADATA_ENCODE((tx_metadata).tx_channel)
+    NRF_802154_TX_CHANNEL_METADATA_ENCODE((tx_metadata).tx_channel),      \
+    ((tx_metadata).tx_timestamp_encode)
 
 /**
  * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S data type.
@@ -622,7 +624,8 @@ typedef enum
     NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props), \
     (&(tx_metadata).cca),                                                 \
     NRF_802154_TX_POWER_METADATA_DECODE((tx_metadata).tx_power),          \
-    NRF_802154_TX_CHANNEL_METADATA_DECODE((tx_metadata).tx_channel)
+    NRF_802154_TX_CHANNEL_METADATA_DECODE((tx_metadata).tx_channel),      \
+    (&(tx_metadata).tx_timestamp_encode)
 
 /**
  * @brief Spinel data type description for nrf_802154_transmit_csma_ca_metadata_t.
@@ -630,7 +633,8 @@ typedef enum
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S             \
     SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */ \
     SPINEL_DATATYPE_NRF_802154_TX_POWER_METADATA_S       /* tx_power */    \
-    SPINEL_DATATYPE_NRF_802154_TX_CHANNEL_METADATA_S     /* tx_channel */
+    SPINEL_DATATYPE_NRF_802154_TX_CHANNEL_METADATA_S     /* tx_channel */  \
+    SPINEL_DATATYPE_BOOL_S                               /* tx_timestamp_encode */
 
 /**
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
@@ -638,7 +642,8 @@ typedef enum
 #define NRF_802154_TRANSMIT_CSMA_CA_METADATA_ENCODE(tx_metadata)          \
     NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_metadata).frame_props), \
     NRF_802154_TX_POWER_METADATA_ENCODE((tx_metadata).tx_power),          \
-    NRF_802154_TX_CHANNEL_METADATA_ENCODE((tx_metadata).tx_channel)
+    NRF_802154_TX_CHANNEL_METADATA_ENCODE((tx_metadata).tx_channel),      \
+    ((tx_metadata).tx_timestamp_encode)
 
 /**
  * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
@@ -646,7 +651,8 @@ typedef enum
 #define NRF_802154_TRANSMIT_CSMA_CA_METADATA_DECODE(tx_metadata)          \
     NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props), \
     NRF_802154_TX_POWER_METADATA_DECODE((tx_metadata).tx_power),          \
-    NRF_802154_TX_CHANNEL_METADATA_DECODE((tx_metadata).tx_channel)
+    NRF_802154_TX_CHANNEL_METADATA_DECODE((tx_metadata).tx_channel),      \
+    (&(tx_metadata).tx_timestamp_encode)
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_min_be_set.
@@ -721,12 +727,13 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_transmit_at_metadata_t.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S                  \
-    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */ \
-    SPINEL_DATATYPE_BOOL_S                               /* cca */         \
-    SPINEL_DATATYPE_UINT8_S                              /* channel */     \
-    SPINEL_DATATYPE_NRF_802154_TX_POWER_METADATA_S       /* tx_power */    \
-    SPINEL_DATATYPE_UINT8_S                              /* extra_cca_attempts */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S                        \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */       \
+    SPINEL_DATATYPE_BOOL_S                               /* cca */               \
+    SPINEL_DATATYPE_UINT8_S                              /* channel */           \
+    SPINEL_DATATYPE_NRF_802154_TX_POWER_METADATA_S       /* tx_power */          \
+    SPINEL_DATATYPE_UINT8_S                              /* extra_cca_attempts */\
+    SPINEL_DATATYPE_BOOL_S                               /* tx_timestamp_encode */
 
 /**
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S data type.
@@ -736,7 +743,8 @@ typedef enum
     ((tx_at_metadata).cca),                                                  \
     ((tx_at_metadata).channel),                                              \
     NRF_802154_TX_POWER_METADATA_ENCODE((tx_at_metadata).tx_power),          \
-    ((tx_at_metadata).extra_cca_attempts)
+    ((tx_at_metadata).extra_cca_attempts),                                   \
+    ((tx_at_metadata).tx_timestamp_encode)
 
 /**
  * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S data type.
@@ -746,7 +754,8 @@ typedef enum
     (&(tx_at_metadata).cca),                                                 \
     (&(tx_at_metadata).channel),                                             \
     NRF_802154_TX_POWER_METADATA_DECODE((tx_at_metadata).tx_power),          \
-    (&(tx_at_metadata).extra_cca_attempts)
+    (&(tx_at_metadata).extra_cca_attempts),                                  \
+    (&(tx_at_metadata).tx_timestamp_encode)
 
 /**
  * @brief Spinel data type description for nrf_802154_cca_cfg_t.
