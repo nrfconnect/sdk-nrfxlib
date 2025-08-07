@@ -53,10 +53,7 @@ As the MPSL clock module runs the calibration automatically, the application mus
 High-frequency clock (HFCLK)
 ----------------------------
 
-The high-frequency clock (HFCLK) controller supports the following HFCLK sources:
-
-* 64 MHz internal oscillator (HFINT)
-* 64 MHz crystal oscillator (HFXO)
+The high-frequency clock (HFCLK) controller supports multiple sources, most notably the crystal oscillator (HFXO). On some platforms, there is also a 24 MHz peripheral clock (HFCLK24M) used for example by USB. See :c:type:`mpsl_clock_hfclk_src_t` for the available clock sources.
 
 The HFXO must be running to use the ``RADIO`` peripheral.
 MPSL makes sure the HFXO is started in time for every scheduled ``RADIO`` activity.
@@ -66,7 +63,7 @@ MPSL makes sure the HFXO is started in time for every scheduled ``RADIO`` activi
     As such, you must choose the external crystal oscillator and the other related components accordingly.
     See the relevant SoC product specification for more information.
 
-The MPSL clock module API enables the application to safely request and release the HFXO while the protocol stacks are enabled.
+The MPSL clock module API enables the application to safely request (:c:func:`mpsl_clock_hfclk_src_request`) and release (:c:func:`mpsl_clock_hfclk_src_release`) an HFCLK source while the protocol stacks are enabled.
 MPSL can continue to use the HFXO after it is released if it is requested by protocol stacks.
 HFXO is stopped when it is no longer needed.
 
@@ -83,7 +80,7 @@ The call to :c:func:`mpsl_clock_ctrl_source_unregister` must be done after the :
 .. note::
     When you use the MPSL with external clock control feature, the MPSL internal clock control APIs are not allowed to be called.
 
-APIs and data required for integration of MPSL with external clock control are provided by :c:func:`mpsl_clock_lfclk_ctrl_source_t` for LFCLK and :c:func:`mpsl_clock_hfclk_ctrl_source_t` for HFCLK.
+APIs and data required for integration of MPSL with external clock control are provided by :c:type:`mpsl_clock_lfclk_ctrl_source_t` for LFCLK and :c:type:`mpsl_clock_hfclk_ctrl_source_t` for HFCLK.
 
 Low-frequency clock (LFCLK) integration
 ---------------------------------------
@@ -91,7 +88,7 @@ Low-frequency clock (LFCLK) integration
 It is the external clock control driver's responsibility to configure the LFCLK source and keep it calibrated.
 On the nRF52 Series and nRF53 Series, the MPSL may initiate additional calibration events by using the :c:func:`lfclk_calibration_start` API.
 
-The MPSL will defer waiting for LFCLK until it is used for the first time if :c:func:`skip_wait_lfclk_started` is set to ``true``.
+The MPSL will defer waiting for LFCLK until it is used for the first time if :c:member:`skip_wait_lfclk_started` is set to ``true``.
 
 The :c:member:`lfclk_request`, :c:member:`lfclk_release`, and :c:member:`lfclk_wait` APIs are mandatory.
 The :c:member:`accuracy_ppm` value is meant to be forwarded only to the protocol stacks.
@@ -107,7 +104,7 @@ The HFXO must be running to use the ``RADIO`` peripheral.
 MPSL makes sure the HFXO is started in time for every scheduled ``RADIO`` activity.
 HFXO is stopped when it is no longer needed.
 
-The t:c:member:`hfclk_request`, :c:member:`hfclk_release`, and :c:member:`hfclk_is_running` APIs are mandatory.
+The :c:member:`hfclk_request`, :c:member:`hfclk_release`, and :c:member:`hfclk_is_running` APIs are mandatory.
 These APIs will be called by MPSL from high priority, so they may not use blocking operations.
 
 You must correctly configure the  :c:member:`startup_time_us` for the ``RADIO`` operation.
