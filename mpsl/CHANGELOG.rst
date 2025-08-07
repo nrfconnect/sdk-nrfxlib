@@ -32,6 +32,7 @@ Added
 * Added support for the nRF21540 Front-End Module in GPIO/SPI mode on the nRF54L Series SoCs. (KRKNWK-15977)
 * Added support for the Simple GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-20506)
 * Added support for boosting the current timeslot priority for the nRF 802.15.4 Radio Driver. (KRKNWK-19125)
+* Added :c:func:`mpsl_clock_hfclk_src_request`, :c:func:`mpsl_clock_hfclk_src_release`, and :c:func:`mpsl_clock_hfclk_src_is_running` to manage the high-frequency clock for a given source.  The old API (:c:func:`mpsl_clock_hfclk_request`, :c:func:`mpsl_clock_hfclk_release`, and :c:func:`mpsl_clock_hfclk_is_running`) has been deprecated and will be removed in a future release.
 
 Bug fixes
 =========
