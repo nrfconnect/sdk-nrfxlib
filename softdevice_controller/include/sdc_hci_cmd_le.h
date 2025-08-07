@@ -259,6 +259,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_EXT_CREATE_CONN_V2 = 0x2085,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_params_v2(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_PARAMS_V2 = 0x2086,
+    /** @brief See @ref sdc_hci_cmd_le_read_all_local_supported_features(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ALL_LOCAL_SUPPORTED_FEATURES = 0x2087,
+    /** @brief See @ref sdc_hci_cmd_le_read_all_remote_features(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ALL_REMOTE_FEATURES = 0x2088,
     /** @brief See @ref sdc_hci_cmd_le_cs_read_local_supported_capabilities(). */
     SDC_HCI_OPCODE_CMD_LE_CS_READ_LOCAL_SUPPORTED_CAPABILITIES = 0x2089,
     /** @brief See @ref sdc_hci_cmd_le_cs_read_remote_supported_capabilities(). */
@@ -289,6 +293,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_CS_TEST_END = 0x2096,
     /** @brief See @ref sdc_hci_cmd_le_set_host_feature_v2(). */
     SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE_V2 = 0x2097,
+    /** @brief See @ref sdc_hci_cmd_le_frame_space_update(). */
+    SDC_HCI_OPCODE_CMD_LE_FRAME_SPACE_UPDATE = 0x209d,
 };
 
 /** @brief LE subevent Code values. */
@@ -306,6 +312,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
     /** @brief See @ref sdc_hci_subevent_le_cis_established_v2_t. */
     SDC_HCI_SUBEVENT_LE_CIS_ESTABLISHED_V2 = 0x2a,
+    /** @brief See @ref sdc_hci_subevent_le_read_all_remote_features_complete_t. */
+    SDC_HCI_SUBEVENT_LE_READ_ALL_REMOTE_FEATURES_COMPLETE = 0x2b,
     /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_t. */
     SDC_HCI_SUBEVENT_LE_CS_READ_REMOTE_SUPPORTED_CAPABILITIES_COMPLETE = 0x2c,
     /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_fae_table_complete_t. */
@@ -322,6 +330,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_CS_SUBEVENT_RESULT_CONTINUE = 0x32,
     /** @brief See @ref sdc_hci_subevent_le_cs_test_end_complete_t. */
     SDC_HCI_SUBEVENT_LE_CS_TEST_END_COMPLETE = 0x33,
+    /** @brief See @ref sdc_hci_subevent_le_frame_space_update_complete_t. */
+    SDC_HCI_SUBEVENT_LE_FRAME_SPACE_UPDATE_COMPLETE = 0x35,
 };
 
 /** @brief Advertising Event Properties parameters. */
@@ -968,6 +978,42 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t framing;
 } sdc_hci_subevent_le_cis_established_v2_t;
 
+/** @brief LE Read All Remote Features Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.38
+ *
+ * The HCI_LE_Read_All_Remote_Features_Complete event is used to indicate the
+ * completion of the process of the Controller obtaining the features supported by the
+ * remote Bluetooth device specified by the Connection_Handle event parameter.
+ *
+ * The Max_Remote_Page parameter specifies the highest-numbered page of the remote
+ * device’s supported LE features that contains at least one bit set to 1; all higher-number
+ * pages therefore only contain zeroes. The Max_Valid_Page parameter specifies the
+ * highest-numbered page of features that the Controller has obtained from the remote
+ * device or, if it has obtained all pages from 1 to Max_Remote_Page, then any value
+ * greater than or equal to Max_Remote_Page.
+ *
+ * The LE_Features parameter contains the LE features. The Controller shall set all pages
+ * between 0 and Max_Valid_Page to valid data and shall set all higher-numbered pages
+ * to all zero bits.
+ *
+ * Note: If Max_Valid_Page ≥ Max_Remote_Page, then all pages will contain valid data,
+ * which will be all zero bits for pages numbered greater than Max_Remote_Page.
+ *
+ * If the feature mask is requested more than once while a connection exists between the
+ * two devices, then the second and subsequent requests may report a cached copy of the
+ * feature mask rather than fetching the feature mask again.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t max_remote_page;
+    uint8_t max_valid_page;
+    uint8_t le_features[248];
+} sdc_hci_subevent_le_read_all_remote_features_complete_t;
+
 /** @brief LE CS Read Remote Supported Capabilities Complete.
  *
  * The description below is extracted from Core_v6.0,
@@ -1344,6 +1390,34 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t status;
 } sdc_hci_subevent_le_cs_test_end_complete_t;
+
+/** @brief LE Frame Space Update Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.48
+ *
+ * The HCI_LE_Frame_Space_Update_Complete event is used to indicate that the Frame
+ * Space Update procedure has completed (see [Vol 6] Part B, Section 5.1.30) and, if
+ * initiated autonomously by the local Controller or the peer device, that at least one frame
+ * space value has changed.
+ *
+ * The Initiator parameter indicates who initiated the Frame Space Update procedure.
+ *
+ * The Frame_Space parameter indicates the new frame space value that the Controller is
+ * now using.
+ *
+ * The PHYS and Spacing_Types parameters indicate which PHYs and spacing types are
+ * using the new frame space value.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t initiator;
+    uint16_t frame_space;
+    uint8_t phys;
+    uint16_t spacing_types;
+} sdc_hci_subevent_le_frame_space_update_complete_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -2510,6 +2584,20 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_params_v2_return_t;
 
+/** @brief LE Read All Local Supported Features return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t max_page;
+    uint8_t le_features[248];
+} sdc_hci_cmd_le_read_all_local_supported_features_return_t;
+
+/** @brief LE Read All Remote Features command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t pages_requested;
+} sdc_hci_cmd_le_read_all_remote_features_t;
+
 /** @brief LE CS Read Local Supported Capabilities return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -2719,6 +2807,16 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t bit_number;
     uint8_t bit_value;
 } sdc_hci_cmd_le_set_host_feature_v2_t;
+
+/** @brief LE Frame Space Update command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint16_t frame_space_min;
+    uint16_t frame_space_max;
+    uint8_t phys;
+    uint16_t spacing_types;
+} sdc_hci_cmd_le_frame_space_update_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -8600,6 +8698,67 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
 uint8_t sdc_hci_cmd_le_set_periodic_adv_params_v2(const sdc_hci_cmd_le_set_periodic_adv_params_v2_t * p_params,
                                                   sdc_hci_cmd_le_set_periodic_adv_params_v2_return_t * p_return);
 
+/** @brief LE Read All Local Supported Features.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.128
+ *
+ * This command requests the supported LE features for the Controller.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_All_Local_Supported_Features command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all_local_supported_features_return_t * p_return);
+
+/** @brief LE Read All Remote Features.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.129
+ *
+ * This command requests, from the remote device identified by the Connection_Handle,
+ * the features used on the connection and the features supported by the remote device.
+ * For details see [Vol 6] Part B, Section 4.6.
+ *
+ * This command may be issued on both the Central and Peripheral.
+ *
+ * The Pages_Requested parameter specifies the highest-numbered page of features
+ * that the Host requires. The Controller shall obtain all pages up to the lesser of
+ * Pages_Requested and the highest page number on the remote device that contains
+ * at least one bit set to 1, and may obtain some or all higher-numbered pages.
+ *
+ * If a connection already exists between the two devices and the features have already
+ * been fetched on that connection, then the Controller may use a cached copy of the
+ * features.
+ *
+ * If the Host issues this command when another HCI_LE_Read_All_Remote_Features
+ * command is pending in the Controller, then the Controller shall return the error code
+ * Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Read_All_Remote_Features command,
+ * the Controller shall send the HCI_Command_Status event to the Host. When the
+ * Controller has completed the procedure to determine the remote features or has
+ * determined that it will be using a cached copy, the Controller shall send an
+ * HCI_LE_Read_All_Remote_Features_Complete event to the Host.
+ *
+ * The HCI_LE_Read_All_Remote_Features_Complete event contains the status of this
+ * command and the parameters describing the features supported by the remote device.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_remote_features_t * p_params);
+
 /** @brief LE CS Read Local Supported Capabilities.
  *
  * The description below is extracted from Core_v6.0,
@@ -9437,6 +9596,59 @@ uint8_t sdc_hci_cmd_le_cs_test_end(void);
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature_v2_t * p_params);
+
+/** @brief LE Frame Space Update.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.151
+ *
+ * The HCI_LE_Frame_Space_Update command allows the Host to request a change to
+ * one or more frame space values. This command may be issued on both the Central and
+ * the Peripheral.
+ *
+ * The Frame_Space_Min and Frame_Space_Max parameters indicate the minimum and
+ * maximum allowed frame space values that the Controller should use, respectively.
+ * The Frame_Space_Min parameter shall not be greater than the Frame_Space_Max
+ * parameter.
+ *
+ * The PHYS and Spacing_Types parameters indicate which frame space values are to be
+ * updated. At least one bit shall be set in the PHYS parameter and at least one bit shall
+ * be set in the Spacing_Types parameter.
+ *
+ * The actual parameter values selected by the Link Layer may be different from the
+ * parameter values provided by the Host through this command.
+ *
+ * If the Host issues this command with Frame_Space_Max less than the frame space
+ * value, then the Controller shall ignore the value provided by the Host and shall use the
+ * frame space value in use as the Frame_Space_Max.
+ *
+ * If the Connection_Handle parameter does not identify an active ACL connection, then
+ * the Controller shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command with Frame_Space_Max less than Frame_Space_Min,
+ * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with no bits set in the PHYS or the Spacing_Types
+ * parameter, then the Controller shall reject the command and return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with a bit set in the PHYS or the Spacing_Types
+ * parameter that the Controller does not support, then the Controller shall reject the
+ * command and return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Frame_Space_Update command,
+ * the Controller shall send the HCI_Command_Status event to the Host.
+ * When the HCI_LE_Frame_Space_Update command has completed, an
+ * HCI_LE_Frame_Space_Update_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_frame_space_update(const sdc_hci_cmd_le_frame_space_update_t * p_params);
 
 /** @} end of HCI_VS_API */
 

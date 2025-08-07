@@ -142,9 +142,6 @@ extern "C" {
 /** @brief Default number of antennas supported by the local device in Channel Sounding. */
 #define SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED 1
 
-/** @brief Default optional support for Channel Sounding step mode-3. */
-#define SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED false
-
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -216,6 +213,18 @@ extern "C" {
  * @param[in] num_links Total number of peripheral and central links supported.
  */
 #define SDC_MEM_SYNC_TRANSFER(num_links) ((num_links) > 0 ? (13 + (num_links) * 139) : 0)
+
+/** @brief Maximum memory required when supporting extended feature set.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_EXTENDED_FEATURE_SET(num_links) ((num_links) > 0 ? (11 + (num_links) * 259) : 0)
+
+/** @brief Maximum memory required when supporting frame space update.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_FRAME_SPACE_UPDATE(num_links) ((num_links) > 0 ? (12 + (num_links) * 68) : 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
@@ -351,7 +360,7 @@ extern "C" {
  * @param[in] max_antenna_paths_supported Maximum number of antenna paths supported in CS.
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
-#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4203 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
+#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
@@ -569,11 +578,6 @@ typedef struct
      *  Default: @ref SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED.
      */
     uint8_t num_antennas_supported;
-    /** Configures support of optional step mode-3 in Channel Sounding.
-     *
-     *  Default: @ref SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED.
-     */
-    bool step_mode3_supported;
 } sdc_cfg_cs_cfg_t;
 
 
@@ -1350,6 +1354,47 @@ int32_t sdc_support_connection_subrating_central(void);
  * @retval -NRF_EOPNOTSUPP  Connection Subrating is not supported.
  */
 int32_t sdc_support_connection_subrating_peripheral(void);
+
+/** @brief Support Extended Feature Set
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Extended Feature Set.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Extended Feature Set is not supported.
+ */
+ int32_t sdc_support_extended_feature_set(void);
+
+/** @brief Support Frame Space Update for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Frame Space Update.
+ *
+ * @note The application is required to call both @ref sdc_support_frame_space_update_central()
+ *       and @ref sdc_support_frame_space_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Frame Space Update is not supported.
+ */
+int32_t sdc_support_frame_space_update_central(void);
+
+/** @brief Support Frame Space Update for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Frame Space Update.
+ *
+ * @note The application is required to call both @ref sdc_support_frame_space_update_central()
+ *       and @ref sdc_support_frame_space_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Frame Space Update is not supported.
+ */
+int32_t sdc_support_frame_space_update_peripheral(void);
 
 /** @brief Support Channel Sounding test command
  *
