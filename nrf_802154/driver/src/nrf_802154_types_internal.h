@@ -40,13 +40,14 @@
 
 typedef struct
 {
-    nrf_802154_transmitted_frame_props_t frame_props;        // !< Properties of the frame to be transmitted.
-    nrf_802154_fal_tx_power_split_t      tx_power;           // !< Power to be used when transmitting the frame, split into components to be applied on each stage on transmit path.
-    uint8_t                              channel;            // !< Transmission channel
-    bool                                 cca;                // !< If the driver is to perform CCA procedure before transmission.
-    bool                                 immediate;          // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
-                                                             // until its preconditions are met.
-    uint8_t                              extra_cca_attempts; // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
+    nrf_802154_transmitted_frame_props_t frame_props;         // !< Properties of the frame to be transmitted.
+    nrf_802154_fal_tx_power_split_t      tx_power;            // !< Power to be used when transmitting the frame, split into components to be applied on each stage on transmit path.
+    uint8_t                              channel;             // !< Transmission channel
+    bool                                 cca;                 // !< If the driver is to perform CCA procedure before transmission.
+    bool                                 immediate;           // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
+                                                              // until its preconditions are met.
+    uint8_t                              extra_cca_attempts;  // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
+    bool                                 tx_timestamp_encode; // !< True if the transmit timestamp shall be encoded in the payload.
 } nrf_802154_transmit_params_t;
 
 typedef struct

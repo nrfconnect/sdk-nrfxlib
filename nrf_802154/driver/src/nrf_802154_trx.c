@@ -44,7 +44,6 @@
 #include "nrf_802154_peripherals.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_rssi.h"
-#include "nrf_802154_swi.h"
 #include "nrf_802154_trx_ppi_api.h"
 #include "nrf_802154_utils.h"
 
@@ -852,10 +851,6 @@ void nrf_802154_trx_init(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     nrf_802154_trx_module_reset();
-
-#if defined(RADIO_INTENSET_SYNC_Msk)
-    nrf_802154_swi_init();
-#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }

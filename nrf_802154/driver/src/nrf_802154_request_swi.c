@@ -690,8 +690,6 @@ void nrf_802154_request_init(void)
                           sizeof(m_requests_queue_memory[0]));
 
     nrf_egu_int_enable(NRF_802154_EGU_INSTANCE, REQ_INT);
-
-    nrf_802154_swi_init();
 }
 
 bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)

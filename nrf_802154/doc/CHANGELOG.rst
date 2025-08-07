@@ -33,6 +33,8 @@ Added
   Use this API during clock platform initialization.
   If the latency is not set, the driver assumes a default worst-case startup latency of 1650 us.
 * When the FEM power amplifier is configured, the Errata 56 for nRF54L15 is automatically applied. (KRKNWK-20409)
+* Added the new flag to :c:type:`nrf_802154_transmitted_frame_props_t` that allows to request encoding the transmit timestamp in the transmitted payload.
+  The feature can be enabled with the :c:macro:`NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED` configuration macro. (KRKNWK-20426)
 
 Removed
 =======

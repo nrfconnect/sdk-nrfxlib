@@ -802,11 +802,12 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
             p_metadata->channel,
             p_metadata->tx_power,
             &p_dly_tx_data->tx.params.tx_power);
-        p_dly_tx_data->tx.params.cca                = p_metadata->cca;
-        p_dly_tx_data->tx.params.immediate          = true;
-        p_dly_tx_data->tx.params.extra_cca_attempts = p_metadata->extra_cca_attempts;
-        p_dly_tx_data->tx.params.channel            = p_metadata->channel;
-        p_dly_tx_data->id                           = NRF_802154_RESERVED_DTX_ID;
+        p_dly_tx_data->tx.params.cca                 = p_metadata->cca;
+        p_dly_tx_data->tx.params.immediate           = true;
+        p_dly_tx_data->tx.params.extra_cca_attempts  = p_metadata->extra_cca_attempts;
+        p_dly_tx_data->tx.params.channel             = p_metadata->channel;
+        p_dly_tx_data->tx.params.tx_timestamp_encode = p_metadata->tx_timestamp_encode;
+        p_dly_tx_data->id                            = NRF_802154_RESERVED_DTX_ID;
 
         rsch_dly_ts_param_t dly_ts_param =
         {

@@ -579,8 +579,6 @@ void nrf_802154_notification_init(void)
                           sizeof(m_notifications_queue_memory[0]));
 
     nrf_egu_int_enable(NRF_802154_EGU_INSTANCE, NTF_INT);
-
-    nrf_802154_swi_init();
 }
 
 void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)

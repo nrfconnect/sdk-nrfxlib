@@ -50,6 +50,7 @@
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_ie_writer.h"
 #include "mac_features/nrf_802154_security_writer.h"
+#include "mac_features/nrf_802154_tx_timestamp_provider.h"
 #include "mac_features/nrf_802154_ifs.h"
 #include "nrf_802154_encrypt.h"
 #include "nrf_802154_config.h"
@@ -105,6 +106,9 @@ static const pre_transmission_hook m_pre_transmission_hooks[] =
 
 static const tx_setup_hook m_tx_setup_hooks[] =
 {
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+    nrf_802154_tx_timestamp_provider_tx_setup,
+#endif
 #if NRF_802154_IE_WRITER_ENABLED
     nrf_802154_ie_writer_tx_setup,
 #endif
@@ -166,6 +170,10 @@ static const tx_started_hook m_tx_started_hooks[] =
 
 #if NRF_802154_SECURITY_WRITER_ENABLED
     nrf_802154_security_writer_tx_started_hook,
+#endif
+
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+    nrf_802154_tx_timestamp_provider_tx_started_hook,
 #endif
 
 #if NRF_802154_IE_WRITER_ENABLED

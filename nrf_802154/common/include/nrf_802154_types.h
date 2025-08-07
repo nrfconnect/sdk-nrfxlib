@@ -81,16 +81,17 @@ typedef uint8_t nrf_802154_state_t;
  */
 typedef uint8_t nrf_802154_tx_error_t;
 
-#define NRF_802154_TX_ERROR_NONE                0x00 // !< There is no transmit error.
-#define NRF_802154_TX_ERROR_BUSY_CHANNEL        0x01 // !< CCA reported busy channel before the transmission.
-#define NRF_802154_TX_ERROR_INVALID_ACK         0x02 // !< Received ACK frame is other than expected.
-#define NRF_802154_TX_ERROR_NO_MEM              0x03 // !< No receive buffer is available to receive an ACK.
-#define NRF_802154_TX_ERROR_TIMESLOT_ENDED      0x04 // !< Radio timeslot ended during the transmission procedure.
-#define NRF_802154_TX_ERROR_NO_ACK              0x05 // !< ACK frame was not received during the timeout period.
-#define NRF_802154_TX_ERROR_ABORTED             0x06 // !< Procedure was aborted by another operation.
-#define NRF_802154_TX_ERROR_TIMESLOT_DENIED     0x07 // !< Transmission did not start due to a denied timeslot request.
-#define NRF_802154_TX_ERROR_KEY_ID_INVALID      0x08 // !< Transmission did not start due to invalid key ID in frame's security header.
-#define NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR 0x09 // !< Transmission did not start due a frame counter error.
+#define NRF_802154_TX_ERROR_NONE                     0x00 // !< There is no transmit error.
+#define NRF_802154_TX_ERROR_BUSY_CHANNEL             0x01 // !< CCA reported busy channel before the transmission.
+#define NRF_802154_TX_ERROR_INVALID_ACK              0x02 // !< Received ACK frame is other than expected.
+#define NRF_802154_TX_ERROR_NO_MEM                   0x03 // !< No receive buffer is available to receive an ACK.
+#define NRF_802154_TX_ERROR_TIMESLOT_ENDED           0x04 // !< Radio timeslot ended during the transmission procedure.
+#define NRF_802154_TX_ERROR_NO_ACK                   0x05 // !< ACK frame was not received during the timeout period.
+#define NRF_802154_TX_ERROR_ABORTED                  0x06 // !< Procedure was aborted by another operation.
+#define NRF_802154_TX_ERROR_TIMESLOT_DENIED          0x07 // !< Transmission did not start due to a denied timeslot request.
+#define NRF_802154_TX_ERROR_KEY_ID_INVALID           0x08 // !< Transmission did not start due to invalid key ID in frame's security header.
+#define NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR      0x09 // !< Transmission did not start due a frame counter error.
+#define NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR 0x0A // !< Timestamp could not been encoded in the transmission process.
 
 /**
  * @brief Possible errors during the frame reception.
@@ -442,6 +443,7 @@ typedef struct
     bool                                 cca;         // !< If the driver is to perform a CCA procedure before transmission.
     nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used.
     nrf_802154_tx_channel_metadata_t     tx_channel;  // !< Information about the TX channel to be used.
+    bool                                 tx_timestamp_encode; // !< True if the transmit timestamp shall be encoded in the payload.
 } nrf_802154_transmit_metadata_t;
 
 /**
@@ -454,6 +456,7 @@ typedef struct
     uint8_t                              channel;            // !< Radio channel on which the frame is to be transmitted.
     nrf_802154_tx_power_metadata_t       tx_power;           // !< Information about the TX power to be used.
     uint8_t                              extra_cca_attempts; // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
+    bool                                 tx_timestamp_encode; // !< True if the transmit timestamp shall be encoded in the payload.
 } nrf_802154_transmit_at_metadata_t;
 
 /**
@@ -464,6 +467,7 @@ typedef struct
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
     nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used.
     nrf_802154_tx_channel_metadata_t     tx_channel;  // !< Information about the TX channel to be used.
+    bool                                 tx_timestamp_encode; // !< True if the transmit timestamp shall be encoded in the payload.
 } nrf_802154_transmit_csma_ca_metadata_t;
 
 /**

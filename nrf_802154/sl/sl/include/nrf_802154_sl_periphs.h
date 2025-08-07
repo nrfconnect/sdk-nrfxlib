@@ -65,6 +65,18 @@
 #endif
 
 /**
+ * @def NRF_802154_SL_EGU_CLOCK_CHANNEL_NO
+ *
+ * Number of the EGU channel used for HFCLK control.
+ *
+ */
+#ifndef NRF_802154_SL_EGU_CLOCK_CHANNEL_NO
+#define NRF_802154_SL_EGU_CLOCK_CHANNEL_NO         5
+#endif
+
+#define NRF_802154_SL_EGU_CLOCK_USED_CHANNELS_MASK (1U << NRF_802154_SL_EGU_CLOCK_CHANNEL_NO)
+
+/**
  * @def NRF_802154_RTC_INSTANCE_NO
  *
  * Number of the RTC instance used in the standalone timer driver implementation.
@@ -201,8 +213,9 @@
  *
  * Mask of fixed EGU channels used by the nRF 802.15.4 SL.
  */
-#define NRF_802154_SL_EGU_USED_CHANNELS_MASK \
-    NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK
+#define NRF_802154_SL_EGU_USED_CHANNELS_MASK        \
+    NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK |\
+    NRF_802154_SL_EGU_CLOCK_USED_CHANNELS_MASK
 
 #if defined(NRF54L_SERIES)
 /**

@@ -595,6 +595,22 @@ extern "C" {
 #define NRF_802154_REQUEST_IMPL NRF_802154_REQUEST_IMPL_SWI
 #endif
 
+/**
+ * @}
+ * @defgroup nrf_802154_tx_timestamp_provider Transmit Timestamp configuration
+ * @{
+ */
+
+/**
+ * @def NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+ *
+ * Enables the Transmit Timestamp Provider module. The module encodes the transmission
+ * start timestamp in a frame's payload upon request.
+ */
+#ifndef NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+#define NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED 0
+#endif
+
 /** @} */
 
 /**

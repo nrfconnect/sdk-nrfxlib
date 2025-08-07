@@ -100,4 +100,9 @@ config NRF_802154_ACK_TIMEOUT_CUSTOM_US
 	  and setting it too high will increase current consumption. Set this value to 0 to
 	  use the default and recommended value of the ACK timeout.
 
+config NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+    bool "Enable Transmit Timestamp Feature"
+    help
+        Enable Transmit Timestamp feature.
+
 endif # NRF_802154_RADIO_DRIVER || NRF_802154_SERIALIZATION
