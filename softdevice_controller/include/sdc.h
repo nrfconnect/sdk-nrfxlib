@@ -142,9 +142,6 @@ extern "C" {
 /** @brief Default number of antennas supported by the local device in Channel Sounding. */
 #define SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED 1
 
-/** @brief Default optional support for Channel Sounding step mode-3. */
-#define SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED false
-
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -569,11 +566,6 @@ typedef struct
      *  Default: @ref SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED.
      */
     uint8_t num_antennas_supported;
-    /** Configures support of optional step mode-3 in Channel Sounding.
-     *
-     *  Default: @ref SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED.
-     */
-    bool step_mode3_supported;
 } sdc_cfg_cs_cfg_t;
 
 
