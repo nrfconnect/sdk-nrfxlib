@@ -7,11 +7,11 @@ nRF54H20 porting guide
    :local:
    :depth: 2
 
-This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI aplication on the nRF54H20 device.
+This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI application on the nRF54H20 device.
 
 .. _nrf54h20_porting_guide_code:
 
-sQSPI Application code
+sQSPI application code
 **********************
 
 This structure shows the relevant files and directories in the `sdk-nrfxlib`_ repository:
@@ -70,7 +70,7 @@ The following list is a detailed breakdown of the necessary paths:
          #define NRFX_CONFIG_H__
 
          #define nrf_sqspi_irq_handler        SP_VPR_IRQHandler
-         
+
          #define NRF_SQSPI_ENABLED            (1)
          #define NRF_SQSPI_MAX_NUM_DATA_LINES (4)
          #define NRF_SQSPI_SP_FIRMWARE_ADDR 0x2f890200
@@ -212,9 +212,9 @@ In some cases you might have to modify the sQSPI driver configuration.
 For example, when changing pin drive strength to guarantee signal integrity for a new PCB design.
 You must address these cases on the sQSPI application code:
 
-* If you set the :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application. 
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application.
   This is a requirement for the nRF54H20 device.
-* If you set the :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application. 
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application.
   This is a requirement for the nRF54H20 device.
 
 GPIO multiplexing must be handled by setting the correct ``CTRLSEL`` value in UICR.
