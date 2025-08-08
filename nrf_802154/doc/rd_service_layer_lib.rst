@@ -1,7 +1,7 @@
 .. _nrf_802154_sl:
 
 nRF 802.15.4 Service Layer
-==========================
+##########################
 
 The nRF 802.15.4 Service Layer (SL) is a library that implements the following features of the nRF 802.15.4 Radio Driver:
 
