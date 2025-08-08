@@ -46,5 +46,7 @@ The following table shows which soft peripherals and their versions are supporte
      - - nRF54L15 SoC:
           - v0.1.0 with NCS v3.0.0
           - v1.0.0 with NCS v3.1.0
+          - v1.1.0 with NCS v3.1.0
        - nRF54H20 SoC:
           - v0.1.0 with NCS v3.0.0
+          - v1.1.0 with NCS v3.1.0

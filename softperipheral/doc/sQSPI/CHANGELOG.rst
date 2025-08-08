@@ -9,6 +9,22 @@ sQSPI changelog
 
 All the notable changes to sQSPI are documented on this page.
 
+v1.1.0
+******
+
+See the list of changes for the current release.
+
+* Added:
+
+  * The following for nRF54L15 devices:
+
+    * Fixes on API communication layer
+
+  * The following for nRF54H20 devices:
+
+    * Fixes for booting bug
+    * Fixes on API communication layer
+
 v1.0.0
 ******
 

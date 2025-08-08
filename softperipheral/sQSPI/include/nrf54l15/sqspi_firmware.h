@@ -6,6 +6,6 @@
 
 #ifndef SQSPI_FIRMWARE_H__
 #define SQSPI_FIRMWARE_H__
-#include "sqspi_firmware_v1.0.0.h"
+#include "sqspi_firmware_v1.1.0.h"
 #define SOFTPERIPHERAL_META_HEADER_VERSION 2
 #endif

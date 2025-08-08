@@ -1,5 +1,28 @@
 .. _sqspi_timing:
 
+sQSPI and FLPR counters
+#######################
+
+sQSPI API translates parameter :c:var:`nrf_sqspi_dev_cfg_t.sck_freq_khz` into a value that can be used by FLPR's internal counters.
+The translation has the following constraints (assuming the SoC is running at highest base clock frequency):
+
+.. tabs::
+
+   .. tab:: **nRF54L15**
+      .. math::
+         clkdiv=\frac{128000000}{1000 * nrf\_sqspi\_dev\_cfg\_t.sck\_freq\_khz}
+
+   .. tab:: **nRF54H20**
+      .. math::
+         clkdiv=\frac{320000000}{1000 * nrf\_sqspi\_dev\_cfg\_t.sck\_freq\_khz}
+
+.. math::
+  FLPR\_counter=
+  \begin{cases}
+      \frac{clkdiv}{2}-1,& \text{if } clkdiv > 2\\
+      0,              & \text{otherwise}
+  \end{cases}
+
 Timing parameters
 #################
 

@@ -31,7 +31,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_qspi2.h
           │   ├── nrf54l15
           │   │   ├── sqspi_firmware.h
-          │   │   └── sqspi_firmware_v1.0.0.h
+          │   │   └── sqspi_firmware_v1.1.0.h
           │   │   └── ...
           │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
@@ -228,11 +228,13 @@ The following code snippet shows how the application code can allocate the requi
        }
    }
 
+.. _nrf54L15_porting_guide_high_speed_transfers:
+
 High speed transfers
 ====================
 
 .. warning::
-   High speed transfers (above 32MHz) on NRF54L15 DK are only supported in sQSPI 1.0.0.
+   High speed transfers (above 32MHz) on NRF54L15 DK are only supported starting from sQSPI 1.0.0.
 
 A high speed transfer sQSPI application requires both extra high drive strength and access to the peripheral ``GPIOHSPADCTRL`` (GPIO High Speed Pad Control).
 The following settings must be changed for ``GPIOHSPADCTRL.BIAS`` and ``GPIOHSPADCTRL.CTRL``:
@@ -412,13 +414,12 @@ The following code snippet shows how the application code can enable and disable
    }
 
 .. warning::
-   High speed transfers are closely tied to API parameter :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc`, which is constrained by the following conditions:
-   **TODO**
+   High speed transfers are closely tied to API parameter :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc`, which needs to be set to 0 (see :ref:`sqspi_limitations`).
 
 Memory retention configuration
 ******************************
 
-The sQSPI soft peripheral requires RAM retention in order to go into the lowest power consumption mode, which can be called through the :c:func:`nrfx_qspi2_deactivate` API.
+The sQSPI soft peripheral requires RAM retention in order to go into the lowest power consumption mode, which can be called through the :c:func:`nrf_sqspi_deactivate` API.
 
 Assuming there is an access to the peripheral `MEMCONF`, the following code snippet illustrates how to enable FLPR RAM retention, followed by deactivation and reactivation, and finally how to disable RAM retention:
 
@@ -426,9 +427,9 @@ Assuming there is an access to the peripheral `MEMCONF`, the following code snip
 
     //Deactivate sequence
     nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, true);
-    nrfx_qspi2_deactivate(&m_qspi);
+    nrf_sqspi_deactivate(&m_qspi);
     //activate sequence
-    nrfx_qspi2_activate(&m_qspi);
+    nrf_qspi_activate(&m_qspi);
     nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, false);
 
 .. _nrf54L15_porting_guide_ram_configuration:

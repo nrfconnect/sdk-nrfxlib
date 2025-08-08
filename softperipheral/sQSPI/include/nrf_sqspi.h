@@ -49,7 +49,8 @@ typedef struct
 /** @brief Asynchronous QSPI events. */
 typedef enum
 {
-    NRF_SQSPI_EVT_XFER_DONE, ///< Transfer operation has finished
+    NRF_SQSPI_EVT_XFER_DONE,    ///< Transfer operation has finished
+    NRF_SQSPI_EVT_XFER_STARTED, ///< The operation has been accepted and scheduled to be started.
 } nrf_sqspi_evt_type_t;
 
 /** @brief Results of the QSPI transfer reported when the transfer is done. */

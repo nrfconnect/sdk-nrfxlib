@@ -14,6 +14,7 @@
 #include <nrf_sqspi.h>
 
 #if defined (NRF54L20_ENGA_XXAA) || defined (NRF54LM20A_ENGA_XXAA)
+
 #include <hal/nrf_egu.h>
 #endif
 
@@ -108,7 +109,8 @@ typedef struct
 } nrf_sqspi_transaction_data_t;
 
 #define NRF_SQSPI_ENABLED_COUNT (1)
-static qspi2_control_block_t                 m_cb[NRF_SQSPI_ENABLED_COUNT];
+static qspi2_control_block_t m_cb[NRF_SQSPI_ENABLED_COUNT] =
+{{.state = NRFX_DRV_STATE_UNINITIALIZED}};
 static volatile nrf_sqspi_transaction_data_t m_current_xfer;
 
 nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_config)
@@ -117,6 +119,11 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
     NRFX_ASSERT(p_config);
 
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
+
+    if (p_cb->state != NRFX_DRV_STATE_UNINITIALIZED)
+    {
+        return NRFX_ERROR_ALREADY;
+    }
 
     p_cb->transfer_in_progress = false;
     p_cb->prepared_pending     = false;
@@ -159,18 +166,6 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
     }
 
     nrf_vpr_cpurun_set(NRF_VPR, true);
-
-    // Reset VPR.
-    nrf_vpr_debugif_dmcontrol_mask_set(NRF_VPR,
-                                       (VPR_DEBUGIF_DMCONTROL_NDMRESET_Active
-                                        << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
-                                        VPR_DEBUGIF_DMCONTROL_DMACTIVE_Enabled
-                                        << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
-    nrf_vpr_debugif_dmcontrol_mask_set(NRF_VPR,
-                                       (VPR_DEBUGIF_DMCONTROL_NDMRESET_Inactive
-                                        << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
-                                        VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled
-                                        << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
 #ifndef UNIT_TEST
     while (nrf_qspi2_enable_check(p_qspi->p_reg) != false)
     {
@@ -247,11 +242,12 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
                               (int)p_cb->conf.format.bitorder);
 
     NRFX_IRQ_PRIORITY_SET(SP_VPR_IRQn, 1);
-    NRFX_IRQ_ENABLE(SP_VPR_IRQn);
 
     nrf_qspi2_int_enable(p_qspi->p_reg, (QSPI_INTEN_DMADONE_Enabled << QSPI_INTEN_DMADONE_Pos));
     nrf_qspi2_int_enable(p_qspi->p_reg,
                          (QSPI_INTEN_DMAABORTED_Enabled << QSPI_INTEN_DMAABORTED_Pos));
+    nrf_qspi2_int_enable(p_qspi->p_reg,
+                         (QSPI_INTEN_DMADONEJOB_Enabled << QSPI_INTEN_DMADONEJOB_Pos));
 
     p_cb->state = NRFX_DRV_STATE_INITIALIZED;
 
@@ -303,7 +299,7 @@ void nrf_sqspi_uninit(const nrf_sqspi_t * p_qspi)
 
     // Stop VPR.
     nrf_vpr_cpurun_set(NRF_VPR, false);
-#if defined(NRF54H20_XXAA)
+
     // Reset VPR.
     nrf_vpr_debugif_dmcontrol_mask_set(NRF_VPR,
                                        (VPR_DEBUGIF_DMCONTROL_NDMRESET_Active
@@ -315,7 +311,6 @@ void nrf_sqspi_uninit(const nrf_sqspi_t * p_qspi)
                                         << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
                                         VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled
                                         << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
-#endif
 
     p_cb->state = NRFX_DRV_STATE_UNINITIALIZED;
 }
@@ -493,6 +488,12 @@ nrfx_err_t nrf_sqspi_activate(const nrf_sqspi_t * p_qspi)
 
     __ASB(p_qspi->p_reg);
 
+    nrf_qspi2_event_clear(p_qspi->p_reg, NRF_QSPI2_EVENT_DMA_DONE);
+    nrf_qspi2_event_clear(p_qspi->p_reg, NRF_QSPI2_EVENT_DMA_ABORTED);
+    nrf_qspi2_event_clear(p_qspi->p_reg, NRF_QSPI2_EVENT_DMA_DONEJOB);
+
+    NRFX_IRQ_ENABLE(SP_VPR_IRQn);
+
     p_cb->state = NRFX_DRV_STATE_POWERED_ON;
 
     return NRFX_SUCCESS;
@@ -507,7 +508,9 @@ nrfx_err_t nrf_sqspi_deactivate(const nrf_sqspi_t * p_qspi)
         return NRFX_ERROR_INVALID_STATE;
     }
 
-    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
+    p_cb->prepared_pending = false;
+
+    if (p_cb->transfer_in_progress)
     {
         __SSB(p_qspi->p_reg);
     }
@@ -516,7 +519,10 @@ nrfx_err_t nrf_sqspi_deactivate(const nrf_sqspi_t * p_qspi)
     {}
     ;
 
+    NRFX_IRQ_DISABLE(SP_VPR_IRQn);
+
     nrf_qspi2_disable(p_qspi->p_reg);
+
     __ASB(p_qspi->p_reg);
 
     p_cb->state = NRFX_DRV_STATE_INITIALIZED;
@@ -657,7 +663,7 @@ nrfx_err_t nrf_sqspi_xfer(const nrf_sqspi_t *      p_qspi,
 
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
 
-    if (p_cb->transfer_in_progress)
+    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
     {
         return NRFX_ERROR_BUSY;
     }
@@ -698,7 +704,6 @@ nrfx_err_t nrf_sqspi_xfer_prepare(const nrf_sqspi_t *      p_qspi,
     if (retval == NRFX_SUCCESS)
     {
         p_cb->prepared_pending = true;
-
         nrf_qspi2_core_enable(p_cb->qspi.p_reg);
         __ASB(p_cb->qspi.p_reg);
     }
@@ -714,30 +719,45 @@ void nrf_sqspi_irq_handler(void)
 
         qspi2_control_block_t * p_cb = &m_cb[m_current_xfer.drv_inst_idx];
 
+        if (nrf_qspi2_event_check(p_cb->qspi.p_reg, NRF_QSPI2_EVENT_DMA_DONEJOB))
+        {
+            nrf_qspi2_event_clear(p_cb->qspi.p_reg, NRF_QSPI2_EVENT_DMA_DONEJOB);
+
+            p_cb->evt.type           = NRF_SQSPI_EVT_XFER_STARTED;
+            p_cb->evt.data.xfer_done = NRF_SQSPI_RESULT_OK;
+            if ((p_cb->prepared_pending == true) && (p_cb->transfer_in_progress == false))
+            {
+                // Transition the pending into a transfer_in_progress to allow for a new xfer to be scheduled.
+                p_cb->transfer_in_progress = true;
+                p_cb->prepared_pending     = false;
+            }
+
+            // Indicate to the app that the prepared transaction has been triggered.
+            p_cb->handler(&p_cb->qspi, &p_cb->evt, p_cb->p_context);
+        }
+
         if (nrf_qspi2_event_check(p_cb->qspi.p_reg, NRF_QSPI2_EVENT_DMA_DONE))
         {
             nrf_qspi2_event_clear(p_cb->qspi.p_reg, NRF_QSPI2_EVENT_DMA_DONE);
+            // End current transaction.
+            nrf_qspi2_core_disable(p_cb->qspi.p_reg);
+            __ASB(p_cb->qspi.p_reg);
 
-            if (p_cb->transfer_in_progress)
+            if ((p_cb->prepared_pending == true) && (p_cb->transfer_in_progress == true)) // There was an ongoing transfer and we have one on hold.
+            {
+                // Trigger the pending transaction.
+                nrf_qspi2_core_enable(p_cb->qspi.p_reg);
+                __ASB(p_cb->qspi.p_reg);
+                // Continue transfer_in_progress, but clear the pending.
+                p_cb->prepared_pending = false;
+            }
+            else
             {
                 p_cb->transfer_in_progress = false;
-            }
-            else if (p_cb->prepared_pending == true)
-            {
-                p_cb->prepared_pending = false;
             }
 
             p_cb->evt.type           = NRF_SQSPI_EVT_XFER_DONE;
             p_cb->evt.data.xfer_done = NRF_SQSPI_RESULT_OK;
-
-            nrf_qspi2_core_disable(p_cb->qspi.p_reg);
-            __ASB(p_cb->qspi.p_reg);
-
-            if (p_cb->prepared_pending == true)
-            {
-                nrf_qspi2_core_enable(p_cb->qspi.p_reg);
-                __ASB(p_cb->qspi.p_reg);
-            }
 
             p_cb->handler(&p_cb->qspi, &p_cb->evt, p_cb->p_context);
         }
@@ -746,25 +766,14 @@ void nrf_sqspi_irq_handler(void)
         {
             nrf_qspi2_event_clear(p_cb->qspi.p_reg, NRF_QSPI2_EVENT_DMA_ABORTED);
 
-            if (p_cb->transfer_in_progress)
-            {
-                p_cb->transfer_in_progress = false;
-            }
-            else if (p_cb->prepared_pending == true)
-            {
-                p_cb->prepared_pending = false;
-            }
+            p_cb->transfer_in_progress = false;
+            p_cb->prepared_pending     = false;
+
             p_cb->evt.type           = NRF_SQSPI_EVT_XFER_DONE;
             p_cb->evt.data.xfer_done = NRF_SQSPI_RESULT_ABORTED;
 
             nrf_qspi2_core_disable(p_cb->qspi.p_reg);
             __ASB(p_cb->qspi.p_reg);
-
-            if (p_cb->prepared_pending == true)
-            {
-                nrf_qspi2_core_enable(p_cb->qspi.p_reg);
-                __ASB(p_cb->qspi.p_reg);
-            }
 
             p_cb->handler(&p_cb->qspi, &p_cb->evt, p_cb->p_context);
         }

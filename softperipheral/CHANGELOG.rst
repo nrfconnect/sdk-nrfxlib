@@ -16,9 +16,13 @@ This is a release that focuses on improving existing soft peripherals.
 See the following list of changes:
 
 
+* Added:
+
+  * Position independent code (PIC) for all soft peripheral binaries.
+
 * Bug fixes:
 
-  * Fixed higher frequency transfers for Soft Peripheral sQSPI for the nRF54L15 and nRF54H20 SoCs.
+  * Fixed higher frequency transfers for Soft Peripheral sQSPI for the nRF54L15 SoC.
     For details, see the :ref:`sqspi_changelog` page.
 
 nRF Connect SDK v3.0.0
