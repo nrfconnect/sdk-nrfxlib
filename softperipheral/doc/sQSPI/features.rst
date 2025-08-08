@@ -3,6 +3,10 @@
 Features
 ########
 
+.. contents::
+   :local:
+   :depth: 2
+
 This page provides an overview of the functionalities and configurations available for soft peripherals for the current state of development.
 See the following sections for more details.
 

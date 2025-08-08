@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nrf_modem 3.0.99
-****************
+nrf_modem 3.1.0
+***************
 
 Sockets
 =======
