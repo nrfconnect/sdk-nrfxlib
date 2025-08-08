@@ -7,11 +7,11 @@ nRF54L15 porting guide
    :local:
    :depth: 2
 
-This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI aplication on the nRF54L15 device.
+This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI application on the nRF54L15 device.
 
 .. _nrf54l15_porting_guide_code:
 
-sQSPI Application code
+sQSPI application code
 **********************
 
 This structure shows the relevant files and directories in the `sdk-nrfxlib`_ repository:
@@ -67,16 +67,16 @@ The following list is a detailed breakdown of the necessary paths:
 
       #ifndef NRFX_CONFIG_H__
       #define NRFX_CONFIG_H__
-      
+
       #include "softperipheral_regif.h" // To Resolve correct VPR IRQn for the SoC.
       #define nrf_sqspi_irq_handler        SP_VPR_IRQHandler
-      
+
       #define NRF_SQSPI_ENABLED            (1)
       #define NRF_SQSPI_MAX_NUM_DATA_LINES (4)
       #define NRF_SQSPI_SP_FIRMWARE_ADDR 0x2003c000
       //^ This address is user defined, the location for the sQSPI firmware
-      
-      
+
+
       #endif // NRFX_CONFIG_H__
 
 Compiling source files
@@ -176,8 +176,8 @@ In some cases you might have to modify the sQSPI driver configuration.
 For example, when changing pin drive strength to guarantee signal integrity for a new PCB design.
 You must address these cases on the sQSPI application code:
 
-* If you set the :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application. 
-* If you set the :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application. 
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_gpio_cfg` variable to ``true``, the GPIO configuration is not managed by the sQSPI driver and it must be manually handled by the application.
+* If you set the :c:var:`nrf_sqspi_cfg_t.skip_pmux_cfg` variable to ``true``, the GPIO multiplexing is not managed by the sQSPI driver and it must be manually handled by the application.
 
 The following code snippet shows how the application code can allocate the required pins and override the sQSPI driver's default configuration:
 
@@ -256,10 +256,10 @@ The following code snippet shows how the application code can enable and disable
      bool result = true;
      uint32_t gpiohs_bias_val;
      uint32_t gpiohs_ctrl_val;
-   
+
      gpiohs_bias_val = 0x7;
      NRF_GPIOHSPADCTRL->BIAS = gpiohs_bias_val;
-   
+
      gpiohs_ctrl_val =
          (0xF << GPIOHSPADCTRL_CTRL_DATAENABLE_Pos) |
          (0x1 << GPIOHSPADCTRL_CTRL_CSNEN_Pos) |
@@ -275,15 +275,15 @@ The following code snippet shows how the application code can enable and disable
      }
      return result;
    }
-   
+
    bool disable_delayed_sampling(void) {
      bool result = true;
      uint32_t gpiohs_bias_val;
      uint32_t gpiohs_ctrl_val;
-   
+
      gpiohs_bias_val = 0x7;
      NRF_GPIOHSPADCTRL->BIAS = gpiohs_bias_val;
-   
+
      gpiohs_ctrl_val = (0x0 << GPIOHSPADCTRL_CTRL_DATAENABLE_Pos) |
                        (0x0 << GPIOHSPADCTRL_CTRL_CSNEN_Pos) |
                        (0x0 << GPIOHSPADCTRL_CTRL_SCKPHASE_Pos) |
@@ -323,7 +323,7 @@ The following code snippet shows how the application code can reset **P2** pins:
      //              NRF_GPIO_PIN_INPUT_DISCONNECT, NRF_GPIO_PIN_NOPULL,
      //              NRF_GPIO_PIN_E0E1, NRF_GPIO_PIN_NOSENSE);
    }
-   
+
    void set_serialPadE0E1(nrf_sqspi_dev_cfg_t qspi_dev_config){
      nrf_gpio_cfg(m_qspi_config.pins.sck, NRF_GPIO_PIN_DIR_OUTPUT,
                   NRF_GPIO_PIN_INPUT_DISCONNECT, NRF_GPIO_PIN_NOPULL,
@@ -350,7 +350,7 @@ The following code snippet shows how the application code can enable and disable
                          nrf_sqspi_spi_lines_t mspi_lines) {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wmissing-braces"
-   
+
      nrf_sqspi_dev_cfg_t qspi_dev_config = {
          .csn_pin = NRF_PIN_PORT_TO_PIN_NUMBER(5, 2),
          .sck_freq_khz = sck_freq_khz,
@@ -363,27 +363,27 @@ The following code snippet shows how the application code can enable and disable
            .mspi_ddr = NRF_SQSPI_SPI_DDR_SINGLE,
            .spi_clk_stretch = false,
            .xip_cfg = NRF_SQSPI_SPI_XIP_MODE_DISABLED}}};
-   
+
      if (!enable_delayed_sampling(2)) {
        error_exit();
      }
-   
+
    #pragma GCC diagnostic pop
-   
+
      static uint16_t context = 0x45b1;
      if (nrf_sqspi_dev_cfg(p_qspi, &qspi_dev_config, done_callback, &context) !=
          NRFX_SUCCESS) {
        error_exit();
      }
-   
+
      set_serialPadE0E1(qspi_dev_config);
    }
-   
+
    void configure_hs_r(nrf_sqspi_t *p_qspi, uint32_t sck_freq_khz,
                          nrf_sqspi_spi_lines_t mspi_lines) {
    #pragma GCC diagnostic push
    #pragma GCC diagnostic ignored "-Wmissing-braces"
-   
+
      nrf_sqspi_dev_cfg_t qspi_dev_config = {
          .csn_pin = NRF_PIN_PORT_TO_PIN_NUMBER(5, 2),
          .sck_freq_khz = sck_freq_khz,
@@ -396,19 +396,19 @@ The following code snippet shows how the application code can enable and disable
            .mspi_ddr = NRF_SQSPI_SPI_DDR_SINGLE,
            .spi_clk_stretch = false,
            .xip_cfg = NRF_SQSPI_SPI_XIP_MODE_DISABLED}}};
-   
+
      if (!enable_delayed_sampling(2)) {
        error_exit();
      }
-   
+
    #pragma GCC diagnostic pop
-   
+
      static uint16_t context = 0x45b1;
      if (nrf_sqspi_dev_cfg(p_qspi, &qspi_dev_config, done_callback, &context) !=
          NRFX_SUCCESS) {
        error_exit();
      }
-   
+
      set_serialPadS0S1();
      set_serialPadE0E1(qspi_dev_config);
    }
