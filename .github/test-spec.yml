@@ -181,3 +181,9 @@
       - "nrf_rpc/**/*"
       - "!nrf_rpc/doc/**/*"
       - "!nrf_rpc/*.rst"
+
+"CI-test-low-level":
+  - any:
+      - "softperipheral/**/*"
+      - "!softperipheral/doc/**/*"
+      - "!softperipheral/*.rst"
