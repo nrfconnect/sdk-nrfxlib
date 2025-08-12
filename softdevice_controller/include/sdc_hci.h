@@ -92,8 +92,8 @@ typedef enum
 
 /** @brief Send an HCI data packet to the SoftDevice Controller.
  *
- * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to
- *                       Handle, as specified by the Bluetooth Core Specification.
+ * @param[in] p_data_in  HCI Data packet. The format of the buffer should correspond to
+ *                       Vol 4 Part E Section 5.4.2 of the Core_v6.0 specification.
  *
  * @retval 0              Success
  * @retval -NRF_EINVAL    Invalid input
@@ -105,8 +105,8 @@ int32_t sdc_hci_data_put(uint8_t const * p_data_in);
  * If an error is returned, the HCI ISO data packet is dropped by the SoftDevice Controller and will not be
  * further processed.
  *
- * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to
- *                       Handle, as specified by the Bluetooth Core Specification.
+ * @param[in] p_data_in  HCI Data packet. The format of the buffer should correspond to
+ *                       Vol 4 Part E Section 5.4.2 of the Core_v6.0 specification.
  *
  * @retval 0              Success
  * @retval -NRF_EINVAL    Invalid input
