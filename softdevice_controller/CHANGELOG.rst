@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
+
 nRF Connect SDK v3.1.0
 **********************
 
@@ -49,6 +57,7 @@ Changes
   This reverts the changes done by DRGN-21085. (DRGN-24882)
 * The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
   This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
+* ISO SDUs up to 1255 bytes are now supported for isochronous channels. (DRGN-25316)
 
 nRF Connect SDK v3.0.1
 **********************

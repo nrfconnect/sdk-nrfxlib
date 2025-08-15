@@ -92,8 +92,8 @@ typedef enum
 
 /** @brief Send an HCI data packet to the SoftDevice Controller.
  *
- * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to
- *                       Handle, as specified by the Bluetooth Core Specification.
+ * @param[in] p_data_in  HCI ACL Data packet. The format is described in the
+ *                       Bluetooth Core Specification, Vol 4, Part E, 5.4.2 HCI ACL Data packets
  *
  * @retval 0              Success
  * @retval -NRF_EINVAL    Invalid input
@@ -105,8 +105,8 @@ int32_t sdc_hci_data_put(uint8_t const * p_data_in);
  * If an error is returned, the HCI ISO data packet is dropped by the SoftDevice Controller and will not be
  * further processed.
  *
- * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to
- *                       Handle, as specified by the Bluetooth Core Specification.
+ * @param[in] p_data_in  HCI ISO Data packet. The format is described in the
+ *                       Bluetooth Core Specification, Vol 4, Part E, 5.4.5 HCI ISO Data packets
  *
  * @retval 0              Success
  * @retval -NRF_EINVAL    Invalid input
@@ -126,8 +126,6 @@ int32_t sdc_hci_iso_data_put(uint8_t const * p_data_in);
  *       See also @ref sdc_cfg_iso_buffer_cfg_t::rx_sdu_buffer_size and @ref HCI_ISO_DATA_PACKET_MAX_SIZE.
  *
  * @param[in,out] p_packet_out Buffer where the HCI packet will be stored.
- *                             If an event is retrieved, the first byte corresponds to the Event Code.
- *                             If a data packet is retrieved, the first byte corresponds to the Handle.
  * @param[out] p_msg_type_out  Type of HCI packet produced by the controller.
  *                             See @ref sdc_hci_msg_type_t for possible values.
  *
