@@ -57,7 +57,7 @@ DRGN-15989: In some cases, the SDC can connect to the peer it is already connect
 DRGN-17724: The AoA transmitter is not supported in LLPM-mode
   The AoA transmitter can show unspecified behavior when being used in LLPM-mode.
 
-DRGN-20336: Sending and receiving ISO SDUs larger than 247 bytes is not supported.
+DRGN-25316: Sending and receiving ISO SDUs larger than 1255 bytes is not supported.
 
 DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
   The following parameters to the LE Set CIG Parameters command are not supported when framed PDUs are requested:
@@ -65,7 +65,6 @@ DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
   * Unequal ``SDU_Interval_C_To_P`` and ``SDU_Interval_P_To_C``.
     This applies only when the data transfer is bidirectional.
   * An ``SDU_Interval`` lower than 5000 µs.
-  * A ``Max_SDU`` larger than 246 bytes.
 
   Note that framed PDUs will be enforced if neither of the following conditions are met:
 
@@ -80,8 +79,6 @@ DRGN-21246: Unsupported BIG parameters
   The following parameters are not supported when the HCI LE Create BIG command is used:
 
   * An ``SDU_Interval`` shorter than 1250 µs.
-  * A ``Max_SDU`` larger than 247 bytes.
   * An ``SDU_Interval`` shorter than 5000 µs when using framed PDUs.
-  * A ``Max_SDU`` larger than 246 bytes when using framed PDUs.
 
   Note that framed PDUs will be enforced if ``SDU_Interval`` is not an integer multiple of 1250 µs.

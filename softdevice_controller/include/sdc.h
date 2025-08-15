@@ -157,8 +157,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    763
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 875
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    755
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 867
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -200,7 +200,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 115) : 0)
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 123) : 0)
 
 /** @brief Maximum memory required when supporting subrating.
  *
@@ -1196,6 +1196,17 @@ int32_t sdc_support_le_conn_cte_rsp_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
  */
 int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
+
+/** @brief Support LE Connectionless CTE Transmitter
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connectionless CTE Transmitter.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Connectionless CTE Transmitter is not supported.
+ */
+int32_t sdc_support_le_connectionless_cte_transmitter(void);
 
 /** @brief Support for sending periodic advertising sync transfers as central role
  *
