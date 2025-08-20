@@ -100,7 +100,7 @@ static bool csma_ca_state_set(csma_ca_state_t expected, csma_ca_state_t desired)
 {
     nrf_802154_sl_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    bool result = nrf_802154_sl_atomic_cas_u8(&m_state, &expected, desired);
+    bool result = nrf_802154_sl_atomic_cas_u8((uint8_t *)&m_state, (uint8_t *)&expected, desired);
 
     if (result)
     {
@@ -401,7 +401,7 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
     bool result = true;
 
     if (((req_orig != REQ_ORIG_CORE) && (req_orig != REQ_ORIG_HIGHER_LAYER)) ||
-        (CSMA_CA_STATE_IDLE == nrf_802154_sl_atomic_load_u8(&m_state)))
+        (CSMA_CA_STATE_IDLE == nrf_802154_sl_atomic_load_u8((uint8_t *)&m_state)))
     {
         // The request does not originate from core or the higher layer or the procedure
         // is stopped already. Ignore the abort request and return success, no matter
@@ -412,7 +412,7 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
         // The procedure is active and the termination level allows the abort
         // request to be executed. Force aborted state. Don't clear the frame
         // pointer - it might be needed to notify failure.
-        nrf_802154_sl_atomic_store_u8(&m_state, CSMA_CA_STATE_ABORTED);
+        nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_ABORTED);
         nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID, false);
     }
     else
@@ -445,7 +445,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
             if (mp_data == p_frame)
             {
                 mp_data = NULL;
-                nrf_802154_sl_atomic_store_u8(&m_state, CSMA_CA_STATE_IDLE);
+                nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
             }
             break;
 
@@ -486,7 +486,7 @@ bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame)
     if (mp_data == p_frame)
     {
         mp_data = NULL;
-        nrf_802154_sl_atomic_store_u8(&m_state, CSMA_CA_STATE_IDLE);
+        nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
