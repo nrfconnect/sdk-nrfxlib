@@ -100,7 +100,7 @@ static nrf_802154_sl_timer_t m_timer;                    ///< Interframe space t
  */
 static bool ifs_state_set(ifs_state_t expected_state, ifs_state_t new_state)
 {
-    return nrf_802154_sl_atomic_cas_u8(&m_state, &expected_state, new_state);
+    return nrf_802154_sl_atomic_cas_u8((uint8_t *)&m_state, (uint8_t *)&expected_state, new_state);
 }
 
 static bool ifs_state_is(ifs_state_t expected_state_mask)
