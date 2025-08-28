@@ -201,9 +201,9 @@ bool nrf_802154_ack_timeout_abort(nrf_802154_term_t term_lvl, req_originator_t r
     return result;
 }
 
-void nrf_802154_ack_timeout_transmitted_hook(const uint8_t * p_frame)
+void nrf_802154_ack_timeout_transmitted_hook(const nrf_802154_frame_t * p_frame)
 {
-    NRF_802154_ASSERT((p_frame == mp_frame) || (!m_procedure_is_active));
+    NRF_802154_ASSERT((p_frame->p_frame == mp_frame) || (!m_procedure_is_active));
 
     timeout_timer_stop();
 }

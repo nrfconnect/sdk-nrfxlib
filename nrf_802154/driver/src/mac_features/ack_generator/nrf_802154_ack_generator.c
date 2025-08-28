@@ -54,9 +54,9 @@ typedef enum
 } frame_version_t;
 
 static frame_version_t frame_version_is_2015_or_above(
-    const nrf_802154_frame_parser_data_t * p_frame_data)
+    const nrf_802154_frame_t * p_frame_data)
 {
-    switch (nrf_802154_frame_parser_frame_version_get(p_frame_data))
+    switch (nrf_802154_frame_version_get(p_frame_data))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -84,10 +84,10 @@ void nrf_802154_ack_generator_reset(void)
     nrf_802154_enh_ack_generator_reset();
 }
 
-uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_parser_data_t * p_frame_data)
+uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t * p_frame_data)
 {
     // This function should not be called if ACK is not requested.
-    NRF_802154_ASSERT(nrf_802154_frame_parser_ar_bit_is_set(p_frame_data));
+    NRF_802154_ASSERT(nrf_802154_frame_ar_bit_is_set(p_frame_data));
 
     switch (frame_version_is_2015_or_above(p_frame_data))
     {

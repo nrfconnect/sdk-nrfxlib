@@ -40,7 +40,7 @@
 
 #include "mac_features/nrf_802154_ie_writer.h"
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_nrfx_addons.h"
@@ -222,13 +222,13 @@ static bool csl_ie_write_prepare(const uint8_t * p_iterator)
 {
     NRF_802154_ASSERT(p_iterator != NULL);
 
-    if (nrf_802154_frame_parser_ie_length_get(p_iterator) < IE_CSL_SIZE_MIN)
+    if (nrf_802154_frame_ie_length_get(p_iterator) < IE_CSL_SIZE_MIN)
     {
         // The IE is too small to be a valid CSL IE.
         return false;
     }
 
-    mp_csl_phase_addr  = (uint8_t *)nrf_802154_frame_parser_ie_content_address_get(p_iterator);
+    mp_csl_phase_addr  = (uint8_t *)nrf_802154_frame_ie_content_address_get(p_iterator);
     mp_csl_period_addr = mp_csl_phase_addr + sizeof(uint16_t);
 
     return true;
@@ -290,13 +290,13 @@ static bool cst_ie_write_prepare(const uint8_t * p_iterator)
 {
     NRF_802154_ASSERT(p_iterator != NULL);
 
-    if (nrf_802154_frame_parser_ie_length_get(p_iterator) != IE_VENDOR_THREAD_CST_SIZE)
+    if (nrf_802154_frame_ie_length_get(p_iterator) != IE_VENDOR_THREAD_CST_SIZE)
     {
         // The IE has unexpected size
         return false;
     }
 
-    mp_cst_phase_addr = (uint8_t *)nrf_802154_frame_parser_ie_vendor_thread_data_addr_get(
+    mp_cst_phase_addr = (uint8_t *)nrf_802154_frame_ie_vendor_thread_data_addr_get(
         p_iterator);
     mp_cst_period_addr = mp_cst_phase_addr + sizeof(uint16_t);
 
@@ -470,11 +470,11 @@ static bool link_metrics_ie_write_prepare(const uint8_t * p_iterator)
 
     // Initialize the iterator at the start of IE content
     uint8_t * p_content_iterator =
-        (uint8_t *)nrf_802154_frame_parser_ie_vendor_thread_data_addr_get(p_iterator);
-    uint8_t * ie_end = (uint8_t *)nrf_802154_frame_parser_ie_iterator_next(p_iterator);
+        (uint8_t *)nrf_802154_frame_ie_vendor_thread_data_addr_get(p_iterator);
+    uint8_t * ie_end = (uint8_t *)nrf_802154_frame_ie_iterator_next(p_iterator);
 
-    if (nrf_802154_frame_parser_ie_length_get(p_iterator) < IE_VENDOR_THREAD_ACK_SIZE_MIN ||
-        nrf_802154_frame_parser_ie_length_get(p_iterator) > IE_VENDOR_THREAD_ACK_SIZE_MAX)
+    if (nrf_802154_frame_ie_length_get(p_iterator) < IE_VENDOR_THREAD_ACK_SIZE_MIN ||
+        nrf_802154_frame_ie_length_get(p_iterator) > IE_VENDOR_THREAD_ACK_SIZE_MAX)
     {
         return false;
     }
@@ -544,19 +544,19 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
     NRF_802154_ASSERT(m_writer_state == IE_WRITER_RESET);
     m_writer_state = IE_WRITER_PREPARE;
 
-    const uint8_t * p_iterator = nrf_802154_frame_parser_header_ie_iterator_begin(p_ie_header);
+    const uint8_t * p_iterator = nrf_802154_frame_header_ie_iterator_begin(p_ie_header);
     bool            result     = true;
 
-    while (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr) == false)
+    while (nrf_802154_frame_ie_iterator_end(p_iterator, p_end_addr) == false)
     {
-        switch (nrf_802154_frame_parser_ie_id_get(p_iterator))
+        switch (nrf_802154_frame_ie_id_get(p_iterator))
         {
             case IE_VENDOR_ID:
-                if (nrf_802154_frame_parser_ie_length_get(p_iterator) >= IE_VENDOR_SIZE_MIN &&
-                    nrf_802154_frame_parser_ie_vendor_oui_get(p_iterator) == IE_VENDOR_THREAD_OUI &&
-                    nrf_802154_frame_parser_ie_length_get(p_iterator) >= IE_VENDOR_THREAD_SIZE_MIN)
+                if (nrf_802154_frame_ie_length_get(p_iterator) >= IE_VENDOR_SIZE_MIN &&
+                    nrf_802154_frame_ie_vendor_oui_get(p_iterator) == IE_VENDOR_THREAD_OUI &&
+                    nrf_802154_frame_ie_length_get(p_iterator) >= IE_VENDOR_THREAD_SIZE_MIN)
                 {
-                    switch (nrf_802154_frame_parser_ie_vendor_thread_subtype_get(p_iterator))
+                    switch (nrf_802154_frame_ie_vendor_thread_subtype_get(p_iterator))
                     {
                         case IE_VENDOR_THREAD_ACK_PROBING_ID:
                             result = link_metrics_ie_write_prepare(p_iterator);
@@ -586,7 +586,7 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
             return;
         }
 
-        p_iterator = nrf_802154_frame_parser_ie_iterator_next(p_iterator);
+        p_iterator = nrf_802154_frame_ie_iterator_next(p_iterator);
     }
 }
 
@@ -624,10 +624,12 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
 }
 
 bool nrf_802154_ie_writer_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
+                      PARSE_LEVEL_FULL);
+
     // The IE writer module can be in the IE_WRITER_PREPARE state if
     // the previous transmission failed at an early stage.
     // Reset it, to avoid data corruption in case this frame
@@ -642,7 +644,7 @@ bool nrf_802154_ie_writer_tx_setup(
         return true;
     }
 
-    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    if (nrf_802154_frame_type_get(&p_params->frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so skip IE writer.
         return true;
@@ -651,18 +653,8 @@ bool nrf_802154_ie_writer_tx_setup(
     const uint8_t * p_mfr_addr;
     uint8_t       * p_ie_header;
 
-    nrf_802154_frame_parser_data_t frame_data;
-
-    bool result = nrf_802154_frame_parser_data_init(p_frame,
-                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
-                                                    PARSE_LEVEL_FULL,
-                                                    &frame_data);
-
-    NRF_802154_ASSERT(result);
-    (void)result;
-
-    p_ie_header = (uint8_t *)nrf_802154_frame_parser_ie_header_get(&frame_data);
-    p_mfr_addr  = nrf_802154_frame_parser_mfr_get(&frame_data);
+    p_ie_header = (uint8_t *)nrf_802154_frame_ie_header_get(&p_params->frame);
+    p_mfr_addr  = nrf_802154_frame_mfr_get(&p_params->frame);
 
     if (p_ie_header == NULL)
     {

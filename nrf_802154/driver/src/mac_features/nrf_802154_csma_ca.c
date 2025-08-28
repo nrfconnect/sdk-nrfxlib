@@ -60,6 +60,7 @@
 #include "rsch/nrf_802154_rsch.h"
 #include "nrf_802154_sl_timer.h"
 #include "nrf_802154_sl_atomics.h"
+#include "nrf_802154_frame_parser.h"
 
 /**
  * @brief States of the CSMA-CA procedure.
@@ -75,7 +76,7 @@ typedef enum
 static uint8_t m_nb;                                      ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
 static uint8_t m_be;                                      ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
 
-static uint8_t                            * mp_data;      ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
+static nrf_802154_frame_t                   m_frame;      ///< Frame to be transmitted.
 static nrf_802154_transmitted_frame_props_t m_data_props; ///< Structure containing detailed properties of data in buffer.
 static nrf_802154_fal_tx_power_split_t      m_tx_power;   ///< Power to be used when transmitting the frame split into components.
 static uint8_t                              m_tx_channel; ///< Channel to be used to transmit the current frame.
@@ -148,7 +149,7 @@ static void notify_failed(nrf_802154_tx_error_t error)
 
     metadata.frame_props = m_data_props;
 
-    nrf_802154_notify_transmit_failed(mp_data, error, &metadata);
+    nrf_802154_notify_transmit_failed(m_frame.p_frame, error, &metadata);
 }
 
 /**
@@ -195,6 +196,7 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 
         nrf_802154_transmit_params_t params =
         {
+            .frame              = m_frame,
             .frame_props        = m_data_props,
             .tx_power           = m_tx_power,
             .channel            = m_tx_channel,
@@ -210,7 +212,6 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 
         if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                          REQ_ORIG_CSMA_CA,
-                                         mp_data,
                                          &params,
                                          notify_busy_channel))
         {
@@ -338,7 +339,7 @@ static bool channel_busy(void)
 
         if (m_nb > nrf_802154_pib_csmaca_max_backoffs_get())
         {
-            mp_data = NULL;
+            nrf_802154_frame_parser_data_clear(&m_frame);
             bool ret = csma_ca_state_set(CSMA_CA_STATE_BACKOFF, CSMA_CA_STATE_IDLE);
 
             NRF_802154_ASSERT(ret);
@@ -355,7 +356,7 @@ static bool channel_busy(void)
     return result;
 }
 
-bool nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -375,7 +376,7 @@ bool nrf_802154_csma_ca_start(uint8_t                                      * p_d
         p_metadata->tx_channel.use_metadata_value ? p_metadata->tx_channel.channel :
         nrf_802154_pib_channel_get();
 
-    mp_data      = p_data;
+    m_frame      = *p_frame;
     m_data_props = p_metadata->frame_props;
     m_nb         = 0;
     m_be         = nrf_802154_pib_csmaca_min_be_get();
@@ -442,9 +443,9 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
         case NRF_802154_TX_ERROR_KEY_ID_INVALID:
         /* Fallthrough. */
         case NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR:
-            if (mp_data == p_frame)
+            if (m_frame.p_frame == p_frame)
             {
-                mp_data = NULL;
+                nrf_802154_frame_parser_data_clear(&m_frame);
                 nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
             }
             break;
@@ -454,7 +455,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
             {
                 // The procedure was successfully aborted.
 
-                if (p_frame != mp_data)
+                if (p_frame != m_frame.p_frame)
                 {
                     // The procedure was aborted while another operation was holding
                     // frame pointer in the core - hence p_frame points to a different
@@ -462,7 +463,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
                     notify_failed(error);
                 }
             }
-            else if (p_frame == mp_data)
+            else if (p_frame == m_frame.p_frame)
             {
                 // The procedure is active and transmission attempt failed. Try again
                 result = channel_busy();
@@ -483,9 +484,9 @@ bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    if (mp_data == p_frame)
+    if (m_frame.p_frame == p_frame)
     {
-        mp_data = NULL;
+        nrf_802154_frame_parser_data_clear(&m_frame);
         nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
     }
 

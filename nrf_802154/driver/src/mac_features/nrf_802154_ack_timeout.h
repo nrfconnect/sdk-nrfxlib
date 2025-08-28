@@ -40,6 +40,7 @@
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /**
  * @defgroup nrf_802154_ack_timeout 802.15.4 driver ACK timeout support
@@ -81,9 +82,9 @@ bool nrf_802154_ack_timeout_abort(nrf_802154_term_t term_lvl, req_originator_t r
 /**
  * @brief Handles a transmitted event.
  *
- * @param[in]  p_frame  Pointer to the buffer that contains the transmitted frame.
+ * @param[in]  p_frame  Pointer to a frame data structure.
  */
-void nrf_802154_ack_timeout_transmitted_hook(const uint8_t * p_frame);
+void nrf_802154_ack_timeout_transmitted_hook(const nrf_802154_frame_t * p_frame);
 
 /**
  * @brief Handles a TX failed event.

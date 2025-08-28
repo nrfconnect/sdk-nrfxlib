@@ -200,7 +200,7 @@ typedef struct
 #if NRF_802154_DELAYED_TRX_ENABLED
         struct
         {
-            uint8_t                                 * p_data;
+            const nrf_802154_frame_t                * p_frame;
             uint64_t                                  tx_time;
             const nrf_802154_transmit_at_metadata_t * p_metadata;
             bool                                    * p_result;
@@ -230,7 +230,7 @@ typedef struct
 
         struct
         {
-            uint8_t                                      * p_data;
+            const nrf_802154_frame_t                     * p_frame;
             const nrf_802154_transmit_csma_ca_metadata_t * p_metadata;
             bool                                         * p_result;
         } csma_ca_start; ///< Antenna update request details.
@@ -389,7 +389,6 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
  */
 static void swi_transmit(nrf_802154_term_t              term_lvl,
                          req_originator_t               req_orig,
-                         uint8_t                      * p_data,
                          nrf_802154_transmit_params_t * p_params,
                          nrf_802154_notification_func_t notify_function,
                          bool                         * p_result)
@@ -399,7 +398,6 @@ static void swi_transmit(nrf_802154_term_t              term_lvl,
     p_slot->type                     = REQ_TYPE_TRANSMIT;
     p_slot->data.transmit.term_lvl   = term_lvl;
     p_slot->data.transmit.req_orig   = req_orig;
-    p_slot->data.transmit.p_data     = p_data;
     p_slot->data.transmit.p_params   = p_params;
     p_slot->data.transmit.notif_func = notify_function;
     p_slot->data.transmit.p_result   = p_result;
@@ -601,7 +599,7 @@ static void swi_rssi_measurement_get(int8_t * p_rssi, bool * p_result)
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-static void swi_transmit_at(uint8_t                                 * p_data,
+static void swi_transmit_at(const nrf_802154_frame_t                * p_frame,
                             uint64_t                                  tx_time,
                             const nrf_802154_transmit_at_metadata_t * p_metadata,
                             bool                                    * p_result)
@@ -609,7 +607,7 @@ static void swi_transmit_at(uint8_t                                 * p_data,
     nrf_802154_req_data_t * p_slot = req_enter();
 
     p_slot->type                        = REQ_TYPE_TRANSMIT_AT;
-    p_slot->data.transmit_at.p_data     = p_data;
+    p_slot->data.transmit_at.p_frame    = p_frame;
     p_slot->data.transmit_at.tx_time    = tx_time;
     p_slot->data.transmit_at.p_metadata = p_metadata;
     p_slot->data.transmit_at.p_result   = p_result;
@@ -669,14 +667,14 @@ static void swi_receive_at_scheduled_cancel(uint32_t id, bool * p_result)
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
-static void swi_csma_ca_start(uint8_t                                      * p_data,
+static void swi_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata,
                               bool                                         * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
 
     p_slot->type                          = REQ_TYPE_CSMA_CA_START;
-    p_slot->data.csma_ca_start.p_data     = p_data;
+    p_slot->data.csma_ca_start.p_frame    = p_frame;
     p_slot->data.csma_ca_start.p_metadata = p_metadata;
     p_slot->data.csma_ca_start.p_result   = p_result;
     req_exit();
@@ -714,7 +712,6 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
-                                 uint8_t                      * p_data,
                                  nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function)
 {
@@ -722,7 +719,6 @@ bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                      swi_transmit,
                      term_lvl,
                      req_orig,
-                     p_data,
                      p_params,
                      notify_function)
 }
@@ -798,11 +794,15 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
+bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                * p_frame,
                                         uint64_t                                  tx_time,
                                         const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
-    REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit, swi_transmit_at, p_data, tx_time, p_metadata);
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit,
+                     swi_transmit_at,
+                     p_frame,
+                     tx_time,
+                     p_metadata);
 }
 
 bool nrf_802154_request_transmit_at_cancel(void)
@@ -830,12 +830,12 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
                      id);
 }
 
-bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                                       const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     REQUEST_FUNCTION(nrf_802154_csma_ca_start,
                      swi_csma_ca_start,
-                     p_data,
+                     p_frame,
                      p_metadata);
 }
 
@@ -869,7 +869,6 @@ static void irq_handler_req_event(void)
                 *(p_slot->data.transmit.p_result) =
                     nrf_802154_core_transmit(p_slot->data.transmit.term_lvl,
                                              p_slot->data.transmit.req_orig,
-                                             p_slot->data.transmit.p_data,
                                              p_slot->data.transmit.p_params,
                                              p_slot->data.transmit.notif_func);
                 break;
@@ -936,7 +935,7 @@ static void irq_handler_req_event(void)
 #if NRF_802154_DELAYED_TRX_ENABLED
             case REQ_TYPE_TRANSMIT_AT:
                 *(p_slot->data.transmit_at.p_result) =
-                    nrf_802154_delayed_trx_transmit(p_slot->data.transmit_at.p_data,
+                    nrf_802154_delayed_trx_transmit(p_slot->data.transmit_at.p_frame,
                                                     p_slot->data.transmit_at.tx_time,
                                                     p_slot->data.transmit_at.p_metadata);
                 break;
@@ -967,7 +966,7 @@ static void irq_handler_req_event(void)
 
             case REQ_TYPE_CSMA_CA_START:
                 *(p_slot->data.csma_ca_start.p_result) =
-                    nrf_802154_csma_ca_start(p_slot->data.csma_ca_start.p_data,
+                    nrf_802154_csma_ca_start(p_slot->data.csma_ca_start.p_frame,
                                              p_slot->data.csma_ca_start.p_metadata);
                 break;
 #endif // NRF_802154_DELAYED_TRX_ENABLED

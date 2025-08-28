@@ -44,7 +44,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /** Initializes the Immediate ACK generator module. */
 void nrf_802154_imm_ack_generator_init(void);
@@ -72,6 +72,6 @@ void nrf_802154_imm_ack_generator_reset(void);
  *           created.
  */
 uint8_t * nrf_802154_imm_ack_generator_create(
-    const nrf_802154_frame_parser_data_t * p_frame_data);
+    const nrf_802154_frame_t * p_frame_data);
 
 #endif // NRF_802154_IMM_ACK_GENERATOR_H

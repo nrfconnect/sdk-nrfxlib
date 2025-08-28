@@ -126,7 +126,6 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t                    * p_data; ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
     nrf_802154_transmit_params_t params; ///< Transmission parameters.
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
@@ -508,7 +507,7 @@ static void dly_tx_result_notify(bool result)
         nrf_802154_transmit_done_metadata_t metadata = {};
 
         metadata.frame_props = p_dly_op_data->tx.params.frame_props;
-        nrf_802154_notify_transmit_failed(p_dly_op_data->tx.p_data,
+        nrf_802154_notify_transmit_failed(p_dly_op_data->tx.params.frame.p_frame,
                                           NRF_802154_TX_ERROR_TIMESLOT_DENIED,
                                           &metadata);
     }
@@ -616,7 +615,6 @@ static void transmit_attempt(dly_op_data_t * p_dly_op_data)
     // No need to enqueue transmit attempts. Proceed to transmission immediately
     (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
                                       REQ_ORIG_DELAYED_TRX,
-                                      p_dly_op_data->tx.p_data,
                                       &p_dly_op_data->tx.params,
                                       dly_tx_result_notify);
 
@@ -777,7 +775,7 @@ void nrf_802154_delayed_trx_deinit(void)
     }
 }
 
-bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p_data,
+bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p_frame,
                                      uint64_t                                  tx_time,
                                      const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
@@ -796,7 +794,7 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
 
         p_dly_tx_data->op = RSCH_DLY_TS_OP_DTX;
 
-        p_dly_tx_data->tx.p_data             = p_data;
+        p_dly_tx_data->tx.params.frame       = *p_frame;
         p_dly_tx_data->tx.params.frame_props = p_metadata->frame_props;
         (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(
             p_metadata->channel,
@@ -975,22 +973,19 @@ bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t r
     return true;
 }
 
-void nrf_802154_delayed_trx_rx_started_hook(const uint8_t * p_frame)
+void nrf_802154_delayed_trx_rx_started_hook(const nrf_802154_frame_t * p_frame)
 {
-    dly_op_data_t                * p_dly_op_data = ongoing_dly_rx_slot_get();
-    nrf_802154_frame_parser_data_t frame_data;
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_FCF_OFFSETS);
 
-    bool result = nrf_802154_frame_parser_data_init(p_frame,
-                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
-                                                    PARSE_LEVEL_FCF_OFFSETS,
-                                                    &frame_data);
+    dly_op_data_t * p_dly_op_data = ongoing_dly_rx_slot_get();
 
-    if ((result) && (p_dly_op_data != NULL))
+    if (p_dly_op_data != NULL)
     {
         p_dly_op_data->rx.extension_frame.sof_timestamp = nrf_802154_sl_timer_current_time_get();
-        p_dly_op_data->rx.extension_frame.psdu_length   = p_frame[PHR_OFFSET];
-        p_dly_op_data->rx.extension_frame.ack_requested = nrf_802154_frame_parser_ar_bit_is_set(
-            &frame_data);
+        p_dly_op_data->rx.extension_frame.psdu_length   =
+            nrf_802154_frame_length_get(p_frame);
+        p_dly_op_data->rx.extension_frame.ack_requested = nrf_802154_frame_ar_bit_is_set(
+            p_frame);
     }
 }
 

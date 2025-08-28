@@ -40,7 +40,7 @@
 
 #include "mac_features/nrf_802154_tx_timestamp_provider.h"
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include "nrf_802154_utils_byteorder.h"
 #include "nrf_802154_sl_timer.h"
 
@@ -50,12 +50,13 @@ static uint64_t  m_tx_timestamp_us;    ///< Cached transmit timestamp.
 static uint8_t * mp_tx_timestamp_addr; ///< Cached tx timestamp placeholder address.
 
 bool nrf_802154_tx_timestamp_provider_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
-    nrf_802154_frame_parser_data_t frame_data;
-    bool                           result = false;
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
+                      PARSE_LEVEL_FULL);
+
+    bool result = true;
 
     m_tx_timestamp_us    = 0;
     mp_tx_timestamp_addr = NULL;
@@ -74,30 +75,19 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
             break;
         }
 
-        result = nrf_802154_frame_parser_data_init(p_frame,
-                                                   p_frame[PHR_OFFSET] +
-                                                   PHR_SIZE,
-                                                   PARSE_LEVEL_FULL,
-                                                   &frame_data);
-
-        if (result == false)
-        {
-            break;
-        }
-
-        if (nrf_802154_frame_parser_frame_type_get(&frame_data) != FRAME_TYPE_DATA)
+        if (nrf_802154_frame_type_get(&p_params->frame) != FRAME_TYPE_DATA)
         {
             result = false;
             break;
         }
 
-        if (nrf_802154_frame_parser_mac_payload_get(&frame_data) == NULL)
+        if (nrf_802154_frame_mac_payload_get(&p_params->frame) == NULL)
         {
             result = false;
             break;
         }
 
-        uint8_t payload_len = nrf_802154_frame_parser_mac_payload_length_get(&frame_data);
+        uint8_t payload_len = nrf_802154_frame_mac_payload_length_get(&p_params->frame);
 
         if (payload_len < NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE)
         {
@@ -105,9 +95,10 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
             break;
         }
 
-        mp_tx_timestamp_addr = (uint8_t *)(nrf_802154_frame_parser_mac_payload_get(&frame_data) +
-                                           payload_len -
-                                           NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE);
+        mp_tx_timestamp_addr =
+            (uint8_t *)(nrf_802154_frame_mac_payload_get(&p_params->frame) +
+                        payload_len -
+                        NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE);
     }
     while (0);
 
@@ -116,7 +107,9 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
         nrf_802154_transmit_done_metadata_t metadata = {};
 
         metadata.frame_props = p_params->frame_props;
-        notify_function(p_frame, NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR, &metadata);
+        notify_function(p_params->frame.p_frame,
+                        NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR,
+                        &metadata);
     }
 
     return result;

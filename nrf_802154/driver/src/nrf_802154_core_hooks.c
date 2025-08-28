@@ -56,17 +56,15 @@
 #include "nrf_802154_config.h"
 
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
-typedef bool (* pre_transmission_hook)(uint8_t                                 * p_frame,
-                                       nrf_802154_transmit_params_t            * p_params,
+typedef bool (* pre_transmission_hook)(nrf_802154_transmit_params_t            * p_params,
                                        nrf_802154_transmit_failed_notification_t notify_function);
-typedef bool (* tx_setup_hook)(uint8_t                                 * p_frame,
-                               nrf_802154_transmit_params_t            * p_params,
+typedef bool (* tx_setup_hook)(nrf_802154_transmit_params_t            * p_params,
                                nrf_802154_transmit_failed_notification_t notify_function);
-typedef void (* transmitted_hook)(const uint8_t * p_frame);
+typedef void (* transmitted_hook)(const nrf_802154_frame_t * p_frame);
 typedef bool (* tx_failed_hook)(uint8_t * p_frame, nrf_802154_tx_error_t error);
 typedef void (* tx_ack_failed_hook)(uint8_t * p_ack, nrf_802154_tx_error_t error);
 typedef bool (* tx_started_hook)(uint8_t * p_frame);
-typedef void (* rx_started_hook)(const uint8_t * p_frame);
+typedef void (* rx_started_hook)(const nrf_802154_frame_t * p_frame);
 typedef void (* rx_ack_started_hook)(void);
 typedef void (* tx_ack_started_hook)(uint8_t * p_ack);
 
@@ -241,7 +239,6 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
 }
 
 bool nrf_802154_core_hooks_pre_transmission(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
@@ -255,7 +252,7 @@ bool nrf_802154_core_hooks_pre_transmission(
             break;
         }
 
-        result = m_pre_transmission_hooks[i](p_frame, p_params, notify_function);
+        result = m_pre_transmission_hooks[i](p_params, notify_function);
 
         if (!result)
         {
@@ -267,7 +264,6 @@ bool nrf_802154_core_hooks_pre_transmission(
 }
 
 bool nrf_802154_core_hooks_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
@@ -281,7 +277,7 @@ bool nrf_802154_core_hooks_tx_setup(
             break;
         }
 
-        result = m_tx_setup_hooks[i](p_frame, p_params, notify_function);
+        result = m_tx_setup_hooks[i](p_params, notify_function);
 
         if (!result)
         {
@@ -292,7 +288,7 @@ bool nrf_802154_core_hooks_tx_setup(
     return result;
 }
 
-void nrf_802154_core_hooks_transmitted(const uint8_t * p_frame)
+void nrf_802154_core_hooks_transmitted(const nrf_802154_frame_t * p_frame)
 {
     for (uint32_t i = 0; i < sizeof(m_transmitted_hooks) / sizeof(m_transmitted_hooks[0]); i++)
     {
@@ -362,7 +358,7 @@ bool nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
     return result;
 }
 
-void nrf_802154_core_hooks_rx_started(const uint8_t * p_frame)
+void nrf_802154_core_hooks_rx_started(const nrf_802154_frame_t * p_frame)
 {
     for (uint32_t i = 0; i < sizeof(m_rx_started_hooks) / sizeof(m_rx_started_hooks[0]); i++)
     {

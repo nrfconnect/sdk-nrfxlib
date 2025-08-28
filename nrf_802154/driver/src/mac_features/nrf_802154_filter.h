@@ -44,7 +44,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_types.h"
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /**
  * @defgroup nrf_802154_filter Incoming frame filter API
@@ -97,8 +97,8 @@ typedef uint32_t nrf_802154_filter_mode_t;
  * @retval NRF_802154_RX_ERROR_INVALID_LENGTH     Received a frame with invalid length.
  */
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    nrf_802154_filter_mode_t               filter_mode);
+    const nrf_802154_frame_t * p_frame_data,
+    nrf_802154_filter_mode_t   filter_mode);
 
 /**
  *@}

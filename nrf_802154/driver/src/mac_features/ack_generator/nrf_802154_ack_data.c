@@ -44,7 +44,7 @@
 #include "nrf_802154_assert.h"
 #include <string.h>
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 
@@ -333,11 +333,11 @@ static bool addr_index_find(const uint8_t       * p_addr,
  * @retval true   Pending bit is to be set.
  * @retval false  Pending bit is to be cleared.
  */
-static bool addr_match_thread(const nrf_802154_frame_parser_data_t * p_frame_data)
+static bool addr_match_thread(const nrf_802154_frame_t * p_frame_data)
 {
     uint32_t        location;
-    bool            extended   = nrf_802154_frame_parser_src_addr_is_extended(p_frame_data);
-    const uint8_t * p_src_addr = nrf_802154_frame_parser_src_addr_get(p_frame_data);
+    bool            extended   = nrf_802154_frame_src_addr_is_extended(p_frame_data);
+    const uint8_t * p_src_addr = nrf_802154_frame_src_addr_get(p_frame_data);
 
     // The pending bit is set by default.
     if (!m_pending_bit.enabled || (NULL == p_src_addr))
@@ -356,7 +356,7 @@ static bool addr_match_thread(const nrf_802154_frame_parser_data_t * p_frame_dat
  * @retval true   Pending bit is to be set.
  * @retval false  Pending bit is to be cleared.
  */
-static bool addr_match_zigbee(const nrf_802154_frame_parser_data_t * p_frame_data)
+static bool addr_match_zigbee(const nrf_802154_frame_t * p_frame_data)
 {
     uint8_t         src_addr_type;
     uint32_t        location;
@@ -371,10 +371,10 @@ static bool addr_match_zigbee(const nrf_802154_frame_parser_data_t * p_frame_dat
     }
 
     // Check the frame type.
-    p_src_addr    = nrf_802154_frame_parser_src_addr_get(p_frame_data);
-    src_addr_type = nrf_802154_frame_parser_src_addr_type_get(p_frame_data);
+    p_src_addr    = nrf_802154_frame_src_addr_get(p_frame_data);
+    src_addr_type = nrf_802154_frame_src_addr_type_get(p_frame_data);
 
-    p_cmd = nrf_802154_frame_parser_mac_command_id_get(p_frame_data);
+    p_cmd = nrf_802154_frame_mac_command_id_get(p_frame_data);
 
     // Check frame type and command type.
     if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
@@ -407,7 +407,7 @@ static bool addr_match_zigbee(const nrf_802154_frame_parser_data_t * p_frame_dat
  *
  * @retval true   Pending bit is to be set.
  */
-static bool addr_match_standard_compliant(const nrf_802154_frame_parser_data_t * p_frame_data)
+static bool addr_match_standard_compliant(const nrf_802154_frame_t * p_frame_data)
 {
     (void)p_frame_data;
     return true;
@@ -597,18 +597,18 @@ static bool ie_data_set(uint32_t location, bool extended, const uint8_t * p_data
     ie_data_t * ie_data =
         extended ? &m_ie.ext_data[location].ie_data : &m_ie.short_data[location].ie_data;
 
-    const uint8_t new_ie_id = nrf_802154_frame_parser_ie_id_get(p_data);
+    const uint8_t new_ie_id = nrf_802154_frame_ie_id_get(p_data);
 
-    for (const uint8_t * ie = nrf_802154_frame_parser_header_ie_iterator_begin(ie_data->p_data);
-         nrf_802154_frame_parser_ie_iterator_end(ie, ie_data->p_data + ie_data->len) == false;
-         ie = nrf_802154_frame_parser_ie_iterator_next(ie))
+    for (const uint8_t * ie = nrf_802154_frame_header_ie_iterator_begin(ie_data->p_data);
+         nrf_802154_frame_ie_iterator_end(ie, ie_data->p_data + ie_data->len) == false;
+         ie = nrf_802154_frame_ie_iterator_next(ie))
     {
-        if (nrf_802154_frame_parser_ie_id_get(ie) != new_ie_id)
+        if (nrf_802154_frame_ie_id_get(ie) != new_ie_id)
         {
             continue;
         }
 
-        if (IE_DATA_OFFSET + nrf_802154_frame_parser_ie_length_get(ie) != data_len)
+        if (IE_DATA_OFFSET + nrf_802154_frame_ie_length_get(ie) != data_len)
         {
             /* Overwriting an existing IE with a different size is not supported. */
             return false;
@@ -738,7 +738,7 @@ void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_
 }
 
 bool nrf_802154_ack_data_pending_bit_should_be_set(
-    const nrf_802154_frame_parser_data_t * p_frame_data)
+    const nrf_802154_frame_t * p_frame_data)
 {
     bool ret;
 

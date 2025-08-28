@@ -140,7 +140,6 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
  *
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
- * @param[in]  p_data           Pointer to a frame to transmit.
  * @param[in]  p_params         Pointer to transmission parameters.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  *
@@ -149,7 +148,6 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
  */
 bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                               req_originator_t               req_orig,
-                              uint8_t                      * p_data,
                               nrf_802154_transmit_params_t * p_params,
                               nrf_802154_notification_func_t notify_function);
 

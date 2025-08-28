@@ -121,7 +121,7 @@ static rx_buffer_t * const mp_current_rx_buffer = &nrf_802154_rx_buffers[0];
 #endif
 
 static uint8_t                       * mp_ack;                  ///< Pointer to Ack frame buffer.
-static uint8_t                       * mp_tx_data;              ///< Pointer to the data to transmit.
+static nrf_802154_frame_t              m_tx_data;               ///< Data structure of the frame to be transmitted.
 static uint32_t                        m_ed_time_left;          ///< Remaining time of the current energy detection procedure [us].
 static int8_t                          m_ed_result;             ///< Result of the current energy detection procedure.
 static uint8_t                         m_last_lqi;              ///< LQI of the last received non-ACK frame, corrected for the temperature.
@@ -130,7 +130,7 @@ static uint8_t                         m_tx_channel;            ///< Channel to 
 static int8_t                          m_last_rssi;             ///< RSSI of the last received non-ACK frame, corrected for the temperature.
 static uint8_t                         m_no_rx_buffer_notified; ///< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified.
 
-static nrf_802154_frame_parser_data_t m_current_rx_frame_data;  ///< RX frame parser data.
+static nrf_802154_frame_t m_current_rx_frame_data;              ///< RX frame parser data.
 
 static volatile radio_state_t m_state;                          ///< State of the radio driver.
 
@@ -334,7 +334,7 @@ static void transmit_started_notify(void)
      * TX started hooks were executed before transmission started. Use latched result
      */
 #else
-    (void)nrf_802154_core_hooks_tx_started(mp_tx_data);
+    (void)nrf_802154_core_hooks_tx_started(m_tx_data.p_frame);
 #endif
 }
 
@@ -354,15 +354,12 @@ static void transmit_ack_started_notify()
 /** Notify that reception of a frame has started. */
 static void receive_started_notify(void)
 {
-    const uint8_t * p_frame = mp_current_rx_buffer->data;
-
-    nrf_802154_core_hooks_rx_started(p_frame);
+    nrf_802154_core_hooks_rx_started(&m_current_rx_frame_data);
 }
 
 /** Notify MAC layer that a frame was transmitted. */
 static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 {
-    uint8_t                           * p_frame  = mp_tx_data;
     nrf_802154_transmit_done_metadata_t metadata = {0};
 
     metadata.data.transmitted.p_ack = p_ack;
@@ -381,9 +378,9 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 
     nrf_802154_critical_section_nesting_allow();
 
-    nrf_802154_core_hooks_transmitted(p_frame);
+    nrf_802154_core_hooks_transmitted(&m_tx_data);
 
-    nrf_802154_notify_transmitted(p_frame, &metadata);
+    nrf_802154_notify_transmitted(m_tx_data.p_frame, &metadata);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -406,7 +403,7 @@ static void transmit_failed_notify_and_nesting_allow(
 {
     nrf_802154_critical_section_nesting_allow();
 
-    transmit_failed_notify(mp_tx_data, error, p_meta);
+    transmit_failed_notify(m_tx_data.p_frame, error, p_meta);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -487,29 +484,24 @@ static uint8_t * rx_buffer_get(void)
  * @section ACK transmission management
  **************************************************************************************************/
 
-/** Check if ACK is requested in given frame.
+/** Check if ACK is requested in the given frame to be transmitted.
  *
- * @param[in]  p_frame  Pointer to a frame to check.
+ * @param[in]  p_frame  Pointer to a TX frame to check.
  *
  * @retval  true   ACK is requested in given frame.
  * @retval  false  ACK is not requested in given frame.
  */
-static bool ack_is_requested(const uint8_t * p_frame)
+static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
 {
-    nrf_802154_frame_parser_data_t frame_data;
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_FCF_OFFSETS);
 
-    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    if (nrf_802154_frame_type_get(p_frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so assume AR is not set.
         return false;
     }
 
-    bool result = nrf_802154_frame_parser_data_init(p_frame,
-                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
-                                                    PARSE_LEVEL_FCF_OFFSETS,
-                                                    &frame_data);
-
-    return result && nrf_802154_frame_parser_ar_bit_is_set(&frame_data);
+    return nrf_802154_frame_ar_bit_is_set(p_frame);
 }
 
 /***************************************************************************************************
@@ -747,8 +739,9 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         {
             nrf_802154_transmit_done_metadata_t metadata = {};
 
-            nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED, &metadata);
+            nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                                                            &metadata.frame_props);
+            transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_ABORTED, &metadata);
         }
         break;
 
@@ -756,8 +749,9 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         {
             nrf_802154_transmit_done_metadata_t metadata = {};
 
-            nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_NO_ACK, &metadata);
+            nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                                                            &metadata.frame_props);
+            transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_NO_ACK, &metadata);
         }
         break;
 
@@ -1033,14 +1027,16 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 }
 
 /** Initialize TX operation. */
-static bool tx_init(const uint8_t                       * p_data,
+static bool tx_init(const nrf_802154_frame_t            * p_frame,
                     nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode,
                     uint8_t                               cca_attempts)
 {
     bool cca = cca_attempts > 0;
 
     if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(
-            nrf_802154_tx_duration_get(p_data[0], cca, ack_is_requested(p_data))))
+            nrf_802154_tx_duration_get(p_frame->p_frame[0],
+                                       cca,
+                                       tx_frame_ack_is_requested(p_frame))))
     {
         return false;
     }
@@ -1067,7 +1063,7 @@ static bool tx_init(const uint8_t                       * p_data,
 
     nrf_802154_trx_channel_set(m_tx_channel);
     m_flags.tx_with_cca = cca;
-    nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_data),
+    nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_frame->p_frame),
                                   rampup_trigg_mode,
                                   cca_attempts,
                                   &m_tx_power,
@@ -1105,7 +1101,7 @@ static bool tx_init(const uint8_t                       * p_data,
 
     nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
 
-    m_flags.tx_started_notify = nrf_802154_core_hooks_tx_started(mp_tx_data);
+    m_flags.tx_started_notify = nrf_802154_core_hooks_tx_started(m_tx_data.p_frame);
 
     nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
 
@@ -1299,7 +1295,8 @@ static void on_timeslot_ended(void)
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
-                nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+                nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                                                                &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED,
                                                          &metadata);
             }
@@ -1310,7 +1307,8 @@ static void on_timeslot_ended(void)
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
-                nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+                nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                                                                &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_NO_ACK,
                                                          &metadata);
             }
@@ -1416,11 +1414,11 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_CCA_TX:
-            (void)tx_init(mp_tx_data, TRX_RAMP_UP_SW_TRIGGER, true);
+            (void)tx_init(&m_tx_data, TRX_RAMP_UP_SW_TRIGGER, true);
             break;
 
         case RADIO_STATE_TX:
-            (void)tx_init(mp_tx_data, TRX_RAMP_UP_SW_TRIGGER, false);
+            (void)tx_init(&m_tx_data, TRX_RAMP_UP_SW_TRIGGER, false);
             break;
 
         case RADIO_STATE_ED:
@@ -1437,7 +1435,7 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_MODULATED_CARRIER:
-            modulated_carrier_init(mp_tx_data);
+            modulated_carrier_init(m_tx_data.p_frame);
             break;
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
@@ -1748,7 +1746,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     nrf_802154_rx_error_t           filter_result = NRF_802154_RX_ERROR_NONE;
     nrf_802154_frame_parser_level_t parse_level   = PARSE_LEVEL_NONE;
     nrf_802154_frame_parser_level_t prev_level    =
-        nrf_802154_frame_parser_parse_level_get(&m_current_rx_frame_data);
+        nrf_802154_frame_parse_level_get(&m_current_rx_frame_data);
 
     NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
 
@@ -1780,7 +1778,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             return 0;
     }
 
-    if (nrf_802154_frame_parser_frame_type_get(&m_current_rx_frame_data) == FRAME_TYPE_MULTIPURPOSE)
+    if (nrf_802154_frame_type_get(&m_current_rx_frame_data) == FRAME_TYPE_MULTIPURPOSE)
     {
         m_flags.frame_filtered = true;
         return 0;
@@ -1816,7 +1814,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
          * In promiscuous mode all filtering should be ignored unless the frame has
          * length 0 or above maximum frame length.
          */
-        uint8_t psdu_length = nrf_802154_frame_parser_frame_length_get(&m_current_rx_frame_data);
+        uint8_t psdu_length = nrf_802154_frame_length_get(&m_current_rx_frame_data);
 
         if (psdu_length > 0 && psdu_length <= MAX_PACKET_SIZE)
         {
@@ -1832,7 +1830,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
         /* Release boosted preconditions */
         request_preconditions_for_state(m_state);
 
-        if (nrf_802154_frame_parser_frame_type_get(&m_current_rx_frame_data) != FRAME_TYPE_ACK)
+        if (nrf_802154_frame_type_get(&m_current_rx_frame_data) != FRAME_TYPE_ACK)
         {
             receive_failed_notify(filter_result);
         }
@@ -1844,17 +1842,17 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     switch (parse_level)
     {
         case PARSE_LEVEL_FCF_OFFSETS:
-            next_bcc = PHR_SIZE + nrf_802154_frame_parser_dst_addressing_end_offset_get(
+            next_bcc = PHR_SIZE + nrf_802154_frame_dst_addressing_end_offset_get(
                 &m_current_rx_frame_data);
             break;
 
         case PARSE_LEVEL_DST_ADDRESSING_END:
-            next_bcc = PHR_SIZE + nrf_802154_frame_parser_addressing_end_offset_get(
+            next_bcc = PHR_SIZE + nrf_802154_frame_addressing_end_offset_get(
                 &m_current_rx_frame_data) + SECURITY_CONTROL_SIZE;
             break;
 
         case PARSE_LEVEL_SEC_CTRL_OFFSETS:
-            next_bcc = PHR_SIZE + nrf_802154_frame_parser_aux_sec_hdr_end_offset_get(
+            next_bcc = PHR_SIZE + nrf_802154_frame_aux_sec_hdr_end_offset_get(
                 &m_current_rx_frame_data);
             break;
 
@@ -1867,7 +1865,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     {
         uint16_t duration = nrf_802154_rx_duration_get(
             mp_current_rx_buffer->data[0],
-            nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data));
+            nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data));
 
         if (nrf_802154_rsch_timeslot_request(duration))
         {
@@ -1894,7 +1892,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     }
 
     if (m_flags.frame_filtered &&
-        nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data) &&
+        nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data) &&
         nrf_802154_pib_auto_ack_get())
     {
         mp_ack = nrf_802154_ack_generator_create(&m_current_rx_frame_data);
@@ -1967,7 +1965,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
     bool parse_result = nrf_802154_frame_parser_valid_data_extend(
         &m_current_rx_frame_data,
-        PHR_SIZE + nrf_802154_frame_parser_frame_length_get(&m_current_rx_frame_data),
+        PHR_SIZE + nrf_802154_frame_length_get(&m_current_rx_frame_data),
         PARSE_LEVEL_FULL);
 
     if (parse_result && !m_flags.frame_filtered)
@@ -2015,7 +2013,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
         if (m_flags.frame_filtered &&
             parse_result &&
-            nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data) &&
+            nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data) &&
             nrf_802154_pib_auto_ack_get())
         {
             nrf_802154_tx_work_buffer_reset(&m_default_frame_props);
@@ -2141,7 +2139,7 @@ void nrf_802154_trx_transmit_frame_started(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     NRF_802154_ASSERT((m_state == RADIO_STATE_TX) || (m_state == RADIO_STATE_CCA_TX));
-    if (tx_started_core_hooks_will_fit_within_timeslot(mp_tx_data))
+    if (tx_started_core_hooks_will_fit_within_timeslot(m_tx_data.p_frame))
     {
         transmit_started_notify();
     }
@@ -2152,9 +2150,9 @@ void nrf_802154_trx_transmit_frame_started(void)
 
         nrf_802154_transmit_done_metadata_t metadata = {};
 
-        nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+        nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
 
-        transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_TIMESLOT_ENDED, &metadata);
+        transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_TIMESLOT_ENDED, &metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2217,14 +2215,16 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
         m_flags.tx_diminished_prio = false;
 
         // We calculate the timestamp when ccaidle must happened.
-        ts -= nrf_802154_frame_duration_get(mp_tx_data[0], true, true) + RX_TX_TURNAROUND_TIME;
+        ts -= nrf_802154_frame_duration_get(m_tx_data.p_frame[0],
+                                            true,
+                                            true) + RX_TX_TURNAROUND_TIME;
 
         nrf_802154_stat_timestamp_write(last_cca_idle_timestamp, ts);
     }
 
 #endif
 
-    if (ack_is_requested(mp_tx_data))
+    if (tx_frame_ack_is_requested(&m_tx_data))
     {
         state_set(RADIO_STATE_RX_ACK);
 
@@ -2251,18 +2251,19 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-static bool ack_match_check_version_not_2(const uint8_t * p_tx_data, const uint8_t * p_ack_data)
+static bool ack_match_check_version_not_2(const nrf_802154_frame_t * p_tx_frame,
+                                          const nrf_802154_frame_t * p_ack_frame)
 {
     // Frame Version != 2
 
     // Check: Phy length
-    if (p_ack_data[PHR_OFFSET] != IMM_ACK_LENGTH)
+    if (nrf_802154_frame_length_get(p_ack_frame) != IMM_ACK_LENGTH)
     {
         return false;
     }
 
     // Check if Frame version is 0 or 1.
-    switch (p_ack_data[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK)
+    switch (nrf_802154_frame_version_get(p_ack_frame))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -2273,7 +2274,7 @@ static bool ack_match_check_version_not_2(const uint8_t * p_tx_data, const uint8
     }
 
     // Check: Sequence number match
-    if (p_ack_data[DSN_OFFSET] != p_tx_data[DSN_OFFSET])
+    if (p_ack_frame->p_frame[DSN_OFFSET] != p_tx_frame->p_frame[DSN_OFFSET])
     {
         return false;
     }
@@ -2281,27 +2282,15 @@ static bool ack_match_check_version_not_2(const uint8_t * p_tx_data, const uint8
     return true;
 }
 
-static bool ack_match_check_version_2(const uint8_t * p_tx_frame, const uint8_t * p_ack_frame)
+static bool ack_match_check_version_2(const nrf_802154_frame_t * p_tx_frame,
+                                      const nrf_802154_frame_t * p_ack_frame)
 {
-    nrf_802154_frame_parser_data_t tx_data;
-    nrf_802154_frame_parser_data_t ack_data;
-    bool                           parse_result;
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_tx_frame) >=
+                      PARSE_LEVEL_ADDRESSING_END);
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_ack_frame) >=
+                      PARSE_LEVEL_ADDRESSING_END);
 
-    parse_result = nrf_802154_frame_parser_data_init(p_tx_frame,
-                                                     p_tx_frame[PHR_OFFSET] + PHR_SIZE,
-                                                     PARSE_LEVEL_ADDRESSING_END,
-                                                     &tx_data);
-    if (!parse_result)
-    {
-        return false;
-    }
-
-    parse_result = nrf_802154_frame_parser_data_init(p_ack_frame,
-                                                     p_ack_frame[PHR_OFFSET] + PHR_SIZE,
-                                                     PARSE_LEVEL_ADDRESSING_END,
-                                                     &ack_data);
-
-    if (nrf_802154_frame_parser_frame_version_get(&ack_data) != FRAME_VERSION_2)
+    if (nrf_802154_frame_version_get(p_ack_frame) != FRAME_VERSION_2)
     {
         return false;
     }
@@ -2310,13 +2299,12 @@ static bool ack_match_check_version_2(const uint8_t * p_tx_frame, const uint8_t 
     // For frame version 2 sequence number bit may be suppressed and its check fails.
     // Verify ACK frame using its destination address.
 
-    const uint8_t * p_tx_src_addr     = nrf_802154_frame_parser_src_addr_get(&tx_data);
-    const uint8_t * p_ack_dst_addr    = nrf_802154_frame_parser_dst_addr_get(&ack_data);
-    uint8_t         tx_src_addr_size  = nrf_802154_frame_parser_src_addr_size_get(&tx_data);
-    uint8_t         ack_dst_addr_size = nrf_802154_frame_parser_dst_addr_size_get(&ack_data);
+    const uint8_t * p_tx_src_addr     = nrf_802154_frame_src_addr_get(p_tx_frame);
+    const uint8_t * p_ack_dst_addr    = nrf_802154_frame_dst_addr_get(p_ack_frame);
+    uint8_t         tx_src_addr_size  = nrf_802154_frame_src_addr_size_get(p_tx_frame);
+    uint8_t         ack_dst_addr_size = nrf_802154_frame_dst_addr_size_get(p_ack_frame);
 
-    if (!parse_result ||
-        (p_tx_src_addr == NULL) ||
+    if ((p_tx_src_addr == NULL) ||
         (p_ack_dst_addr == NULL) ||
         (tx_src_addr_size != ack_dst_addr_size) ||
         (0 != memcmp(p_tx_src_addr,
@@ -2330,26 +2318,27 @@ static bool ack_match_check_version_2(const uint8_t * p_tx_frame, const uint8_t 
     return true;
 }
 
-static bool ack_match_check(const uint8_t * p_tx_data, const uint8_t * p_ack_data)
+static bool ack_match_check(const nrf_802154_frame_t * p_tx_frame,
+                            const nrf_802154_frame_t * p_ack_frame)
 {
-    if ((p_tx_data == NULL) || (p_ack_data == NULL))
+    if ((p_tx_frame == NULL) || (p_ack_frame == NULL))
     {
         return false;
     }
 
     // Check: Frame Control Field -> Frame type
-    if ((p_ack_data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) != FRAME_TYPE_ACK)
+    if (nrf_802154_frame_type_get(p_ack_frame) != FRAME_TYPE_ACK)
     {
         return false; // This is not an ACK frame
     }
 
     // Check: Frame Control Field -> Frame version
-    if ((p_tx_data[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK) == FRAME_VERSION_2)
+    if (nrf_802154_frame_version_get(p_tx_frame) == FRAME_VERSION_2)
     {
-        return ack_match_check_version_2(p_tx_data, p_ack_data);
+        return ack_match_check_version_2(p_tx_frame, p_ack_frame);
     }
 
-    return ack_match_check_version_not_2(p_tx_data, p_ack_data);
+    return ack_match_check_version_not_2(p_tx_frame, p_ack_frame);
 }
 
 static void on_bad_ack(void)
@@ -2361,7 +2350,7 @@ static void on_bad_ack(void)
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
-    nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+    nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
     transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_INVALID_ACK, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2374,7 +2363,12 @@ void nrf_802154_trx_receive_ack_received(void)
     // CRC of received frame is correct
     uint8_t * p_ack_data = mp_current_rx_buffer->data;
 
-    if (ack_match_check(mp_tx_data, p_ack_data))
+    bool result = nrf_802154_frame_parser_data_init(p_ack_data,
+                                                    p_ack_data[PHR_OFFSET] + PHR_SIZE,
+                                                    PARSE_LEVEL_ADDRESSING_END,
+                                                    &m_current_rx_frame_data);
+
+    if (result && ack_match_check(&m_tx_data, &m_current_rx_frame_data))
     {
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
         uint64_t ts = timer_coord_timestamp_get();
@@ -2387,22 +2381,15 @@ void nrf_802154_trx_receive_ack_received(void)
         mp_current_rx_buffer->free = false;
 
         // Detect Frame Pending field set to one on Ack frame received after a Data Request Command
-        bool                           should_receive = false;
-        nrf_802154_frame_parser_data_t frame_data;
+        bool should_receive = false;
 
-        bool parse_result = nrf_802154_frame_parser_data_init(mp_tx_data,
-                                                              mp_tx_data[PHR_OFFSET] + PHR_SIZE,
-                                                              PARSE_LEVEL_FULL,
-                                                              &frame_data);
-
-        if (parse_result &&
-            (nrf_802154_frame_parser_frame_type_get(&frame_data) == FRAME_TYPE_COMMAND))
+        if (nrf_802154_frame_type_get(&m_tx_data) == FRAME_TYPE_COMMAND)
         {
-            const uint8_t * p_cmd = nrf_802154_frame_parser_mac_command_id_get(&frame_data);
+            const uint8_t * p_cmd = nrf_802154_frame_mac_command_id_get(&m_tx_data);
 
             if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
             {
-                if (p_ack_data[FRAME_PENDING_OFFSET] & FRAME_PENDING_BIT)
+                if (nrf_802154_frame_pending_bit_is_set(&m_current_rx_frame_data))
                 {
                     should_receive = true;
                 }
@@ -2485,7 +2472,7 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
-    nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+    nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
     transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_BUSY_CHANNEL, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2692,7 +2679,6 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
 
 bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                               req_originator_t               req_orig,
-                              uint8_t                      * p_data,
                               nrf_802154_transmit_params_t * p_params,
                               nrf_802154_notification_func_t notify_function)
 {
@@ -2702,14 +2688,14 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
 
     if (result)
     {
-        if (nrf_802154_core_hooks_pre_transmission(p_data, p_params, &transmit_failed_notify))
+        if (nrf_802154_core_hooks_pre_transmission(p_params, &transmit_failed_notify))
         {
             result = current_operation_terminate(term_lvl, req_orig, true);
 
             if (result)
             {
                 nrf_802154_tx_work_buffer_reset(&p_params->frame_props);
-                result = nrf_802154_core_hooks_tx_setup(p_data, p_params, &transmit_failed_notify);
+                result = nrf_802154_core_hooks_tx_setup(p_params, &transmit_failed_notify);
 
                 if (!result)
                 {
@@ -2726,14 +2712,16 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                     m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE;
 
                 state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
-                mp_tx_data   = p_data;
+                m_tx_data    = p_params->frame;
                 m_tx_power   = p_params->tx_power;
                 m_tx_channel = p_params->channel;
 
                 uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
 
                 // coverity[check_return]
-                result = tx_init(p_data, ramp_up_mode_choose(req_orig), cca_attempts);
+                result = tx_init(&p_params->frame,
+                                 ramp_up_mode_choose(req_orig),
+                                 cca_attempts);
 
                 if (p_params->immediate)
                 {
@@ -2777,7 +2765,7 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
 
     if (result)
     {
-        if ((m_state == RADIO_STATE_RX_ACK) && (p_param->p_frame == mp_tx_data))
+        if ((m_state == RADIO_STATE_RX_ACK) && (p_param->p_frame == m_tx_data.p_frame))
         {
             bool r;
 
@@ -2909,7 +2897,7 @@ bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
         if (result)
         {
             state_set(RADIO_STATE_MODULATED_CARRIER);
-            mp_tx_data = (uint8_t *)p_data;
+            m_tx_data.p_frame = (uint8_t *)p_data;
             modulated_carrier_init(p_data);
         }
 

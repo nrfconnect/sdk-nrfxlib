@@ -65,7 +65,7 @@ void nrf_802154_imm_ack_generator_reset(void)
 }
 
 uint8_t * nrf_802154_imm_ack_generator_create(
-    const nrf_802154_frame_parser_data_t * p_frame_data)
+    const nrf_802154_frame_t * p_frame_data)
 {
     #if NRF_802154_IE_WRITER_ENABLED
     // The IE writer module can be in the IE_WRITER_PREPARE state if
@@ -76,13 +76,13 @@ uint8_t * nrf_802154_imm_ack_generator_create(
     nrf_802154_ie_writer_reset();
     #endif
 
-    if (nrf_802154_frame_parser_parse_level_get(p_frame_data) < PARSE_LEVEL_FULL)
+    if (nrf_802154_frame_parse_level_get(p_frame_data) < PARSE_LEVEL_FULL)
     {
         // The entire frame being acknowledged is necessary to correctly generate Ack
         return NULL;
     }
 
-    const uint8_t * frame_dsn = nrf_802154_frame_parser_dsn_get(p_frame_data);
+    const uint8_t * frame_dsn = nrf_802154_frame_dsn_get(p_frame_data);
 
     if (frame_dsn == NULL)
     {
