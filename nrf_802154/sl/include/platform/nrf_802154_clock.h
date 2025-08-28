@@ -128,8 +128,6 @@ extern void nrf_802154_clock_hfclk_ready(void);
  */
 extern void nrf_802154_clock_lfclk_ready(void);
 
-#ifdef NRF54L_SERIES
-
 /**
  * @brief Informs the nRF 802.15.4 Radio Driver about the HFXO startup latency.
  *
@@ -139,14 +137,10 @@ extern void nrf_802154_clock_lfclk_ready(void);
  * parameters. The default clock latency assumes the worst-case crystal oscillator and should
  * be adjusted to achieve better power efficiency.
  *
- * Note: This API is available only on nRF54L series SoCs.
- *
  * @param[in]  latency_us    Time difference in microseconds between start event of the HFXO
  *                           and the HFXO started/tuned event.
  */
 extern void nrf_802154_clock_hfclk_latency_set(uint32_t latency_us);
-
-#endif
 
 /**
  *@}

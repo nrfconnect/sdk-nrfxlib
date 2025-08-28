@@ -39,7 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_types_internal.h"
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +50,7 @@ extern "C" {
  *
  * @param[in]  p_ack_data  Pointer to the ACK frame parser data.
  */
-bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack_data);
+bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_t * p_ack_data);
 
 /**
  * @brief Resets encryption of ACK
@@ -62,8 +62,6 @@ void nrf_802154_encrypt_ack_reset(void);
  *
  * This hook prepares encryption data for provided frame.
  *
- * @param[in]  p_frame          Pointer to the buffer that contains the PHR and PSDU
- *                              of the transmitted frame.
  * @param[in]  p_params         Pointer to the transmission parameters.
  * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
@@ -71,7 +69,6 @@ void nrf_802154_encrypt_ack_reset(void);
  * @retval  false        Encryption prepare failed.
  */
 bool nrf_802154_encrypt_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 

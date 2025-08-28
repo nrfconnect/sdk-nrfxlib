@@ -42,7 +42,7 @@
 
 #include <stdint.h>
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /** Initializes the ACK generator module. */
 void nrf_802154_ack_generator_init(void);
@@ -69,6 +69,6 @@ void nrf_802154_ack_generator_reset(void);
  *           of the created ACK frame, or NULL when the response cannot be created.
  */
 uint8_t * nrf_802154_ack_generator_create(
-    const nrf_802154_frame_parser_data_t * p_frame_data);
+    const nrf_802154_frame_t * p_frame_data);
 
 #endif // NRF_802154_ACK_GENERATOR_H

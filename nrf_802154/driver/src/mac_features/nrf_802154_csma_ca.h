@@ -40,6 +40,7 @@
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /**
  * @defgroup nrf_802154_csma_ca 802.15.4 driver CSMA-CA support
@@ -56,14 +57,13 @@
  * failed and the frame cannot be transmitted due to busy channel,
  * the @ref nrf_802154_transmit_failed function is called.
  *
- * @param[in]  p_data      Pointer to a buffer the contains PHR and PSDU of the frame that is
- *                         to be transmitted.
+ * @param[in]  p_frame     Pointer to a frame data structure.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit.
  *
  * @retval true   The function always returns true for compatibility reasons
  */
-bool nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**

@@ -75,6 +75,7 @@
 #include "mac_features/nrf_802154_ifs.h"
 #include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
+#include "mac_features/nrf_802154_frame_parser.h"
 
 #include "nrf_802154_sl_ant_div.h"
 #include "nrf_802154_sl_crit_sect_if.h"
@@ -434,6 +435,17 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         .tx_timestamp_encode = p_metadata->tx_timestamp_encode,
     };
 
+    result = nrf_802154_frame_parser_data_init(p_data,
+                                               p_data[PHR_OFFSET] + PHR_SIZE,
+                                               PARSE_LEVEL_FULL,
+                                               &params.frame);
+
+    if (!result)
+    {
+        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+        return result;
+    }
+
     (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
                                                                  p_metadata->tx_power,
                                                                  &params.tx_power);
@@ -444,7 +456,6 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
     {
         result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                              REQ_ORIG_HIGHER_LAYER,
-                                             p_data,
                                              &params,
                                              NULL);
     }
@@ -459,6 +470,7 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
                                 const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     bool                              result;
+    nrf_802154_frame_t                frame;
     nrf_802154_transmit_at_metadata_t metadata_default =
     {
         .frame_props         = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
@@ -476,12 +488,23 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
         p_metadata               = &metadata_default;
     }
 
+    result = nrf_802154_frame_parser_data_init(p_data,
+                                               p_data[PHR_OFFSET] + PHR_SIZE,
+                                               PARSE_LEVEL_FULL,
+                                               &frame);
+
+    if (!result)
+    {
+        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+        return result;
+    }
+
     result = are_frame_properties_valid(&p_metadata->frame_props) &&
              are_extra_cca_attempts_valid(p_metadata) &&
              is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
-        result = nrf_802154_request_transmit_raw_at(p_data, tx_time, p_metadata);
+        result = nrf_802154_request_transmit_raw_at(&frame, tx_time, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -734,7 +757,8 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg)
 bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
-    bool result;
+    bool               result;
+    nrf_802154_frame_t frame;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -751,11 +775,22 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
         p_metadata = &metadata_default;
     }
 
+    result = nrf_802154_frame_parser_data_init(p_data,
+                                               p_data[PHR_OFFSET] + PHR_SIZE,
+                                               PARSE_LEVEL_FULL,
+                                               &frame);
+
+    if (!result)
+    {
+        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+        return result;
+    }
+
     result = are_frame_properties_valid(&p_metadata->frame_props) &&
              is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
-        result = nrf_802154_request_csma_ca_start(p_data, p_metadata);
+        result = nrf_802154_request_csma_ca_start(&frame, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);

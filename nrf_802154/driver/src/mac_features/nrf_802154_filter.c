@@ -49,7 +49,7 @@
 #include <string.h>
 
 #include "nrf_802154_const.h"
-#include "nrf_802154_frame_parser.h"
+#include "nrf_802154_frame.h"
 #include "nrf_802154_pib.h"
 
 #define FCF_CHECK_OFFSET           (PHR_SIZE + FCF_SIZE)
@@ -152,12 +152,12 @@ static bool dst_addressing_may_be_present(uint8_t frame_type)
  *                                                discarded.
  */
 static nrf_802154_rx_error_t dst_addressing_fcf_check_2006(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                                frame_type)
+    const nrf_802154_frame_t * p_frame_data,
+    uint8_t                    frame_type)
 {
     nrf_802154_rx_error_t result;
 
-    switch (nrf_802154_frame_parser_dst_addr_type_get(p_frame_data))
+    switch (nrf_802154_frame_dst_addr_type_get(p_frame_data))
     {
         case DEST_ADDR_TYPE_SHORT:
             result = NRF_802154_RX_ERROR_NONE;
@@ -170,7 +170,7 @@ static nrf_802154_rx_error_t dst_addressing_fcf_check_2006(
         case DEST_ADDR_TYPE_NONE:
             if (nrf_802154_pib_pan_coord_get() || (frame_type == FRAME_TYPE_BEACON))
             {
-                switch (nrf_802154_frame_parser_src_addr_type_get(p_frame_data))
+                switch (nrf_802154_frame_src_addr_type_get(p_frame_data))
                 {
                     case SRC_ADDR_TYPE_SHORT:
                     case SRC_ADDR_TYPE_EXTENDED:
@@ -211,8 +211,8 @@ static nrf_802154_rx_error_t dst_addressing_fcf_check_2006(
  *                                                discarded.
  */
 static nrf_802154_rx_error_t dst_addressing_fcf_check_2015(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                                frame_type)
+    const nrf_802154_frame_t * p_frame_data,
+    uint8_t                    frame_type)
 {
     nrf_802154_rx_error_t result;
 
@@ -224,9 +224,9 @@ static nrf_802154_rx_error_t dst_addressing_fcf_check_2015(
         case FRAME_TYPE_COMMAND:
         {
             uint8_t end_offset =
-                nrf_802154_frame_parser_dst_addressing_end_offset_get(p_frame_data);
+                nrf_802154_frame_dst_addressing_end_offset_get(p_frame_data);
 
-            if (end_offset == NRF_802154_FRAME_PARSER_INVALID_OFFSET)
+            if (end_offset == NRF_802154_FRAME_INVALID_OFFSET)
             {
                 result = NRF_802154_RX_ERROR_INVALID_FRAME;
             }
@@ -272,9 +272,9 @@ static nrf_802154_rx_error_t dst_addressing_fcf_check_2015(
  *                                                discarded.
  */
 static nrf_802154_rx_error_t dst_addressing_fcf_check(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                                frame_type,
-    uint8_t                                frame_version)
+    const nrf_802154_frame_t * p_frame_data,
+    uint8_t                    frame_type,
+    uint8_t                    frame_version)
 {
     nrf_802154_rx_error_t result;
 
@@ -387,11 +387,11 @@ static bool dst_extended_addr_check(const uint8_t * p_dst_addr)
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Received frame is invalid.
  * @retval NRF_802154_RX_ERROR_INVALID_DEST_ADDR  Destination address of incoming frame does not allow further processing.
  */
-static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_parser_data_t * p_frame_data)
+static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_t * p_frame_data)
 {
-    const uint8_t * p_dst_panid = nrf_802154_frame_parser_dst_panid_get(p_frame_data);
-    const uint8_t * p_dst_addr  = nrf_802154_frame_parser_dst_addr_get(p_frame_data);
-    uint8_t         frame_type  = nrf_802154_frame_parser_frame_type_get(p_frame_data);
+    const uint8_t * p_dst_panid = nrf_802154_frame_dst_panid_get(p_frame_data);
+    const uint8_t * p_dst_addr  = nrf_802154_frame_dst_addr_get(p_frame_data);
+    uint8_t         frame_type  = nrf_802154_frame_type_get(p_frame_data);
 
     if (p_dst_panid != NULL)
     {
@@ -402,7 +402,7 @@ static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_parser_data_t
     }
 
     uint8_t dst_addr_size =
-        p_dst_addr ? nrf_802154_frame_parser_dst_addr_size_get(p_frame_data) : 0U;
+        p_dst_addr ? nrf_802154_frame_dst_addr_size_get(p_frame_data) : 0U;
 
     switch (dst_addr_size)
     {
@@ -430,20 +430,20 @@ static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_parser_data_t
 }
 
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    nrf_802154_filter_mode_t               filter_mode)
+    const nrf_802154_frame_t * p_frame_data,
+    nrf_802154_filter_mode_t   filter_mode)
 {
     nrf_802154_rx_error_t result     = NRF_802154_RX_ERROR_NONE;
-    uint8_t               frame_type = nrf_802154_frame_parser_frame_type_get(
+    uint8_t               frame_type = nrf_802154_frame_type_get(
         p_frame_data);
-    uint8_t frame_version = nrf_802154_frame_parser_frame_version_get(
+    uint8_t frame_version = nrf_802154_frame_version_get(
         p_frame_data);
-    uint8_t psdu_length = nrf_802154_frame_parser_frame_length_get(
+    uint8_t psdu_length = nrf_802154_frame_length_get(
         p_frame_data);
 
     if (filter_mode & NRF_802154_FILTER_MODE_FCF)
     {
-        NRF_802154_ASSERT(nrf_802154_frame_parser_parse_level_get(
+        NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(
                               p_frame_data) >= PARSE_LEVEL_FCF_OFFSETS);
 
         if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > MAX_PACKET_SIZE))
@@ -471,7 +471,7 @@ nrf_802154_rx_error_t nrf_802154_filter_frame_part(
 
     if (filter_mode & NRF_802154_FILTER_MODE_DST_ADDR)
     {
-        NRF_802154_ASSERT(nrf_802154_frame_parser_parse_level_get(
+        NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(
                               p_frame_data) >= PARSE_LEVEL_DST_ADDRESSING_END);
 
         result = dst_addr_check(p_frame_data);

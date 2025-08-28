@@ -64,10 +64,10 @@ typedef enum
 
 static ack_state_t m_ack_state;
 
-static uint8_t                        m_ack[ENH_ACK_MAX_SIZE + PHR_SIZE];
-static nrf_802154_frame_parser_data_t m_ack_data;
-static const uint8_t                * mp_ie_data;
-static uint8_t                        m_ie_data_len;
+static uint8_t            m_ack[ENH_ACK_MAX_SIZE + PHR_SIZE];
+static nrf_802154_frame_t m_ack_data;
+static const uint8_t    * mp_ie_data;
+static uint8_t            m_ie_data_len;
 
 static void ack_state_set(ack_state_t state_to_set)
 {
@@ -79,9 +79,9 @@ static inline ack_state_t ack_state_get(void)
     return m_ack_state;
 }
 
-static uint8_t sequence_number_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static uint8_t sequence_number_set(const nrf_802154_frame_t * p_frame_data)
 {
-    const uint8_t * p_frame_dsn = nrf_802154_frame_parser_dsn_get(p_frame_data);
+    const uint8_t * p_frame_dsn = nrf_802154_frame_dsn_get(p_frame_data);
 
     if (p_frame_dsn != NULL)
     {
@@ -102,15 +102,15 @@ static void fcf_frame_type_set(void)
     m_ack[FRAME_TYPE_OFFSET] |= FRAME_TYPE_ACK;
 }
 
-static void fcf_security_enabled_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_security_enabled_set(const nrf_802154_frame_t * p_frame_data)
 {
-    if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_frame_data))
+    if (nrf_802154_frame_security_enabled_bit_is_set(p_frame_data))
     {
         m_ack[SECURITY_ENABLED_OFFSET] |= SECURITY_ENABLED_BIT;
     }
 }
 
-static void fcf_frame_pending_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_frame_pending_set(const nrf_802154_frame_t * p_frame_data)
 {
     if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data))
     {
@@ -118,17 +118,17 @@ static void fcf_frame_pending_set(const nrf_802154_frame_parser_data_t * p_frame
     }
 }
 
-static void fcf_panid_compression_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_panid_compression_set(const nrf_802154_frame_t * p_frame_data)
 {
-    if (nrf_802154_frame_parser_panid_compression_is_set(p_frame_data))
+    if (nrf_802154_frame_panid_compression_is_set(p_frame_data))
     {
         m_ack[PAN_ID_COMPR_OFFSET] |= PAN_ID_COMPR_MASK;
     }
 }
 
-static void fcf_sequence_number_suppression_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_sequence_number_suppression_set(const nrf_802154_frame_t * p_frame_data)
 {
-    if (nrf_802154_frame_parser_dsn_suppress_bit_is_set(p_frame_data))
+    if (nrf_802154_frame_dsn_suppress_bit_is_set(p_frame_data))
     {
         m_ack[DSN_SUPPRESS_OFFSET] |= DSN_SUPPRESS_BIT;
     }
@@ -142,13 +142,13 @@ static void fcf_ie_present_set(bool ie_present)
     }
 }
 
-static void fcf_dst_addressing_mode_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_dst_addressing_mode_set(const nrf_802154_frame_t * p_frame_data)
 {
-    if (nrf_802154_frame_parser_src_addr_is_extended(p_frame_data))
+    if (nrf_802154_frame_src_addr_is_extended(p_frame_data))
     {
         m_ack[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_EXTENDED;
     }
-    else if (nrf_802154_frame_parser_src_addr_is_short(p_frame_data))
+    else if (nrf_802154_frame_src_addr_is_short(p_frame_data))
     {
         m_ack[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_SHORT;
     }
@@ -168,10 +168,10 @@ static void fcf_frame_version_set(void)
     m_ack[FRAME_VERSION_OFFSET] |= FRAME_VERSION_2;
 }
 
-static uint8_t frame_control_set(const nrf_802154_frame_parser_data_t * p_frame_data,
-                                 bool                                   ie_present)
+static uint8_t frame_control_set(const nrf_802154_frame_t * p_frame_data,
+                                 bool                       ie_present)
 {
-    nrf_802154_frame_parser_level_t level = nrf_802154_frame_parser_parse_level_get(p_frame_data);
+    nrf_802154_frame_parser_level_t level = nrf_802154_frame_parse_level_get(p_frame_data);
 
     if (level >= PARSE_LEVEL_FCF_OFFSETS)
     {
@@ -199,18 +199,18 @@ static uint8_t frame_control_set(const nrf_802154_frame_parser_data_t * p_frame_
  * @section Addressing fields functions
  **************************************************************************************************/
 
-static uint8_t destination_set(const nrf_802154_frame_parser_data_t * p_frame_data,
-                               nrf_802154_frame_parser_data_t       * p_ack_data)
+static uint8_t destination_set(const nrf_802154_frame_t * p_frame_data,
+                               nrf_802154_frame_t       * p_ack_data)
 {
     uint8_t   bytes_written   = 0U;
-    uint8_t * p_ack_dst_panid = (uint8_t *)nrf_802154_frame_parser_dst_panid_get(p_ack_data);
-    uint8_t * p_ack_dst_addr  = (uint8_t *)nrf_802154_frame_parser_dst_addr_get(p_ack_data);
+    uint8_t * p_ack_dst_panid = (uint8_t *)nrf_802154_frame_dst_panid_get(p_ack_data);
+    uint8_t * p_ack_dst_addr  = (uint8_t *)nrf_802154_frame_dst_addr_get(p_ack_data);
 
-    const uint8_t * p_frame_src_panid = nrf_802154_frame_parser_src_panid_get(p_frame_data);
-    const uint8_t * p_frame_dst_panid = nrf_802154_frame_parser_dst_panid_get(p_frame_data);
-    const uint8_t * p_frame_src_addr  = nrf_802154_frame_parser_src_addr_get(p_frame_data);
+    const uint8_t * p_frame_src_panid = nrf_802154_frame_src_panid_get(p_frame_data);
+    const uint8_t * p_frame_dst_panid = nrf_802154_frame_dst_panid_get(p_frame_data);
+    const uint8_t * p_frame_src_addr  = nrf_802154_frame_src_addr_get(p_frame_data);
 
-    uint8_t src_addr_size = nrf_802154_frame_parser_src_addr_size_get(p_frame_data);
+    uint8_t src_addr_size = nrf_802154_frame_src_addr_size_get(p_frame_data);
 
     // Fill the Ack destination PAN ID field.
     if (p_ack_dst_panid != NULL)
@@ -237,8 +237,8 @@ static uint8_t destination_set(const nrf_802154_frame_parser_data_t * p_frame_da
     // Fill the Ack destination address field.
     if ((p_ack_dst_addr != NULL) && (p_frame_src_addr != NULL))
     {
-        NRF_802154_ASSERT(nrf_802154_frame_parser_dst_addr_is_extended(p_ack_data) ==
-                          nrf_802154_frame_parser_src_addr_is_extended(p_frame_data));
+        NRF_802154_ASSERT(nrf_802154_frame_dst_addr_is_extended(p_ack_data) ==
+                          nrf_802154_frame_src_addr_is_extended(p_frame_data));
 
         memcpy(p_ack_dst_addr, p_frame_src_addr, src_addr_size);
         bytes_written += src_addr_size;
@@ -256,10 +256,10 @@ static void source_set(void)
  * @section Auxiliary security header functions
  **************************************************************************************************/
 
-static uint8_t security_header_size(const nrf_802154_frame_parser_data_t * p_frame_data)
+static uint8_t security_header_size(const nrf_802154_frame_t * p_frame_data)
 {
-    uint8_t sec_ctrl_offset = nrf_802154_frame_parser_sec_ctrl_offset_get(p_frame_data);
-    uint8_t aux_sec_hdr_end = nrf_802154_frame_parser_aux_sec_hdr_end_offset_get(p_frame_data);
+    uint8_t sec_ctrl_offset = nrf_802154_frame_sec_ctrl_offset_get(p_frame_data);
+    uint8_t aux_sec_hdr_end = nrf_802154_frame_aux_sec_hdr_end_offset_get(p_frame_data);
 
     return aux_sec_hdr_end - sec_ctrl_offset;
 }
@@ -282,13 +282,13 @@ static uint8_t key_id_size_get(uint8_t key_id_mode)
     }
 }
 
-static uint8_t security_key_id_set(const nrf_802154_frame_parser_data_t * p_frame_data,
-                                   nrf_802154_frame_parser_data_t       * p_ack_data)
+static uint8_t security_key_id_set(const nrf_802154_frame_t * p_frame_data,
+                                   nrf_802154_frame_t       * p_ack_data)
 {
-    const uint8_t * p_frame_key_id = nrf_802154_frame_parser_key_id_get(p_frame_data);
-    uint8_t       * p_ack_key_id   = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_ack_data);
+    const uint8_t * p_frame_key_id = nrf_802154_frame_key_id_get(p_frame_data);
+    uint8_t       * p_ack_key_id   = (uint8_t *)nrf_802154_frame_key_id_get(p_ack_data);
     uint8_t         key_id_size    =
-        key_id_size_get(nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_ack_data));
+        key_id_size_get(nrf_802154_frame_sec_ctrl_key_id_mode_get(p_ack_data));
 
     if ((p_ack_key_id != NULL) && (p_frame_key_id != NULL))
     {
@@ -298,12 +298,12 @@ static uint8_t security_key_id_set(const nrf_802154_frame_parser_data_t * p_fram
     return key_id_size;
 }
 
-static bool frame_counter_set(nrf_802154_frame_parser_data_t * p_ack_data,
-                              uint8_t                        * p_bytes_written)
+static bool frame_counter_set(nrf_802154_frame_t * p_ack_data,
+                              uint8_t            * p_bytes_written)
 {
     nrf_802154_key_id_t ack_key_id;
     uint32_t            new_fc_value;
-    uint8_t           * p_frame_counter = (uint8_t *)nrf_802154_frame_parser_frame_counter_get(
+    uint8_t           * p_frame_counter = (uint8_t *)nrf_802154_frame_counter_get(
         p_ack_data);
 
     if (p_frame_counter == NULL)
@@ -313,8 +313,8 @@ static bool frame_counter_set(nrf_802154_frame_parser_data_t * p_ack_data,
         return true;
     }
 
-    ack_key_id.mode     = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_ack_data);
-    ack_key_id.p_key_id = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_ack_data);
+    ack_key_id.mode     = nrf_802154_frame_sec_ctrl_key_id_mode_get(p_ack_data);
+    ack_key_id.p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_ack_data);
 
     if (NRF_802154_SECURITY_ERROR_NONE !=
         nrf_802154_security_pib_frame_counter_get_next(&new_fc_value, &ack_key_id))
@@ -330,20 +330,20 @@ static bool frame_counter_set(nrf_802154_frame_parser_data_t * p_ack_data,
     return true;
 }
 
-static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_data,
-                                nrf_802154_frame_parser_data_t       * p_ack_data,
-                                uint8_t                              * p_bytes_written)
+static bool security_header_set(const nrf_802154_frame_t * p_frame_data,
+                                nrf_802154_frame_t       * p_ack_data,
+                                uint8_t                  * p_bytes_written)
 {
     bool security_header_prepared;
     bool result;
 
     uint8_t bytes_written       = 0U;
     uint8_t fc_bytes_written    = 0U;
-    uint8_t ack_sec_ctrl_offset = nrf_802154_frame_parser_addressing_end_offset_get(
+    uint8_t ack_sec_ctrl_offset = nrf_802154_frame_addressing_end_offset_get(
         p_ack_data);
-    uint8_t * ack_sec_ctrl = (uint8_t *)nrf_802154_frame_parser_addressing_end_get(
+    uint8_t * ack_sec_ctrl = (uint8_t *)nrf_802154_frame_addressing_end_get(
         p_ack_data);
-    const uint8_t * frame_sec_ctrl = nrf_802154_frame_parser_sec_ctrl_get(p_frame_data);
+    const uint8_t * frame_sec_ctrl = nrf_802154_frame_sec_ctrl_get(p_frame_data);
 
     if ((ack_sec_ctrl == NULL) || (frame_sec_ctrl == NULL))
     {
@@ -362,7 +362,7 @@ static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_d
     NRF_802154_ASSERT(result);
     (void)result;
 
-    if (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data) == SECURITY_LEVEL_NONE)
+    if (nrf_802154_frame_sec_ctrl_sec_lvl_get(p_frame_data) == SECURITY_LEVEL_NONE)
     {
         // The security level value is zero, therefore no auxiliary security header processing
         // is performed according to 802.15.4 specification. This also applies to the frame counter,
@@ -383,7 +383,7 @@ static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_d
         bytes_written           += fc_bytes_written;
     }
 
-    bytes_written   += nrf_802154_frame_parser_mic_size_get(p_ack_data);
+    bytes_written   += nrf_802154_frame_mic_size_get(p_ack_data);
     *p_bytes_written = bytes_written;
 
     return security_header_prepared;
@@ -393,9 +393,9 @@ static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_d
  * @section Information Elements
  **************************************************************************************************/
 
-static void ie_header_set(const uint8_t                  * p_ie_data,
-                          uint8_t                          ie_data_len,
-                          nrf_802154_frame_parser_data_t * p_ack_data)
+static void ie_header_set(const uint8_t      * p_ie_data,
+                          uint8_t              ie_data_len,
+                          nrf_802154_frame_t * p_ack_data)
 {
     uint8_t   ie_offset = p_ack_data->helper.aux_sec_hdr_end_offset;
     uint8_t * p_ack_ie;
@@ -420,17 +420,17 @@ static void ie_header_set(const uint8_t                  * p_ie_data,
  * @section Authentication and encryption transformation
  **************************************************************************************************/
 
-static bool encryption_prepare(const nrf_802154_frame_parser_data_t * p_ack_data)
+static bool encryption_prepare(const nrf_802154_frame_t * p_ack_data)
 {
 #if NRF_802154_ENCRYPTION_ENABLED
     nrf_802154_encrypt_ack_reset();
 
-    if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data) == false)
+    if (nrf_802154_frame_security_enabled_bit_is_set(p_ack_data) == false)
     {
         return true;
     }
 
-    if (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_ack_data) == SECURITY_LEVEL_NONE)
+    if (nrf_802154_frame_sec_ctrl_sec_lvl_get(p_ack_data) == SECURITY_LEVEL_NONE)
     {
         return true;
     }
@@ -445,7 +445,7 @@ static bool encryption_prepare(const nrf_802154_frame_parser_data_t * p_ack_data
  * @section Enhanced ACK generation
  **************************************************************************************************/
 
-static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void fcf_process(const nrf_802154_frame_t * p_frame_data)
 {
     // Set Frame Control field bits.
     // Some of them might require correction when higher parse level is available
@@ -459,7 +459,7 @@ static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data)
     (void)result;
 }
 
-static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void addr_end_process(const nrf_802154_frame_t * p_frame_data)
 {
     // Set valid sequence number in ACK frame.
     m_ack[PHR_OFFSET] += sequence_number_set(p_frame_data);
@@ -472,8 +472,8 @@ static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data
     // Having the frame's source address, presence of IEs can be determined.
     // coverity[unchecked_value]
     mp_ie_data = nrf_802154_ack_data_ie_get(
-        nrf_802154_frame_parser_src_addr_get(p_frame_data),
-        nrf_802154_frame_parser_src_addr_is_extended(p_frame_data),
+        nrf_802154_frame_src_addr_get(p_frame_data),
+        nrf_802154_frame_src_addr_is_extended(p_frame_data),
         &m_ie_data_len);
 
     // Update the IE present bit in Frame Control field knowing if IEs should be present.
@@ -487,7 +487,7 @@ static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data
     (void)result;
 }
 
-static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_data)
+static bool aux_sec_hdr_process(const nrf_802154_frame_t * p_frame_data)
 {
     uint8_t bytes_written;
 
@@ -508,7 +508,7 @@ static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_d
     return true;
 }
 
-static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data)
+static void ie_process(const nrf_802154_frame_t * p_frame_data)
 {
     // Set IE header.
     ie_header_set(mp_ie_data, m_ie_data_len, &m_ack_data);
@@ -531,12 +531,12 @@ static bool encryption_process(void)
 }
 
 static uint8_t * ack_process(
-    const nrf_802154_frame_parser_data_t * p_frame_data,
-    bool                                 * p_processing_done)
+    const nrf_802154_frame_t * p_frame_data,
+    bool                     * p_processing_done)
 {
-    nrf_802154_frame_parser_level_t frame_parse_level = nrf_802154_frame_parser_parse_level_get(
+    nrf_802154_frame_parser_level_t frame_parse_level = nrf_802154_frame_parse_level_get(
         p_frame_data);
-    nrf_802154_frame_parser_level_t ack_parse_level = nrf_802154_frame_parser_parse_level_get(
+    nrf_802154_frame_parser_level_t ack_parse_level = nrf_802154_frame_parse_level_get(
         &m_ack_data);
 
     *p_processing_done = false;
@@ -608,7 +608,7 @@ void nrf_802154_enh_ack_generator_reset(void)
 }
 
 uint8_t * nrf_802154_enh_ack_generator_create(
-    const nrf_802154_frame_parser_data_t * p_frame_data)
+    const nrf_802154_frame_t * p_frame_data)
 {
     switch (ack_state_get())
     {

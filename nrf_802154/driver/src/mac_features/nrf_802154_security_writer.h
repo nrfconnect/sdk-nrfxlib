@@ -50,8 +50,6 @@
  * If this function detects a malformed frame, the higher layer is notified of transmission
  * failure. A frame is considered malformed if requested key is invalid.
  *
- * @param[in]  p_frame          Pointer to the buffer that contains the PHR and PSDU
- *                              of the transmitted frame.
  * @param[in]  p_params         Pointer to the transmission parameters.
  * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
@@ -59,7 +57,6 @@
  * @retval  true         Frame security header was processed successfully.
  */
 bool nrf_802154_security_writer_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 

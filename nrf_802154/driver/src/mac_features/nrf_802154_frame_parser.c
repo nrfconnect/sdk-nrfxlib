@@ -42,7 +42,7 @@
  *       Frames that don't meet these assumptions are dropped.
  */
 
-#include "nrf_802154_frame_parser.h"
+#include "nrf_802154_frame.h"
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_utils_byteorder.h"
@@ -53,14 +53,14 @@
 
 // Addressing
 
-static bool src_addr_is_present(const nrf_802154_frame_parser_data_t * p_parser_data)
+static bool src_addr_is_present(const nrf_802154_frame_t * p_parser_data)
 {
-    return nrf_802154_frame_parser_src_addr_type_get(p_parser_data) != SRC_ADDR_TYPE_NONE;
+    return nrf_802154_frame_src_addr_type_get(p_parser_data) != SRC_ADDR_TYPE_NONE;
 }
 
-static uint8_t src_addr_size_get(const nrf_802154_frame_parser_data_t * p_parser_data)
+static uint8_t src_addr_size_get(const nrf_802154_frame_t * p_parser_data)
 {
-    uint8_t addr_type = nrf_802154_frame_parser_src_addr_type_get(p_parser_data);
+    uint8_t addr_type = nrf_802154_frame_src_addr_type_get(p_parser_data);
 
     switch (addr_type)
     {
@@ -74,18 +74,18 @@ static uint8_t src_addr_size_get(const nrf_802154_frame_parser_data_t * p_parser
             return 0;
 
         default:
-            return NRF_802154_FRAME_PARSER_INVALID_OFFSET;
+            return NRF_802154_FRAME_INVALID_OFFSET;
     }
 }
 
-static bool dst_addr_is_present(const nrf_802154_frame_parser_data_t * p_parser_data)
+static bool dst_addr_is_present(const nrf_802154_frame_t * p_parser_data)
 {
-    return nrf_802154_frame_parser_dst_addr_type_get(p_parser_data) != DEST_ADDR_TYPE_NONE;
+    return nrf_802154_frame_dst_addr_type_get(p_parser_data) != DEST_ADDR_TYPE_NONE;
 }
 
-static uint8_t dst_addr_size_get(const nrf_802154_frame_parser_data_t * p_parser_data)
+static uint8_t dst_addr_size_get(const nrf_802154_frame_t * p_parser_data)
 {
-    uint8_t addr_type = nrf_802154_frame_parser_dst_addr_type_get(p_parser_data);
+    uint8_t addr_type = nrf_802154_frame_dst_addr_type_get(p_parser_data);
 
     switch (addr_type)
     {
@@ -99,16 +99,16 @@ static uint8_t dst_addr_size_get(const nrf_802154_frame_parser_data_t * p_parser
             return 0;
 
         default:
-            return NRF_802154_FRAME_PARSER_INVALID_OFFSET;
+            return NRF_802154_FRAME_INVALID_OFFSET;
     }
 }
 
 // PAN ID
-static bool dst_panid_is_present(const nrf_802154_frame_parser_data_t * p_parser_data)
+static bool dst_panid_is_present(const nrf_802154_frame_t * p_parser_data)
 {
-    bool panid_compression = nrf_802154_frame_parser_panid_compression_is_set(p_parser_data);
+    bool panid_compression = nrf_802154_frame_panid_compression_is_set(p_parser_data);
 
-    switch (nrf_802154_frame_parser_frame_version_get(p_parser_data))
+    switch (nrf_802154_frame_version_get(p_parser_data))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -121,8 +121,8 @@ static bool dst_panid_is_present(const nrf_802154_frame_parser_data_t * p_parser
 
         case FRAME_VERSION_2:
         default:
-            if (nrf_802154_frame_parser_dst_addr_is_extended(p_parser_data) &&
-                nrf_802154_frame_parser_src_addr_is_extended(p_parser_data))
+            if (nrf_802154_frame_dst_addr_is_extended(p_parser_data) &&
+                nrf_802154_frame_src_addr_is_extended(p_parser_data))
             {
                 return panid_compression ? false : true;
             }
@@ -146,11 +146,11 @@ static bool dst_panid_is_present(const nrf_802154_frame_parser_data_t * p_parser
     }
 }
 
-static bool src_panid_is_present(const nrf_802154_frame_parser_data_t * p_parser_data)
+static bool src_panid_is_present(const nrf_802154_frame_t * p_parser_data)
 {
-    bool panid_compression = nrf_802154_frame_parser_panid_compression_is_set(p_parser_data);
+    bool panid_compression = nrf_802154_frame_panid_compression_is_set(p_parser_data);
 
-    switch (nrf_802154_frame_parser_frame_version_get(p_parser_data))
+    switch (nrf_802154_frame_version_get(p_parser_data))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -163,8 +163,8 @@ static bool src_panid_is_present(const nrf_802154_frame_parser_data_t * p_parser
 
         case FRAME_VERSION_2:
         default:
-            if (nrf_802154_frame_parser_dst_addr_is_extended(p_parser_data) &&
-                nrf_802154_frame_parser_src_addr_is_extended(p_parser_data))
+            if (nrf_802154_frame_dst_addr_is_extended(p_parser_data) &&
+                nrf_802154_frame_src_addr_is_extended(p_parser_data))
             {
                 return false;
             }
@@ -207,9 +207,9 @@ uint8_t key_source_size_get(uint8_t key_id_mode)
     }
 }
 
-static uint8_t mic_size_get(const nrf_802154_frame_parser_data_t * p_parser_data)
+static uint8_t mic_size_get(const nrf_802154_frame_t * p_parser_data)
 {
-    switch (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_parser_data))
+    switch (nrf_802154_frame_sec_ctrl_sec_lvl_get(p_parser_data))
     {
         case SECURITY_LEVEL_MIC_32:
         case SECURITY_LEVEL_ENC_MIC_32:
@@ -232,7 +232,7 @@ static uint8_t mic_size_get(const nrf_802154_frame_parser_data_t * p_parser_data
  * @section Parsing functions
  **************************************************************************************************/
 
-static bool fcf_parse(nrf_802154_frame_parser_data_t * p_parser_data)
+static bool fcf_parse(nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = PHR_SIZE + FCF_SIZE;
     uint8_t addr_size;
@@ -243,7 +243,13 @@ static bool fcf_parse(nrf_802154_frame_parser_data_t * p_parser_data)
         return false;
     }
 
-    if (nrf_802154_frame_parser_dsn_suppress_bit_is_set(p_parser_data) == false)
+    if (nrf_802154_frame_type_get(p_parser_data) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        // Multipurpose frames are not supported, but are accepted nonetheless.
+        return true;
+    }
+
+    if (nrf_802154_frame_dsn_suppress_bit_is_set(p_parser_data) == false)
     {
         offset += DSN_SIZE;
     }
@@ -261,7 +267,7 @@ static bool fcf_parse(nrf_802154_frame_parser_data_t * p_parser_data)
 
     addr_size = dst_addr_size_get(p_parser_data);
 
-    if (addr_size == NRF_802154_FRAME_PARSER_INVALID_OFFSET)
+    if (addr_size == NRF_802154_FRAME_INVALID_OFFSET)
     {
         return false;
     }
@@ -283,7 +289,7 @@ static bool fcf_parse(nrf_802154_frame_parser_data_t * p_parser_data)
 
     addr_size = src_addr_size_get(p_parser_data);
 
-    if (addr_size == NRF_802154_FRAME_PARSER_INVALID_OFFSET)
+    if (addr_size == NRF_802154_FRAME_INVALID_OFFSET)
     {
         return false;
     }
@@ -296,13 +302,19 @@ static bool fcf_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     return true;
 }
 
-static bool sec_ctrl_parse(nrf_802154_frame_parser_data_t * p_parser_data)
+static bool sec_ctrl_parse(nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = p_parser_data->helper.addressing_end_offset;
     uint8_t key_id_mode;
     uint8_t key_src_size;
 
-    if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_parser_data) == false)
+    if (nrf_802154_frame_type_get(p_parser_data) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        // Multipurpose frames are not supported, but are accepted nonetheless.
+        return true;
+    }
+
+    if (nrf_802154_frame_security_enabled_bit_is_set(p_parser_data) == false)
     {
         p_parser_data->helper.aux_sec_hdr_end_offset = offset;
         p_parser_data->helper.mic_size               = 0;
@@ -317,13 +329,13 @@ static bool sec_ctrl_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     p_parser_data->mhr.aux_sec_hdr.sec_ctrl_offset = offset;
     offset += SECURITY_CONTROL_SIZE;
 
-    if (nrf_802154_frame_parser_sec_ctrl_fc_suppress_bit_is_set(p_parser_data) == false)
+    if (nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set(p_parser_data) == false)
     {
         p_parser_data->mhr.aux_sec_hdr.frame_counter_offset = offset;
         offset += FRAME_COUNTER_SIZE;
     }
 
-    key_id_mode  = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_parser_data);
+    key_id_mode  = nrf_802154_frame_sec_ctrl_key_id_mode_get(p_parser_data);
     key_src_size = key_source_size_get(key_id_mode);
 
     if (key_id_mode != KEY_ID_MODE_0)
@@ -347,10 +359,10 @@ static bool sec_ctrl_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     return true;
 }
 
-static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
+static bool full_parse(nrf_802154_frame_t * p_parser_data)
 {
     uint8_t         offset      = p_parser_data->helper.aux_sec_hdr_end_offset;
-    uint8_t         psdu_length = nrf_802154_frame_parser_frame_length_get(p_parser_data);
+    uint8_t         psdu_length = nrf_802154_frame_length_get(p_parser_data);
     const uint8_t * p_ie_header;
     const uint8_t * p_end_addr;
     const uint8_t * p_iterator;
@@ -361,17 +373,23 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
         return false;
     }
 
-    if (nrf_802154_frame_parser_ie_present_bit_is_set(p_parser_data))
+    if (nrf_802154_frame_type_get(p_parser_data) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        // Multipurpose frames are not supported, but are accepted nonetheless.
+        return true;
+    }
+
+    if (nrf_802154_frame_ie_present_bit_is_set(p_parser_data))
     {
         p_parser_data->mhr.header_ie_offset = offset;
 
         p_ie_header = &p_parser_data->p_frame[offset];
-        p_end_addr  = nrf_802154_frame_parser_mfr_get(p_parser_data) - mic_size_get(p_parser_data);
-        p_iterator  = nrf_802154_frame_parser_header_ie_iterator_begin(p_ie_header);
+        p_end_addr  = nrf_802154_frame_mfr_get(p_parser_data) - mic_size_get(p_parser_data);
+        p_iterator  = nrf_802154_frame_header_ie_iterator_begin(p_ie_header);
 
-        while (!nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr))
+        while (!nrf_802154_frame_ie_iterator_end(p_iterator, p_end_addr))
         {
-            p_iterator = nrf_802154_frame_parser_ie_iterator_next(p_iterator);
+            p_iterator = nrf_802154_frame_ie_iterator_next(p_iterator);
 
             if (p_iterator > p_end_addr)
             {
@@ -384,10 +402,10 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
                 offset = p_iterator - p_parser_data->p_frame;
                 break;
             }
-            else if (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr))
+            else if (nrf_802154_frame_ie_iterator_end(p_iterator, p_end_addr))
             {
                 // End of IE header; termination reached.
-                offset = nrf_802154_frame_parser_ie_content_address_get(p_iterator) -
+                offset = nrf_802154_frame_ie_content_address_get(p_iterator) -
                          p_parser_data->p_frame;
                 break;
             }
@@ -398,7 +416,7 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
         }
     }
 
-    if (offset != nrf_802154_frame_parser_mfr_offset_get(p_parser_data))
+    if (offset != nrf_802154_frame_mfr_offset_get(p_parser_data))
     {
         p_parser_data->mac_payload.mac_payload_offset = offset;
     }
@@ -406,14 +424,14 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     return true;
 }
 
-static bool level_is_elevated(nrf_802154_frame_parser_data_t * p_parser_data,
-                              nrf_802154_frame_parser_level_t  requested_parse_level)
+static bool level_is_elevated(nrf_802154_frame_t            * p_parser_data,
+                              nrf_802154_frame_parser_level_t requested_parse_level)
 {
     return requested_parse_level > p_parser_data->parse_level;
 }
 
-static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
-                                nrf_802154_frame_parser_level_t  requested_parse_level)
+static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
+                                nrf_802154_frame_parser_level_t requested_parse_level)
 {
     bool                            result;
     nrf_802154_frame_parser_level_t next_level;
@@ -434,7 +452,9 @@ static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
 
             case PARSE_LEVEL_FCF_OFFSETS:
                 if (p_parser_data->valid_data_len >=
-                    p_parser_data->helper.dst_addressing_end_offset)
+                    p_parser_data->helper.dst_addressing_end_offset ||
+                    nrf_802154_frame_type_get(p_parser_data) ==
+                    FRAME_TYPE_MULTIPURPOSE)
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_DST_ADDRESSING_END;
@@ -442,7 +462,9 @@ static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
                 break;
 
             case PARSE_LEVEL_DST_ADDRESSING_END:
-                if (p_parser_data->valid_data_len >= p_parser_data->helper.addressing_end_offset)
+                if (p_parser_data->valid_data_len >= p_parser_data->helper.addressing_end_offset ||
+                    nrf_802154_frame_type_get(p_parser_data) ==
+                    FRAME_TYPE_MULTIPURPOSE)
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_ADDRESSING_END;
@@ -458,7 +480,9 @@ static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
                 break;
 
             case PARSE_LEVEL_SEC_CTRL_OFFSETS:
-                if (p_parser_data->valid_data_len >= p_parser_data->helper.aux_sec_hdr_end_offset)
+                if (p_parser_data->valid_data_len >= p_parser_data->helper.aux_sec_hdr_end_offset ||
+                    nrf_802154_frame_type_get(p_parser_data) ==
+                    FRAME_TYPE_MULTIPURPOSE)
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_AUX_SEC_HDR_END;
@@ -491,10 +515,10 @@ static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
     return p_parser_data->parse_level >= requested_parse_level;
 }
 
-bool nrf_802154_frame_parser_data_init(const uint8_t                  * p_frame,
-                                       uint8_t                          valid_data_len,
-                                       nrf_802154_frame_parser_level_t  requested_parse_level,
-                                       nrf_802154_frame_parser_data_t * p_parser_data)
+bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
+                                       uint8_t                         valid_data_len,
+                                       nrf_802154_frame_parser_level_t requested_parse_level,
+                                       nrf_802154_frame_t            * p_parser_data)
 {
     if (p_frame == NULL)
     {
@@ -505,21 +529,21 @@ bool nrf_802154_frame_parser_data_init(const uint8_t                  * p_frame,
     p_parser_data->valid_data_len = valid_data_len;
     p_parser_data->parse_level    = PARSE_LEVEL_NONE;
 
-    memset(&p_parser_data->mhr, NRF_802154_FRAME_PARSER_INVALID_OFFSET, sizeof(p_parser_data->mhr));
+    memset(&p_parser_data->mhr, NRF_802154_FRAME_INVALID_OFFSET, sizeof(p_parser_data->mhr));
     memset(&p_parser_data->mac_payload,
-           NRF_802154_FRAME_PARSER_INVALID_OFFSET,
+           NRF_802154_FRAME_INVALID_OFFSET,
            sizeof(p_parser_data->mac_payload));
     memset(&p_parser_data->helper,
-           NRF_802154_FRAME_PARSER_INVALID_OFFSET,
+           NRF_802154_FRAME_INVALID_OFFSET,
            sizeof(p_parser_data->helper));
 
     return parse_state_advance(p_parser_data, requested_parse_level);
 }
 
 bool nrf_802154_frame_parser_valid_data_extend(
-    nrf_802154_frame_parser_data_t * p_parser_data,
-    uint8_t                          valid_data_len,
-    nrf_802154_frame_parser_level_t  requested_parse_level)
+    nrf_802154_frame_t            * p_parser_data,
+    uint8_t                         valid_data_len,
+    nrf_802154_frame_parser_level_t requested_parse_level)
 {
     if (valid_data_len > p_parser_data->valid_data_len)
     {

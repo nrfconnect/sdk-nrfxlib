@@ -40,7 +40,7 @@
 
 #include "mac_features/nrf_802154_security_writer.h"
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include "mac_features/nrf_802154_security_pib.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
@@ -60,10 +60,10 @@ static bool m_frame_counter_injected; ///< Flag that indicates if frame counter 
  * @param[in]   p_frame_data Pointer to the frame parser data.
  * @param[out]  p_key_id     Pointer to the @ref nrf_802154_key_id_t structure to be populated.
  */
-static void key_id_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
-                           nrf_802154_key_id_t                  * p_key_id)
+static void key_id_prepare(const nrf_802154_frame_t * p_frame_data,
+                           nrf_802154_key_id_t      * p_key_id)
 {
-    p_key_id->mode = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_frame_data);
+    p_key_id->mode = nrf_802154_frame_sec_ctrl_key_id_mode_get(p_frame_data);
 
     switch (p_key_id->mode)
     {
@@ -78,7 +78,7 @@ static void key_id_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
         case KEY_ID_MODE_2:
         /* Fallthrough */
         case KEY_ID_MODE_3:
-            p_key_id->p_key_id = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_frame_data);
+            p_key_id->p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_frame_data);
             break;
 
         default:
@@ -101,12 +101,12 @@ static void key_id_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
  *                                              the frame counter injection.
  */
 static nrf_802154_security_error_t frame_counter_inject(
-    nrf_802154_frame_parser_data_t * p_frame_data,
-    nrf_802154_key_id_t            * p_key_id)
+    nrf_802154_frame_t  * p_frame_data,
+    nrf_802154_key_id_t * p_key_id)
 {
     uint32_t  frame_counter;
     uint8_t * p_frame_counter =
-        (uint8_t *)nrf_802154_frame_parser_frame_counter_get(p_frame_data);
+        (uint8_t *)nrf_802154_frame_counter_get(p_frame_data);
     nrf_802154_security_error_t err;
 
     err = nrf_802154_security_pib_frame_counter_get_next(&frame_counter, p_key_id);
@@ -144,20 +144,21 @@ static nrf_802154_security_error_t frame_counter_inject(
  * @retval      true        Security is enabled.
  * @retbal      false       Security is disabled.
  */
-static bool security_is_enabled(const nrf_802154_frame_parser_data_t * p_frame_data)
+static bool security_is_enabled(const nrf_802154_frame_t * p_frame_data)
 {
-    return (NULL != nrf_802154_frame_parser_sec_ctrl_get(p_frame_data)) &&
-           (SECURITY_LEVEL_NONE != nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data));
+    return (NULL != nrf_802154_frame_sec_ctrl_get(p_frame_data)) &&
+           (SECURITY_LEVEL_NONE != nrf_802154_frame_sec_ctrl_sec_lvl_get(p_frame_data));
 }
 
 bool nrf_802154_security_writer_tx_setup(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
-    nrf_802154_frame_parser_data_t frame_data;
-    nrf_802154_key_id_t            key_id;
-    bool                           result = false;
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
+                      PARSE_LEVEL_AUX_SEC_HDR_END);
+
+    nrf_802154_key_id_t key_id;
+    bool                result = false;
 
     key_id.p_key_id          = NULL;
     m_frame_counter_injected = false;
@@ -168,22 +169,15 @@ bool nrf_802154_security_writer_tx_setup(
         return true;
     }
 
-    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    if (nrf_802154_frame_type_get(&p_params->frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so skip security.
         return true;
     }
 
-    result = nrf_802154_frame_parser_data_init(p_frame,
-                                               p_frame[PHR_OFFSET] + PHR_SIZE,
-                                               PARSE_LEVEL_AUX_SEC_HDR_END,
-                                               &frame_data);
-    NRF_802154_ASSERT(result);
-    (void)result;
-
     do
     {
-        if (!security_is_enabled(&frame_data))
+        if (!security_is_enabled(&p_params->frame))
         {
             /* Security is not enabled. Pass. */
             result = true;
@@ -191,9 +185,9 @@ bool nrf_802154_security_writer_tx_setup(
         }
 
         /* Prepare key ID for key validation. */
-        key_id_prepare(&frame_data, &key_id);
+        key_id_prepare(&p_params->frame, &key_id);
 
-        nrf_802154_security_error_t err = frame_counter_inject(&frame_data, &key_id);
+        nrf_802154_security_error_t err = frame_counter_inject(&p_params->frame, &key_id);
 
         switch (err)
         {
@@ -207,7 +201,9 @@ bool nrf_802154_security_writer_tx_setup(
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
                 metadata.frame_props = p_params->frame_props;
-                notify_function(p_frame, NRF_802154_TX_ERROR_KEY_ID_INVALID, &metadata);
+                notify_function(p_params->frame.p_frame,
+                                NRF_802154_TX_ERROR_KEY_ID_INVALID,
+                                &metadata);
                 result = false;
             }
             break;
@@ -217,7 +213,9 @@ bool nrf_802154_security_writer_tx_setup(
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
                 metadata.frame_props = p_params->frame_props;
-                notify_function(p_frame, NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR, &metadata);
+                notify_function(p_params->frame.p_frame,
+                                NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR,
+                                &metadata);
                 result = false;
             }
             break;

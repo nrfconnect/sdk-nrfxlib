@@ -91,7 +91,6 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
  *
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
- * @param[in]  p_data           Pointer to the frame to transmit.
  * @param[in]  p_params         Pointer to transmission parameters.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  *
@@ -100,7 +99,6 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
  */
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
-                                 uint8_t                      * p_data,
                                  nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function);
 
@@ -197,10 +195,7 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi);
 /**
  * @brief Requests a call to @ref nrf_802154_delayed_trx_transmit.
  *
- * @param[in]  p_data      Pointer to the array with data to transmit. The first byte must contain
- *                         the frame length (including FCS). The following bytes contain data.
- *                         The CRC is computed automatically by the radio hardware. Therefore,
- *                         the FCS field can contain any bytes.
+ * @param[in]  p_frame     Pointer to a frame data structure.
  * @param[in]  tx_time     Absolute time used by the SL timer, in microseconds (us).
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit. If @c NULL following metadata are used:
@@ -213,7 +208,7 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi);
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
  */
-bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
+bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                * p_frame,
                                         uint64_t                                  tx_time,
                                         const nrf_802154_transmit_at_metadata_t * p_metadata);
 
@@ -273,12 +268,11 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id);
 /**
  * @brief Requests CSMA-CA procedure for the transmission of a given frame.
  *
- * @param[in]  p_data      Pointer to a buffer the contains PHR and PSDU of the frame that is
- *                         to be transmitted.
+ * @param[in]  p_frame     Pointer to a frame data structure.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit.
  */
-bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                                       const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**

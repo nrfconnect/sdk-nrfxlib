@@ -45,7 +45,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_types.h"
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 
 /**
  * @brief Initializes the ACK data generator module.
@@ -130,7 +130,7 @@ void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_
  * @retval false  Pending bit is to be cleared.
  */
 bool nrf_802154_ack_data_pending_bit_should_be_set(
-    const nrf_802154_frame_parser_data_t * p_frame_data);
+    const nrf_802154_frame_t * p_frame_data);
 
 /**
  * @brief Gets the IE data stored in the list for the source address of the provided frame.

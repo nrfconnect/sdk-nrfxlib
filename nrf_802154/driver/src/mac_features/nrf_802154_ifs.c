@@ -46,7 +46,7 @@
 
 #include "nrf_802154_pib.h"
 #include "nrf_802154_request.h"
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include "nrf_802154_sl_timer.h"
 #include "nrf_802154_sl_utils.h"
 #include "nrf_802154_sl_atomics.h"
@@ -73,7 +73,6 @@ static ifs_state_t m_state;
 
 typedef struct
 {
-    uint8_t                    * p_data;
     nrf_802154_transmit_params_t params;
 } ifs_operation_t;
 
@@ -115,7 +114,7 @@ static void ifs_tx_result_notify(bool result)
         nrf_802154_transmit_done_metadata_t metadata = {};
 
         metadata.frame_props = m_context.params.frame_props;
-        nrf_802154_notify_transmit_failed(m_context.p_data,
+        nrf_802154_notify_transmit_failed(m_context.params.frame.p_frame,
                                           NRF_802154_TX_ERROR_TIMESLOT_DENIED,
                                           &metadata);
     }
@@ -129,7 +128,6 @@ static void callback_fired(nrf_802154_sl_timer_t * p_timer)
     {
         nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                     REQ_ORIG_IFS,
-                                    p_ctx->p_data,
                                     &p_ctx->params,
                                     ifs_tx_result_notify);
 
@@ -138,27 +136,13 @@ static void callback_fired(nrf_802154_sl_timer_t * p_timer)
 }
 
 /**@brief Checks if the IFS is needed by comparing the addresses of the actual and the last frames. */
-static bool is_ifs_needed_by_address(const uint8_t * p_frame)
+static bool is_ifs_needed_by_address(const nrf_802154_frame_t * p_frame)
 {
-    nrf_802154_frame_parser_data_t frame_data;
-    const uint8_t                * addr;
-    bool                           is_extended;
+    const uint8_t * addr;
+    bool            is_extended;
 
-    bool result = nrf_802154_frame_parser_data_init(p_frame,
-                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
-                                                    PARSE_LEVEL_ADDRESSING_END,
-                                                    &frame_data);
-
-    if (result)
-    {
-        addr        = nrf_802154_frame_parser_dst_addr_get(&frame_data);
-        is_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
-    }
-    else
-    {
-        addr        = NULL;
-        is_extended = false;
-    }
+    addr        = nrf_802154_frame_dst_addr_get(p_frame);
+    is_extended = nrf_802154_frame_dst_addr_is_extended(p_frame);
 
     if (!addr)
     {
@@ -218,7 +202,7 @@ void nrf_802154_ifs_init(void)
     m_is_last_address_extended = false;
     m_last_frame_timestamp     = 0;
     m_last_frame_length        = 0;
-    m_context                  = (ifs_operation_t){ .p_data = NULL };
+    m_context                  = (ifs_operation_t){ .params = { .frame = {.p_frame = NULL } } };
 
     nrf_802154_sl_timer_init(&m_timer);
 }
@@ -229,10 +213,12 @@ void nrf_802154_ifs_deinit(void)
 }
 
 bool nrf_802154_ifs_pretransmission(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
+                      PARSE_LEVEL_ADDRESSING_END);
+
     (void)notify_function;
 
     nrf_802154_ifs_mode_t mode;
@@ -256,7 +242,8 @@ bool nrf_802154_ifs_pretransmission(
         return true;
     }
 
-    if ((mode == NRF_802154_IFS_MODE_MATCHING_ADDRESSES) && !is_ifs_needed_by_address(p_frame))
+    if ((mode == NRF_802154_IFS_MODE_MATCHING_ADDRESSES) &&
+        !is_ifs_needed_by_address(&p_params->frame))
     {
         return true;
     }
@@ -275,7 +262,6 @@ bool nrf_802154_ifs_pretransmission(
     }
     else
     {
-        m_context.p_data                 = p_frame;
         m_context.params                 = *p_params;
         m_context.params.immediate       = true;
         m_timer.trigger_time             = m_last_frame_timestamp + dt;
@@ -292,30 +278,16 @@ bool nrf_802154_ifs_pretransmission(
     return false;
 }
 
-void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
+void nrf_802154_ifs_transmitted_hook(const nrf_802154_frame_t * p_frame)
 {
-    NRF_802154_ASSERT(p_frame[0] != 0U);
+    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_ADDRESSING_END);
 
     m_last_frame_timestamp = nrf_802154_sl_timer_current_time_get();
 
-    nrf_802154_frame_parser_data_t frame_data;
-    const uint8_t                * addr;
+    const uint8_t * addr;
 
-    bool result = nrf_802154_frame_parser_data_init(p_frame,
-                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
-                                                    PARSE_LEVEL_ADDRESSING_END,
-                                                    &frame_data);
-
-    if (result)
-    {
-        addr                       = nrf_802154_frame_parser_dst_addr_get(&frame_data);
-        m_is_last_address_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
-    }
-    else
-    {
-        addr                       = NULL;
-        m_is_last_address_extended = false;
-    }
+    addr                       = nrf_802154_frame_dst_addr_get(p_frame);
+    m_is_last_address_extended = nrf_802154_frame_dst_addr_is_extended(p_frame);
 
     if (!addr)
     {
@@ -333,7 +305,7 @@ void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
         memcpy(m_last_address.sh, addr, SHORT_ADDRESS_SIZE);
     }
 
-    m_last_frame_length = p_frame[0];
+    m_last_frame_length = nrf_802154_frame_length_get(p_frame);
 }
 
 bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
@@ -357,7 +329,7 @@ bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
                 metadata.frame_props = m_context.params.frame_props;
-                nrf_802154_notify_transmit_failed(p_op->p_data,
+                nrf_802154_notify_transmit_failed(p_op->params.frame.p_frame,
                                                   NRF_802154_TX_ERROR_ABORTED,
                                                   &metadata);
             }

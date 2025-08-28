@@ -41,7 +41,7 @@
 #ifndef NRF_802154_ENH_ACK_GENERATOR_H
 #define NRF_802154_ENH_ACK_GENERATOR_H
 
-#include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_frame.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -71,6 +71,6 @@ void nrf_802154_enh_ack_generator_reset(void);
  *           created.
  */
 uint8_t * nrf_802154_enh_ack_generator_create(
-    const nrf_802154_frame_parser_data_t * p_frame_data);
+    const nrf_802154_frame_t * p_frame_data);
 
 #endif // NRF_802154_ENH_ACK_GENERATOR_H

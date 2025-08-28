@@ -90,14 +90,12 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
-                                 uint8_t                      * p_data,
                                  nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_transmit,
                            term_lvl,
                            req_orig,
-                           p_data,
                            p_params,
                            notify_function)
 }
@@ -168,11 +166,11 @@ static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
+bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                * p_frame,
                                         uint64_t                                  tx_time,
                                         const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_transmit, p_data, tx_time, p_metadata);
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_transmit, p_frame, tx_time, p_metadata);
 }
 
 bool nrf_802154_request_transmit_at_cancel(void)
@@ -200,10 +198,10 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
 
 #endif
 
-bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                                       const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_csma_ca_start, p_data, p_metadata);
+    REQUEST_FUNCTION_PARMS(nrf_802154_csma_ca_start, p_frame, p_metadata);
 }
 
 #endif /* NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_DIRECT */

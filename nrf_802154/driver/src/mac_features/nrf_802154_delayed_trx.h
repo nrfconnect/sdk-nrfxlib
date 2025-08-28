@@ -41,6 +41,7 @@
 #include "nrf_802154_const.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame.h"
 
 #if NRF_802154_DELAYED_TRX_ENABLED || defined(__DOXYGEN__)
 
@@ -72,13 +73,12 @@ void nrf_802154_delayed_trx_deinit(void);
  * cannot be transmitted at the given time, the @ref nrf_802154_transmit_failed
  * function is called.
  *
- * @param[in]  p_data       Pointer to a buffer containing PHR and PSDU of the frame to be
- *                          transmitted.
+ * @param[in]  p_frame      Pointer to a frame data structure.
  * @param[in]  tx_time      Absolute time used by the SL Timer, in microseconds (us).
  * @param[in]  p_metadata   Pointer to metadata structure. Contains detailed properties of data
  *                          to transmit and additional parameters for the procedure.
  */
-bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p_data,
+bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p_frame,
                                      uint64_t                                  tx_time,
                                      const nrf_802154_transmit_at_metadata_t * p_metadata);
 
@@ -169,14 +169,13 @@ bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t r
  * @brief Extends the timeout timer when the reception start is detected and there is not enough
  *        time left for a delayed RX operation.
  *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame
- *                      that is being received.
+ * @param[in]  p_frame  Pointer to a frame data structure.
  *
  * If the delayed transmission/reception procedures are not running during call,
  * this function does nothing.
  *
  */
-void nrf_802154_delayed_trx_rx_started_hook(const uint8_t * p_frame);
+void nrf_802154_delayed_trx_rx_started_hook(const nrf_802154_frame_t * p_frame);
 
 /**
  * @brief Gets the time in microseconds to the midpoint of the nearest scheduled DRX window.

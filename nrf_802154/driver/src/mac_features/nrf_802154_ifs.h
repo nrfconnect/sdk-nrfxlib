@@ -54,8 +54,6 @@ void nrf_802154_ifs_deinit(void);
 /**
  * @brief Examines the frame before transmission and checks if it needs to be delayed.
  *
- * @param[in]  p_frame          Pointer to the buffer that contains the PHR and PSDU
- *                              of the transmitted frame.
  * @param[in]  p_params         Pointer to the transmission parameters.
  * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
@@ -63,7 +61,6 @@ void nrf_802154_ifs_deinit(void);
  * @retval     false     Frame is delayed and will be transmistted after a needed IFS.
  */
 bool nrf_802154_ifs_pretransmission(
-    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 
@@ -71,9 +68,9 @@ bool nrf_802154_ifs_pretransmission(
  * @brief Captures the timestamp, length and destination address of the transmitted
  *        frame for the sake of future analysis by the @ref nrf_802154_ifs_pretransmission
  *
- * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
+ * @param[in]  p_frame  Pointer to a frame data structure.
  */
-void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame);
+void nrf_802154_ifs_transmitted_hook(const nrf_802154_frame_t * p_frame);
 
 /**
  * @brief Aborts an ongoing IFS-delayed transmission.
