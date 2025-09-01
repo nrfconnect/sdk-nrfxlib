@@ -13,6 +13,14 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Notable changes
+===============
+
+* When the PHR field of an ACK frame is received, the driver requests a timeslot long enough to receive the entire ACK frame.
+  The request is submitted to the timeslot scheduler with an elevated priority.
+  This elevated-priority request cancels any colliding low-priority timeslot that was scheduled for other purposes, such as writing to flash memory.
+  This feature improves the reception performance of Enhanced ACK (EnhACK) frames, for which the PHR field value is not known in advance. (KRKNWK-19125)
+
 Added
 =====
 

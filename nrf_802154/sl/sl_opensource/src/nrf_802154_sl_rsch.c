@@ -75,9 +75,10 @@ void nrf_802154_rsch_continuous_ended(void)
     // Intentionally empty
 }
 
-bool nrf_802154_rsch_timeslot_request(uint32_t length_us)
+bool nrf_802154_rsch_timeslot_request(uint32_t length_us, rsch_timeslot_prio_t prio)
 {
     (void)length_us;
+    (void)prio;
 
     NRF_802154_ASSERT(m_ready);
 
