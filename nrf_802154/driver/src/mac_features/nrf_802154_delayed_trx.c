@@ -975,17 +975,17 @@ bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t r
 
 void nrf_802154_delayed_trx_rx_started_hook(const nrf_802154_frame_t * p_frame)
 {
-    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_FCF_OFFSETS);
-
     dly_op_data_t * p_dly_op_data = ongoing_dly_rx_slot_get();
 
     if (p_dly_op_data != NULL)
     {
-        p_dly_op_data->rx.extension_frame.sof_timestamp = nrf_802154_sl_timer_current_time_get();
-        p_dly_op_data->rx.extension_frame.psdu_length   =
+        p_dly_op_data->rx.extension_frame.sof_timestamp =
+            nrf_802154_sl_timer_current_time_get();
+        p_dly_op_data->rx.extension_frame.psdu_length =
             nrf_802154_frame_length_get(p_frame);
-        p_dly_op_data->rx.extension_frame.ack_requested = nrf_802154_frame_ar_bit_is_set(
-            p_frame);
+        p_dly_op_data->rx.extension_frame.ack_requested =
+            (nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_FCF_OFFSETS) &&
+            nrf_802154_frame_ar_bit_is_set(p_frame);
     }
 }
 

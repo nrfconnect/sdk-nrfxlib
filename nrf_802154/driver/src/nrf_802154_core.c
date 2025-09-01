@@ -1033,10 +1033,16 @@ static bool tx_init(const nrf_802154_frame_t            * p_frame,
 {
     bool cca = cca_attempts > 0;
 
-    if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(
-            nrf_802154_tx_duration_get(p_frame->p_frame[0],
-                                       cca,
-                                       tx_frame_ack_is_requested(p_frame))))
+    if (!timeslot_is_granted())
+    {
+        return false;
+    }
+
+    uint32_t duration = nrf_802154_tx_duration_get(nrf_802154_frame_length_get(p_frame),
+                                                   cca,
+                                                   tx_frame_ack_is_requested(p_frame));
+
+    if (!nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
     {
         return false;
     }
@@ -1157,7 +1163,12 @@ static void ed_init(void)
 /** Initialize CCA operation. */
 static void cca_init(void)
 {
-    if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(nrf_802154_cca_duration_get()))
+    if (!timeslot_is_granted())
+    {
+        return;
+    }
+
+    if (!nrf_802154_rsch_timeslot_request(nrf_802154_cca_duration_get(), RSCH_TIMESLOT_PRIO_LOW))
     {
         return;
     }
@@ -1562,6 +1573,24 @@ void nrf_802154_trx_receive_ack_started(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+void nrf_802154_trx_receive_ack_phr_received(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX_ACK);
+
+    uint8_t * curr_rx_buffer = mp_current_rx_buffer != NULL ? &mp_current_rx_buffer->data[0] : NULL;
+
+    if ((curr_rx_buffer != NULL) && (curr_rx_buffer[PHR_OFFSET] != 0U))
+    {
+        uint16_t duration = nrf_802154_frame_duration_get(curr_rx_buffer[PHR_OFFSET],
+                                                          false,
+                                                          false);
+
+        (void)nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_HIGH);
+    }
+}
+
 static void on_rx_prestarted_timeout(nrf_802154_sl_timer_t * p_timer)
 {
     (void)p_timer;
@@ -1867,7 +1896,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             mp_current_rx_buffer->data[0],
             nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data));
 
-        if (nrf_802154_rsch_timeslot_request(duration))
+        if (nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
         {
             m_flags.rx_timeslot_requested = true;
 
@@ -1977,7 +2006,7 @@ void nrf_802154_trx_receive_frame_received(void)
         {
             uint16_t duration = nrf_802154_ack_duration_with_turnaround_get();
 
-            if (nrf_802154_rsch_timeslot_request(duration))
+            if (nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
             {
                 m_flags.frame_filtered        = true;
                 m_flags.rx_timeslot_requested = true;

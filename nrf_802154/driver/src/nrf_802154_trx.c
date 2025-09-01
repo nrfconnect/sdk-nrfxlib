@@ -268,7 +268,7 @@ static void rx_flags_clear(void)
     m_flags.psdu_being_received    = false;
 }
 
-static void * volatile mp_receive_buffer;
+static uint8_t * volatile mp_receive_buffer;
 
 /** Force the TIMER to be stopped and count from 0. */
 static inline void timer_stop_and_clear(void)
@@ -1295,12 +1295,16 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
 
     bool result = false;
 
-    mp_receive_buffer = p_receive_buffer;
+    mp_receive_buffer = (uint8_t *)p_receive_buffer;
 
-    if ((p_receive_buffer != NULL) && m_flags.missing_receive_buffer)
+    if (p_receive_buffer != NULL)
     {
-        receive_buffer_missing_buffer_set(p_receive_buffer);
-        result = true;
+        ((uint8_t *)p_receive_buffer)[PHR_OFFSET] = 0U;
+        if (m_flags.missing_receive_buffer)
+        {
+            receive_buffer_missing_buffer_set(p_receive_buffer);
+            result = true;
+        }
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -1334,10 +1338,13 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
 
     txpower_set(p_ack_tx_power->radio_tx_power);
 
-    if (mp_receive_buffer != NULL)
+    uint8_t * p_receive_buffer = mp_receive_buffer;
+
+    if (p_receive_buffer != NULL)
     {
+        p_receive_buffer[PHR_OFFSET]   = 0U;
         m_flags.missing_receive_buffer = false;
-        nrf_radio_packetptr_set(NRF_RADIO, mp_receive_buffer);
+        nrf_radio_packetptr_set(NRF_RADIO, p_receive_buffer);
         shorts |= SHORTS_RX_FREE_BUFFER;
     }
     else
@@ -1452,10 +1459,13 @@ void nrf_802154_trx_receive_ack(void)
 
     m_trx_state = TRX_STATE_RXACK;
 
-    if (mp_receive_buffer != NULL)
+    uint8_t * p_receive_buffer = mp_receive_buffer;
+
+    if (p_receive_buffer != NULL)
     {
+        p_receive_buffer[PHR_OFFSET]   = 0U;
         m_flags.missing_receive_buffer = false;
-        nrf_radio_packetptr_set(NRF_RADIO, mp_receive_buffer);
+        nrf_radio_packetptr_set(NRF_RADIO, p_receive_buffer);
         shorts |= SHORTS_RX_FREE_BUFFER;
     }
     else
@@ -1467,6 +1477,8 @@ void nrf_802154_trx_receive_ack(void)
 
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
     ints_to_enable |= NRF_RADIO_INT_ADDRESS_MASK;
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_FRAMESTART);
+    ints_to_enable |= NRF_RADIO_INT_FRAMESTART_MASK;
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_CRCOK);
     ints_to_enable |= NRF_RADIO_INT_CRCOK_MASK;
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_CRCERROR);
@@ -2069,8 +2081,8 @@ static void rxack_finish_disable_ints(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     nrf_radio_int_disable(NRF_RADIO,
-                          NRF_RADIO_INT_ADDRESS_MASK | NRF_RADIO_INT_CRCERROR_MASK |
-                          NRF_RADIO_INT_CRCOK_MASK);
+                          NRF_RADIO_INT_ADDRESS_MASK | NRF_RADIO_INT_FRAMESTART_MASK |
+                          NRF_RADIO_INT_CRCERROR_MASK | NRF_RADIO_INT_CRCOK_MASK);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -2435,6 +2447,25 @@ static void irq_handler_address(void)
         case TRX_STATE_TXACK:
             nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_ADDRESS_MASK);
             nrf_802154_trx_transmit_ack_started();
+            break;
+
+        default:
+            NRF_802154_ASSERT(false);
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void irq_handler_framestart(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_FRAMESTART_MASK);
+
+    switch (m_trx_state)
+    {
+        case TRX_STATE_RXACK:
+            nrf_802154_trx_receive_ack_phr_received();
             break;
 
         default:
@@ -2941,6 +2972,14 @@ void nrf_802154_radio_irq_handler(void)
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
 
         irq_handler_address();
+    }
+
+    if (nrf_radio_int_enable_check(NRF_RADIO, NRF_RADIO_INT_FRAMESTART_MASK) &&
+        nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_FRAMESTART))
+    {
+        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_FRAMESTART);
+
+        irq_handler_framestart();
     }
 
     // Check MAC frame header.

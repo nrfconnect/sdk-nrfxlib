@@ -218,6 +218,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
  *
  * During receive of an ack:
  * - @ref nrf_802154_trx_receive_ack_started is called when a frame has just started being received.
+ * - @ref nrf_802154_trx_receive_ack_phr_received is called when PHR field of an ACK has been received.
  * - when a frame is received with correct crc, @ref nrf_802154_trx_receive_ack_received is called.
  * - when a frame is received with incorrect crc, @ref nrf_802154_trx_receive_ack_crcerror is called.
  * - no bcmatch events are generated.
@@ -465,6 +466,13 @@ uint32_t nrf_802154_trx_ramp_up_ppi_channel_get(void);
  * the RADIO received synchronization header (SHR).
  */
 extern void nrf_802154_trx_receive_ack_started(void);
+
+/**@brief Handler called during reception of an ACK when PHR has been received.
+ *
+ * This handler is called from an ISR when receive of an ACK has been started, and
+ * the RADIO received PHR field.
+ */
+extern void nrf_802154_trx_receive_ack_phr_received(void);
 
 /**@brief Handler called at the beginning of frame reception (earliest possible moment).
  *
