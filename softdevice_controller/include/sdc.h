@@ -1208,6 +1208,17 @@ int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
  */
 int32_t sdc_support_le_connectionless_cte_transmitter(void);
 
+/** @brief Support LE Privacy
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Privacy.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Privacy is not supported.
+ */
+ int32_t sdc_support_le_privacy(void);
+
 /** @brief Support for sending periodic advertising sync transfers as central role
  *
  * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
