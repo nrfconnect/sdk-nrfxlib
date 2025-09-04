@@ -59,15 +59,6 @@ typedef struct
 } rx_buffer_t;
 
 /**
- * @brief Array that contains all buffers used to receive frame.
- *
- * This array is in the global scope to allow optimizations in the core module if there is only
- * one buffer provided by this module.
- *
- */
-extern rx_buffer_t nrf_802154_rx_buffers[];
-
-/**
  * @brief Initializes the buffer for received frames.
  */
 void nrf_802154_rx_buffer_init(void);

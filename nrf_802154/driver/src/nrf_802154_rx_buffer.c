@@ -48,13 +48,13 @@
 #error Not enough rx buffers in the 802.15.4 radio driver.
 #endif
 
-rx_buffer_t nrf_802154_rx_buffers[NRF_802154_RX_BUFFERS]; ///< Receive buffers.
+static rx_buffer_t m_nrf_802154_rx_buffers[NRF_802154_RX_BUFFERS]; ///< Receive buffers.
 
 void nrf_802154_rx_buffer_init(void)
 {
     for (uint32_t i = 0; i < NRF_802154_RX_BUFFERS; i++)
     {
-        nrf_802154_rx_buffers[i].free = true;
+        m_nrf_802154_rx_buffers[i].free = true;
     }
 }
 
@@ -62,11 +62,23 @@ rx_buffer_t * nrf_802154_rx_buffer_free_find(void)
 {
     for (uint32_t i = 0; i < NRF_802154_RX_BUFFERS; i++)
     {
-        if (nrf_802154_rx_buffers[i].free)
+        if (m_nrf_802154_rx_buffers[i].free)
         {
-            return &nrf_802154_rx_buffers[i];
+            return &m_nrf_802154_rx_buffers[i];
         }
     }
 
     return NULL;
 }
+
+#ifdef TEST
+void nrf_802154_rx_buffer_module_reset(void)
+{
+    /* Reset static data. */
+    for (uint32_t i = 0; i < NRF_802154_RX_BUFFERS; i++)
+    {
+        m_nrf_802154_rx_buffers[i].free = false;
+    }
+}
+
+#endif /* TEST */
