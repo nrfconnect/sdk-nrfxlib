@@ -110,16 +110,7 @@
  */
 #define PRESTARTED_TIMER_TIMEOUT_US (160U)
 
-#if NRF_802154_RX_BUFFERS > 1
-/// Pointer to currently used receive buffer.
-static rx_buffer_t * mp_current_rx_buffer;
-
-#else
-/// If there is only one buffer use const pointer to the receive buffer.
-static rx_buffer_t * const mp_current_rx_buffer = &nrf_802154_rx_buffers[0];
-
-#endif
-
+static rx_buffer_t * mp_current_rx_buffer;                      /// Pointer to currently used receive buffer.
 static uint8_t                       * mp_ack;                  ///< Pointer to Ack frame buffer.
 static nrf_802154_frame_t              m_tx_data;               ///< Data structure of the frame to be transmitted.
 static uint32_t                        m_ed_time_left;          ///< Remaining time of the current energy detection procedure [us].
@@ -454,11 +445,7 @@ static bool antenna_diversity_is_enabled(void)
  */
 static void rx_buffer_in_use_set(rx_buffer_t * p_rx_buffer)
 {
-#if NRF_802154_RX_BUFFERS > 1
     mp_current_rx_buffer = p_rx_buffer;
-#else
-    (void)p_rx_buffer;
-#endif
 }
 
 /** Check if currently there is available rx buffer.
