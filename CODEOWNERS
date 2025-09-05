@@ -33,7 +33,7 @@ doc/*                                     @b-gent
 /.github/                                 @thst-nordic
 /.github/test-spec.yml                    @nrfconnect/ncs-test-leads
 /softdevice_controller/                   @nrfconnect/ncs-dragoon
-/nrf_modem/                               @rlubos @lemrey
+/nrf_modem/                               @nrfconnect/ncs-co-networking @nrfconnect/ncs-modem
 /crypto/                                  @frkv @tejlmand
 /gzll/                                    @leewkb4567
 /mpsl/                                    @nrfconnect/ncs-dragoon
