@@ -922,7 +922,7 @@ struct nrf_wifi_cmd_sys_init {
 	 */
 	unsigned int stbc_enable_in_ht;
 	/* Enables(1) or Disables(0) Dynamic bandwidth signalling control */
-	unsigned int dms_war_ctrl;
+	unsigned int dbs_war_ctrl;
 } __NRF_WIFI_PKD;
 
 /**
