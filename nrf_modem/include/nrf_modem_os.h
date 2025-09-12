@@ -28,7 +28,7 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
-#define NRF_MODEM_OS_NUM_SEM_REQUIRED 8
+#define NRF_MODEM_OS_NUM_SEM_REQUIRED 9
 /** Number of OS mutexes required. */
 #define NRF_MODEM_OS_NUM_MUTEX_REQUIRED 1
 

@@ -137,6 +137,13 @@ uintptr_t nrf_modem_os_rpc_sigdev_app_get(void);
 uintptr_t nrf_modem_os_rpc_sigdev_modem_get(void);
 
 /**
+ * @brief Request IronSide SE to boot the cellcore.
+ *
+ * @return 0 on success, a negative errno otherwise.
+ */
+int nrf_modem_os_rpc_cellcore_boot(void);
+
+/**
  * @brief Open an RPC instance.
  *
  * @param instance Pointer to RPC instance.
