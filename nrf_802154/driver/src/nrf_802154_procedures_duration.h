@@ -46,6 +46,16 @@
 
 #include "nrf_802154_const.h"
 
+#ifdef __STATIC_INLINE__
+#undef __STATIC_INLINE__
+#endif
+
+#ifdef NRF_802154_PROCEDURES_DURATION_DECLARE_ONLY
+#define __STATIC_INLINE__
+#else
+#define __STATIC_INLINE__                 __STATIC_INLINE
+#endif
+
 #define TX_RAMP_UP_TIME                   40 // us
 #define RX_RAMP_UP_TIME                   40 // us
 #define RX_RAMP_DOWN_TIME                 0  // us
@@ -82,21 +92,25 @@
     PHY_US_TIME_FROM_SYMBOLS( \
         PHY_SHR_SYMBOLS + PHY_SYMBOLS_FROM_OCTETS(PHR_SIZE + MAX_PACKET_SIZE))
 
-__STATIC_INLINE uint16_t nrf_802154_tx_duration_get(uint8_t psdu_length,
-                                                    bool    cca,
-                                                    bool    ack_requested);
+__STATIC_INLINE__ uint16_t nrf_802154_frame_duration_get(uint8_t psdu_length,
+                                                         bool    shr,
+                                                         bool    phr);
 
-__STATIC_INLINE uint16_t nrf_802154_cca_before_tx_duration_get(void);
+__STATIC_INLINE__ uint16_t nrf_802154_tx_duration_get(uint8_t psdu_length,
+                                                      bool    cca,
+                                                      bool    ack_requested);
 
-__STATIC_INLINE uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ack_requested);
+__STATIC_INLINE__ uint16_t nrf_802154_cca_before_tx_duration_get(void);
 
-__STATIC_INLINE uint16_t nrf_802154_cca_duration_get(void);
+__STATIC_INLINE__ uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ack_requested);
 
-#ifndef SUPPRESS_INLINE_IMPLEMENTATION
+__STATIC_INLINE__ uint16_t nrf_802154_cca_duration_get(void);
 
-__STATIC_INLINE uint16_t nrf_802154_frame_duration_get(uint8_t psdu_length,
-                                                       bool    shr,
-                                                       bool    phr)
+#ifndef NRF_802154_PROCEDURES_DURATION_DECLARE_ONLY
+
+__STATIC_INLINE__ uint16_t nrf_802154_frame_duration_get(uint8_t psdu_length,
+                                                         bool    shr,
+                                                         bool    phr)
 {
     uint16_t us_time = PHY_US_TIME_FROM_SYMBOLS(PHY_SYMBOLS_FROM_OCTETS(psdu_length));
 
@@ -113,9 +127,9 @@ __STATIC_INLINE uint16_t nrf_802154_frame_duration_get(uint8_t psdu_length,
     return us_time;
 }
 
-__STATIC_INLINE uint16_t nrf_802154_tx_duration_get(uint8_t psdu_length,
-                                                    bool    cca,
-                                                    bool    ack_requested)
+__STATIC_INLINE__ uint16_t nrf_802154_tx_duration_get(uint8_t psdu_length,
+                                                      bool    cca,
+                                                      bool    ack_requested)
 {
     // ramp down
     // if CCA: + RX ramp up + CCA + RX ramp down
@@ -140,7 +154,7 @@ __STATIC_INLINE uint16_t nrf_802154_tx_duration_get(uint8_t psdu_length,
     return us_time;
 }
 
-__STATIC_INLINE uint16_t nrf_802154_cca_before_tx_duration_get(void)
+__STATIC_INLINE__ uint16_t nrf_802154_cca_before_tx_duration_get(void)
 {
     // CCA + turnaround time
     uint16_t us_time = PHY_US_TIME_FROM_SYMBOLS(A_CCA_DURATION_SYMBOLS) + RX_TX_TURNAROUND_TIME;
@@ -149,7 +163,7 @@ __STATIC_INLINE uint16_t nrf_802154_cca_before_tx_duration_get(void)
 }
 
 /**@brief Get the duration of the Ack frame along with turnaround in microseconds. */
-__STATIC_INLINE uint16_t nrf_802154_ack_duration_with_turnaround_get(void)
+__STATIC_INLINE__ uint16_t nrf_802154_ack_duration_with_turnaround_get(void)
 {
     // aTurnaroundTime + ACK frame duration
     return PHY_US_TIME_FROM_SYMBOLS(A_TURNAROUND_TIME_SYMBOLS +
@@ -157,7 +171,7 @@ __STATIC_INLINE uint16_t nrf_802154_ack_duration_with_turnaround_get(void)
                                     PHY_SYMBOLS_FROM_OCTETS(IMM_ACK_LENGTH + PHR_SIZE));
 }
 
-__STATIC_INLINE uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ack_requested)
+__STATIC_INLINE__ uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ack_requested)
 {
     // SHR + PHR + PSDU
     // if ACK: + aTurnaroundTime + ACK frame duration
@@ -171,7 +185,7 @@ __STATIC_INLINE uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ac
     return us_time;
 }
 
-__STATIC_INLINE uint16_t nrf_802154_cca_duration_get(void)
+__STATIC_INLINE__ uint16_t nrf_802154_cca_duration_get(void)
 {
     // ramp down + rx ramp up + CCA
     uint16_t us_time = MAX_RAMP_DOWN_TIME +
@@ -181,6 +195,6 @@ __STATIC_INLINE uint16_t nrf_802154_cca_duration_get(void)
     return us_time;
 }
 
-#endif /* SUPPRESS_INLINE_IMPLEMENTATION */
+#endif /* NRF_802154_PROCEDURES_DURATION_DECLARE_ONLY */
 
 #endif /* NRF_802154_PROCEDURES_DURATION_H_ */

@@ -119,7 +119,7 @@ static bool critical_section_enter(bool forced)
      */
     active_vector_priority = active_vector_priority_get();
 
-    nrf_802154_mcu_critical_enter(mcu_cs);
+    mcu_cs = nrf_802154_mcu_critical_enter();
 
     if (forced ||
         (m_nested_critical_section_counter == 0) ||
@@ -153,7 +153,7 @@ static void critical_section_exit(void)
         uint8_t                         cnt;
         nrf_802154_mcu_critical_state_t mcu_cs;
 
-        nrf_802154_mcu_critical_enter(mcu_cs);
+        mcu_cs = nrf_802154_mcu_critical_enter();
 
         cnt = m_nested_critical_section_counter;
 

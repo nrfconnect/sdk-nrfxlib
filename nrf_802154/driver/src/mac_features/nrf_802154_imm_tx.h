@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Nordic Semiconductor ASA
+ * Copyright (c) 2025, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -32,55 +32,30 @@
  *
  */
 
-#include <stddef.h>
+#ifndef NRF_802154_IMM_TX_H__
+#define NRF_802154_IMM_TX_H__
 
-#include "nrf_802154.h"
-#include "nrf_802154_stats.h"
+#include <stdbool.h>
+#include <stdint.h>
 
-#define NUMBER_OF_STAT_COUNTERS (sizeof(nrf_802154_stat_counters_t) / sizeof(uint32_t))
+#include "nrf_802154_const.h"
+#include "nrf_802154_config.h"
+#include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame.h"
 
-/**@brief Structure holding statistics about the Radio Driver behavior. */
-volatile nrf_802154_stats_t g_nrf_802154_stats;
+/**
+ * @brief Immediately transmit the frame.
+ *
+ * The function transmits the immediately, if the radio is sleeping or idle receiving.
+ *
+ * @param[in]  p_frame     Pointer to a frame data structure.
+ * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
+ *                         to transmit and additional parameters for the procedure.
+ *
+ * @retval  true   The transmission procedure was scheduled.
+ * @retval  false  The driver could not schedule the transmission procedure.
+ */
+bool nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
+                                const nrf_802154_transmit_metadata_t * p_metadata);
 
-void nrf_802154_stats_get(nrf_802154_stats_t * p_stats)
-{
-    *p_stats = g_nrf_802154_stats;
-}
-
-void nrf_802154_stat_counters_get(nrf_802154_stat_counters_t * p_stat_counters)
-{
-    *p_stat_counters = g_nrf_802154_stats.counters;
-}
-
-void nrf_802154_stat_counters_subtract(const nrf_802154_stat_counters_t * p_stat_counters)
-{
-    volatile uint32_t * p_dst = (volatile uint32_t *)(&g_nrf_802154_stats.counters);
-    const uint32_t    * p_src = (const uint32_t *)p_stat_counters;
-
-    for (size_t i = 0; i < NUMBER_OF_STAT_COUNTERS; ++i)
-    {
-        nrf_802154_mcu_critical_state_t mcu_cs;
-
-        mcu_cs  = nrf_802154_mcu_critical_enter();
-        *p_dst -= *p_src;
-        nrf_802154_mcu_critical_exit(mcu_cs);
-
-        p_dst++;
-        p_src++;
-    }
-}
-
-void nrf_802154_stat_timestamps_get(nrf_802154_stat_timestamps_t * p_stat_timestamps)
-{
-    *p_stat_timestamps = g_nrf_802154_stats.timestamps;
-}
-
-void nrf_802154_stat_counters_reset(void)
-{
-    volatile uint32_t * p_dst = (volatile uint32_t *)(&g_nrf_802154_stats.counters);
-
-    for (size_t i = 0; i < NUMBER_OF_STAT_COUNTERS; ++i)
-    {
-        *(p_dst++) = 0U;
-    }
-}
+#endif /* NRF_802154_IMM_TX_H__ */

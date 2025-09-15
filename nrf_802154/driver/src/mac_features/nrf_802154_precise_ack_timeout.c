@@ -169,12 +169,10 @@ void nrf_802154_ack_timeout_time_set(uint32_t time)
     m_timeout = time;
 }
 
-bool nrf_802154_ack_timeout_tx_started_hook(uint8_t * p_frame)
+void nrf_802154_ack_timeout_tx_started_hook(uint8_t * p_frame)
 {
     mp_frame = p_frame;
     timeout_timer_start();
-
-    return true;
 }
 
 bool nrf_802154_ack_timeout_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
@@ -215,14 +213,12 @@ void nrf_802154_ack_timeout_rx_ack_started_hook(void)
     timeout_timer_stop();
 }
 
-bool nrf_802154_ack_timeout_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
+void nrf_802154_ack_timeout_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
     (void)error;
     NRF_802154_ASSERT((p_frame == mp_frame) || (!m_procedure_is_active));
 
     timeout_timer_stop();
-
-    return true;
 }
 
 #endif // NRF_802154_ACK_TIMEOUT_ENABLED

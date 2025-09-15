@@ -51,7 +51,7 @@ extern volatile nrf_802154_stats_t g_nrf_802154_stats;
     {                                                 \
         nrf_802154_mcu_critical_state_t mcu_cs;       \
                                                       \
-        nrf_802154_mcu_critical_enter(mcu_cs);        \
+        mcu_cs = nrf_802154_mcu_critical_enter();     \
         (g_nrf_802154_stats.counters.field_name)++;   \
         nrf_802154_mcu_critical_exit(mcu_cs);         \
     }                                                 \
@@ -67,7 +67,7 @@ extern volatile nrf_802154_stats_t g_nrf_802154_stats;
     {                                                         \
         nrf_802154_mcu_critical_state_t mcu_cs;               \
                                                               \
-        nrf_802154_mcu_critical_enter(mcu_cs);                \
+        mcu_cs = nrf_802154_mcu_critical_enter();             \
         (g_nrf_802154_stats.timestamps.field_name) = (value); \
         nrf_802154_mcu_critical_exit(mcu_cs);                 \
     }                                                         \
@@ -79,7 +79,7 @@ extern volatile nrf_802154_stats_t g_nrf_802154_stats;
     {                                                           \
         nrf_802154_mcu_critical_state_t mcu_cs;                 \
                                                                 \
-        nrf_802154_mcu_critical_enter(mcu_cs);                  \
+        mcu_cs      = nrf_802154_mcu_critical_enter();          \
         *(variable) = g_nrf_802154_stats.timestamps.field_name; \
         nrf_802154_mcu_critical_exit(mcu_cs);                   \
     }                                                           \

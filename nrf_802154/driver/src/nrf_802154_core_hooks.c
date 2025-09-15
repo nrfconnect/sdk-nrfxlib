@@ -46,7 +46,6 @@
 #include <stdbool.h>
 
 #include "mac_features/nrf_802154_ack_timeout.h"
-#include "mac_features/nrf_802154_csma_ca.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_ie_writer.h"
 #include "mac_features/nrf_802154_security_writer.h"
@@ -58,12 +57,11 @@
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
 typedef bool (* pre_transmission_hook)(nrf_802154_transmit_params_t            * p_params,
                                        nrf_802154_transmit_failed_notification_t notify_function);
-typedef bool (* tx_setup_hook)(nrf_802154_transmit_params_t            * p_params,
-                               nrf_802154_transmit_failed_notification_t notify_function);
+typedef nrf_802154_tx_error_t (* tx_setup_hook)(nrf_802154_transmit_params_t * p_params);
 typedef void (* transmitted_hook)(const nrf_802154_frame_t * p_frame);
-typedef bool (* tx_failed_hook)(uint8_t * p_frame, nrf_802154_tx_error_t error);
+typedef void (* tx_failed_hook)(uint8_t * p_frame, nrf_802154_tx_error_t error);
 typedef void (* tx_ack_failed_hook)(uint8_t * p_ack, nrf_802154_tx_error_t error);
-typedef bool (* tx_started_hook)(uint8_t * p_frame);
+typedef void (* tx_started_hook)(uint8_t * p_frame);
 typedef void (* rx_started_hook)(const nrf_802154_frame_t * p_frame);
 typedef void (* rx_ack_started_hook)(void);
 typedef void (* tx_ack_started_hook)(uint8_t * p_ack);
@@ -75,10 +73,6 @@ typedef void (* tx_ack_started_hook)(uint8_t * p_ack);
 
 static const abort_hook m_abort_hooks[] =
 {
-#if NRF_802154_CSMA_CA_ENABLED
-    nrf_802154_csma_ca_abort,
-#endif
-
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_abort,
 #endif
@@ -132,10 +126,6 @@ static const transmitted_hook m_transmitted_hooks[] =
 
 static const tx_failed_hook m_tx_failed_hooks[] =
 {
-#if NRF_802154_CSMA_CA_ENABLED
-    nrf_802154_csma_ca_tx_failed_hook,
-#endif
-
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_tx_failed_hook,
 #endif
@@ -158,10 +148,6 @@ static const tx_ack_failed_hook m_tx_ack_failed_hooks[] =
 
 static const tx_started_hook m_tx_started_hooks[] =
 {
-#if NRF_802154_CSMA_CA_ENABLED
-    nrf_802154_csma_ca_tx_started_hook,
-#endif
-
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_tx_started_hook,
 #endif
@@ -263,11 +249,10 @@ bool nrf_802154_core_hooks_pre_transmission(
     return result;
 }
 
-bool nrf_802154_core_hooks_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
+nrf_802154_tx_error_t nrf_802154_core_hooks_tx_setup(
+    nrf_802154_transmit_params_t * p_params)
 {
-    bool result = true;
+    nrf_802154_tx_error_t result = NRF_802154_TX_ERROR_NONE;
 
     for (uint32_t i = 0; i < sizeof(m_tx_setup_hooks) / sizeof(m_tx_setup_hooks[0]);
          i++)
@@ -277,9 +262,9 @@ bool nrf_802154_core_hooks_tx_setup(
             break;
         }
 
-        result = m_tx_setup_hooks[i](p_params, notify_function);
+        result = m_tx_setup_hooks[i](p_params);
 
-        if (!result)
+        if (result != NRF_802154_TX_ERROR_NONE)
         {
             break;
         }
@@ -301,10 +286,8 @@ void nrf_802154_core_hooks_transmitted(const nrf_802154_frame_t * p_frame)
     }
 }
 
-bool nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t error)
+void nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
-    bool result = true;
-
     for (uint32_t i = 0; i < sizeof(m_tx_failed_hooks) / sizeof(m_tx_failed_hooks[0]); i++)
     {
         if (m_tx_failed_hooks[i] == NULL)
@@ -312,15 +295,8 @@ bool nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t er
             break;
         }
 
-        result = m_tx_failed_hooks[i](p_frame, error);
-
-        if (!result)
-        {
-            break;
-        }
+        m_tx_failed_hooks[i](p_frame, error);
     }
-
-    return result;
 }
 
 void nrf_802154_core_hooks_tx_ack_failed(uint8_t * p_ack, nrf_802154_tx_error_t error)
@@ -336,10 +312,8 @@ void nrf_802154_core_hooks_tx_ack_failed(uint8_t * p_ack, nrf_802154_tx_error_t 
     }
 }
 
-bool nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
+void nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
 {
-    bool result = true;
-
     for (uint32_t i = 0; i < sizeof(m_tx_started_hooks) / sizeof(m_tx_started_hooks[0]); i++)
     {
         if (m_tx_started_hooks[i] == NULL)
@@ -347,15 +321,8 @@ bool nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
             break;
         }
 
-        result = m_tx_started_hooks[i](p_frame);
-
-        if (!result)
-        {
-            break;
-        }
+        m_tx_started_hooks[i](p_frame);
     }
-
-    return result;
 }
 
 void nrf_802154_core_hooks_rx_started(const nrf_802154_frame_t * p_frame)

@@ -52,7 +52,6 @@
 #include "nrf_802154_co.h"
 #include "nrf_802154_critical_section.h"
 #include "nrf_802154_debug.h"
-#include "nrf_802154_tx_work_buffer.h"
 
 #define RAW_LENGTH_OFFSET  0
 #define RAW_PAYLOAD_OFFSET 1
@@ -84,14 +83,11 @@ bool nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id, 
     return true;
 }
 
-void nrf_802154_notify_transmitted(uint8_t                             * p_frame,
-                                   nrf_802154_transmit_done_metadata_t * p_metadata)
+void nrf_802154_notify_transmitted(uint8_t                                   * p_frame,
+                                   const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    // Update the transmitted frame contents and update frame status flags
-    nrf_802154_tx_work_buffer_original_frame_update(p_frame,
-                                                    &p_metadata->frame_props);
     // Notify
     nrf_802154_co_transmitted_raw(p_frame, p_metadata);
 

@@ -110,20 +110,19 @@
  */
 #define PRESTARTED_TIMER_TIMEOUT_US (160U)
 
-static rx_buffer_t * mp_current_rx_buffer;                      /// Pointer to currently used receive buffer.
-static uint8_t                       * mp_ack;                  ///< Pointer to Ack frame buffer.
-static nrf_802154_frame_t              m_tx_data;               ///< Data structure of the frame to be transmitted.
-static uint32_t                        m_ed_time_left;          ///< Remaining time of the current energy detection procedure [us].
-static int8_t                          m_ed_result;             ///< Result of the current energy detection procedure.
-static uint8_t                         m_last_lqi;              ///< LQI of the last received non-ACK frame, corrected for the temperature.
-static nrf_802154_fal_tx_power_split_t m_tx_power;              ///< Power to be used to transmit the current frame split into components.
-static uint8_t                         m_tx_channel;            ///< Channel to be used to transmit the current frame.
-static int8_t                          m_last_rssi;             ///< RSSI of the last received non-ACK frame, corrected for the temperature.
-static uint8_t                         m_no_rx_buffer_notified; ///< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified.
+static rx_buffer_t * mp_current_rx_buffer;         /// Pointer to currently used receive buffer.
+static uint8_t * mp_ack;                           ///< Pointer to Ack frame buffer.
+static uint32_t  m_ed_time_left;                   ///< Remaining time of the current energy detection procedure [us].
+static int8_t    m_ed_result;                      ///< Result of the current energy detection procedure.
+static uint8_t   m_last_lqi;                       ///< LQI of the last received non-ACK frame, corrected for the temperature.
+static int8_t    m_last_rssi;                      ///< RSSI of the last received non-ACK frame, corrected for the temperature.
+static uint8_t   m_no_rx_buffer_notified;          ///< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified.
 
-static nrf_802154_frame_t m_current_rx_frame_data;              ///< RX frame parser data.
+static nrf_802154_frame_t m_current_rx_frame_data; ///< RX frame parser data.
 
-static volatile radio_state_t m_state;                          ///< State of the radio driver.
+static nrf_802154_transmit_params_t m_tx;
+
+static volatile radio_state_t m_state; ///< State of the radio driver.
 
 typedef struct
 {
@@ -317,18 +316,6 @@ static void receive_failed_notify(nrf_802154_rx_error_t error)
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Notify MAC layer that transmission of requested frame has started. */
-static void transmit_started_notify(void)
-{
-#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-    /**
-     * TX started hooks were executed before transmission started. Use latched result
-     */
-#else
-    (void)nrf_802154_core_hooks_tx_started(m_tx_data.p_frame);
-#endif
-}
-
 /** Notify MAC layer that transmission of ACK frame has started. */
 static void transmit_ack_started_notify()
 {
@@ -348,9 +335,80 @@ static void receive_started_notify(void)
     nrf_802154_core_hooks_rx_started(&m_current_rx_frame_data);
 }
 
+static bool tx_client_can_abort(nrf_802154_term_t term_lvl,
+                                req_originator_t  req_orig)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = true;
+
+    if (m_tx.p_client != NULL)
+    {
+        result = m_tx.p_client->p_iface->can_abort(term_lvl, req_orig, m_tx.p_client);
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return result;
+}
+
+static void tx_client_failed_notify(uint8_t                                   * p_frame,
+                                    nrf_802154_tx_error_t                       error,
+                                    const nrf_802154_transmit_done_metadata_t * p_meta)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    NRF_802154_ASSERT(m_tx.p_client != NULL);
+    m_tx.p_client->p_iface->failed(p_frame, error, p_meta, m_tx.p_client);
+    m_tx.p_client = NULL;
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void tx_client_started_notify(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    NRF_802154_ASSERT(m_tx.p_client != NULL);
+    m_tx.p_client->p_iface->started(m_tx.p_client);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void tx_client_transmitted_notify(nrf_802154_frame_t                        * p_frame,
+                                         const nrf_802154_transmit_done_metadata_t * p_meta)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    NRF_802154_ASSERT(m_tx.p_client != NULL);
+    m_tx.p_client->p_iface->done(p_frame->p_frame, p_meta, m_tx.p_client);
+    m_tx.p_client = NULL;
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+/** Notify MAC layer that transmission of requested frame has started. */
+static void transmit_started_notify(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    /**
+     * TX started hooks were executed before transmission started. Use latched result
+     */
+#else
+    nrf_802154_core_hooks_tx_started(m_tx.frame.p_frame);
+    tx_client_started_notify();
+#endif
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
 /** Notify MAC layer that a frame was transmitted. */
 static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 {
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
     nrf_802154_transmit_done_metadata_t metadata = {0};
 
     metadata.data.transmitted.p_ack = p_ack;
@@ -367,24 +425,31 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
         nrf_802154_stat_timestamp_read(&metadata.data.transmitted.time, last_ack_end_timestamp);
     }
 
+    // Update the transmitted frame contents and update frame status flags
+    nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
+                                                    &metadata.frame_props);
+
     nrf_802154_critical_section_nesting_allow();
 
-    nrf_802154_core_hooks_transmitted(&m_tx_data);
+    nrf_802154_core_hooks_transmitted(&m_tx.frame);
 
-    nrf_802154_notify_transmitted(m_tx_data.p_frame, &metadata);
+    tx_client_transmitted_notify(&m_tx.frame, &metadata);
 
     nrf_802154_critical_section_nesting_deny();
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
 /** Notify MAC layer that transmission procedure failed. */
-static void transmit_failed_notify(uint8_t                                   * p_frame,
-                                   nrf_802154_tx_error_t                       error,
+static void transmit_failed_notify(nrf_802154_tx_error_t                       error,
                                    const nrf_802154_transmit_done_metadata_t * p_meta)
 {
-    if (nrf_802154_core_hooks_tx_failed(p_frame, error))
-    {
-        nrf_802154_notify_transmit_failed(p_frame, error, p_meta);
-    }
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    nrf_802154_core_hooks_tx_failed(m_tx.frame.p_frame, error);
+    tx_client_failed_notify(m_tx.frame.p_frame, error, p_meta);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
 /** Allow nesting critical sections and notify MAC layer that transmission procedure failed. */
@@ -394,7 +459,7 @@ static void transmit_failed_notify_and_nesting_allow(
 {
     nrf_802154_critical_section_nesting_allow();
 
-    transmit_failed_notify(m_tx_data.p_frame, error, p_meta);
+    transmit_failed_notify(error, p_meta);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -726,9 +791,9 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         {
             nrf_802154_transmit_done_metadata_t metadata = {};
 
-            nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+            nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
                                                             &metadata.frame_props);
-            transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_ABORTED, &metadata);
+            transmit_failed_notify(NRF_802154_TX_ERROR_ABORTED, &metadata);
         }
         break;
 
@@ -736,9 +801,9 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         {
             nrf_802154_transmit_done_metadata_t metadata = {};
 
-            nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+            nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
                                                             &metadata.frame_props);
-            transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_NO_ACK, &metadata);
+            transmit_failed_notify(NRF_802154_TX_ERROR_NO_ACK, &metadata);
         }
         break;
 
@@ -773,7 +838,12 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
                                         req_originator_t  req_orig,
                                         bool              notify)
 {
-    bool result = nrf_802154_core_hooks_terminate(term_lvl, req_orig);
+    bool result = tx_client_can_abort(term_lvl, req_orig);
+
+    if (result)
+    {
+        result = nrf_802154_core_hooks_terminate(term_lvl, req_orig);
+    }
 
     if (result)
     {
@@ -1054,12 +1124,12 @@ static bool tx_init(const nrf_802154_frame_t            * p_frame,
     }
 #endif
 
-    nrf_802154_trx_channel_set(m_tx_channel);
+    nrf_802154_trx_channel_set(m_tx.channel);
     m_flags.tx_with_cca = cca;
     nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_frame->p_frame),
                                   rampup_trigg_mode,
                                   cca_attempts,
-                                  &m_tx_power,
+                                  &m_tx.tx_power,
                                   m_trx_transmit_frame_notifications_mask);
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     /**
@@ -1094,7 +1164,9 @@ static bool tx_init(const nrf_802154_frame_t            * p_frame,
 
     nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
 
-    m_flags.tx_started_notify = nrf_802154_core_hooks_tx_started(m_tx_data.p_frame);
+    nrf_802154_core_hooks_tx_started(m_tx.frame.p_frame);
+    tx_client_started_notify();
+    m_flags.tx_started_notify = true;
 
     nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
 
@@ -1264,7 +1336,6 @@ static void on_timeslot_ended(void)
 
         result = nrf_802154_core_hooks_terminate(NRF_802154_TERM_802154, REQ_ORIG_RSCH);
         NRF_802154_ASSERT(result);
-        (void)result;
 
         switch (m_state)
         {
@@ -1293,7 +1364,7 @@ static void on_timeslot_ended(void)
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
-                nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
                                                                 &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED,
                                                          &metadata);
@@ -1305,7 +1376,7 @@ static void on_timeslot_ended(void)
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
-                nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame,
+                nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
                                                                 &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_NO_ACK,
                                                          &metadata);
@@ -1412,11 +1483,11 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_CCA_TX:
-            (void)tx_init(&m_tx_data, TRX_RAMP_UP_SW_TRIGGER, true);
+            (void)tx_init(&m_tx.frame, TRX_RAMP_UP_SW_TRIGGER, true);
             break;
 
         case RADIO_STATE_TX:
-            (void)tx_init(&m_tx_data, TRX_RAMP_UP_SW_TRIGGER, false);
+            (void)tx_init(&m_tx.frame, TRX_RAMP_UP_SW_TRIGGER, false);
             break;
 
         case RADIO_STATE_ED:
@@ -1433,7 +1504,7 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_MODULATED_CARRIER:
-            modulated_carrier_init(m_tx_data.p_frame);
+            modulated_carrier_init(m_tx.frame.p_frame);
             break;
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
@@ -2155,7 +2226,7 @@ void nrf_802154_trx_transmit_frame_started(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     NRF_802154_ASSERT((m_state == RADIO_STATE_TX) || (m_state == RADIO_STATE_CCA_TX));
-    if (tx_started_core_hooks_will_fit_within_timeslot(m_tx_data.p_frame))
+    if (tx_started_core_hooks_will_fit_within_timeslot(m_tx.frame.p_frame))
     {
         transmit_started_notify();
     }
@@ -2166,9 +2237,9 @@ void nrf_802154_trx_transmit_frame_started(void)
 
         nrf_802154_transmit_done_metadata_t metadata = {};
 
-        nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
+        nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame, &metadata.frame_props);
 
-        transmit_failed_notify(m_tx_data.p_frame, NRF_802154_TX_ERROR_TIMESLOT_ENDED, &metadata);
+        transmit_failed_notify(NRF_802154_TX_ERROR_TIMESLOT_ENDED, &metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2231,7 +2302,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
         m_flags.tx_diminished_prio = false;
 
         // We calculate the timestamp when ccaidle must happened.
-        ts -= nrf_802154_frame_duration_get(m_tx_data.p_frame[0],
+        ts -= nrf_802154_frame_duration_get(m_tx.frame.p_frame[0],
                                             true,
                                             true) + RX_TX_TURNAROUND_TIME;
 
@@ -2240,7 +2311,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 
 #endif
 
-    if (tx_frame_ack_is_requested(&m_tx_data))
+    if (tx_frame_ack_is_requested(&m_tx.frame))
     {
         state_set(RADIO_STATE_RX_ACK);
 
@@ -2366,7 +2437,7 @@ static void on_bad_ack(void)
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
-    nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
+    nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame, &metadata.frame_props);
     transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_INVALID_ACK, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2384,7 +2455,7 @@ void nrf_802154_trx_receive_ack_received(void)
                                                     PARSE_LEVEL_ADDRESSING_END,
                                                     &m_current_rx_frame_data);
 
-    if (result && ack_match_check(&m_tx_data, &m_current_rx_frame_data))
+    if (result && ack_match_check(&m_tx.frame, &m_current_rx_frame_data))
     {
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
         uint64_t ts = timer_coord_timestamp_get();
@@ -2399,9 +2470,9 @@ void nrf_802154_trx_receive_ack_received(void)
         // Detect Frame Pending field set to one on Ack frame received after a Data Request Command
         bool should_receive = false;
 
-        if (nrf_802154_frame_type_get(&m_tx_data) == FRAME_TYPE_COMMAND)
+        if (nrf_802154_frame_type_get(&m_tx.frame) == FRAME_TYPE_COMMAND)
         {
-            const uint8_t * p_cmd = nrf_802154_frame_mac_command_id_get(&m_tx_data);
+            const uint8_t * p_cmd = nrf_802154_frame_mac_command_id_get(&m_tx.frame);
 
             if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
             {
@@ -2488,7 +2559,7 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
-    nrf_802154_tx_work_buffer_original_frame_update(m_tx_data.p_frame, &metadata.frame_props);
+    nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame, &metadata.frame_props);
     transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_BUSY_CHANNEL, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2693,84 +2764,81 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
     return result;
 }
 
-bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
-                              req_originator_t               req_orig,
-                              nrf_802154_transmit_params_t * p_params,
-                              nrf_802154_notification_func_t notify_function)
+nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
+                                               req_originator_t               req_orig,
+                                               nrf_802154_transmit_params_t * p_params)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    bool result = critical_section_enter_and_verify_timeslot_length();
+    bool                  result            = critical_section_enter_and_verify_timeslot_length();
+    bool                  crit_sect_entered = result;
+    nrf_802154_tx_error_t error             = NRF_802154_TX_ERROR_TIMESLOT_DENIED;
 
     if (result)
     {
-        if (nrf_802154_core_hooks_pre_transmission(p_params, &transmit_failed_notify))
-        {
-            result = current_operation_terminate(term_lvl, req_orig, true);
-
-            if (result)
-            {
-                nrf_802154_tx_work_buffer_reset(&p_params->frame_props);
-                result = nrf_802154_core_hooks_tx_setup(p_params, &transmit_failed_notify);
-
-                if (!result)
-                {
-                    switch_to_idle();
-                }
-            }
-
-            if (result)
-            {
-                m_coex_tx_request_mode                  = nrf_802154_pib_coex_tx_request_mode_get();
-                m_trx_transmit_frame_notifications_mask =
-                    make_trx_frame_transmit_notification_mask(p_params->cca);
-                m_flags.tx_diminished_prio =
-                    m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE;
-
-                state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
-                m_tx_data    = p_params->frame;
-                m_tx_power   = p_params->tx_power;
-                m_tx_channel = p_params->channel;
-
-                uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
-
-                // coverity[check_return]
-                result = tx_init(&p_params->frame,
-                                 ramp_up_mode_choose(req_orig),
-                                 cca_attempts);
-
-                if (p_params->immediate)
-                {
-                    if (!result)
-                    {
-                        switch_to_idle();
-                    }
-                }
-                else
-                {
-                    result = true;
-                }
-            }
-        }
-
-        if (notify_function != NULL)
-        {
-            notify_function(result);
-        }
-
-        nrf_802154_critical_section_exit();
+        result = nrf_802154_core_hooks_pre_transmission(p_params, &transmit_failed_notify);
     }
-    else
+
+    if (result)
     {
-        if (notify_function != NULL)
+        result = current_operation_terminate(term_lvl, req_orig, true);
+    }
+
+    if (result)
+    {
+        nrf_802154_tx_work_buffer_reset(&p_params->frame_props);
+        error  = nrf_802154_core_hooks_tx_setup(p_params);
+        result = error == NRF_802154_TX_ERROR_NONE;
+
+        if (!result)
         {
-            notify_function(false);
+            switch_to_idle();
         }
+    }
+
+    if (result)
+    {
+        m_coex_tx_request_mode                  = nrf_802154_pib_coex_tx_request_mode_get();
+        m_trx_transmit_frame_notifications_mask =
+            make_trx_frame_transmit_notification_mask(p_params->cca);
+        m_flags.tx_diminished_prio =
+            m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE;
+
+        state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
+        m_tx = *p_params;
+
+        uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
+
+        // coverity[check_return]
+        result = tx_init(&p_params->frame,
+                         ramp_up_mode_choose(req_orig),
+                         cca_attempts);
+
+        if (p_params->immediate && !result)
+        {
+            error         = NRF_802154_TX_ERROR_TIMESLOT_DENIED;
+            m_tx.p_client = NULL;
+            switch_to_idle();
+        }
+        else
+        {
+            result = true;
+        }
+    }
+
+    if (p_params->rsch_timeslot_id != NRF_802154_RSCH_DLY_TS_ID_INVALID)
+    {
+        nrf_802154_rsch_delayed_timeslot_cancel(p_params->rsch_timeslot_id, true);
+    }
+
+    if (crit_sect_entered)
+    {
+        nrf_802154_critical_section_exit();
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
-    return result;
+    return error;
 }
 
 bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
@@ -2781,7 +2849,7 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
 
     if (result)
     {
-        if ((m_state == RADIO_STATE_RX_ACK) && (p_param->p_frame == m_tx_data.p_frame))
+        if ((m_state == RADIO_STATE_RX_ACK) && (p_param->p_frame == m_tx.frame.p_frame))
         {
             bool r;
 
@@ -2804,9 +2872,8 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
 
             nrf_802154_tx_work_buffer_original_frame_update(p_param->p_frame,
                                                             &metadata.frame_props);
-            nrf_802154_notify_transmit_failed(p_param->p_frame,
-                                              NRF_802154_TX_ERROR_NO_ACK,
-                                              &metadata);
+
+            tx_client_failed_notify(p_param->p_frame, NRF_802154_TX_ERROR_NO_ACK, &metadata);
         }
 
         nrf_802154_critical_section_exit();
@@ -2913,7 +2980,7 @@ bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
         if (result)
         {
             state_set(RADIO_STATE_MODULATED_CARRIER);
-            m_tx_data.p_frame = (uint8_t *)p_data;
+            m_tx.frame.p_frame = (uint8_t *)p_data;
             modulated_carrier_init(p_data);
         }
 

@@ -69,8 +69,8 @@ typedef enum
 {
     CSMA_CA_STATE_IDLE,                                   ///< The CSMA-CA procedure is inactive.
     CSMA_CA_STATE_BACKOFF,                                ///< The CSMA-CA procedure is in backoff stage.
-    CSMA_CA_STATE_ONGOING,                                ///< The frame is being sent.
-    CSMA_CA_STATE_ABORTED                                 ///< The CSMA-CA procedure is being aborted.
+    CSMA_CA_STATE_ATTEMPTING_CCATX,                       ///< The frame transmit attempt is in progress.
+    CSMA_CA_STATE_TRANSMITTING,                           ///< The frame has begun transmission.
 } csma_ca_state_t;
 
 static uint8_t m_nb;                                      ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
@@ -85,17 +85,29 @@ static bool m_tx_timestamp_encode;                        ///< Tx timestamp requ
 #endif
 static csma_ca_state_t m_state;                           ///< The current state of the CSMA-CA procedure.
 
-/**
- * @brief Perform appropriate actions for busy channel conditions.
- *
- * According to CSMA-CA description in 802.15.4 specification, when channel is busy NB and BE shall
- * be incremented and the device shall wait random delay before next CCA procedure. If NB reaches
- * macMaxCsmaBackoffs procedure fails.
- *
- * @retval true   Procedure failed and TX failure should be notified to the next higher layer.
- * @retval false  Procedure is still ongoing and TX failure should be handled internally.
- */
-static bool channel_busy(void);
+static bool csma_ca_can_abort(nrf_802154_term_t              term_lvl,
+                              req_originator_t               req_orig,
+                              const nrf_802154_tx_client_t * p_client);
+static void csma_ca_failed(uint8_t                                   * p_frame,
+                           nrf_802154_tx_error_t                       error,
+                           const nrf_802154_transmit_done_metadata_t * p_metadata,
+                           const nrf_802154_tx_client_t              * p_client);
+static void csma_ca_tx_started(const nrf_802154_tx_client_t * p_client);
+
+static void csma_ca_tx_done(uint8_t                                   * p_frame,
+                            const nrf_802154_transmit_done_metadata_t * p_metadata,
+                            const nrf_802154_tx_client_t              * p_client);
+
+static const nrf_802154_tx_client_interface_t m_csma_ca_tx_client_iface = {
+    .can_abort = csma_ca_can_abort,
+    .failed    = csma_ca_failed,
+    .started   = csma_ca_tx_started,
+    .done      = csma_ca_tx_done,
+};
+
+static nrf_802154_tx_client_t m_csma_ca_tx_client = {
+    .p_iface = &m_csma_ca_tx_client_iface,
+};
 
 static bool csma_ca_state_set(csma_ca_state_t expected, csma_ca_state_t desired)
 {
@@ -138,44 +150,6 @@ static void priority_leverage(void)
 }
 
 /**
- * @brief Notify MAC layer that CSMA-CA failed
- *
- * @param[in]  error  The error that caused the failure
- */
-static void notify_failed(nrf_802154_tx_error_t error)
-{
-    // core rejected attempt, use my current frame_props
-    nrf_802154_transmit_done_metadata_t metadata = {};
-
-    metadata.frame_props = m_data_props;
-
-    nrf_802154_notify_transmit_failed(m_frame.p_frame, error, &metadata);
-}
-
-/**
- * @brief Notify MAC layer that channel is busy if tx request failed and there are no retries left.
- *
- * @param[in]  result  Result of TX request.
- */
-static void notify_busy_channel(bool result)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID, true);
-
-    // The 802.15.4 specification requires CSMA-CA to continue until m_nb is strictly greater
-    // than nrf_802154_pib_csmaca_max_backoffs_get(), but at the moment this function is executed
-    // the value of m_nb has not yet been incremented to reflect the latest attempt. Therefore
-    // the comparison uses `greater or equal` instead of `greater than`.
-    if (!result && (m_nb >= nrf_802154_pib_csmaca_max_backoffs_get()))
-    {
-        notify_failed(NRF_802154_TX_ERROR_BUSY_CHANNEL);
-    }
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
-}
-
-/**
  * @brief Perform CCA procedure followed by frame transmission.
  *
  * If transmission is requested, CSMA-CA module waits for notification from the FSM module.
@@ -190,7 +164,9 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    if (csma_ca_state_set(CSMA_CA_STATE_BACKOFF, CSMA_CA_STATE_ONGOING))
+    nrf_802154_tx_error_t result = NRF_802154_TX_ERROR_NONE;
+
+    if (csma_ca_state_set(CSMA_CA_STATE_BACKOFF, CSMA_CA_STATE_ATTEMPTING_CCATX))
     {
         priority_leverage();
 
@@ -208,19 +184,28 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 #else
             .tx_timestamp_encode = false,
 #endif
+            .p_client         = &m_csma_ca_tx_client,
+            .rsch_timeslot_id = dly_ts_id,
         };
 
-        if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,
-                                         REQ_ORIG_CSMA_CA,
-                                         &params,
-                                         notify_busy_channel))
-        {
-            (void)channel_busy();
-        }
+        result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
+                                             REQ_ORIG_CSMA_CA,
+                                             &params);
     }
     else
     {
-        nrf_802154_rsch_delayed_timeslot_cancel(dly_ts_id, true);
+        bool cancel_status = nrf_802154_rsch_delayed_timeslot_cancel(dly_ts_id, true);
+
+        NRF_802154_ASSERT(cancel_status);
+        (void)cancel_status;
+    }
+
+    if (result != NRF_802154_TX_ERROR_NONE)
+    {
+        nrf_802154_transmit_done_metadata_t metadata = {};
+
+        metadata.frame_props = m_data_props;
+        csma_ca_failed(m_frame.p_frame, result, &metadata, &m_csma_ca_tx_client);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -322,13 +307,23 @@ static void random_backoff_start(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
+/**
+ * @brief Perform appropriate actions for busy channel conditions.
+ *
+ * According to CSMA-CA description in 802.15.4 specification, when channel is busy NB and BE shall
+ * be incremented and the device shall wait random delay before next CCA procedure. If NB reaches
+ * macMaxCsmaBackoffs procedure fails.
+ *
+ * @retval true   Procedure failed and TX failure should be notified to the next higher layer.
+ * @retval false  Procedure is still ongoing and TX failure should be handled internally.
+ */
 static bool channel_busy(void)
 {
     bool result = true;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    if (csma_ca_state_set(CSMA_CA_STATE_ONGOING, CSMA_CA_STATE_BACKOFF))
+    if (csma_ca_state_set(CSMA_CA_STATE_ATTEMPTING_CCATX, CSMA_CA_STATE_BACKOFF))
     {
         m_nb++;
 
@@ -339,7 +334,6 @@ static bool channel_busy(void)
 
         if (m_nb > nrf_802154_pib_csmaca_max_backoffs_get())
         {
-            nrf_802154_frame_parser_data_clear(&m_frame);
             bool ret = csma_ca_state_set(CSMA_CA_STATE_BACKOFF, CSMA_CA_STATE_IDLE);
 
             NRF_802154_ASSERT(ret);
@@ -395,14 +389,17 @@ bool nrf_802154_csma_ca_start(const nrf_802154_frame_t                     * p_f
     return true;
 }
 
-bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
+static bool csma_ca_can_abort(nrf_802154_term_t              term_lvl,
+                              req_originator_t               req_orig,
+                              const nrf_802154_tx_client_t * p_client)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+    (void)p_client;
+
     bool result = true;
 
-    if (((req_orig != REQ_ORIG_CORE) && (req_orig != REQ_ORIG_HIGHER_LAYER)) ||
-        (CSMA_CA_STATE_IDLE == nrf_802154_sl_atomic_load_u8((uint8_t *)&m_state)))
+    if ((req_orig != REQ_ORIG_CORE) && (req_orig != REQ_ORIG_HIGHER_LAYER))
     {
         // The request does not originate from core or the higher layer or the procedure
         // is stopped already. Ignore the abort request and return success, no matter
@@ -411,10 +408,7 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
     else if (term_lvl >= NRF_802154_TERM_802154)
     {
         // The procedure is active and the termination level allows the abort
-        // request to be executed. Force aborted state. Don't clear the frame
-        // pointer - it might be needed to notify failure.
-        nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_ABORTED);
-        nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID, false);
+        // request to be executed.
     }
     else
     {
@@ -428,70 +422,69 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
     return result;
 }
 
-bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
+static void csma_ca_failed(uint8_t                                   * p_frame,
+                           nrf_802154_tx_error_t                       error,
+                           const nrf_802154_transmit_done_metadata_t * p_metadata,
+                           const nrf_802154_tx_client_t              * p_client)
 {
-    bool result = true;
-
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    (void)p_client;
 
     switch (error)
     {
-        // Below errors mean a failure occurred during the frame processing and the frame cannot be
-        // transmitted unless a higher layer takes appropriate actions, hence the CSMA-CA procedure
-        // shall be stopped.
-        case NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR:
-        case NRF_802154_TX_ERROR_KEY_ID_INVALID:
-        /* Fallthrough. */
-        case NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR:
-            if (m_frame.p_frame == p_frame)
+        case NRF_802154_TX_ERROR_TIMESLOT_DENIED:
+        case NRF_802154_TX_ERROR_BUSY_CHANNEL:
+        case NRF_802154_TX_ERROR_TIMESLOT_ENDED:
+            if (channel_busy())
             {
-                nrf_802154_frame_parser_data_clear(&m_frame);
                 nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
+                nrf_802154_frame_parser_data_clear(&m_frame);
+                nrf_802154_notify_transmit_failed(p_frame,
+                                                  NRF_802154_TX_ERROR_BUSY_CHANNEL,
+                                                  p_metadata);
             }
             break;
 
         default:
-            if (csma_ca_state_set(CSMA_CA_STATE_ABORTED, CSMA_CA_STATE_IDLE))
-            {
-                // The procedure was successfully aborted.
-
-                if (p_frame != m_frame.p_frame)
-                {
-                    // The procedure was aborted while another operation was holding
-                    // frame pointer in the core - hence p_frame points to a different
-                    // frame than mp_data. CSMA-CA failure must be notified directly.
-                    notify_failed(error);
-                }
-            }
-            else if (p_frame == m_frame.p_frame)
-            {
-                // The procedure is active and transmission attempt failed. Try again
-                result = channel_busy();
-            }
-            else
-            {
-                // Intentionally empty.
-            }
+            nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
+            nrf_802154_frame_parser_data_clear(&m_frame);
+            nrf_802154_notify_transmit_failed(p_frame, error, p_metadata);
             break;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-
-    return result;
 }
 
-bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame)
+static void csma_ca_tx_started(const nrf_802154_tx_client_t * p_client)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    if (m_frame.p_frame == p_frame)
-    {
-        nrf_802154_frame_parser_data_clear(&m_frame);
-        nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
-    }
+    (void)p_client;
+
+    bool result = csma_ca_state_set(CSMA_CA_STATE_ATTEMPTING_CCATX, CSMA_CA_STATE_TRANSMITTING);
+
+    NRF_802154_ASSERT(result);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return true;
+}
+
+static void csma_ca_tx_done(uint8_t                                   * p_frame,
+                            const nrf_802154_transmit_done_metadata_t * p_metadata,
+                            const nrf_802154_tx_client_t              * p_client)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    (void)p_client;
+
+    bool result = csma_ca_state_set(CSMA_CA_STATE_TRANSMITTING, CSMA_CA_STATE_IDLE);
+
+    NRF_802154_ASSERT(result);
+
+    nrf_802154_frame_parser_data_clear(&m_frame);
+    nrf_802154_notify_transmitted(p_frame, p_metadata);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
 #endif // NRF_802154_CSMA_CA_ENABLED

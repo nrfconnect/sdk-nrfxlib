@@ -87,13 +87,11 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
  * unarmed state. There is no guarantee that all malformed frames will be detected.
  *
  * @param[in]  p_params         Pointer to the transmission parameters.
- * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
- * @retval  true         Always succeeds.
+ * @retval  NRF_802154_TX_ERROR_NONE  Always succeeds.
  */
-bool nrf_802154_ie_writer_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function);
+nrf_802154_tx_error_t nrf_802154_ie_writer_tx_setup(
+    nrf_802154_transmit_params_t * p_params);
 
 /**
  * @brief ACK TX started hook for the IE writer module.
@@ -125,10 +123,8 @@ void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack);
  * that this hook must not exceed.
  *
  * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- *
- * @retval  true  Always succeeds.
  */
-bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame);
+void nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame);
 
 /**
  * @brief Sets the value of CSL period to inject into the CSL information element.

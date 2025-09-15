@@ -101,8 +101,8 @@ bool nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id, 
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
  * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
-void nrf_802154_notify_transmitted(uint8_t                             * p_frame,
-                                   nrf_802154_transmit_done_metadata_t * p_metadata);
+void nrf_802154_notify_transmitted(uint8_t                                   * p_frame,
+                                   const nrf_802154_transmit_done_metadata_t * p_metadata);
 
 /**
  * @brief Notifies the next higher layer that a frame was not transmitted.

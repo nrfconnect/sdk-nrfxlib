@@ -497,7 +497,6 @@ typedef struct
  * @brief Function pointer used for notifying about transmission failure.
  */
 typedef void (* nrf_802154_transmit_failed_notification_t)(
-    uint8_t                                   * p_frame,
     nrf_802154_tx_error_t                       error,
     const nrf_802154_transmit_done_metadata_t * p_meta);
 

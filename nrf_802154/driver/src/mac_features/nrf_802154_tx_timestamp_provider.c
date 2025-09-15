@@ -49,9 +49,8 @@
 static uint64_t  m_tx_timestamp_us;    ///< Cached transmit timestamp.
 static uint8_t * mp_tx_timestamp_addr; ///< Cached tx timestamp placeholder address.
 
-bool nrf_802154_tx_timestamp_provider_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
+nrf_802154_tx_error_t nrf_802154_tx_timestamp_provider_tx_setup(
+    nrf_802154_transmit_params_t * p_params)
 {
     NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
                       PARSE_LEVEL_FULL);
@@ -64,7 +63,7 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
     if (p_params->tx_timestamp_encode == false)
     {
         // There is nothing to do.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     do
@@ -104,25 +103,20 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
 
     if (result == false)
     {
-        nrf_802154_transmit_done_metadata_t metadata = {};
-
-        metadata.frame_props = p_params->frame_props;
-        notify_function(p_params->frame.p_frame,
-                        NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR,
-                        &metadata);
+        return NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR;
     }
 
-    return result;
+    return NRF_802154_TX_ERROR_NONE;
 }
 
-bool nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
+void nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
 {
     NRF_802154_ASSERT(m_tx_timestamp_us == 0);
 
     // Verify that the setup phase has been completed.
     if (mp_tx_timestamp_addr == NULL)
     {
-        return true;
+        return;
     }
     /* This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
      * in 802.15.4 transmit sequence RADIO.FRAMESTART event is triggered after the SHR is
@@ -137,8 +131,6 @@ bool nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
     host_64_to_big(m_tx_timestamp_us, mp_tx_timestamp_addr);
 
     mp_tx_timestamp_addr = NULL;
-
-    return true;
 }
 
 #endif // NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED

@@ -63,7 +63,8 @@ typedef enum
     NRF_802154_DRV_MODULE_ID_ACK_TIMEOUT  = 7U,
     NRF_802154_DRV_MODULE_ID_TRX_PPI      = 8U,
     NRF_802154_DRV_MODULE_ID_NOTIFICATION = 9U,
-    NRF_802154_DRV_MODULE_ID_CO           = 10U
+    NRF_802154_DRV_MODULE_ID_CO           = 10U,
+    NRF_802154_DRV_MODULE_ID_IMM_TX       = 11U,
 } nrf_802154_drv_modules_list_t;
 
 /**

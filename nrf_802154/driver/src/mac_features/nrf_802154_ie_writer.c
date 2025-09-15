@@ -623,9 +623,8 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
     ie_writer_prepare(p_ie_header, p_end_addr);
 }
 
-bool nrf_802154_ie_writer_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
+nrf_802154_tx_error_t nrf_802154_ie_writer_tx_setup(
+    nrf_802154_transmit_params_t * p_params)
 {
     NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
                       PARSE_LEVEL_FULL);
@@ -641,13 +640,13 @@ bool nrf_802154_ie_writer_tx_setup(
     if (p_params->frame_props.dynamic_data_is_set)
     {
         // The dynamic data in the frame is already set. Pass.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     if (nrf_802154_frame_type_get(&p_params->frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so skip IE writer.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     const uint8_t * p_mfr_addr;
@@ -658,21 +657,21 @@ bool nrf_802154_ie_writer_tx_setup(
 
     if (p_ie_header == NULL)
     {
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     nrf_802154_ie_writer_prepare(p_ie_header, p_mfr_addr);
 
-    return true;
+    return NRF_802154_TX_ERROR_NONE;
 }
 
-bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame)
+void nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame)
 {
     (void)p_frame;
 
     if (m_writer_state != IE_WRITER_PREPARE)
     {
-        return true;
+        return;
     }
 
     bool written = false;
@@ -692,8 +691,6 @@ bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame)
     {
         nrf_802154_tx_work_buffer_is_dynamic_data_updated_set();
     }
-
-    return true;
 }
 
 void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack)

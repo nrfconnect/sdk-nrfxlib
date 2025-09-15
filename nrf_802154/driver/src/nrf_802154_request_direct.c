@@ -88,16 +88,14 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                            id)
 }
 
-bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
-                                 req_originator_t               req_orig,
-                                 nrf_802154_transmit_params_t * p_params,
-                                 nrf_802154_notification_func_t notify_function)
+nrf_802154_tx_error_t nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
+                                                  req_originator_t               req_orig,
+                                                  nrf_802154_transmit_params_t * p_params)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_transmit,
                            term_lvl,
                            req_orig,
-                           p_params,
-                           notify_function)
+                           p_params)
 }
 
 bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
