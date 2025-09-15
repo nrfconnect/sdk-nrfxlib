@@ -14,29 +14,25 @@ jobs:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
 
-    - name: Install python dependencies
+    - name: Install west
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        # TODO: add yamllint to scripts/requirements-fixed.txt
-        pip3 install -U yamllint
-        pip3 install lxml
-        pip3 install -U python-magic junitparser==2.8.0 gitlint pylint pykwalify
-        pip3 install -U unidiff
-        pip3 install --user -U west
-        pip3 show -f west
+        pip install west
+        pip show -f west
 
     - name: West init and update
       working-directory: ncs
       env:
         PR_REF: ${{ github.event.pull_request.head.sha }}
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        export PATH="$HOME/bin:$PATH"
         west init -m https://github.com/nrfconnect/sdk-nrf
         west update
         west zephyr-export
         # west update will override the ref, so check it out again
         git -C nrfxlib checkout ${PR_REF}
+
+    - name: Install requirements
+      working-directory: ncs
+      run: pip install -r zephyr/scripts/requirements-actions.txt --require-hashes
 
     - name: Run Compliance Tests
       continue-on-error: true
@@ -44,8 +40,6 @@ jobs:
         BASE_REF: ${{ github.base_ref }}
       working-directory: ncs/nrfxlib
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        export PATH="$HOME/bin:$PATH"
         export ZEPHYR_BASE="$(dirname "$(pwd)")/zephyr"
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
