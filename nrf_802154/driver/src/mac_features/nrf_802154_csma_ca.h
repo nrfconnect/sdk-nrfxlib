@@ -67,47 +67,6 @@ bool nrf_802154_csma_ca_start(const nrf_802154_frame_t                     * p_f
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**
- * @brief Aborts the ongoing CSMA-CA procedure.
- *
- * @note Do not call this function during the execution of @ref nrf_802154_csma_ca_start
- *       (from ISR with higher priority), as it will result in an unrecoverable runtime error.
- *
- * If CSMA-CA is not running during the call, this function does nothing and returns true.
- *
- * @param[in]     term_lvl  Termination level of this request. Selects procedures to abort.
- * @param[in]     req_orig  Module that originates this request.
-
- * @retval true   CSMA-CA procedure is not running anymore.
- * @retval false  CSMA-CA cannot be stopped because of a too low termination level.
- */
-bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig);
-
-/**
- * @brief Handles a TX failed event.
- *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame
- *                      that was not transmitted.
- * @param[in]  error    Cause of failed transmission.
- *
- * @retval  true   TX failed event is to be propagated to the MAC layer.
- * @retval  false  TX failed event is not to be propagated to the MAC layer. It is handled
- *                 internally in the CSMA-CA module.
- */
-bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
-
-/**
- * @brief Handles a TX started event.
- *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame
- *                      that is being transmitted.
- *
- * @retval  true   TX started event is to be propagated to the MAC layer.
- * @retval  false  TX started event is not to be propagated to the MAC layer. It is handled
- *                 internally in the CSMA-CA module.
- */
-bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame);
-
-/**
  *@}
  **/
 

@@ -3066,9 +3066,9 @@ void nrf_802154_trx_swi_irq_handler(void)
     // If this handler is preempted by MARGIN, RADIO IRQ might be set to pending
     // and executed after MARGIN processing is finished, i.e. after the end of a timeslot.
     // To prevent that from happening, the handler is executed with disabled interrupts.
-    nrf_802154_mcu_critical_state_t mcu_crit_state;
+    nrf_802154_mcu_critical_state_t mcu_cs;
 
-    nrf_802154_mcu_critical_enter(mcu_crit_state);
+    mcu_cs = nrf_802154_mcu_critical_enter();
 
     if (nrf_egu_int_enable_check(NRF_802154_EGU_INSTANCE, EGU_SYNC_INTMASK) &&
         nrf_egu_event_check(NRF_802154_EGU_INSTANCE, EGU_SYNC_EVENT))
@@ -3088,7 +3088,7 @@ void nrf_802154_trx_swi_irq_handler(void)
         nrf_802154_irq_set_pending(nrfx_get_irq_number(NRF_RADIO));
     }
 
-    nrf_802154_mcu_critical_exit(mcu_crit_state);
+    nrf_802154_mcu_critical_exit(mcu_cs);
 }
 
 #endif

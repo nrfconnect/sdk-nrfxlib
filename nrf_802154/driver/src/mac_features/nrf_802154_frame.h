@@ -40,11 +40,22 @@
 #ifndef NRF_802154_FRAME_H
 #define NRF_802154_FRAME_H
 
+#include "nrfx.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_utils_byteorder.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+
+#ifdef __STATIC_INLINE__
+#undef __STATIC_INLINE__
+#endif
+
+#ifdef NRF_802154_FRAME_DECLARE_ONLY
+#define __STATIC_INLINE__
+#else
+#define __STATIC_INLINE__               __STATIC_INLINE
+#endif
 
 #define NRF_802154_FRAME_INVALID_OFFSET 0xff
 
@@ -180,11 +191,8 @@ typedef struct
  *
  * @returns Current parse level of @p p_parser_data.
  */
-static inline nrf_802154_frame_parser_level_t nrf_802154_frame_parse_level_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->parse_level;
-}
+__STATIC_INLINE__ nrf_802154_frame_parser_level_t nrf_802154_frame_parse_level_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the PSDU length of the frame.
@@ -195,11 +203,8 @@ static inline nrf_802154_frame_parser_level_t nrf_802154_frame_parse_level_get(
  *
  * @note This function assumes that the PHR is correct.
  */
-static inline uint8_t nrf_802154_frame_length_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->p_frame[PHR_OFFSET];
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_length_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the PSDU start offset of the frame.
@@ -208,11 +213,8 @@ static inline uint8_t nrf_802154_frame_length_get(
  *
  * @returns  PSDU start offset of the frame.
  */
-static inline uint8_t nrf_802154_frame_psdu_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return PSDU_OFFSET;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_psdu_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the PSDU start address of the frame.
@@ -221,11 +223,8 @@ static inline uint8_t nrf_802154_frame_psdu_offset_get(
  *
  * @returns  PSDU start address of the frame.
  */
-static inline const uint8_t * nrf_802154_frame_psdu_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return &p_parser_data->p_frame[PSDU_OFFSET];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_psdu_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the MAC frame version value from the Frame Control Field.
@@ -234,11 +233,8 @@ static inline const uint8_t * nrf_802154_frame_psdu_get(
  *
  * @returns  Masked MAC frame version value.
  */
-static inline uint8_t nrf_802154_frame_version_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->p_frame[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_version_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the DSN suppress bit from the Frame Control Field.
@@ -248,11 +244,8 @@ static inline uint8_t nrf_802154_frame_version_get(
  * @retval  true  DSN suppress bit is set.
  * @retval  false DSN suppress bit is not set.
  */
-static inline bool nrf_802154_frame_dsn_suppress_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[DSN_SUPPRESS_OFFSET] & DSN_SUPPRESS_BIT) ? true : false;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_dsn_suppress_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the MAC frame destination address type from the Frame Control Field.
@@ -261,11 +254,8 @@ static inline bool nrf_802154_frame_dsn_suppress_bit_is_set(
  *
  * @returns  Masked MAC frame destination address type.
  */
-static inline uint8_t nrf_802154_frame_dst_addr_type_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->p_frame[DEST_ADDR_TYPE_OFFSET] & DEST_ADDR_TYPE_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_type_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Determines if the destination address is extended.
@@ -275,12 +265,8 @@ static inline uint8_t nrf_802154_frame_dst_addr_type_get(
  * @retval  true  The destination address is extended.
  * @retval  false The destination address is not extended.
  */
-static inline bool nrf_802154_frame_dst_addr_is_extended(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[DEST_ADDR_TYPE_OFFSET] & DEST_ADDR_TYPE_MASK) ==
-           DEST_ADDR_TYPE_EXTENDED;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_dst_addr_is_extended(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the MAC frame source address type from the Frame Control Field.
@@ -289,11 +275,8 @@ static inline bool nrf_802154_frame_dst_addr_is_extended(
  *
  * @returns  Masked MAC frame source address type.
  */
-static inline uint8_t nrf_802154_frame_src_addr_type_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_type_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Determines if the source address is extended.
@@ -303,12 +286,8 @@ static inline uint8_t nrf_802154_frame_src_addr_type_get(
  * @retval  true  The destination address is extended.
  * @retval  false The destination address is not extended.
  */
-static inline bool nrf_802154_frame_src_addr_is_extended(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK) ==
-           SRC_ADDR_TYPE_EXTENDED;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_src_addr_is_extended(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Determines if the source address is short.
@@ -318,12 +297,8 @@ static inline bool nrf_802154_frame_src_addr_is_extended(
  * @retval  true  The destination address is short.
  * @retval  false The destination address is not short.
  */
-static inline bool nrf_802154_frame_src_addr_is_short(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK) ==
-           SRC_ADDR_TYPE_SHORT;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_src_addr_is_short(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the Security Enabled bit from the Frame Control Field.
@@ -333,11 +308,8 @@ static inline bool nrf_802154_frame_src_addr_is_short(
  * @retval  true  The security is enabled.
  * @retval  false The security is not enabled.
  */
-static inline bool nrf_802154_frame_security_enabled_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[SECURITY_ENABLED_OFFSET] & SECURITY_ENABLED_BIT) ? true : false;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_security_enabled_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the IE present bit from the Frame Control Field.
@@ -347,17 +319,11 @@ static inline bool nrf_802154_frame_security_enabled_bit_is_set(
  * @retval  true  The Information Elements are present.
  * @retval  false The Information Elements are not present.
  */
-static inline bool nrf_802154_frame_ie_present_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[IE_PRESENT_OFFSET] & IE_PRESENT_BIT) ? true : false;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_ie_present_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
-static inline bool nrf_802154_frame_pending_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[FRAME_PENDING_OFFSET] & FRAME_PENDING_BIT) != 0;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_pending_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the frame type field from the Frame Control Field.
@@ -366,11 +332,8 @@ static inline bool nrf_802154_frame_pending_bit_is_set(
  *
  * @returns  Masked value of the frame type.
  */
-static inline uint8_t nrf_802154_frame_type_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_type_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the PAN ID compressions bit from the Frame Control Field.
@@ -380,11 +343,8 @@ static inline uint8_t nrf_802154_frame_type_get(
  * @retval  true  PAN ID compressions is set.
  * @retval  false PAN ID compressions is not set.
  */
-static inline bool nrf_802154_frame_panid_compression_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return (p_parser_data->p_frame[PAN_ID_COMPR_OFFSET] & PAN_ID_COMPR_MASK) ? true : false;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_panid_compression_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the AR bit from the Frame Control Field.
@@ -394,18 +354,8 @@ static inline bool nrf_802154_frame_panid_compression_is_set(
  * @retval  true  AR bit is set.
  * @retval  false AR bit is not set.
  */
-static inline bool nrf_802154_frame_ar_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    if ((p_parser_data->p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
-    {
-        return false;
-    }
-    else
-    {
-        return (p_parser_data->p_frame[ACK_REQUEST_OFFSET] & ACK_REQUEST_BIT) ? true : false;
-    }
-}
+__STATIC_INLINE__ bool nrf_802154_frame_ar_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the DSN field.
@@ -414,16 +364,8 @@ static inline bool nrf_802154_frame_ar_bit_is_set(
  *
  * @returns  The value of the DSN field.
  */
-static inline const uint8_t * nrf_802154_frame_dsn_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    if (nrf_802154_frame_dsn_suppress_bit_is_set(p_parser_data))
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[DSN_OFFSET];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dsn_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Destination PAN ID field.
@@ -432,11 +374,8 @@ static inline const uint8_t * nrf_802154_frame_dsn_get(
  *
  * @returns  Offset of the Destination PAN ID field.
  */
-static inline uint8_t nrf_802154_frame_dst_panid_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.dst.panid_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_panid_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Destination PAN field.
@@ -445,18 +384,8 @@ static inline uint8_t nrf_802154_frame_dst_panid_offset_get(
  *
  * @returns  Address of the Destination PAN field.
  */
-static inline const uint8_t * nrf_802154_frame_dst_panid_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_dst_panid_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_panid_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of frame Destination Address.
@@ -465,11 +394,8 @@ static inline const uint8_t * nrf_802154_frame_dst_panid_get(
  *
  * @returns  Offset of the frame Destination Address field.
  */
-static inline uint8_t nrf_802154_frame_dst_addr_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.dst.addr_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Destination Address field.
@@ -478,18 +404,8 @@ static inline uint8_t nrf_802154_frame_dst_addr_offset_get(
  *
  * @returns  Address of the Destination Address field.
  */
-static inline const uint8_t * nrf_802154_frame_dst_addr_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_dst_addr_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addr_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of frame Source PAN ID.
@@ -498,11 +414,8 @@ static inline const uint8_t * nrf_802154_frame_dst_addr_get(
  *
  * @returns  Offset of the frame Source PAN ID field.
  */
-static inline uint8_t nrf_802154_frame_src_panid_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.src.panid_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_panid_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Source PAN ID field.
@@ -511,18 +424,8 @@ static inline uint8_t nrf_802154_frame_src_panid_offset_get(
  *
  * @returns  Address of the Source PAN ID field.
  */
-static inline const uint8_t * nrf_802154_frame_src_panid_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_src_panid_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_src_panid_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of frame Source Address.
@@ -531,11 +434,8 @@ static inline const uint8_t * nrf_802154_frame_src_panid_get(
  *
  * @returns  Offset of the frame Source Address field.
  */
-static inline uint8_t nrf_802154_frame_src_addr_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.src.addr_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Source Address field.
@@ -544,18 +444,8 @@ static inline uint8_t nrf_802154_frame_src_addr_offset_get(
  *
  * @returns  Address of the Source Address field.
  */
-static inline const uint8_t * nrf_802154_frame_src_addr_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_src_addr_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_src_addr_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the size of the source address.
@@ -564,11 +454,8 @@ static inline const uint8_t * nrf_802154_frame_src_addr_get(
  *
  * @returns  Source address size in bytes.
  */
-static inline uint8_t nrf_802154_frame_src_addr_size_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.src_addr_size;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_size_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the size of the destination address.
@@ -577,11 +464,8 @@ static inline uint8_t nrf_802154_frame_src_addr_size_get(
  *
  * @returns  Destination address size in bytes.
  */
-static inline uint8_t nrf_802154_frame_dst_addr_size_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.dst_addr_size;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_size_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Security Control Field.
@@ -590,11 +474,8 @@ static inline uint8_t nrf_802154_frame_dst_addr_size_get(
  *
  * @returns  Offset of the Security Control Field.
  */
-static inline uint8_t nrf_802154_frame_sec_ctrl_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.aux_sec_hdr.sec_ctrl_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the Security Level field from the Security Control Field.
@@ -603,18 +484,8 @@ static inline uint8_t nrf_802154_frame_sec_ctrl_offset_get(
  *
  * @returns  Masked Security Level field value.
  */
-static inline uint8_t nrf_802154_frame_sec_ctrl_sec_lvl_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return 0;
-    }
-
-    return p_parser_data->p_frame[offset] & SECURITY_LEVEL_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_sec_lvl_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the Frame Counter Suppress bit from the Security Control Field.
@@ -624,18 +495,8 @@ static inline uint8_t nrf_802154_frame_sec_ctrl_sec_lvl_get(
  * @retval  true  FC suppress bit is set.
  * @retval  false FC suppress bit is not set.
  */
-static inline bool nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return false;
-    }
-
-    return p_parser_data->p_frame[offset] & FRAME_COUNTER_SUPPRESS_BIT;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the Key ID Mode field from the Security Control Field.
@@ -644,18 +505,8 @@ static inline bool nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set(
  *
  * @returns  Masked Key ID Mode field value.
  */
-static inline uint8_t nrf_802154_frame_sec_ctrl_key_id_mode_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return 0;
-    }
-
-    return (p_parser_data->p_frame[offset] & KEY_ID_MODE_MASK) >> KEY_ID_MODE_BIT_OFFSET;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_key_id_mode_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the value of the ASN in Nonce bit from the Security Control Field.
@@ -665,18 +516,8 @@ static inline uint8_t nrf_802154_frame_sec_ctrl_key_id_mode_get(
  * @retval  true  ASN in Nonce bit is set.
  * @retval  false ASN in Nonce bit is not set.
  */
-static inline bool nrf_802154_frame_sec_ctrl_asn_in_nonce_bit_is_set(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return false;
-    }
-
-    return p_parser_data->p_frame[offset] & ASN_IN_NONCE_BIT;
-}
+__STATIC_INLINE__ bool nrf_802154_frame_sec_ctrl_asn_in_nonce_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Security Control Field.
@@ -685,18 +526,8 @@ static inline bool nrf_802154_frame_sec_ctrl_asn_in_nonce_bit_is_set(
  *
  * @returns  Address of the Security Control Field.
  */
-static inline const uint8_t * nrf_802154_frame_sec_ctrl_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_sec_ctrl_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Frame Counter field.
@@ -705,11 +536,8 @@ static inline const uint8_t * nrf_802154_frame_sec_ctrl_get(
  *
  * @returns  Offset of the Frame Counter field.
  */
-static inline uint8_t nrf_802154_frame_counter_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.aux_sec_hdr.frame_counter_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_counter_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Frame Counter field.
@@ -718,18 +546,8 @@ static inline uint8_t nrf_802154_frame_counter_offset_get(
  *
  * @returns  Address of the Frame Counter field.
  */
-static inline const uint8_t * nrf_802154_frame_counter_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_counter_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_counter_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Key ID field.
@@ -738,11 +556,8 @@ static inline const uint8_t * nrf_802154_frame_counter_get(
  *
  * @returns  Offset of the Key ID field.
  */
-static inline uint8_t nrf_802154_frame_key_id_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.aux_sec_hdr.key_id_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_id_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Key ID field.
@@ -751,18 +566,8 @@ static inline uint8_t nrf_802154_frame_key_id_offset_get(
  *
  * @returns  Address of the Key ID field.
  */
-static inline const uint8_t * nrf_802154_frame_key_id_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_key_id_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_id_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Key Source field.
@@ -771,11 +576,8 @@ static inline const uint8_t * nrf_802154_frame_key_id_get(
  *
  * @returns  Offset of the Key Source field.
  */
-static inline uint8_t nrf_802154_frame_key_source_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.aux_sec_hdr.key_src_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_source_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Key Source field.
@@ -784,18 +586,8 @@ static inline uint8_t nrf_802154_frame_key_source_offset_get(
  *
  * @returns  Address of the Key Source field.
  */
-static inline const uint8_t * nrf_802154_frame_key_source_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_key_source_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_source_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the length of the Key Source field.
@@ -804,11 +596,8 @@ static inline const uint8_t * nrf_802154_frame_key_source_get(
  *
  * @returns  Length of the Key Source field.
  */
-static inline uint8_t nrf_802154_frame_key_source_length_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.key_src_size;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_source_length_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the Key Index field.
@@ -817,11 +606,8 @@ static inline uint8_t nrf_802154_frame_key_source_length_get(
  *
  * @returns  Offset of the Key Index field.
  */
-static inline uint8_t nrf_802154_frame_key_index_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.aux_sec_hdr.key_idx_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_index_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the Key Index field.
@@ -830,18 +616,8 @@ static inline uint8_t nrf_802154_frame_key_index_offset_get(
  *
  * @returns  Address of the Key Index field.
  */
-static inline uint8_t nrf_802154_frame_key_index_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_key_index_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return 0;
-    }
-
-    return p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_index_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the IE header.
@@ -850,11 +626,8 @@ static inline uint8_t nrf_802154_frame_key_index_get(
  *
  * @returns  Offset of the IE header.
  */
-static inline uint8_t nrf_802154_frame_ie_header_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mhr.header_ie_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_header_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the IE header.
@@ -863,18 +636,8 @@ static inline uint8_t nrf_802154_frame_ie_header_offset_get(
  *
  * @returns  Address of the IE header.
  */
-static inline const uint8_t * nrf_802154_frame_ie_header_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_ie_header_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_header_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the MAC payload.
@@ -883,11 +646,8 @@ static inline const uint8_t * nrf_802154_frame_ie_header_get(
  *
  * @returns  Offset of the MAC payload.
  */
-static inline uint8_t nrf_802154_frame_mac_payload_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->mac_payload.mac_payload_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the MAC payload.
@@ -896,18 +656,8 @@ static inline uint8_t nrf_802154_frame_mac_payload_offset_get(
  *
  * @returns  Address of the MAC payload.
  */
-static inline const uint8_t * nrf_802154_frame_mac_payload_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_payload_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the MAC Command ID field.
@@ -916,17 +666,8 @@ static inline const uint8_t * nrf_802154_frame_mac_payload_get(
  *
  * @returns  Offset of the MAC Command ID field.
  */
-static inline uint8_t nrf_802154_frame_mac_command_id_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    if (nrf_802154_frame_type_get(p_parser_data) != FRAME_TYPE_COMMAND)
-    {
-        return NRF_802154_FRAME_INVALID_OFFSET;
-    }
-
-    // MAC command frames containing Payload Information Elements are not supported.
-    return nrf_802154_frame_mac_payload_offset_get(p_parser_data);
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_command_id_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the MAC Command ID field.
@@ -935,18 +676,8 @@ static inline uint8_t nrf_802154_frame_mac_command_id_offset_get(
  *
  * @returns  Address of the MAC Command ID field.
  */
-static inline const uint8_t * nrf_802154_frame_mac_command_id_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_mac_command_id_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_command_id_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the offset of the MFR field.
@@ -955,11 +686,8 @@ static inline const uint8_t * nrf_802154_frame_mac_command_id_get(
  *
  * @returns  Offset of the MFR field.
  */
-static inline uint8_t nrf_802154_frame_mfr_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return nrf_802154_frame_length_get(p_parser_data) - FCS_SIZE + PHR_SIZE;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mfr_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the address of the MFR field.
@@ -968,18 +696,8 @@ static inline uint8_t nrf_802154_frame_mfr_offset_get(
  *
  * @returns  Address of the MFR field.
  */
-static inline const uint8_t * nrf_802154_frame_mfr_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_mfr_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mfr_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the length of the MIC field.
@@ -988,11 +706,8 @@ static inline const uint8_t * nrf_802154_frame_mfr_get(
  *
  * @returns  Length of the MIC field.
  */
-static inline uint8_t nrf_802154_frame_mic_size_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.mic_size;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mic_size_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the length of the MAC payload.
@@ -1001,15 +716,8 @@ static inline uint8_t nrf_802154_frame_mic_size_get(
  *
  * @returns  Length of the MAC payload.
  */
-static inline uint8_t nrf_802154_frame_mac_payload_length_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t mic_len       = nrf_802154_frame_mic_size_get(p_parser_data);
-    uint8_t payload_start = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
-    uint8_t payload_end   = nrf_802154_frame_mfr_offset_get(p_parser_data) - mic_len;
-
-    return payload_end - payload_start;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_length_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the length of the MAC header.
@@ -1018,19 +726,8 @@ static inline uint8_t nrf_802154_frame_mac_payload_length_get(
  *
  * @returns  Length of the MAC header.
  */
-static inline uint8_t nrf_802154_frame_mac_header_length_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t mhr_start = nrf_802154_frame_psdu_offset_get(p_parser_data);
-    uint8_t mhr_end   = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
-
-    if (mhr_end == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        mhr_end = nrf_802154_frame_mfr_offset_get(p_parser_data);
-    }
-
-    return mhr_end - mhr_start;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_header_length_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the end offset of the destination addressing section.
@@ -1039,11 +736,8 @@ static inline uint8_t nrf_802154_frame_mac_header_length_get(
  *
  * @returns  End offset of the destination addressing section.
  */
-static inline uint8_t nrf_802154_frame_dst_addressing_end_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.dst_addressing_end_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addressing_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the end address of the destination addressing section.
@@ -1052,18 +746,8 @@ static inline uint8_t nrf_802154_frame_dst_addressing_end_offset_get(
  *
  * @returns  End address of the destination addressing section.
  */
-static inline const uint8_t * nrf_802154_frame_dst_addressing_end_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_dst_addressing_end_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addressing_end_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the end offset of the addressing section.
@@ -1072,11 +756,8 @@ static inline const uint8_t * nrf_802154_frame_dst_addressing_end_get(
  *
  * @returns  End offset of the addressing section.
  */
-static inline uint8_t nrf_802154_frame_addressing_end_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.addressing_end_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_addressing_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the end address of the addressing section.
@@ -1085,18 +766,8 @@ static inline uint8_t nrf_802154_frame_addressing_end_offset_get(
  *
  * @returns  End address of the addressing section.
  */
-static inline const uint8_t * nrf_802154_frame_addressing_end_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    uint8_t offset = nrf_802154_frame_addressing_end_offset_get(p_parser_data);
-
-    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
-    {
-        return NULL;
-    }
-
-    return &p_parser_data->p_frame[offset];
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_addressing_end_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Gets the end offset of the security header section.
@@ -1105,11 +776,8 @@ static inline const uint8_t * nrf_802154_frame_addressing_end_get(
  *
  * @returns  End offset of the security header section.
  */
-static inline uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
-    const nrf_802154_frame_t * p_parser_data)
-{
-    return p_parser_data->helper.aux_sec_hdr_end_offset;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data);
 
 /**
  * @brief Initializes the IE iterator with given IE header address.
@@ -1119,11 +787,8 @@ static inline uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
  * @returns  Information element iterator.
  *
  */
-static inline const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
-    const uint8_t * p_ie_header)
-{
-    return p_ie_header;
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
+    const uint8_t * p_ie_header);
 
 /**
  * @brief Gets payload address of currently iterated IE.
@@ -1135,11 +800,8 @@ static inline const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
  * @note  The user must ensure that the payload is properly bounded.
  *
  */
-static inline const uint8_t * nrf_802154_frame_ie_content_address_get(
-    const uint8_t * p_ie_iterator)
-{
-    return p_ie_iterator + IE_DATA_OFFSET;
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_content_address_get(
+    const uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets length of currently iterated IE.
@@ -1149,10 +811,7 @@ static inline const uint8_t * nrf_802154_frame_ie_content_address_get(
  * @returns  Length of currently iterated information element.
  *
  */
-static inline uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_iterator)
-{
-    return p_ie_iterator[IE_LENGTH_OFFSET] & IE_LENGTH_MASK;
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets next information element iterator.
@@ -1162,12 +821,8 @@ static inline uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_iterat
  * @returns  Next information element iterator.
  *
  */
-static inline const uint8_t * nrf_802154_frame_ie_iterator_next(
-    const uint8_t * p_ie_iterator)
-{
-    return nrf_802154_frame_ie_content_address_get(p_ie_iterator)
-           + nrf_802154_frame_ie_length_get(p_ie_iterator);
-}
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_iterator_next(
+    const uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets identifier of currently iterated IE.
@@ -1177,10 +832,7 @@ static inline const uint8_t * nrf_802154_frame_ie_iterator_next(
  * @returns  Identifier of currently iterated information element.
  *
  */
-static inline uint8_t nrf_802154_frame_ie_id_get(const uint8_t * p_ie_iterator)
-{
-    return (p_ie_iterator[IE_ID_OFFSET_0] >> 7) | (p_ie_iterator[IE_ID_OFFSET_1] << 1);
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_id_get(const uint8_t * p_ie_iterator);
 
 /**
  * @brief Checks if the current IE is a terminator.
@@ -1192,15 +844,8 @@ static inline uint8_t nrf_802154_frame_ie_id_get(const uint8_t * p_ie_iterator)
  * @retval  false  The IE is not a terminator and iteration has not passed the end address.
  *
  */
-static inline bool nrf_802154_frame_ie_iterator_end(const uint8_t * p_ie_iterator,
-                                                    const uint8_t * p_end_addr)
-{
-    uint8_t ie_id = nrf_802154_frame_ie_id_get(p_ie_iterator);
-
-    return ((nrf_802154_frame_ie_length_get(p_ie_iterator) == 0) &&
-            ((ie_id == IE_HT1) || (ie_id == IE_HT2)))
-           || (p_ie_iterator >= p_end_addr);
-}
+__STATIC_INLINE__ bool nrf_802154_frame_ie_iterator_end(const uint8_t * p_ie_iterator,
+                                                        const uint8_t * p_end_addr);
 
 /**
  * @brief Gets vendor-specific OUI (organizationally unique identifier) of currently iterated IE.
@@ -1212,14 +857,11 @@ static inline bool nrf_802154_frame_ie_iterator_end(const uint8_t * p_ie_iterato
  *  - ID: @ref IE_VENDOR_ID ID.
  *  - IE length: at least @ref IE_VENDOR_SIZE_MIN
  * Otherwise, returned value is not OUI.
- * See @ref nrf_802154_frame_parser_ie_id_get.
+ * See @ref nrf_802154_frame_ie_id_get.
  *
  * @returns  Vendor-specific OUI.
  */
-static inline uint32_t nrf_802154_frame_ie_vendor_oui_get(const uint8_t * p_ie_iterator)
-{
-    return little_24_to_host((uint8_t *)&p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_OUI_OFFSET]);
-}
+__STATIC_INLINE__ uint32_t nrf_802154_frame_ie_vendor_oui_get(const uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets subtype of Thread vendor-specific IE.
@@ -1232,16 +874,13 @@ static inline uint32_t nrf_802154_frame_ie_vendor_oui_get(const uint8_t * p_ie_i
  *  - OUI: @ref IE_VENDOR_THREAD_OUI.
  *  - IE length: at least @ref IE_VENDOR_THREAD_SIZE_MIN
  * Otherwise, returned value is not Thread IE subtype.
- *  - @ref nrf_802154_frame_parser_ie_id_get,
- *  - @ref nrf_802154_frame_parser_ie_vendor_oui_get.
+ *  - @ref nrf_802154_frame_ie_id_get,
+ *  - @ref nrf_802154_frame_ie_vendor_oui_get.
  *
  * @returns subtype of Thread vendor-specific IE.
  */
-static inline uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
-    const uint8_t * p_ie_iterator)
-{
-    return p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_THREAD_SUBTYPE_OFFSET];
-}
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
+    const uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets vendor-specific IE thread data address of currently iterated IE.
@@ -1256,124 +895,594 @@ static inline uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
  *  - IE length: at least @ref IE_VENDOR_THREAD_ACK_SIZE_MIN
  * Otherwise, returned pointer does not point to thread vendor-specific IE data.
  * See also:
- *  - @ref nrf_802154_frame_parser_ie_id_get,
- *  - @ref nrf_802154_frame_parser_ie_vendor_oui_get,
- *  - @ref nrf_802154_frame_parser_ie_vendor_thread_subtype_get.
+ *  - @ref nrf_802154_frame_ie_id_get,
+ *  - @ref nrf_802154_frame_ie_vendor_oui_get,
+ *  - @ref nrf_802154_frame_ie_vendor_thread_subtype_get.
  *
  * @returns  Current vendor-specific IE thread data address.
  */
-static inline const uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
+    const uint8_t * p_ie_iterator);
+
+#ifndef NRF_802154_FRAME_DECLARE_ONLY
+
+__STATIC_INLINE__ nrf_802154_frame_parser_level_t nrf_802154_frame_parse_level_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->parse_level;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_length_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->p_frame[PHR_OFFSET];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_psdu_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return PSDU_OFFSET;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_psdu_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return &p_parser_data->p_frame[PSDU_OFFSET];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_version_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->p_frame[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_dsn_suppress_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[DSN_SUPPRESS_OFFSET] & DSN_SUPPRESS_BIT) ? true : false;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_type_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->p_frame[DEST_ADDR_TYPE_OFFSET] & DEST_ADDR_TYPE_MASK;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_dst_addr_is_extended(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[DEST_ADDR_TYPE_OFFSET] & DEST_ADDR_TYPE_MASK) ==
+           DEST_ADDR_TYPE_EXTENDED;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_type_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_src_addr_is_extended(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK) ==
+           SRC_ADDR_TYPE_EXTENDED;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_src_addr_is_short(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[SRC_ADDR_TYPE_OFFSET] & SRC_ADDR_TYPE_MASK) ==
+           SRC_ADDR_TYPE_SHORT;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_security_enabled_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[SECURITY_ENABLED_OFFSET] & SECURITY_ENABLED_BIT) ? true : false;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_ie_present_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[IE_PRESENT_OFFSET] & IE_PRESENT_BIT) ? true : false;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_pending_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[FRAME_PENDING_OFFSET] & FRAME_PENDING_BIT) != 0;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_type_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_panid_compression_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return (p_parser_data->p_frame[PAN_ID_COMPR_OFFSET] & PAN_ID_COMPR_MASK) ? true : false;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_ar_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    if ((p_parser_data->p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        return false;
+    }
+    else
+    {
+        return (p_parser_data->p_frame[ACK_REQUEST_OFFSET] & ACK_REQUEST_BIT) ? true : false;
+    }
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dsn_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    if (nrf_802154_frame_dsn_suppress_bit_is_set(p_parser_data))
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[DSN_OFFSET];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_panid_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.dst.panid_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_panid_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_dst_panid_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.dst.addr_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addr_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_dst_addr_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_panid_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.src.panid_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_src_panid_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_src_panid_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.src.addr_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_src_addr_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_src_addr_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_src_addr_size_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.src_addr_size;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_size_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.dst_addr_size;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.aux_sec_hdr.sec_ctrl_offset;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_sec_lvl_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return 0;
+    }
+
+    return p_parser_data->p_frame[offset] & SECURITY_LEVEL_MASK;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return false;
+    }
+
+    return p_parser_data->p_frame[offset] & FRAME_COUNTER_SUPPRESS_BIT;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_sec_ctrl_key_id_mode_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return 0;
+    }
+
+    return (p_parser_data->p_frame[offset] & KEY_ID_MODE_MASK) >> KEY_ID_MODE_BIT_OFFSET;
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_sec_ctrl_asn_in_nonce_bit_is_set(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return false;
+    }
+
+    return p_parser_data->p_frame[offset] & ASN_IN_NONCE_BIT;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_sec_ctrl_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_sec_ctrl_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_counter_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.aux_sec_hdr.frame_counter_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_counter_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_counter_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_id_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.aux_sec_hdr.key_id_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_id_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_key_id_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_source_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.aux_sec_hdr.key_src_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_source_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_key_source_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_source_length_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.key_src_size;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_index_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.aux_sec_hdr.key_idx_offset;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_key_index_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_key_index_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return 0;
+    }
+
+    return p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_header_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mhr.header_ie_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_header_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_ie_header_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->mac_payload.mac_payload_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_payload_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_command_id_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    if (nrf_802154_frame_type_get(p_parser_data) != FRAME_TYPE_COMMAND)
+    {
+        return NRF_802154_FRAME_INVALID_OFFSET;
+    }
+
+    // MAC command frames containing Payload Information Elements are not supported.
+    return nrf_802154_frame_mac_payload_offset_get(p_parser_data);
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_command_id_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_mac_command_id_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mfr_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return nrf_802154_frame_length_get(p_parser_data) - FCS_SIZE + PHR_SIZE;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mfr_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_mfr_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mic_size_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.mic_size;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_length_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t mic_len       = nrf_802154_frame_mic_size_get(p_parser_data);
+    uint8_t payload_start = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
+    uint8_t payload_end   = nrf_802154_frame_mfr_offset_get(p_parser_data) - mic_len;
+
+    return payload_end - payload_start;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_mac_header_length_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t mhr_start = nrf_802154_frame_psdu_offset_get(p_parser_data);
+    uint8_t mhr_end   = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
+
+    if (mhr_end == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        mhr_end = nrf_802154_frame_mfr_offset_get(p_parser_data);
+    }
+
+    return mhr_end - mhr_start;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addressing_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.dst_addressing_end_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addressing_end_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_dst_addressing_end_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_addressing_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.addressing_end_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_addressing_end_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    uint8_t offset = nrf_802154_frame_addressing_end_offset_get(p_parser_data);
+
+    if (offset == NRF_802154_FRAME_INVALID_OFFSET)
+    {
+        return NULL;
+    }
+
+    return &p_parser_data->p_frame[offset];
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
+    const nrf_802154_frame_t * p_parser_data)
+{
+    return p_parser_data->helper.aux_sec_hdr_end_offset;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
+    const uint8_t * p_ie_header)
+{
+    return p_ie_header;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_content_address_get(
+    const uint8_t * p_ie_iterator)
+{
+    return p_ie_iterator + IE_DATA_OFFSET;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_iterator)
+{
+    return p_ie_iterator[IE_LENGTH_OFFSET] & IE_LENGTH_MASK;
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_iterator_next(
+    const uint8_t * p_ie_iterator)
+{
+    return nrf_802154_frame_ie_content_address_get(p_ie_iterator)
+           + nrf_802154_frame_ie_length_get(p_ie_iterator);
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_id_get(const uint8_t * p_ie_iterator)
+{
+    return (p_ie_iterator[IE_ID_OFFSET_0] >> 7) | (p_ie_iterator[IE_ID_OFFSET_1] << 1);
+}
+
+__STATIC_INLINE__ bool nrf_802154_frame_ie_iterator_end(const uint8_t * p_ie_iterator,
+                                                        const uint8_t * p_end_addr)
+{
+    uint8_t ie_id = nrf_802154_frame_ie_id_get(p_ie_iterator);
+
+    return ((nrf_802154_frame_ie_length_get(p_ie_iterator) == 0) &&
+            ((ie_id == IE_HT1) || (ie_id == IE_HT2)))
+           || (p_ie_iterator >= p_end_addr);
+}
+
+__STATIC_INLINE__ uint32_t nrf_802154_frame_ie_vendor_oui_get(const uint8_t * p_ie_iterator)
+{
+    return little_24_to_host((uint8_t *)&p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_OUI_OFFSET]);
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
+    const uint8_t * p_ie_iterator)
+{
+    return p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_THREAD_SUBTYPE_OFFSET];
+}
+
+__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
     const uint8_t * p_ie_iterator)
 {
     return nrf_802154_frame_ie_content_address_get(p_ie_iterator) +
            IE_VENDOR_THREAD_DATA_OFFSET;
 }
 
-/* Old function names kept for compatibility. */
-
-#define nrf_802154_frame_parser_parse_level_get   nrf_802154_frame_parse_level_get
-#define nrf_802154_frame_parser_frame_length_get  nrf_802154_frame_length_get
-#define nrf_802154_frame_parser_psdu_offset_get   nrf_802154_frame_psdu_offset_get
-#define nrf_802154_frame_parser_psdu_get          nrf_802154_frame_psdu_get
-#define nrf_802154_frame_parser_frame_version_get nrf_802154_frame_version_get
-#define nrf_802154_frame_parser_dsn_suppress_bit_is_set \
-    nrf_802154_frame_dsn_suppress_bit_is_set
-#define nrf_802154_frame_parser_dst_addr_type_get nrf_802154_frame_dst_addr_type_get
-#define nrf_802154_frame_parser_dst_addr_is_extended \
-    nrf_802154_frame_dst_addr_is_extended
-#define nrf_802154_frame_parser_src_addr_type_get nrf_802154_frame_src_addr_type_get
-#define nrf_802154_frame_parser_src_addr_is_extended \
-    nrf_802154_frame_src_addr_is_extended
-#define nrf_802154_frame_parser_src_addr_is_short nrf_802154_frame_src_addr_is_short
-#define nrf_802154_frame_parser_security_enabled_bit_is_set \
-    nrf_802154_frame_security_enabled_bit_is_set
-#define nrf_802154_frame_parser_ie_present_bit_is_set \
-    nrf_802154_frame_ie_present_bit_is_set
-#define nrf_802154_frame_parser_frame_pending_bit_is_set \
-    nrf_802154_frame_pending_bit_is_set
-#define nrf_802154_frame_parser_frame_type_get    nrf_802154_frame_type_get
-#define nrf_802154_frame_parser_panid_compression_is_set \
-    nrf_802154_frame_panid_compression_is_set
-#define nrf_802154_frame_parser_ar_bit_is_set     nrf_802154_frame_ar_bit_is_set
-#define nrf_802154_frame_parser_dsn_get           nrf_802154_frame_dsn_get
-#define nrf_802154_frame_parser_dst_panid_offset_get \
-    nrf_802154_frame_dst_panid_offset_get
-#define nrf_802154_frame_parser_dst_panid_get     nrf_802154_frame_dst_panid_get
-#define nrf_802154_frame_parser_dst_addr_offset_get \
-    nrf_802154_frame_dst_addr_offset_get
-#define nrf_802154_frame_parser_dst_addr_get      nrf_802154_frame_dst_addr_get
-#define nrf_802154_frame_parser_src_panid_offset_get \
-    nrf_802154_frame_src_panid_offset_get
-#define nrf_802154_frame_parser_src_panid_get     nrf_802154_frame_src_panid_get
-#define nrf_802154_frame_parser_src_addr_offset_get \
-    nrf_802154_frame_src_addr_offset_get
-#define nrf_802154_frame_parser_src_addr_get      nrf_802154_frame_src_addr_get
-#define nrf_802154_frame_parser_src_addr_size_get nrf_802154_frame_src_addr_size_get
-#define nrf_802154_frame_parser_dst_addr_size_get nrf_802154_frame_dst_addr_size_get
-#define nrf_802154_frame_parser_sec_ctrl_offset_get \
-    nrf_802154_frame_sec_ctrl_offset_get
-#define nrf_802154_frame_parser_sec_ctrl_sec_lvl_get \
-    nrf_802154_frame_sec_ctrl_sec_lvl_get
-#define nrf_802154_frame_parser_sec_ctrl_fc_suppress_bit_is_set \
-    nrf_802154_frame_sec_ctrl_fc_suppress_bit_is_set
-#define nrf_802154_frame_parser_sec_ctrl_key_id_mode_get \
-    nrf_802154_frame_sec_ctrl_key_id_mode_get
-#define nrf_802154_frame_parser_sec_ctrl_asn_in_nonce_bit_is_set \
-    nrf_802154_frame_sec_ctrl_asn_in_nonce_bit_is_set
-#define nrf_802154_frame_parser_sec_ctrl_get       nrf_802154_frame_sec_ctrl_get
-#define nrf_802154_frame_parser_frame_counter_offset_get \
-    nrf_802154_frame_counter_offset_get
-#define nrf_802154_frame_parser_frame_counter_get  nrf_802154_frame_counter_get
-#define nrf_802154_frame_parser_key_id_offset_get  nrf_802154_frame_key_id_offset_get
-#define nrf_802154_frame_parser_key_id_get         nrf_802154_frame_key_id_get
-#define nrf_802154_frame_parser_key_source_offset_get \
-    nrf_802154_frame_key_source_offset_get
-#define nrf_802154_frame_parser_key_source_get     nrf_802154_frame_key_source_get
-#define nrf_802154_frame_parser_key_source_length_get \
-    nrf_802154_frame_key_source_length_get
-#define nrf_802154_frame_parser_key_index_offset_get \
-    nrf_802154_frame_key_index_offset_get
-#define nrf_802154_frame_parser_key_index_get      nrf_802154_frame_key_index_get
-#define nrf_802154_frame_parser_ie_header_offset_get \
-    nrf_802154_frame_ie_header_offset_get
-#define nrf_802154_frame_parser_ie_header_get      nrf_802154_frame_ie_header_get
-#define nrf_802154_frame_parser_mac_payload_offset_get \
-    nrf_802154_frame_mac_payload_offset_get
-#define nrf_802154_frame_parser_mac_payload_get    nrf_802154_frame_mac_payload_get
-#define nrf_802154_frame_parser_mac_command_id_offset_get \
-    nrf_802154_frame_mac_command_id_offset_get
-#define nrf_802154_frame_parser_mac_command_id_get nrf_802154_frame_mac_command_id_get
-#define nrf_802154_frame_parser_mfr_offset_get     nrf_802154_frame_mfr_offset_get
-#define nrf_802154_frame_parser_mfr_get            nrf_802154_frame_mfr_get
-#define nrf_802154_frame_parser_mic_size_get       nrf_802154_frame_mic_size_get
-#define nrf_802154_frame_parser_mac_payload_length_get \
-    nrf_802154_frame_mac_payload_length_get
-#define nrf_802154_frame_parser_mac_header_length_get \
-    nrf_802154_frame_mac_header_length_get
-#define nrf_802154_frame_parser_dst_addressing_end_offset_get \
-    nrf_802154_frame_dst_addressing_end_offset_get
-#define nrf_802154_frame_parser_dst_addressing_end_get \
-    nrf_802154_frame_dst_addressing_end_get
-#define nrf_802154_frame_parser_addressing_end_offset_get \
-    nrf_802154_frame_addressing_end_offset_get
-#define nrf_802154_frame_parser_addressing_end_get nrf_802154_frame_addressing_end_get
-#define nrf_802154_frame_parser_aux_sec_hdr_end_offset_get \
-    nrf_802154_frame_aux_sec_hdr_end_offset_get
-#define nrf_802154_frame_parser_header_ie_iterator_begin \
-    nrf_802154_frame_header_ie_iterator_begin
-#define nrf_802154_frame_parser_ie_content_address_get \
-    nrf_802154_frame_ie_content_address_get
-#define nrf_802154_frame_parser_ie_length_get     nrf_802154_frame_ie_length_get
-#define nrf_802154_frame_parser_ie_iterator_next  nrf_802154_frame_ie_iterator_next
-#define nrf_802154_frame_parser_ie_id_get         nrf_802154_frame_ie_id_get
-#define nrf_802154_frame_parser_ie_iterator_end   nrf_802154_frame_ie_iterator_end
-#define nrf_802154_frame_parser_ie_vendor_oui_get nrf_802154_frame_ie_vendor_oui_get
-#define nrf_802154_frame_parser_ie_vendor_thread_subtype_get \
-    nrf_802154_frame_ie_vendor_thread_subtype_get
-#define nrf_802154_frame_parser_ie_vendor_thread_data_addr_get \
-    nrf_802154_frame_ie_vendor_thread_data_addr_get
-
-/* Old type name kept for compatibility. */
-typedef nrf_802154_frame_t nrf_802154_frame_parser_data_t;
+#endif /* NRF_802154_FRAME_DECLARE_ONLY */
 
 #endif // NRF_802154_FRAME_H

@@ -91,6 +91,11 @@ extern "C" {
     NRF_802154_RSCH_DLY_TS_OP_CSMACA_SLOTS
 
 /**
+ * @brief Invalid timeslot ID.
+ */
+#define NRF_802154_RSCH_DLY_TS_ID_INVALID UINT32_MAX
+
+/**
  * @brief List of the preconditions that have to be met before any radio activity.
  */
 typedef enum

@@ -72,6 +72,29 @@
 /**@brief Minimum of two values. */
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
+#ifndef CONTAINER_OF
+/**@brief Can be used to get a pointer to the structure which contains a given struct element.
+ *
+ * Example:
+ *
+ *    struct foo {
+ *        int bar;
+ *    };
+ *
+ *    struct foo my_foo;
+ *    int *ptr = &my_foo.bar;
+ *
+ *    struct foo *container = CONTAINER_OF(ptr, struct foo, bar);
+ *
+ * @param ptr Pointer to a struct element whose parent is desired
+ * @param type type of the parent structure which contains ptr
+ * @param member The name of the struct element pointed to by ptr
+ *
+ * @return A pointer to the memory space which contains ptr
+ */
+#define CONTAINER_OF(ptr, type, member) ((type *)( (char *)(ptr) - offsetof(type, member) ))
+#endif /* CONTAINER_OF */
+
 /**@brief Converts microseconds (us) to RTC ticks.
  *
  * @param time      Time is us to be converted to RTC ticks.

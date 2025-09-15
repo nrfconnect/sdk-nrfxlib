@@ -126,10 +126,11 @@ typedef struct
  */
 typedef struct
 {
-    nrf_802154_transmit_params_t params; ///< Transmission parameters.
+    nrf_802154_transmit_params_t params;    ///< Transmission parameters.
+    nrf_802154_tx_client_t       tx_client; ///< Client instance.
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-    uint64_t                     time;   ///< Target time of the first bit of the frame.
+    uint64_t                     time;      ///< Target time of the first bit of the frame.
 
 #endif
 } dly_tx_data_t;
@@ -149,6 +150,25 @@ typedef struct
         dly_rx_data_t rx; ///< Data specific for delayed reception.
     };
 } dly_op_data_t;
+
+static bool delayed_tx_can_abort(nrf_802154_term_t              term_lvl,
+                                 req_originator_t               req_orig,
+                                 const nrf_802154_tx_client_t * p_client);
+static void delayed_tx_failed(uint8_t                                   * p_frame,
+                              nrf_802154_tx_error_t                       error,
+                              const nrf_802154_transmit_done_metadata_t * p_metadata,
+                              const nrf_802154_tx_client_t              * p_client);
+static void delayed_tx_started(const nrf_802154_tx_client_t * p_client);
+static void delayed_tx_done(uint8_t                                   * p_frame,
+                            const nrf_802154_transmit_done_metadata_t * p_metadata,
+                            const nrf_802154_tx_client_t              * p_client);
+
+static const nrf_802154_tx_client_interface_t m_delayed_trx_tx_client_iface = {
+    .can_abort = delayed_tx_can_abort,
+    .started   = delayed_tx_started,
+    .failed    = delayed_tx_failed,
+    .done      = delayed_tx_done,
+};
 
 /**
  * @brief Array of slots for RX delayed operations.
@@ -271,6 +291,13 @@ static dly_op_data_t * dly_tx_data_by_id_search(rsch_dly_ts_id_t id)
     return NULL;
 }
 
+static dly_op_data_t * dly_tx_data_by_client_get(const nrf_802154_tx_client_t * p_client)
+{
+    dly_tx_data_t * dly_tx = CONTAINER_OF(p_client, dly_tx_data_t, tx_client);
+
+    return CONTAINER_OF(dly_tx, dly_op_data_t, tx);
+}
+
 /**
  * @brief Retrieve an available slot from a pool.
  *
@@ -339,18 +366,13 @@ static dly_op_data_t * ongoing_dly_rx_slot_get(void)
     return p_dly_op_data;
 }
 
-static bool dly_ts_slot_release(dly_op_data_t * p_dly_op_data, bool handler)
+static bool dly_ts_slot_release(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     bool result;
 
-    result = nrf_802154_rsch_delayed_timeslot_cancel(p_dly_op_data->id, handler);
-
-    if (result)
-    {
-        p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
-    }
+    result = nrf_802154_rsch_delayed_timeslot_cancel(p_dly_op_data->id, false);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -366,7 +388,7 @@ static void dly_rx_data_atomically_push(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_mcu_critical_state_t mcu_cs;
 
-    nrf_802154_mcu_critical_enter(mcu_cs);
+    mcu_cs = nrf_802154_mcu_critical_enter();
 
     NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_dly_rx_id_q));
 
@@ -388,7 +410,7 @@ static dly_op_data_t * dly_rx_data_atomically_pop(void)
 {
     nrf_802154_mcu_critical_state_t mcu_cs;
 
-    nrf_802154_mcu_critical_enter(mcu_cs);
+    mcu_cs = nrf_802154_mcu_critical_enter();
 
     dly_op_data_t ** pp_op = (dly_op_data_t **)nrf_802154_queue_pop_begin(&m_dly_rx_id_q);
 
@@ -487,32 +509,72 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-/**
- * Transmit request result callback.
- *
- * @param[in]  result  Result of TX request.
- */
-static void dly_tx_result_notify(bool result)
+static bool delayed_tx_can_abort(nrf_802154_term_t              term_lvl,
+                                 req_originator_t               req_orig,
+                                 const nrf_802154_tx_client_t * p_client)
 {
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return true;
+}
+
+static void delayed_tx_started(const nrf_802154_tx_client_t * p_client)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+    // Intentionally empty.
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void delayed_tx_failed(uint8_t                                   * p_frame,
+                              nrf_802154_tx_error_t                       error,
+                              const nrf_802154_transmit_done_metadata_t * p_metadata,
+                              const nrf_802154_tx_client_t              * p_client)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = false;
 
     // Currently there's only a single delayed transmission possible at a time
-    dly_op_data_t * p_dly_op_data = dly_tx_data_by_id_search(NRF_802154_RESERVED_DTX_ID);
+    dly_op_data_t * p_dly_op_data = dly_tx_data_by_client_get(p_client);
+
+    NRF_802154_ASSERT(p_dly_op_data != NULL);
+    p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
+
+    result = dly_op_state_set(p_dly_op_data,
+                              DELAYED_TRX_OP_STATE_ONGOING,
+                              DELAYED_TRX_OP_STATE_STOPPED);
+    NRF_802154_ASSERT(result);
+    (void)result;
+
+    nrf_802154_notify_transmit_failed(p_frame, error, p_metadata);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void delayed_tx_done(uint8_t                                   * p_frame,
+                            const nrf_802154_transmit_done_metadata_t * p_metadata,
+                            const nrf_802154_tx_client_t              * p_client)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = false;
+
+    dly_op_data_t * p_dly_op_data = dly_tx_data_by_client_get(p_client);
 
     NRF_802154_ASSERT(p_dly_op_data != NULL);
 
-    if (!result)
-    {
-        // core rejected attempt, use my current frame_props
-        nrf_802154_transmit_done_metadata_t metadata = {};
+    p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
 
-        metadata.frame_props = p_dly_op_data->tx.params.frame_props;
-        nrf_802154_notify_transmit_failed(p_dly_op_data->tx.params.frame.p_frame,
-                                          NRF_802154_TX_ERROR_TIMESLOT_DENIED,
-                                          &metadata);
-    }
+    result = dly_op_state_set(p_dly_op_data,
+                              DELAYED_TRX_OP_STATE_ONGOING,
+                              DELAYED_TRX_OP_STATE_STOPPED);
+    NRF_802154_ASSERT(result);
+    (void)result;
 
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+    nrf_802154_notify_transmitted(p_frame, p_metadata);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
 static void dly_rx_all_ongoing_abort(void)
@@ -608,17 +670,18 @@ static void dly_rx_result_notify(bool result)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-static void transmit_attempt(dly_op_data_t * p_dly_op_data)
+static nrf_802154_tx_error_t transmit_attempt(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     // No need to enqueue transmit attempts. Proceed to transmission immediately
-    (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
-                                      REQ_ORIG_DELAYED_TRX,
-                                      &p_dly_op_data->tx.params,
-                                      dly_tx_result_notify);
+    nrf_802154_tx_error_t result = nrf_802154_request_transmit(NRF_802154_TERM_802154,
+                                                               REQ_ORIG_DELAYED_TRX,
+                                                               &p_dly_op_data->tx.params);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    return result;
 }
 
 static bool receive_attempt(dly_op_data_t * p_dly_op_data)
@@ -675,17 +738,21 @@ static void tx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
                                    DELAYED_TRX_OP_STATE_ONGOING);
 
     NRF_802154_ASSERT(result);
-
-    transmit_attempt(p_dly_op_data);
-
-    result = dly_ts_slot_release(p_dly_op_data, true);
-    NRF_802154_ASSERT(result);
-
-    result = dly_op_state_set(p_dly_op_data,
-                              DELAYED_TRX_OP_STATE_ONGOING,
-                              DELAYED_TRX_OP_STATE_STOPPED);
-    NRF_802154_ASSERT(result);
     (void)result;
+
+    nrf_802154_tx_error_t tx_result = transmit_attempt(p_dly_op_data);
+
+    if (tx_result != NRF_802154_TX_ERROR_NONE)
+    {
+        nrf_802154_transmit_done_metadata_t metadata = {0};
+
+        metadata.frame_props = p_dly_op_data->tx.params.frame_props;
+
+        delayed_tx_failed(p_dly_op_data->tx.params.frame.p_frame,
+                          tx_result,
+                          &metadata,
+                          &p_dly_op_data->tx.tx_client);
+    }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -720,6 +787,7 @@ static void rx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
 
     result = nrf_802154_rsch_delayed_timeslot_cancel(dly_ts_id, true);
     NRF_802154_ASSERT(result);
+    (void)result;
 
     if (!attempt_success)
     {
@@ -729,6 +797,7 @@ static void rx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
                                   DELAYED_TRX_OP_STATE_ONGOING,
                                   DELAYED_TRX_OP_STATE_STOPPED);
         NRF_802154_ASSERT(result);
+        (void)result;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -762,8 +831,9 @@ void nrf_802154_delayed_trx_init(void)
 
     for (uint32_t i = 0; i < sizeof(m_dly_tx_data) / sizeof(m_dly_tx_data[0]); i++)
     {
-        m_dly_tx_data[i].state = DELAYED_TRX_OP_STATE_STOPPED;
-        m_dly_tx_data[i].id    = NRF_802154_RESERVED_INVALID_ID;
+        m_dly_tx_data[i].state                = DELAYED_TRX_OP_STATE_STOPPED;
+        m_dly_tx_data[i].id                   = NRF_802154_RESERVED_INVALID_ID;
+        m_dly_tx_data[i].tx.tx_client.p_iface = &m_delayed_trx_tx_client_iface;
     }
 }
 
@@ -805,6 +875,8 @@ bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p
         p_dly_tx_data->tx.params.extra_cca_attempts  = p_metadata->extra_cca_attempts;
         p_dly_tx_data->tx.params.channel             = p_metadata->channel;
         p_dly_tx_data->tx.params.tx_timestamp_encode = p_metadata->tx_timestamp_encode;
+        p_dly_tx_data->tx.params.p_client            = &p_dly_tx_data->tx.tx_client;
+        p_dly_tx_data->tx.params.rsch_timeslot_id    = NRF_802154_RESERVED_DTX_ID;
         p_dly_tx_data->id                            = NRF_802154_RESERVED_DTX_ID;
 
         rsch_dly_ts_param_t dly_ts_param =
@@ -879,8 +951,10 @@ bool nrf_802154_delayed_trx_transmit_cancel(void)
     dly_op_data_t * p_dly_op_data = &m_dly_tx_data[0];
     bool            result        = false;
 
-    if (dly_ts_slot_release(p_dly_op_data, false))
+    if (dly_ts_slot_release(p_dly_op_data))
     {
+        p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
+
         result = dly_op_state_set(p_dly_op_data,
                                   DELAYED_TRX_OP_STATE_PENDING,
                                   DELAYED_TRX_OP_STATE_STOPPED);

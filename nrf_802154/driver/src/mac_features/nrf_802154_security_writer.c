@@ -150,15 +150,15 @@ static bool security_is_enabled(const nrf_802154_frame_t * p_frame_data)
            (SECURITY_LEVEL_NONE != nrf_802154_frame_sec_ctrl_sec_lvl_get(p_frame_data));
 }
 
-bool nrf_802154_security_writer_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
+nrf_802154_tx_error_t nrf_802154_security_writer_tx_setup(
+    nrf_802154_transmit_params_t * p_params)
 {
     NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
                       PARSE_LEVEL_AUX_SEC_HDR_END);
 
-    nrf_802154_key_id_t key_id;
-    bool                result = false;
+    nrf_802154_key_id_t   key_id;
+    bool                  result = false;
+    nrf_802154_tx_error_t error  = NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR;
 
     key_id.p_key_id          = NULL;
     m_frame_counter_injected = false;
@@ -166,13 +166,13 @@ bool nrf_802154_security_writer_tx_setup(
     if (p_params->frame_props.dynamic_data_is_set)
     {
         // The frame has a frame counter field already set. Pass.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     if (nrf_802154_frame_type_get(&p_params->frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so skip security.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     do
@@ -181,6 +181,7 @@ bool nrf_802154_security_writer_tx_setup(
         {
             /* Security is not enabled. Pass. */
             result = true;
+            error  = NRF_802154_TX_ERROR_NONE;
             break;
         }
 
@@ -194,29 +195,20 @@ bool nrf_802154_security_writer_tx_setup(
             case NRF_802154_SECURITY_ERROR_NONE:
                 result                   = true;
                 m_frame_counter_injected = true;
+                error                    = NRF_802154_TX_ERROR_NONE;
                 break;
 
             case NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND:
             {
-                nrf_802154_transmit_done_metadata_t metadata = {};
-
-                metadata.frame_props = p_params->frame_props;
-                notify_function(p_params->frame.p_frame,
-                                NRF_802154_TX_ERROR_KEY_ID_INVALID,
-                                &metadata);
                 result = false;
+                error  = NRF_802154_TX_ERROR_KEY_ID_INVALID;
             }
             break;
 
             case NRF_802154_SECURITY_ERROR_FRAME_COUNTER_OVERFLOW:
             {
-                nrf_802154_transmit_done_metadata_t metadata = {};
-
-                metadata.frame_props = p_params->frame_props;
-                notify_function(p_params->frame.p_frame,
-                                NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR,
-                                &metadata);
                 result = false;
+                error  = NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR;
             }
             break;
 
@@ -226,22 +218,21 @@ bool nrf_802154_security_writer_tx_setup(
                  */
                 NRF_802154_ASSERT(false);
                 result = false;
+                error  = NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR;
         }
     }
     while (0);
 
-    return result;
+    return error;
 }
 
-bool nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame)
+void nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame)
 {
     if (m_frame_counter_injected)
     {
         /* Mark dynamic data updated in the work buffer. */
         nrf_802154_tx_work_buffer_is_dynamic_data_updated_set();
     }
-
-    return true;
 }
 
 #endif // NRF_802154_SECURITY_WRITER_ENABLED

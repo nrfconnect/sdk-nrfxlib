@@ -323,9 +323,8 @@ void nrf_802154_encrypt_ack_reset(void)
     nrf_802154_aes_ccm_transform_reset();
 }
 
-bool nrf_802154_encrypt_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
+nrf_802154_tx_error_t nrf_802154_encrypt_tx_setup(
+    nrf_802154_transmit_params_t * p_params)
 {
     NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(&p_params->frame) >=
                       PARSE_LEVEL_FULL);
@@ -335,13 +334,13 @@ bool nrf_802154_encrypt_tx_setup(
     if (p_params->frame_props.is_secured)
     {
         // The frame is already secured. Pass.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     if (nrf_802154_frame_type_get(&p_params->frame) == FRAME_TYPE_MULTIPURPOSE)
     {
         // Multipurpose frame parsing is not implemented, so skip encryption.
-        return true;
+        return NRF_802154_TX_ERROR_NONE;
     }
 
     nrf_802154_aes_ccm_data_t aes_ccm_data;
@@ -362,24 +361,14 @@ bool nrf_802154_encrypt_tx_setup(
         success = false;
     }
 
-    if (!success)
-    {
-        nrf_802154_transmit_done_metadata_t metadata = {};
-
-        metadata.frame_props = p_params->frame_props;
-        notify_function(p_params->frame.p_frame, NRF_802154_TX_ERROR_KEY_ID_INVALID, &metadata);
-    }
-
-    return success;
+    return success ? NRF_802154_TX_ERROR_NONE : NRF_802154_TX_ERROR_KEY_ID_INVALID;
 }
 
-bool nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame)
+void nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame)
 {
     // The provided pointer is the original buffer. It doesn't need to be changed,
     // because the AES-CCM* module is aware of two separate buffers (original vs work buffer)
     nrf_802154_aes_ccm_transform_start(p_frame);
-
-    return true;
 }
 
 void nrf_802154_encrypt_tx_ack_started_hook(uint8_t * p_ack)
@@ -387,13 +376,11 @@ void nrf_802154_encrypt_tx_ack_started_hook(uint8_t * p_ack)
     nrf_802154_aes_ccm_transform_start(p_ack);
 }
 
-bool nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
+void nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
     (void)error;
 
     nrf_802154_aes_ccm_transform_abort(p_frame);
-
-    return true;
 }
 
 void nrf_802154_encrypt_tx_ack_failed_hook(uint8_t * p_ack, nrf_802154_tx_error_t error)

@@ -51,15 +51,13 @@
  * If the transmission parameters do not request transmit timestamp encoding, this hook exits
  * without performing any actions.
  *
- * @param[in]  p_params         Pointer to the transmission parameters.
- * @param[in]  notify_function  Function to be called to notify transmission failure.
+ * @param[in]  p_params  Pointer to the transmission parameters.
  *
- * @retval  false        Transmission parameters were not processed successfully.
- * @retval  true         Transmission parameters were processed successfully.
+ * @retval  NRF_802154_TX_ERROR_NONE                      The procedure was successful.
+ * @retval  NRF_802154_TX_ERROR_TIMESTAMP_ENCODING_ERROR  The timestamp cannot be inserted into the frame.
  */
-bool nrf_802154_tx_timestamp_provider_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function);
+nrf_802154_tx_error_t nrf_802154_tx_timestamp_provider_tx_setup(
+    nrf_802154_transmit_params_t * p_params);
 
 /**
  * @brief TX started hook for the tx timestamp provider module.
@@ -70,9 +68,7 @@ bool nrf_802154_tx_timestamp_provider_tx_setup(
  * time (in microseconds) to that address.
  *
  * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- *
- * @retval  true  Always succeeds.
  */
-bool nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame);
+void nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame);
 
 #endif // NRF_802154_TX_TIMESTAMP_PROVIDER_H__

@@ -39,8 +39,87 @@
 #include "nrf_802154_fal.h"
 #include "mac_features/nrf_802154_frame.h"
 
+struct nrf_802154_tx_client_s;
+
+typedef struct nrf_802154_tx_client_s nrf_802154_tx_client_t;
+
+/**
+ * @brief Query if client operation can be aborted.
+ *
+ * The query asks if the operation can be aborted.
+ * The implementation must not modify any state.
+ *
+ * @param[in] term_lvl    Termination level.
+ * @param[in] req_orig    Request originator.
+ * @param[in] p_client    Pointer to the TX client instance.
+ *
+ * @retval true  The operation can be aborted.
+ * @retval false The operation cannot be aborted.
+ */
+typedef bool (* nrf_802154_tx_client_can_abort_t)(nrf_802154_term_t              term_lvl,
+                                                  req_originator_t               req_orig,
+                                                  const nrf_802154_tx_client_t * p_client);
+
+/**
+ * @brief Callback notifying that the frame transmission has started.
+ *
+ * @param[in] p_client    Pointer to the TX client instance.
+ */
+typedef void (* nrf_802154_tx_client_started_t)(const nrf_802154_tx_client_t * p_client);
+
+/**
+ * @brief Callback notifying failed transmission.
+ *
+ * This callback notifies that the frame transmission has failed.
+ * The notification signals the end of the transmit operation.
+ *
+ * @param[in] p_frame     The frame that was being transmitted.
+ * @param[in] error       Error status of the operation.
+ * @param[in] p_metadata  Transmit metadata.
+ * @param[in] p_client    Pointer to the TX client instance.
+ */
+typedef void (* nrf_802154_tx_client_failed_t)(uint8_t             * p_frame,
+                                               nrf_802154_tx_error_t error,
+                                               const nrf_802154_transmit_done_metadata_t *
+                                               p_metadata,
+                                               const nrf_802154_tx_client_t * p_client);
+
+/**
+ * @brief Callback notifying successful transmission.
+ *
+ * This callback notifies that the frame has been successfully transmitted.
+ * The notification signals the end of the transmit operation.
+ *
+ * @param[in] p_frame     Pointer to the transmitted frame.
+ * @param[in] p_metadata  Transmit metadata.
+ * @param[in] p_client    Pointer to the TX client instance.
+ */
+typedef void (* nrf_802154_tx_client_done_t)(uint8_t                                   * p_frame,
+                                             const nrf_802154_transmit_done_metadata_t * p_metadata,
+                                             const nrf_802154_tx_client_t              * p_client);
+
 typedef struct
 {
+    nrf_802154_tx_client_can_abort_t can_abort; // !< Abort query.
+    nrf_802154_tx_client_started_t   started;   // !< Started notification.
+    nrf_802154_tx_client_failed_t    failed;    // !< Failed notification.
+    nrf_802154_tx_client_done_t      done;      // !< Done notification.
+} nrf_802154_tx_client_interface_t;
+
+/**
+ * @brief TX client instance.
+ *
+ * The client instance uniquely identifies the core client that performs the TX operation.
+ * Each client has its own set of notification and query callbacks.
+ */
+struct nrf_802154_tx_client_s
+{
+    const nrf_802154_tx_client_interface_t * p_iface; // !< Client interface.
+};
+
+typedef struct
+{
+    const nrf_802154_tx_client_t       * p_client;
     nrf_802154_frame_t                   frame;               // !< Frame to be transmitted.
     nrf_802154_transmitted_frame_props_t frame_props;         // !< Properties of the frame to be transmitted.
     nrf_802154_fal_tx_power_split_t      tx_power;            // !< Power to be used when transmitting the frame, split into components to be applied on each stage on transmit path.
@@ -50,6 +129,7 @@ typedef struct
                                                               // until its preconditions are met.
     uint8_t                              extra_cca_attempts;  // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
     bool                                 tx_timestamp_encode; // !< True if the transmit timestamp shall be encoded in the payload.
+    uint32_t                             rsch_timeslot_id;    // !< Identifier of the delayed operation. The timeslot is consumed by the core.
 } nrf_802154_transmit_params_t;
 
 typedef struct

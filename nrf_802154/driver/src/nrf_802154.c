@@ -76,6 +76,7 @@
 #include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 #include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_imm_tx.h"
 
 #include "nrf_802154_sl_ant_div.h"
 #include "nrf_802154_sl_crit_sect_if.h"
@@ -401,8 +402,8 @@ bool nrf_802154_receive(void)
 bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                              const nrf_802154_transmit_metadata_t * p_metadata)
 {
-    bool    result;
-    uint8_t channel;
+    bool               result;
+    nrf_802154_frame_t frame;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -420,25 +421,10 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         p_metadata = &metadata_default;
     }
 
-    channel =
-        p_metadata->tx_channel.use_metadata_value ? p_metadata->tx_channel.channel :
-        nrf_802154_pib_channel_get();
-
-    nrf_802154_transmit_params_t params =
-    {
-        .frame_props         = p_metadata->frame_props,
-        .tx_power            = {0},
-        .channel             = channel,
-        .cca                 = p_metadata->cca,
-        .immediate           = false,
-        .extra_cca_attempts  = 0U,
-        .tx_timestamp_encode = p_metadata->tx_timestamp_encode,
-    };
-
     result = nrf_802154_frame_parser_data_init(p_data,
                                                p_data[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_FULL,
-                                               &params.frame);
+                                               &frame);
 
     if (!result)
     {
@@ -446,18 +432,12 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         return result;
     }
 
-    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
-                                                                 p_metadata->tx_power,
-                                                                 &params.tx_power);
-
-    result = are_frame_properties_valid(&params.frame_props) &&
+    result = are_frame_properties_valid(&p_metadata->frame_props) &&
              is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
-        result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
-                                             REQ_ORIG_HIGHER_LAYER,
-                                             &params,
-                                             NULL);
+        result = nrf_802154_imm_tx_transmit(&frame,
+                                            p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);

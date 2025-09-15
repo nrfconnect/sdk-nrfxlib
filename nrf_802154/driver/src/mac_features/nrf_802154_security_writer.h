@@ -43,22 +43,20 @@
 /**
  * @brief Transmission setup hook for the security writer module.
  *
- * This hook parses the frame to check availability of the key identified by the frame's security
+ * This hook checks availability of the key identified by the frame's security
  * header and injects a frame counter associated with the key. If the frame's security level is
  * zero, then no processing occurs.
  *
- * If this function detects a malformed frame, the higher layer is notified of transmission
- * failure. A frame is considered malformed if requested key is invalid.
+ * If the key requested in the frame is not found, the procedure returns an error.
  *
  * @param[in]  p_params         Pointer to the transmission parameters.
- * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
- * @retval  false        Frame security header was not processed successfully.
- * @retval  true         Frame security header was processed successfully.
+ * @retval  NRF_802154_TX_ERROR_NONE                The procedure was succesful.
+ * @retval  NRF_802154_TX_ERROR_KEY_ID_INVALID      The requested key was not found.
+ * @retval  NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR The frame counter overflowed.
  */
-bool nrf_802154_security_writer_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function);
+nrf_802154_tx_error_t nrf_802154_security_writer_tx_setup(
+    nrf_802154_transmit_params_t * p_params);
 
 /**
  * @brief TX started hook for the security writer module.
@@ -67,9 +65,7 @@ bool nrf_802154_security_writer_tx_setup(
  * into the transmitted frame, this hook marks the frame counter as updated.
  *
  * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- *
- * @retval  true  Always succeeds.
  */
-bool nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame);
+void nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame);
 
 #endif // NRF_802154_SECURITY_WRITER_H__

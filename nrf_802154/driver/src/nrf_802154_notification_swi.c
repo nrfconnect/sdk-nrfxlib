@@ -55,7 +55,6 @@
 #include "nrf_802154_debug.h"
 #include "nrf_802154_queue.h"
 #include "nrf_802154_swi.h"
-#include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_peripherals.h"
 #include "nrf_802154_utils.h"
 #include "hal/nrf_egu.h"
@@ -268,7 +267,7 @@ static void ntf_slot_free(nrf_802154_ntf_data_t * p_slot)
  */
 static nrf_802154_queue_entry_t * ntf_enter(void)
 {
-    nrf_802154_mcu_critical_enter(m_mcu_cs);
+    m_mcu_cs = nrf_802154_mcu_critical_enter();
 
     NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_notifications_queue));
 
@@ -395,8 +394,8 @@ bool swi_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id, bool al
  * @retval  true   Notification enqueued successfully.
  * @retval  false  Notification could not be performed.
  */
-bool swi_notify_transmitted(uint8_t                             * p_frame,
-                            nrf_802154_transmit_done_metadata_t * p_metadata)
+bool swi_notify_transmitted(uint8_t                                   * p_frame,
+                            const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
     uint8_t slot_id = ntf_slot_alloc(m_primary_ntf_pool, NTF_PRIMARY_POOL_SIZE);
 
@@ -605,14 +604,10 @@ bool nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id, 
     return notified;
 }
 
-void nrf_802154_notify_transmitted(uint8_t                             * p_frame,
-                                   nrf_802154_transmit_done_metadata_t * p_metadata)
+void nrf_802154_notify_transmitted(uint8_t                                   * p_frame,
+                                   const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    // Update the transmitted frame contents and update frame status flags
-    nrf_802154_tx_work_buffer_original_frame_update(p_frame,
-                                                    &p_metadata->frame_props);
 
     bool notified = swi_notify_transmitted(p_frame, p_metadata);
 

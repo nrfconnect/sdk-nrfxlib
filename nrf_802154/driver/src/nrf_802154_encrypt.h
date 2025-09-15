@@ -63,14 +63,13 @@ void nrf_802154_encrypt_ack_reset(void);
  * This hook prepares encryption data for provided frame.
  *
  * @param[in]  p_params         Pointer to the transmission parameters.
- * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
- * @retval  true         Encryption was prepared successfully.
- * @retval  false        Encryption prepare failed.
+ * @retval  NRF_802154_TX_ERROR_NONE            The procedure was successful.
+ * @retval  NRF_802154_TX_ERROR_KEY_ID_INVALID  The frame cannot be encrypted with the requested
+ *                                              parameters.
  */
-bool nrf_802154_encrypt_tx_setup(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function);
+nrf_802154_tx_error_t nrf_802154_encrypt_tx_setup(
+    nrf_802154_transmit_params_t * p_params);
 
 /**
  * @brief TX started hook for the encryption module.
@@ -78,10 +77,8 @@ bool nrf_802154_encrypt_tx_setup(
  * This function triggers the transformation procedure of the provided frame.
  *
  * @param[in]  p_frame  Pointer to the buffer that contains a frame being transmitted.
- *
- * @retval  true        Always succeeds.
  */
-bool nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame);
+void nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame);
 
 /**
  * @brief ACK TX started hook for the encryption module.
@@ -99,10 +96,8 @@ void nrf_802154_encrypt_tx_ack_started_hook(uint8_t * p_ack);
  *
  * @param[in]  p_frame  Pointer to the buffer that contains a frame being transmitted.
  * @param[in]  error    Cause of the failed transmission.
- *
- * @retval  true        Always succeeds.
  */
-bool nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
+void nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
 
 /**
  * @brief ACK TX failed hook for the encryption module.

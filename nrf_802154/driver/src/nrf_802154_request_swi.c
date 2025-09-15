@@ -122,13 +122,12 @@ typedef struct
 
         struct
         {
-            nrf_802154_notification_func_t notif_func; ///< Error notified in case of success.
-            nrf_802154_term_t              term_lvl;   ///< Request priority.
-            req_originator_t               req_orig;   ///< Request originator.
-            uint8_t                      * p_data;     ///< Pointer to a buffer containing PHR and PSDU of the frame to transmit.
-            nrf_802154_transmit_params_t * p_params;   ///< Pointer to transmission parameters.
-            bool                         * p_result;   ///< Transmit request result.
-        } transmit;                                    ///< Transmit request details.
+            nrf_802154_term_t              term_lvl; ///< Request priority.
+            req_originator_t               req_orig; ///< Request originator.
+            uint8_t                      * p_data;   ///< Pointer to a buffer containing PHR and PSDU of the frame to transmit.
+            nrf_802154_transmit_params_t * p_params; ///< Pointer to transmission parameters.
+            nrf_802154_tx_error_t        * p_result; ///< Transmit request result.
+        } transmit;                                  ///< Transmit request details.
 
         struct
         {
@@ -257,7 +256,7 @@ static volatile nrf_802154_mcu_critical_state_t m_mcu_cs;
  */
 static nrf_802154_req_data_t * req_enter(void)
 {
-    nrf_802154_mcu_critical_enter(m_mcu_cs);
+    m_mcu_cs = nrf_802154_mcu_critical_enter();
 
     NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_requests_queue));
 
@@ -285,34 +284,34 @@ static inline void assert_interrupt_status(void)
     NRF_802154_ASSERT(nrf_802154_irq_is_enabled(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE)));
 }
 
-#define REQUEST_FUNCTION(func_core, func_swi, ...) \
-    bool result = false;                           \
-                                                   \
-    if (active_vector_priority_is_high())          \
-    {                                              \
-        result = func_core(__VA_ARGS__);           \
-    }                                              \
-    else                                           \
-    {                                              \
-        assert_interrupt_status();                 \
-        func_swi(__VA_ARGS__, &result);            \
-    }                                              \
-                                                   \
+#define REQUEST_FUNCTION(func_core, func_swi, result_type, ...)\
+    result_type result;                                        \
+                                                               \
+    if (active_vector_priority_is_high())                      \
+    {                                                          \
+        result = func_core(__VA_ARGS__);                       \
+    }                                                          \
+    else                                                       \
+    {                                                          \
+        assert_interrupt_status();                             \
+        func_swi(__VA_ARGS__, &result);                        \
+    }                                                          \
+                                                               \
     return result;
 
-#define REQUEST_FUNCTION_NO_ARGS(func_core, func_swi) \
-    bool result = false;                              \
-                                                      \
-    if (active_vector_priority_is_high())             \
-    {                                                 \
-        result = func_core();                         \
-    }                                                 \
-    else                                              \
-    {                                                 \
-        assert_interrupt_status();                    \
-        func_swi(&result);                            \
-    }                                                 \
-                                                      \
+#define REQUEST_FUNCTION_NO_ARGS(func_core, func_swi, result_type)\
+    result_type result;                                           \
+                                                                  \
+    if (active_vector_priority_is_high())                         \
+    {                                                             \
+        result = func_core();                                     \
+    }                                                             \
+    else                                                          \
+    {                                                             \
+        assert_interrupt_status();                                \
+        func_swi(&result);                                        \
+    }                                                             \
+                                                                  \
     return result;
 
 /** Check if active vector priority is high enough to call requests directly.
@@ -390,17 +389,15 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
 static void swi_transmit(nrf_802154_term_t              term_lvl,
                          req_originator_t               req_orig,
                          nrf_802154_transmit_params_t * p_params,
-                         nrf_802154_notification_func_t notify_function,
-                         bool                         * p_result)
+                         nrf_802154_tx_error_t        * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
 
-    p_slot->type                     = REQ_TYPE_TRANSMIT;
-    p_slot->data.transmit.term_lvl   = term_lvl;
-    p_slot->data.transmit.req_orig   = req_orig;
-    p_slot->data.transmit.p_params   = p_params;
-    p_slot->data.transmit.notif_func = notify_function;
-    p_slot->data.transmit.p_result   = p_result;
+    p_slot->type                   = REQ_TYPE_TRANSMIT;
+    p_slot->data.transmit.term_lvl = term_lvl;
+    p_slot->data.transmit.req_orig = req_orig;
+    p_slot->data.transmit.p_params = p_params;
+    p_slot->data.transmit.p_result = p_result;
 
     req_exit();
 }
@@ -692,7 +689,7 @@ void nrf_802154_request_init(void)
 
 bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION(nrf_802154_core_sleep, swi_sleep, term_lvl)
+    REQUEST_FUNCTION(nrf_802154_core_sleep, swi_sleep, bool, term_lvl)
 }
 
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
@@ -703,6 +700,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 {
     REQUEST_FUNCTION(nrf_802154_core_receive,
                      swi_receive,
+                     bool,
                      term_lvl,
                      req_orig,
                      notify_function,
@@ -710,22 +708,21 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                      id)
 }
 
-bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
-                                 req_originator_t               req_orig,
-                                 nrf_802154_transmit_params_t * p_params,
-                                 nrf_802154_notification_func_t notify_function)
+nrf_802154_tx_error_t nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
+                                                  req_originator_t               req_orig,
+                                                  nrf_802154_transmit_params_t * p_params)
 {
     REQUEST_FUNCTION(nrf_802154_core_transmit,
                      swi_transmit,
+                     nrf_802154_tx_error_t,
                      term_lvl,
                      req_orig,
-                     p_params,
-                     notify_function)
+                     p_params)
 }
 
 bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
 {
-    REQUEST_FUNCTION(nrf_802154_core_ack_timeout_handle, swi_ack_timeout_handle, p_param);
+    REQUEST_FUNCTION(nrf_802154_core_ack_timeout_handle, swi_ack_timeout_handle, bool, p_param);
 }
 
 bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl,
@@ -733,13 +730,14 @@ bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl,
 {
     REQUEST_FUNCTION(nrf_802154_core_energy_detection,
                      swi_energy_detection,
+                     bool,
                      term_lvl,
                      time_us)
 }
 
 bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION(nrf_802154_core_cca, swi_cca, term_lvl)
+    REQUEST_FUNCTION(nrf_802154_core_cca, swi_cca, bool, term_lvl)
 }
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
@@ -747,6 +745,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
     REQUEST_FUNCTION(nrf_802154_core_continuous_carrier,
                      swi_continuous_carrier,
+                     bool,
                      term_lvl)
 }
 
@@ -755,6 +754,7 @@ bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
 {
     REQUEST_FUNCTION(nrf_802154_core_modulated_carrier,
                      swi_modulated_carrier,
+                     bool,
                      term_lvl,
                      p_data)
 }
@@ -763,33 +763,34 @@ bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
 
 bool nrf_802154_request_buffer_free(uint8_t * p_data)
 {
-    REQUEST_FUNCTION(nrf_802154_core_notify_buffer_free, swi_buffer_free, p_data)
+    REQUEST_FUNCTION(nrf_802154_core_notify_buffer_free, swi_buffer_free, bool, p_data)
 }
 
 bool nrf_802154_request_antenna_update(void)
 {
-    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_antenna_update, swi_antenna_update)
+    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_antenna_update, swi_antenna_update, bool)
 }
 
 bool nrf_802154_request_channel_update(req_originator_t req_orig)
 {
-    REQUEST_FUNCTION(nrf_802154_core_channel_update, swi_channel_update, req_orig)
+    REQUEST_FUNCTION(nrf_802154_core_channel_update, swi_channel_update, bool, req_orig)
 }
 
 bool nrf_802154_request_cca_cfg_update(void)
 {
-    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_cca_cfg_update, swi_cca_cfg_update)
+    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_cca_cfg_update, swi_cca_cfg_update, bool)
 }
 
 bool nrf_802154_request_rssi_measure(void)
 {
-    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_rssi_measure, swi_rssi_measure)
+    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_rssi_measure, swi_rssi_measure, bool)
 }
 
 bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 {
     REQUEST_FUNCTION(nrf_802154_core_last_rssi_measurement_get,
                      swi_rssi_measurement_get,
+                     bool,
                      p_rssi)
 }
 
@@ -800,6 +801,7 @@ bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                
 {
     REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit,
                      swi_transmit_at,
+                     bool,
                      p_frame,
                      tx_time,
                      p_metadata);
@@ -807,7 +809,7 @@ bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                
 
 bool nrf_802154_request_transmit_at_cancel(void)
 {
-    REQUEST_FUNCTION_NO_ARGS(nrf_802154_delayed_trx_transmit_cancel, swi_transmit_at_cancel);
+    REQUEST_FUNCTION_NO_ARGS(nrf_802154_delayed_trx_transmit_cancel, swi_transmit_at_cancel, bool);
 }
 
 bool nrf_802154_request_receive_at(uint64_t rx_time,
@@ -815,18 +817,25 @@ bool nrf_802154_request_receive_at(uint64_t rx_time,
                                    uint8_t  channel,
                                    uint32_t id)
 {
-    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive, swi_receive_at, rx_time, timeout, channel, id);
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive,
+                     swi_receive_at,
+                     bool,
+                     rx_time,
+                     timeout,
+                     channel,
+                     id);
 }
 
 bool nrf_802154_request_receive_at_cancel(uint32_t id)
 {
-    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_cancel, swi_receive_at_cancel, id);
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_cancel, swi_receive_at_cancel, bool, id);
 }
 
 bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
 {
     REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_scheduled_cancel,
                      swi_receive_at_scheduled_cancel,
+                     bool,
                      id);
 }
 
@@ -835,6 +844,7 @@ bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                  
 {
     REQUEST_FUNCTION(nrf_802154_csma_ca_start,
                      swi_csma_ca_start,
+                     bool,
                      p_frame,
                      p_metadata);
 }
@@ -869,8 +879,7 @@ static void irq_handler_req_event(void)
                 *(p_slot->data.transmit.p_result) =
                     nrf_802154_core_transmit(p_slot->data.transmit.term_lvl,
                                              p_slot->data.transmit.req_orig,
-                                             p_slot->data.transmit.p_params,
-                                             p_slot->data.transmit.notif_func);
+                                             p_slot->data.transmit.p_params);
                 break;
 
             case REQ_TYPE_ACK_TIMEOUT_HANDLE:

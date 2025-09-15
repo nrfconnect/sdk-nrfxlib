@@ -92,15 +92,12 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  p_params         Pointer to transmission parameters.
- * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  *
- * @retval  true   The driver will enter the transmit state.
- * @retval  false  The driver cannot enter the transmit state due to an ongoing operation.
+ * @returns  The error status reported by the core.
  */
-bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
-                                 req_originator_t               req_orig,
-                                 nrf_802154_transmit_params_t * p_params,
-                                 nrf_802154_notification_func_t notify_function);
+nrf_802154_tx_error_t nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
+                                                  req_originator_t               req_orig,
+                                                  nrf_802154_transmit_params_t * p_params);
 
 /**
  * @brief Request to handle Ack timeout by the core module.
