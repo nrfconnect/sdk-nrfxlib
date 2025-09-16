@@ -94,6 +94,22 @@ Bug fixes
   This may cause an assertion if the nrfx power driver is used to implement these callbacks.
   The issue causes the power consumption to increase, and may eventually lead to the assertion.
 
+nRF Connect SDK v2.9.2
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run. In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
+
+nRF Connect SDK v2.9.1
+**********************
+
+Added
+=====
+
+* On the nRF54L15 SoC, Errata 39 is now applied.
+
 nRF Connect SDK v2.9.0
 **********************
 
@@ -149,6 +165,17 @@ Changes
   * The limitation that only the TWIM0 instance could be used for nRF2220 and nRF2240 devices is removed.
   * :c:struct:`mpsl_fem_twi_if_t` replaces :c:struct:`mpsl_fem_twi_config_t`.
   * The ``twi_if`` field replaces the ``twi_config`` field within :c:struct:`mpsl_fem_nrf2220_interface_config_t` and :c:struct:`mpsl_fem_nrf2240_interface_config_t` (KRKNWK-19010).
+
+nRF Connect SDK v2.6.3
+**********************
+
+All the notable changes included in the |NCS| v2.6.3 release are documented in this section.
+
+Changes
+=======
+
+* Fixed a rare issue that could cause a scheduler assert if interrupts were disabled for a longer period of time (DRGN-24327).
+  Note that disabling interrupts for a longer period of time is not allowed.
 
 nRF Connect SDK v2.6.0
 **********************
@@ -218,6 +245,15 @@ Bug fixes
 
 * Fixed an issue where the scheduler could put events in the past (DRGN-17851, DRGN-18105).
 
+nRF Connect SDK v2.1.3
+**********************
+
+All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
+
+Bug fixes
+=========
+* Fixed an issue where the scheduler could put events in the past. (DRGN-17923, DRGN-18105)
+
 nRF Connect SDK v2.1.0
 **********************
 
@@ -273,6 +309,16 @@ Bug fixes
 * Fixed an issue where :c:func:`mpsl_init` would reject a certain clock configuration for no longer applicable legacy reasons (DRGN-16884).
 * Fixed an issue where MPSL could assert when radio notifications on ACTIVE (:c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_ACTIVE` or :c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_BOTH`) were used (DRGN-16642).
 * Fixed an issue where :c:func:`mpsl_uninit` would hang indefinitely when the RC oscillator was used as the Low Frequency Clock source (DRGN-16515).
+* Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events. This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
+
+nRF Connect SDK v1.9.2
+**********************
+
+All the notable changes included in the |NCS| v1.9.2 release are documented in this section.
+
+Bug fixes
+=========
+
 * Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events. This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
 
 nRF Connect SDK v1.9.0
@@ -354,6 +400,14 @@ Bug fixes
 
 * Fixed an issue where the clock configuration option :c:member:`mpsl_clock_lfclk_cfg_t.skip_wait_lfclk_started` did not work as expected with nRF5340 devices (DRGN-15223).
 
+nRF Connect SDK v1.5.1
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the clock configuration option :c:member:`mpsl_clock_lfclk_cfg_t.skip_wait_lfclk_started` did not work as expected with nRF5340 devices (DRGN-15223).
+
 nRF Connect SDK v1.5.0
 **********************
 
@@ -375,6 +429,21 @@ Bug fixes
 * Fixed an issue where the low-frequency clock was configured incorrectly when the source configuration signal was set to either External Full swing or External Low swing (DRGN-15064).
 
 * Fixed an issue where MPSL waited for the low-frequency clock to start even though it was configured not to wait for it (DRGN-15176).
+
+nRF Connect SDK v1.4.1
+**********************
+
+Added
+=====
+
+* Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
+  which does not wait for the start of Low Frequency Clock. (DRGN-14204)
+
+Bugfixes
+========
+
+* Fixed an issue where Low Frequency Clock was configured incorrectly
+  when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
 
 nRF Connect SDK v1.4.0
 **********************

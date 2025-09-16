@@ -626,6 +626,52 @@ It can do this if it has received all payloads in a BIG event.
 
    Broadcast isochronous channels timing-events
 
+Channel Sounding timing
+***********************
+
+Channel Sounding timing-events are scheduled to occur at a static offset from the ACL anchor point, which is defined in Volume 6, Part B, Section 4.5.1 of the `Bluetooth Core Specification`_, as the start of the first packet in an ACL connection event.
+
+This static offset is selected by the |controller| and negotiated with the peer.
+Assuming the peer accepts the selection, the |controller| will select an offset that is smaller than the ACL interval, large enough to allow the exchange of a packet pair with the current ACL DLE configuration, and larger than the configured ACL event length.
+Therefore, the main approach for selecting the Channel Sounding offset is to use the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or the vendor-specific HCI command defined by the :c:func:`hci_vs_sdc_event_length_set` function.
+
+Furthermore, the Channel Sounding timing-activity will occupy time based on the subevent length negotiated by the controllers.
+The subevent length can be suggested by the host using the Min_Subevent_Len and Max_Subevent_Len parameters of the ``LE CS Set Procedure Parameters`` HCI command.
+
+The controller will also reserve up to about 0.5 ms before each subevent, as well as reserve time for window widening equivalent to up to 1000 ppm (0.1%) of the static offset.
+Therefore, the ACL parameters may need to reserve space for these overheads in order to avoid conflicts with the Channel Sounding timing-activity.
+
+See the figure below for an example.
+
+.. figure:: pic/schedule/channel_sounding_offset_selection.svg
+   :alt: Alt text: Channel Sounding timing
+   :align: center
+   :width: 80%
+
+   Channel Sounding timing-events
+
+Care must be taken when selecting the ACL event spacing and ACL interval, if multiple links are to be used.
+The ACL event spacing must allow sufficient time for the CS timing-activity, as shown in the figure below.
+
+.. figure:: pic/schedule/channel_sounding_multiple_links.svg
+   :alt: Alt text: Channel Sounding timing with multiple centrals
+   :align: center
+   :width: 80%
+
+   Channel Sounding timing-events with multiple centrals
+
+When using both connected isochronous channels and Channel Sounding simultaneously, the considerations discussed above and in the :ref:`scheduling_of_connected_iso` section still apply.
+However, since both are defined relative to the timing-events of the ACL connection, they can easily conflict.
+The simplest way to avoid conflicts between these timing-activities is to use the :kconfig:option:`CONFIG_BT_CTLR_SDC_CIG_RESERVED_TIME_US` kconfig option, or the vendor-specific HCI command defined by the :c:func:`sdc_hci_cmd_vs_cig_reserved_time_set` function, to reserve time within the ISO interval for the Channel Sounding timing-activity.
+This is easiest to achieve if the ISO interval is equal to or a multiple of the ACL interval, as shown below.
+
+.. figure:: pic/schedule/channel_sounding_multiple_links_plus_iso.svg
+   :alt: Alt text: Channel Sounding timing with connected ISO
+   :align: center
+   :width: 80%
+
+   Channel Sounding timing-events with ISO streams on multiple connections
+
 Timeslot API timing
 *******************
 
