@@ -18,6 +18,31 @@ if NRF_802154_RADIO_DRIVER
 config NRF_802154_ENCRYPTION
 	bool "nRF 802.15.4 AES-CCM* authentication & encryption"
 	depends on !CRYPTO_NRF_ECB
+	select NRF_802154_IE_WRITER
+	select NRF_802154_SECURITY_WRITER
+	help
+		Enable module for encryption and authentication of outgoing frames and Acks.
+
+config NRF_802154_IE_WRITER
+	bool "Information element writer"
+	help
+		Enable data injection for some Information Element types.
+
+config NRF_802154_SECURITY_WRITER
+	bool "Security frame counter writer"
+	help
+		Enable injection of security frame counter.
+
+config NRF_802154_TX_DIAGNOSTIC_MODE
+	bool "TX diagnostic mode"
+	help
+		Disables strict frame validation.
+		When this option is disabled the nRF 802.154 Radio Driver performs strict frame
+		format validation of any frame that is to be transmitted. Frames that do not conform
+		the IEEE 802.15.4 MAC frame format will be discarded on transmit attempts.
+		When this option is enabled the validation of frame format is disabled what allows
+		for sending arbitrary frames. The functionality set of the radio driver is reduced.
+		The IE writer, security writer, encryption, and TX timestamp modules cannot be used.
 
 config NRF_802154_CSMA_CA_MIN_BE_DEFAULT
 	int "Minimum CSMA-CA backoff exponent (BE)"

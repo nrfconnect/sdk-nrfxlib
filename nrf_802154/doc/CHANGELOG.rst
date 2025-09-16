@@ -30,6 +30,9 @@ Added
   The feature can be enabled with the :c:macro:`NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED` configuration macro. (KRKNWK-20426)
 * The HFXO startup latency can now be configured on all SoC families.
   On the nRF52 and nRF53 Series, a conservative default value of 1400 µs is assumed if :c:func:`nrf_802154_clock_hfclk_latency_set` is not called. (KRKNWK-20716)
+* Added a TX diagnostic mode that permits sending arbitrary data payloads.
+  Enable this feature with the :c:macro:`NRF_802154_TX_DIAGNOSTIC_MODE` configuration macro.
+  When enabled, the driver must be built with reduced functionality. (KRKNWK-20784)
 
 nRF Connect SDK v3.1.0 - nRF 802.15.4 Radio Driver
 **************************************************

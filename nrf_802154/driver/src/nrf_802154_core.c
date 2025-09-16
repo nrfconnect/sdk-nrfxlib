@@ -545,7 +545,11 @@ static uint8_t * rx_buffer_get(void)
  */
 static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
 {
-    NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(p_frame) >= PARSE_LEVEL_FCF_OFFSETS);
+    if (nrf_802154_frame_parse_level_get(p_frame) < PARSE_LEVEL_FCF_OFFSETS)
+    {
+        // The frame is badly formatted.
+        return false;
+    }
 
     if (nrf_802154_frame_type_get(p_frame) == FRAME_TYPE_MULTIPURPOSE)
     {
