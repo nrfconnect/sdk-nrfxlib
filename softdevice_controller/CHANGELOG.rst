@@ -16,6 +16,7 @@ Bug fixes
 =========
 
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
+* Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 
 nRF Connect SDK v3.1.0
 **********************
@@ -159,6 +160,17 @@ Bug fixes
 * Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
   This could lead to sending a packet with an invalid MIC in the case of an encrypted connection.
   The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled. (DRGN-24929)
+
+nRF Connect SDK v2.9.2
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
+* Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
+  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
+  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
 
 nRF Connect SDK v2.9.0
 **********************
@@ -376,6 +388,47 @@ Bug fixes
   This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
 * Fixed an issue where the |controller| could assert when scanning or advertising on Coded PHY using SPI FEM on the nRF53 series. (DRGN-21962)
 
+nRF Connect SDK v2.6.4
+**********************
+
+All the notable changes included in the |NCS| v2.6.4 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
+
+nRF Connect SDK v2.6.3
+**********************
+
+All the notable changes included in the |NCS| v2.6.3 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY. (DRGN-22652 and DRGN-24327)
+* Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
+  This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
+* Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
+* Fixed an issue where an assert could happen if the peripheral received a connection update indication.
+  This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
+* Fixed an issue where the SoftDevice Controller in the peripheral role could terminate a connection due to a MIC failure during a valid encryption start procedure.
+  This could only happen if the ``LL_ENC_RSP`` packet was corrupted due to on-air interference. (DRGN-23204)
+* Fixed a rare issue in the controller that could lead to a bus fault. (DRGN-22036)
+
+  This could only happen when all of the following conditions were met:
+
+    * The host was too slow at pulling HCI events.
+    * One or more HCI events had been masked in the controller.
+    * The controller was raising ACL or ISO data to the host.
+
+Changes
+=======
+
+* Generating the Number of Completed Packets event is now prioritized above all other events.
+  The event is generated irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
+* When a link disconnects, the controller will now raise one or more Number Of Completed Packets events for data packets not ACKed by the peer device. (DRGN-23302)
+
 nRF Connect SDK v2.6.0
 **********************
 
@@ -454,6 +507,23 @@ Bug fixes
   The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
 * Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet. (DRGN-21253)
 
+nRF Connect SDK v2.5.2
+**********************
+
+All the notable changes included in the |NCS| v2.5.2 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller stopped generating advertising reports.
+  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
+  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND``. (DRGN-21020)
+* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
+  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
+  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
+* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet. (DRGN-21262)
+
 nRF Connect SDK v2.5.0
 **********************
 
@@ -530,6 +600,24 @@ Bug fixes
 * Fixed an issue where the controller acting as a central would assert when receiving a non-compliant LL_PHY_RSP from a peer device (DRGN-20578).
 * Fixed an issue that could occur when the Host Number of Complete Packets command was sent with a connection handle the controller had already raised a disconnect event for.
   The controller would return ``BT_HCI_ERR_INVALID_PARAM`` to the command, which would mean that the host could not return the buffer to the controller (DRGN-20654).
+
+nRF Connect SDK v2.4.3
+**********************
+
+All the notable changes included in the |NCS| v2.4.3 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller stopped generating advertising reports.
+  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
+  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND`` (DRGN-21020).
+* Fixed an issue where the continuous extended scanner would not be able to receive the ``AUX_ADV_IND`` packet if the time between the ``ADV_EXT_IND`` and ``AUX_ADV_IND`` was more than 840 μs (DRGN-19460).
+* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
+  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
+  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller also validates the handles provided in the Host Number of Complete Packets command (DRGN-21085).
+* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet (DRGN-21262).
 
 nRF Connect SDK v2.4.0
 **********************
@@ -865,6 +953,16 @@ Bug fixes
 * Fixed an issue where an assert may occur when legacy advertiser is used after "HCI LE Clear Advertising Sets" (DRGN-15993).
 * Fixed an issue where an assert could occur when in LLPM mode and the connection interval was more than 1 ms (DRGN-16079).
 
+nRF Connect SDK v1.6.1
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
+* Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
+
+
 nRF Connect SDK v1.6.0
 **********************
 
@@ -916,6 +1014,21 @@ Bug fixes
 * Fixed an issue where the controller may still have pending events after :c:func:`sdc_hci_evt_get()` returns false.
   This would only occur if the host has masked out events (DRGN-15758).
 * Fixed an issue where the extended scanner generated reports containing truncated data from a chained advertising PDU (DRGN-13338).
+
+nRF Connect SDK v1.5.1
+**********************
+
+Added
+=====
+
+* Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
+
+Bug fixes
+=========
+
+* Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
+* The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
+* Fixed an issue where setting a legacy advertiser's scan response data using extended advertising HCI commands corrupted the advertising data (DRGN-15465).
 
 nRF Connect SDK v1.5.0
 **********************
