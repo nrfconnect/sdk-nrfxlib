@@ -109,6 +109,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
     /** @brief See @ref sdc_hci_cmd_vs_set_cs_event_length(). */
     SDC_HCI_OPCODE_CMD_VS_SET_CS_EVENT_LENGTH = 0xfd21,
+    /** @brief See @ref sdc_hci_cmd_vs_cs_params_set(). */
+    SDC_HCI_OPCODE_CMD_VS_CS_PARAMS_SET = 0xfd22,
 };
 
 /** @brief VS subevent Code values. */
@@ -122,6 +124,16 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_CONN_ANCHOR_POINT_UPDATE_REPORT = 0x82,
     /** @brief See @ref sdc_hci_subevent_vs_periodic_adv_event_counter_report_t. */
     SDC_HCI_SUBEVENT_VS_PERIODIC_ADV_EVENT_COUNTER_REPORT = 0x84,
+};
+
+/** @brief CS Parameter Set types. */
+enum sdc_hci_vs_cs_param_type
+{
+    /** @brief CS Event length set. */
+    SDC_HCI_VS_CS_PARAM_TYPE_CS_EVENT_LENGTH_SET = 0x00,
+    /** @brief CS t_pm length set. */
+    SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET = 0x01,
+    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x02,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -169,6 +181,19 @@ enum sdc_hci_vs_tx_power_handle_type
     /** @brief Handle of type ISO broadcaster. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_ISO_BROADCASTER = 0x04,
 };
+
+/** @brief CS event length set parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Allocated CS event length in microseconds. */
+    uint32_t cs_event_length_us;
+} sdc_hci_vs_cs_event_length_params_t;
+
+/** @brief CS T_PM set parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t cs_t_pm_length_us;
+} sdc_hci_vs_cs_t_pm_params_t;
 
 /** @brief Zephyr Static Address type. */
 typedef struct __PACKED __ALIGN(1)
@@ -729,6 +754,18 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Allocated CS event length in microseconds. */
     uint32_t cs_event_length_us;
 } sdc_hci_cmd_vs_set_cs_event_length_t;
+
+/** @brief Set custom control parameters for CS command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief The type of CS parameter being set. */
+    uint8_t cs_param_type;
+    /** @brief Data for the CS parameter being set. */
+    union __PACKED __ALIGN(1) {
+        sdc_hci_vs_cs_event_length_params_t cs_event_length_params;
+        sdc_hci_vs_cs_t_pm_params_t cs_t_pm_params;
+    } cs_param_data;
+} sdc_hci_cmd_vs_cs_params_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1704,6 +1741,54 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_cs_event_length(const sdc_hci_cmd_vs_set_cs_event_length_t * p_params);
+
+/** @brief Set custom control parameters for CS.
+ *
+ * Set various parameters for finer control of CS steps, events and procedures.
+ *
+ * The cs_param_type is used to determine the parameters being set and how to interpret the
+ * data in the cs_param_data.
+ *
+ * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_EVENT_LENGTH_SET:
+ *
+ *   Set the event length for CS events.
+ *
+ *   In case the number of subevents per event is one, the event length is the same as
+ *   the subevent length.
+ *
+ *   In case the number of subevents per event is greater than one, the event length is
+ *   the total expected time occupied by all subevents and the spacing between them, given
+ *   by the formula:
+ *
+ *   event length = T_SUBEVENT_INTERVAL x (N_SUBEVENTS_PER_EVENT - 1) + T_SUBEVENT_LEN
+ *
+ *   Some additional margin may also be needed.
+ *
+ * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET:
+ *
+ *   Set the preferred tone length (T_PM) of CS tones
+ *
+ *   In Channel Sounding, tones in step mode-2 and -3 have a length of t_pm microseconds.
+ *   T_PM can be 10, 20 or 40 microseconds.
+ *
+ *   Since the T_PM can affect the quality of tone measurements, it is important for
+ *   certain use-cases to be able to set a preferred T_PM. The controller will then use
+ *   this value when the LE CS Create Config command is issued.
+ *
+ *   If the local or peer device does not support the suggested preferred T_PM, it cannot
+ *   be used. The controller will then select a T_PM value supported by both local and
+ *   peer devices when the LE CS Create Config command is issued.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
