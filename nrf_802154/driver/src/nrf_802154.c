@@ -426,14 +426,22 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                                                PARSE_LEVEL_FULL,
                                                &frame);
 
+#if NRF_802154_TX_DIAGNOSTIC_MODE
     if (!result)
     {
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-        return result;
+        result = nrf_802154_frame_parser_data_init(p_data,
+                                                   p_data[PHR_OFFSET] + PHR_SIZE,
+                                                   PARSE_LEVEL_NONE,
+                                                   &frame);
+    }
+#endif
+
+    if (result)
+    {
+        result = are_frame_properties_valid(&p_metadata->frame_props) &&
+                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     }
 
-    result = are_frame_properties_valid(&p_metadata->frame_props) &&
-             is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
         result = nrf_802154_imm_tx_transmit(&frame,
@@ -473,15 +481,23 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
                                                PARSE_LEVEL_FULL,
                                                &frame);
 
+#if NRF_802154_TX_DIAGNOSTIC_MODE
     if (!result)
     {
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-        return result;
+        result = nrf_802154_frame_parser_data_init(p_data,
+                                                   p_data[PHR_OFFSET] + PHR_SIZE,
+                                                   PARSE_LEVEL_NONE,
+                                                   &frame);
+    }
+#endif
+
+    if (result)
+    {
+        result = are_frame_properties_valid(&p_metadata->frame_props) &&
+                 are_extra_cca_attempts_valid(p_metadata) &&
+                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     }
 
-    result = are_frame_properties_valid(&p_metadata->frame_props) &&
-             are_extra_cca_attempts_valid(p_metadata) &&
-             is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
         result = nrf_802154_request_transmit_raw_at(&frame, tx_time, p_metadata);
@@ -760,14 +776,22 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
                                                PARSE_LEVEL_FULL,
                                                &frame);
 
+#if NRF_802154_TX_DIAGNOSTIC_MODE
     if (!result)
     {
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-        return result;
+        result = nrf_802154_frame_parser_data_init(p_data,
+                                                   p_data[PHR_OFFSET] + PHR_SIZE,
+                                                   PARSE_LEVEL_NONE,
+                                                   &frame);
+    }
+#endif
+
+    if (result)
+    {
+        result = are_frame_properties_valid(&p_metadata->frame_props) &&
+                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     }
 
-    result = are_frame_properties_valid(&p_metadata->frame_props) &&
-             is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
     if (result)
     {
         result = nrf_802154_request_csma_ca_start(&frame, p_metadata);

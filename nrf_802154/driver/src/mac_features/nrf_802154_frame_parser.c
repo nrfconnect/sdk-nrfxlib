@@ -520,7 +520,7 @@ bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
                                        nrf_802154_frame_parser_level_t requested_parse_level,
                                        nrf_802154_frame_t            * p_parser_data)
 {
-    if (p_frame == NULL)
+    if ((p_frame == NULL) || (valid_data_len > (MAX_PACKET_SIZE + PHR_SIZE)))
     {
         return false;
     }
@@ -545,6 +545,11 @@ bool nrf_802154_frame_parser_valid_data_extend(
     uint8_t                         valid_data_len,
     nrf_802154_frame_parser_level_t requested_parse_level)
 {
+    if (valid_data_len > (MAX_PACKET_SIZE + PHR_SIZE))
+    {
+        return false;
+    }
+
     if (valid_data_len > p_parser_data->valid_data_len)
     {
         p_parser_data->valid_data_len = valid_data_len;

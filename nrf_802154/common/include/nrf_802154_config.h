@@ -611,6 +611,38 @@ extern "C" {
 #define NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED 0
 #endif
 
+/**
+ * @}
+ * @defgroup nrf_802154_tx_misc Miscellaneous options
+ * @{
+ */
+
+/**
+ * @def NRF_802154_TX_DIAGNOSTIC_MODE
+ *
+ * Disables strict frame validation.
+ *
+ * When this option is disabled the nRF 802.154 Radio Driver performs strict frame format
+ * validation of any frame that is to be transmitted. Frames that do not conform
+ * the IEEE 802.15.4 MAC frame format will be discarded on transmit attempts.
+ *
+ * When this option is enabled the validation of frame format is disabled what allows for
+ * sending arbitrary frames. The functionality set of the radio driver is reduced.
+ * The IE writer, security writer, encryption, and TX timestamp modules cannot be used.
+ */
+#ifndef NRF_802154_TX_DIAGNOSTIC_MODE
+#define NRF_802154_TX_DIAGNOSTIC_MODE 0
+#endif
+
+#if NRF_802154_TX_DIAGNOSTIC_MODE
+#if NRF_802154_IE_WRITER_ENABLED || \
+    NRF_802154_SECURITY_WRITER_ENABLED || \
+    NRF_802154_ENCRYPTION_ENABLED || \
+    NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+#error "TX Diagnostic mode is not compatible with IE writer, Security writer, Encryption, and TX timestamp."
+#endif
+#endif
+
 /** @} */
 
 /**
