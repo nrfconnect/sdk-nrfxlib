@@ -17,5 +17,6 @@ rsource "gzll/Kconfig"
 rsource "nrf_dm/Kconfig"
 rsource "lc3/Kconfig"
 rsource "nrf_fuel_gauge/Kconfig"
+rsource "nrf71_wifi/Kconfig"
 
 endmenu
