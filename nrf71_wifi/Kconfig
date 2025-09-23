@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2025 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config NRF71_WIFI
+	bool
+	default y if NRF71_ON_IPC
