@@ -430,6 +430,21 @@ static bool level_is_elevated(nrf_802154_frame_t            * p_parser_data,
     return requested_parse_level > p_parser_data->parse_level;
 }
 
+/**
+ * @brief Check if sufficient data is available for parsing or frame is multipurpose.
+ *
+ * @param[in] p_parser_data    Frame parser data structure.
+ * @param[in] required_offset  Minimum required data offset for parsing.
+ *
+ * @return True if sufficient data is available or frame is multipurpose, false otherwise.
+ */
+static bool is_data_sufficient_or_multipurpose(const nrf_802154_frame_t * p_parser_data,
+                                               uint8_t                    required_offset)
+{
+    return (p_parser_data->valid_data_len >= required_offset) ||
+           (nrf_802154_frame_type_get(p_parser_data) == FRAME_TYPE_MULTIPURPOSE);
+}
+
 static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
                                 nrf_802154_frame_parser_level_t requested_parse_level)
 {
@@ -451,10 +466,9 @@ static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
                 break;
 
             case PARSE_LEVEL_FCF_OFFSETS:
-                if (p_parser_data->valid_data_len >=
-                    p_parser_data->helper.dst_addressing_end_offset ||
-                    nrf_802154_frame_type_get(p_parser_data) ==
-                    FRAME_TYPE_MULTIPURPOSE)
+                if (is_data_sufficient_or_multipurpose(p_parser_data,
+                                                       p_parser_data->helper.
+                                                       dst_addressing_end_offset))
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_DST_ADDRESSING_END;
@@ -462,9 +476,8 @@ static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
                 break;
 
             case PARSE_LEVEL_DST_ADDRESSING_END:
-                if (p_parser_data->valid_data_len >= p_parser_data->helper.addressing_end_offset ||
-                    nrf_802154_frame_type_get(p_parser_data) ==
-                    FRAME_TYPE_MULTIPURPOSE)
+                if (is_data_sufficient_or_multipurpose(p_parser_data,
+                                                       p_parser_data->helper.addressing_end_offset))
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_ADDRESSING_END;
@@ -480,9 +493,8 @@ static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
                 break;
 
             case PARSE_LEVEL_SEC_CTRL_OFFSETS:
-                if (p_parser_data->valid_data_len >= p_parser_data->helper.aux_sec_hdr_end_offset ||
-                    nrf_802154_frame_type_get(p_parser_data) ==
-                    FRAME_TYPE_MULTIPURPOSE)
+                if (is_data_sufficient_or_multipurpose(p_parser_data,
+                                                       p_parser_data->helper.aux_sec_hdr_end_offset))
                 {
                     result     = true;
                     next_level = PARSE_LEVEL_AUX_SEC_HDR_END;

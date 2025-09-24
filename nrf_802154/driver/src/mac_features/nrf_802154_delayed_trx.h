@@ -78,9 +78,10 @@ void nrf_802154_delayed_trx_deinit(void);
  * @param[in]  p_metadata   Pointer to metadata structure. Contains detailed properties of data
  *                          to transmit and additional parameters for the procedure.
  */
-bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p_frame,
-                                     uint64_t                                  tx_time,
-                                     const nrf_802154_transmit_at_metadata_t * p_metadata);
+nrf_802154_tx_error_t nrf_802154_delayed_trx_transmit(
+    const nrf_802154_frame_t                * p_frame,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
  * @brief Cancels a transmission scheduled by a call to @ref nrf_802154_delayed_trx_transmit.

@@ -35,6 +35,7 @@
 #include "nrf_802154_encrypt.h"
 
 #include "nrf_802154_assert.h"
+#include "nrf_802154_compiler.h"
 #include <string.h>
 
 #include "nrf_802154_aes_ccm.h"
@@ -220,19 +221,24 @@ bool aes_ccm_data_a_data_and_m_data_prepare(
     switch (nrf_802154_frame_type_get(p_frame_data))
     {
         case FRAME_TYPE_ACK:
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
+
         case FRAME_TYPE_DATA:
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
+
         case FRAME_TYPE_COMMAND:
             result = a_data_and_m_data_prepare(p_frame_data, p_aes_ccm_data);
             break;
 
         case FRAME_TYPE_BEACON:
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
+
         case FRAME_TYPE_EXTENDED:
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
+
         case FRAME_TYPE_FRAGMENT:
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
+
         case FRAME_TYPE_MULTIPURPOSE:
             // This frame type is currently unsupported.
             result = false;

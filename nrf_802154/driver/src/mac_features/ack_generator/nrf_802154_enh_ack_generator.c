@@ -41,6 +41,7 @@
 #include "nrf_802154_enh_ack_generator.h"
 
 #include "nrf_802154_assert.h"
+#include "nrf_802154_compiler.h"
 #include <string.h>
 
 #include "mac_features/nrf_802154_frame_parser.h"
@@ -624,7 +625,7 @@ uint8_t * nrf_802154_enh_ack_generator_create(
         #endif
 
             ack_state_set(ACK_STATE_PROCESSING);
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
 
         case ACK_STATE_PROCESSING:
         {

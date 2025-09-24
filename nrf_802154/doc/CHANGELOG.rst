@@ -22,6 +22,9 @@ Notable changes
   This feature improves the reception performance of Enhanced ACK (EnhACK) frames, for which the PHR field value is not known in advance. (KRKNWK-19125)
 * When the proprietary SL library is used, the radio driver no longer requests the HFCLK directly through the :c:func:`nrf_802154_clock_hfclk_start` API.
   Clock requests are now handled internally through MPSL. (KRKNWK-20716)
+* The experimental IFS feature has been removed. (KRKNWK-20788)
+* The return value of :c:func:`nrf_802154_transmit_raw`, :c:func:`nrf_802154_transmit_csma_ca_raw`, and :c:func:`nrf_802154_transmit_raw_at` was updated.
+  These API functions now return ``nrf_802154_tx_error_t`` instead of ``bool``. (KRKNWK-18536)
 
 Added
 =====

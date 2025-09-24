@@ -1262,12 +1262,13 @@ bail:
 
 #if NRF_802154_CSMA_CA_ENABLED
 
-bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
-                                     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
+    uint8_t                                      * p_data,
+    const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
-    nrf_802154_ser_err_t res;
-    uint32_t             data_handle;
-    bool                 transmit_result = false;
+    nrf_802154_ser_err_t  res;
+    uint32_t              data_handle;
+    nrf_802154_tx_error_t transmit_result = NRF_802154_TX_ERROR_NONE;
 
     SERIALIZATION_ERROR_INIT(error);
 
@@ -1304,8 +1305,8 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
-    res = net_generic_bool_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
-                                          &transmit_result);
+    res = net_generic_uint8_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                           &transmit_result);
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
@@ -1560,12 +1561,12 @@ bail:
 
 #endif // NRF_802154_TEST_MODES_ENABLED
 
-bool nrf_802154_transmit_raw(uint8_t                              * p_data,
-                             const nrf_802154_transmit_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                              * p_data,
+                                              const nrf_802154_transmit_metadata_t * p_metadata)
 {
-    nrf_802154_ser_err_t res;
-    uint32_t             data_handle;
-    bool                 transmit_result = false;
+    nrf_802154_ser_err_t  res;
+    uint32_t              data_handle;
+    nrf_802154_tx_error_t transmit_result = NRF_802154_TX_ERROR_NONE;
 
     SERIALIZATION_ERROR_INIT(error);
 
@@ -1603,8 +1604,8 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
-    res = net_generic_bool_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
-                                          &transmit_result);
+    res = net_generic_uint8_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                           &transmit_result);
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
@@ -1624,13 +1625,14 @@ bail:
     return transmit_result;
 }
 
-bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint64_t                                  tx_time,
-                                const nrf_802154_transmit_at_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
+    uint8_t                                 * p_data,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
-    nrf_802154_ser_err_t res;
-    uint32_t             data_handle;
-    bool                 transmit_result = false;
+    nrf_802154_ser_err_t  res;
+    uint32_t              data_handle;
+    nrf_802154_tx_error_t transmit_result = NRF_802154_TX_ERROR_NONE;
 
     SERIALIZATION_ERROR_INIT(error);
 
@@ -1671,8 +1673,8 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
-    res = net_generic_bool_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
-                                          &transmit_result);
+    res = net_generic_uint8_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                           &transmit_result);
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 

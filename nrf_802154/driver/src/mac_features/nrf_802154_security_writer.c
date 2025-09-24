@@ -42,6 +42,7 @@
 
 #include "mac_features/nrf_802154_frame.h"
 #include "mac_features/nrf_802154_security_pib.h"
+#include "nrf_802154_compiler.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_tx_work_buffer.h"
@@ -74,9 +75,11 @@ static void key_id_prepare(const nrf_802154_frame_t * p_frame_data,
             break;
 
         case KEY_ID_MODE_1:
-        /* Fallthrough */
+            SWITCH_CASE_FALLTHROUGH;
+
         case KEY_ID_MODE_2:
-        /* Fallthrough */
+            SWITCH_CASE_FALLTHROUGH;
+
         case KEY_ID_MODE_3:
             p_key_id->p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_frame_data);
             break;
@@ -122,7 +125,8 @@ static nrf_802154_security_error_t frame_counter_inject(
             break;
 
         case NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND:
-        /* Fallthrough */
+            SWITCH_CASE_FALLTHROUGH;
+
         case NRF_802154_SECURITY_ERROR_FRAME_COUNTER_OVERFLOW:
             break;
 

@@ -39,6 +39,7 @@
 #include "nrf_802154_assert.h"
 #include <string.h>
 
+#include "nrf_802154_compiler.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_peripherals.h"
@@ -2022,7 +2023,7 @@ bool nrf_802154_trx_go_idle(void)
 
         case TRX_STATE_RXFRAME_FINISHED:
             timer_stop_and_clear();
-        /* Fallthrough */
+            SWITCH_CASE_FALLTHROUGH;
 
         case TRX_STATE_FINISHED:
             go_idle_from_state_finished();

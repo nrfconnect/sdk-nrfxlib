@@ -72,7 +72,6 @@
 #include "mac_features/nrf_802154_ack_timeout.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_ie_writer.h"
-#include "mac_features/nrf_802154_ifs.h"
 #include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 #include "mac_features/nrf_802154_frame_parser.h"
@@ -218,9 +217,6 @@ void nrf_802154_init(void)
 #if NRF_802154_DELAYED_TRX_ENABLED
     nrf_802154_delayed_trx_init();
 #endif
-#if NRF_802154_IFS_ENABLED
-    nrf_802154_ifs_init();
-#endif
 }
 
 void nrf_802154_deinit(void)
@@ -238,9 +234,6 @@ void nrf_802154_deinit(void)
 #endif
 #if NRF_802154_DELAYED_TRX_ENABLED
     nrf_802154_delayed_trx_deinit();
-#endif
-#if NRF_802154_IFS_ENABLED
-    nrf_802154_ifs_deinit();
 #endif
 }
 
@@ -399,11 +392,12 @@ bool nrf_802154_receive(void)
     return result;
 }
 
-bool nrf_802154_transmit_raw(uint8_t                              * p_data,
-                             const nrf_802154_transmit_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                              * p_data,
+                                              const nrf_802154_transmit_metadata_t * p_metadata)
 {
-    bool               result;
-    nrf_802154_frame_t frame;
+    bool                  result;
+    nrf_802154_frame_t    frame;
+    nrf_802154_tx_error_t error;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -444,21 +438,27 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
 
     if (result)
     {
-        result = nrf_802154_imm_tx_transmit(&frame,
-                                            p_metadata);
+        error = nrf_802154_imm_tx_transmit(&frame,
+                                           p_metadata);
+    }
+    else
+    {
+        error = NRF_802154_TX_ERROR_INVALID_REQUEST;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
+    return error;
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint64_t                                  tx_time,
-                                const nrf_802154_transmit_at_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
+    uint8_t                                 * p_data,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     bool                              result;
     nrf_802154_frame_t                frame;
+    nrf_802154_tx_error_t             error;
     nrf_802154_transmit_at_metadata_t metadata_default =
     {
         .frame_props         = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
@@ -500,11 +500,15 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
 
     if (result)
     {
-        result = nrf_802154_request_transmit_raw_at(&frame, tx_time, p_metadata);
+        error = nrf_802154_request_transmit_raw_at(&frame, tx_time, p_metadata);
+    }
+    else
+    {
+        error = NRF_802154_TX_ERROR_INVALID_REQUEST;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
+    return error;
 }
 
 bool nrf_802154_transmit_at_cancel(void)
@@ -750,11 +754,13 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg)
 
 #if NRF_802154_CSMA_CA_ENABLED
 
-bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
-                                     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
+    uint8_t                                      * p_data,
+    const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
-    bool               result;
-    nrf_802154_frame_t frame;
+    bool                  result;
+    nrf_802154_frame_t    frame;
+    nrf_802154_tx_error_t error;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -794,11 +800,15 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
 
     if (result)
     {
-        result = nrf_802154_request_csma_ca_start(&frame, p_metadata);
+        error = nrf_802154_request_csma_ca_start(&frame, p_metadata);
+    }
+    else
+    {
+        error = NRF_802154_TX_ERROR_INVALID_REQUEST;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
+    return error;
 }
 
 bool nrf_802154_csma_ca_min_be_set(uint8_t min_be)
@@ -901,21 +911,6 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void)
     caps_drv |= ((NRF_802154_SECURITY_WRITER_ENABLED && NRF_802154_ENCRYPTION_ENABLED) ?
                  NRF_802154_CAPABILITY_SECURITY : 0UL);
 
-    /* Both IFS and ACK Timeout features require SL timer, however
-     * using them both at the same time requires that SL is able to schedule
-     * several timers simultaneously.
-     *
-     * ACK Timeout capability takes precedence over IFS if only one timer
-     * can be scheduled because there is no known usecase for IFS without ACK Timeout,
-     * and this configuration would require additional testing. If such usecase emerges,
-     * this logic should be updated.
-     */
-    if (NRF_802154_SL_CAPABILITY_MULTITIMER & caps_sl)
-    {
-        caps_drv |= (NRF_802154_IFS_ENABLED ?
-                     NRF_802154_CAPABILITY_IFS : 0UL);
-    }
-
     return caps_drv;
 }
 
@@ -987,7 +982,7 @@ __WEAK void nrf_802154_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
 {
     uint64_t timestamp;
 
-    nrf_802154_stat_timestamp_read(&timestamp, last_rx_end_timestamp);
+    timestamp = nrf_802154_stat_timestamp_read_last_rx_end_timestamp();
 
     nrf_802154_received_timestamp_raw(p_data,
                                       power,

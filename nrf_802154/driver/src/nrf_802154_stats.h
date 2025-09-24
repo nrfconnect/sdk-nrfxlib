@@ -35,74 +35,141 @@
 #ifndef NRF_802154_STATS_H_
 #define NRF_802154_STATS_H_
 
+#include "nrfx.h"
 #include "nrf_802154_types.h"
-#include "nrf_802154_utils.h"
+#include "nrf_802154_sl_atomics.h"
 
-#if !defined(TEST)
-// Don't use directly. Use provided nrf_802154_stat_xxxx API macros.
-extern volatile nrf_802154_stats_t g_nrf_802154_stats;
+#ifdef __STATIC_INLINE__
+#undef __STATIC_INLINE__
+#endif
 
-/**@brief Increment one of the @ref nrf_802154_stat_counters_t fields.
- *
- * @param field_name    Identifier of struct member to increment
- */
-#define nrf_802154_stat_counter_increment(field_name) \
-    do                                                \
-    {                                                 \
-        nrf_802154_mcu_critical_state_t mcu_cs;       \
-                                                      \
-        mcu_cs = nrf_802154_mcu_critical_enter();     \
-        (g_nrf_802154_stats.counters.field_name)++;   \
-        nrf_802154_mcu_critical_exit(mcu_cs);         \
-    }                                                 \
+#ifdef NRF_802154_STATS_DECLARE_ONLY
+#define __STATIC_INLINE__
+#else
+#define __STATIC_INLINE__ __STATIC_INLINE
+#endif
+
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_cca_failed_attempts(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_frames(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_energy_events(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_preambles(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_requests(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_granted_requests(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_denied_requests(void);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_unsolicited_grants(void);
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_csmaca_start_timestamp(uint64_t value);
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_cca_start_timestamp(uint64_t value);
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_cca_idle_timestamp(uint64_t value);
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_tx_end_timestamp(uint64_t value);
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_ack_end_timestamp(uint64_t value);
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_rx_end_timestamp(uint64_t value);
+
+__STATIC_INLINE__ uint64_t nrf_802154_stat_timestamp_read_last_rx_end_timestamp(void);
+__STATIC_INLINE__ uint64_t nrf_802154_stat_timestamp_read_last_ack_end_timestamp(void);
+
+#ifndef NRF_802154_STATS_DECLARE_ONLY
+
+#define __NRF_802154_STAT_COUNTER_INC_IMPL(_field_name)                           \
+    do                                                                            \
+    {                                                                             \
+        extern nrf_802154_stats_t g_nrf_802154_stats;                             \
+        nrf_802154_sl_atomic_add_u32(&g_nrf_802154_stats.counters._field_name, 1);\
+    }                                                                             \
     while (0)
 
-/**@brief Write one of the @ref nrf_802154_stat_timestamps_t fields.
- *
- * @param field_name    Identifier of struct member to write
- * @param value         Value to write
- */
-#define nrf_802154_stat_timestamp_write(field_name, value)    \
-    do                                                        \
-    {                                                         \
-        nrf_802154_mcu_critical_state_t mcu_cs;               \
-                                                              \
-        mcu_cs = nrf_802154_mcu_critical_enter();             \
-        (g_nrf_802154_stats.timestamps.field_name) = (value); \
-        nrf_802154_mcu_critical_exit(mcu_cs);                 \
-    }                                                         \
+#define __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(_field_name, _value)                           \
+    do                                                                                       \
+    {                                                                                        \
+        extern nrf_802154_stats_t g_nrf_802154_stats;                                        \
+        nrf_802154_sl_atomic_store_u64(&g_nrf_802154_stats.timestamps._field_name, (_value));\
+    }                                                                                        \
     while (0)
 
-/**@brief Read one of the @ref nrf_802154_stat_timestamps_t fields. */
-#define nrf_802154_stat_timestamp_read(variable, field_name)    \
-    do                                                          \
-    {                                                           \
-        nrf_802154_mcu_critical_state_t mcu_cs;                 \
-                                                                \
-        mcu_cs      = nrf_802154_mcu_critical_enter();          \
-        *(variable) = g_nrf_802154_stats.timestamps.field_name; \
-        nrf_802154_mcu_critical_exit(mcu_cs);                   \
-    }                                                           \
-    while (0)
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_cca_failed_attempts(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(cca_failed_attempts);
+}
 
-#else // !defined(TEST)
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_frames(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(received_frames);
+}
 
-#define nrf_802154_stat_counter_increment(field_name) \
-    nrf_802154_stat_counter_increment_func(offsetof(nrf_802154_stat_counters_t, field_name))
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_energy_events(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(received_energy_events);
+}
 
-#define nrf_802154_stat_timestamp_write(field_name, value)                                   \
-    nrf_802154_stat_timestamp_write_func(offsetof(nrf_802154_stat_timestamps_t, field_name), \
-                                         (value))
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_received_preambles(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(received_preambles);
+}
 
-#define nrf_802154_stat_timestamp_read(variable, field_name)                                 \
-    *(variable) = nrf_802154_stat_timestamp_read_func(offsetof(nrf_802154_stat_timestamps_t, \
-                                                               field_name))
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_requests(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(coex_requests);
+}
 
-// Functions for which mocks are generated.
-void nrf_802154_stat_counter_increment_func(size_t field_offset);
-void nrf_802154_stat_timestamp_write_func(size_t field_offset, uint64_t value);
-uint64_t nrf_802154_stat_timestamp_read_func(size_t field_offset);
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_granted_requests(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(coex_granted_requests);
+}
 
-#endif // !defined(TEST)
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_denied_requests(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(coex_denied_requests);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_counter_increment_coex_unsolicited_grants(void)
+{
+    __NRF_802154_STAT_COUNTER_INC_IMPL(coex_unsolicited_grants);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_csmaca_start_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_csmaca_start_timestamp, value);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_cca_start_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_cca_start_timestamp, value);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_cca_idle_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_cca_idle_timestamp, value);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_tx_end_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_tx_end_timestamp, value);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_ack_end_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_ack_end_timestamp, value);
+}
+
+__STATIC_INLINE__ void nrf_802154_stat_timestamp_write_last_rx_end_timestamp(uint64_t value)
+{
+    __NRF_80214_STAT_TIMESTAMP_WRITE_IMPL(last_rx_end_timestamp, value);
+}
+
+__STATIC_INLINE__ uint64_t nrf_802154_stat_timestamp_read_last_rx_end_timestamp(void)
+{
+    extern nrf_802154_stats_t g_nrf_802154_stats;
+
+    return nrf_802154_sl_atomic_load_u64(&g_nrf_802154_stats.timestamps.last_rx_end_timestamp);
+}
+
+__STATIC_INLINE__ uint64_t nrf_802154_stat_timestamp_read_last_ack_end_timestamp(void)
+{
+    extern nrf_802154_stats_t g_nrf_802154_stats;
+
+    return nrf_802154_sl_atomic_load_u64(&g_nrf_802154_stats.timestamps.last_ack_end_timestamp);
+}
+
+#endif /* NRF_802154_STATS_DECLARE_ONLY */
 
 #endif /* NRF_802154_STATS_H_ */
