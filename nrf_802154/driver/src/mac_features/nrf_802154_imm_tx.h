@@ -55,7 +55,7 @@
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
  */
-bool nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
-                                const nrf_802154_transmit_metadata_t * p_metadata);
+nrf_802154_tx_error_t nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
+                                                 const nrf_802154_transmit_metadata_t * p_metadata);
 
 #endif /* NRF_802154_IMM_TX_H__ */

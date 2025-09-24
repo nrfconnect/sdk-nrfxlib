@@ -1007,9 +1007,9 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_csma_ca_raw(
     }
 
     // Transmit the content under the locally accessible pointer
-    bool result = nrf_802154_transmit_csma_ca_raw(p_local_frame_ptr, &tx_metadata);
+    nrf_802154_tx_error_t result = nrf_802154_transmit_csma_ca_raw(p_local_frame_ptr, &tx_metadata);
 
-    if (!result)
+    if (result != NRF_802154_TX_ERROR_NONE)
     {
         nrf_802154_buffer_mgr_dst_remove_by_local_pointer(nrf_802154_spinel_dst_buffer_mgr_get(),
                                                           p_local_frame_ptr);
@@ -1441,9 +1441,9 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw(
         return NRF_802154_SERIALIZATION_ERROR_NO_MEMORY;
     }
 
-    bool result = nrf_802154_transmit_raw(p_local_frame_ptr, &tx_metadata);
+    nrf_802154_tx_error_t result = nrf_802154_transmit_raw(p_local_frame_ptr, &tx_metadata);
 
-    if (!result)
+    if (result != NRF_802154_TX_ERROR_NONE)
     {
         nrf_802154_buffer_mgr_dst_remove_by_local_pointer(nrf_802154_spinel_dst_buffer_mgr_get(),
                                                           p_local_frame_ptr);
@@ -1507,9 +1507,11 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw_at(
         tx_metadata.channel = nrf_802154_channel_get();
     }
 
-    bool result = nrf_802154_transmit_raw_at(p_local_frame_ptr, tx_time, &tx_metadata);
+    nrf_802154_tx_error_t result = nrf_802154_transmit_raw_at(p_local_frame_ptr,
+                                                              tx_time,
+                                                              &tx_metadata);
 
-    if (!result)
+    if (result != NRF_802154_TX_ERROR_NONE)
     {
         nrf_802154_buffer_mgr_dst_remove_by_local_pointer(nrf_802154_spinel_dst_buffer_mgr_get(),
                                                           p_local_frame_ptr);

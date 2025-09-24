@@ -202,7 +202,7 @@ typedef struct
             const nrf_802154_frame_t                * p_frame;
             uint64_t                                  tx_time;
             const nrf_802154_transmit_at_metadata_t * p_metadata;
-            bool                                    * p_result;
+            nrf_802154_tx_error_t                   * p_result;
         } transmit_at;
 
         struct
@@ -231,7 +231,7 @@ typedef struct
         {
             const nrf_802154_frame_t                     * p_frame;
             const nrf_802154_transmit_csma_ca_metadata_t * p_metadata;
-            bool                                         * p_result;
+            nrf_802154_tx_error_t                        * p_result;
         } csma_ca_start; ///< Antenna update request details.
 
     } data;              ///< Request data depending on its type.
@@ -599,7 +599,7 @@ static void swi_rssi_measurement_get(int8_t * p_rssi, bool * p_result)
 static void swi_transmit_at(const nrf_802154_frame_t                * p_frame,
                             uint64_t                                  tx_time,
                             const nrf_802154_transmit_at_metadata_t * p_metadata,
-                            bool                                    * p_result)
+                            nrf_802154_tx_error_t                   * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
 
@@ -666,7 +666,7 @@ static void swi_receive_at_scheduled_cancel(uint32_t id, bool * p_result)
 
 static void swi_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata,
-                              bool                                         * p_result)
+                              nrf_802154_tx_error_t                        * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
 
@@ -795,13 +795,14 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                * p_frame,
-                                        uint64_t                                  tx_time,
-                                        const nrf_802154_transmit_at_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_request_transmit_raw_at(
+    const nrf_802154_frame_t                * p_frame,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit,
                      swi_transmit_at,
-                     bool,
+                     nrf_802154_tx_error_t,
                      p_frame,
                      tx_time,
                      p_metadata);
@@ -839,12 +840,13 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
                      id);
 }
 
-bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
-                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
+    const nrf_802154_frame_t                     * p_frame,
+    const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     REQUEST_FUNCTION(nrf_802154_csma_ca_start,
                      swi_csma_ca_start,
-                     bool,
+                     nrf_802154_tx_error_t,
                      p_frame,
                      p_metadata);
 }

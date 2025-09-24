@@ -93,6 +93,14 @@ extern "C" {
     (NRF_802154_RX_BUFFERS + NRF_802154_MAX_DISREGARDABLE_NOTIFICATIONS + 4 + 1)
 
 /**
+ * @brief Temporary macro to detect new API signatures.
+ *
+ * The macro is used during transition to new API declarations, where the TX functions return
+ * an error code instead of a boolean value.
+ */
+#define NRF_802154_TX_FUNCTIONS_RETURN_ERROR_CODE
+
+/**
  * @brief Initializes the 802.15.4 driver.
  *
  * This function initializes the RADIO peripheral in the @ref RADIO_STATE_SLEEP state.
@@ -548,11 +556,14 @@ bool nrf_802154_receive_at_scheduled_cancel(uint32_t id);
  *                         @c cca          | @c true
  *                         @c tx_timestamp_encode | @c false
  *
- * @retval  true   The transmission procedure was scheduled.
- * @retval  false  The driver could not schedule the transmission procedure.
+ * @retval NRF_802154_TX_ERROR_NONE  The TX request was successful.
+ *                                   Transmit success or failure will be indicated by the callout.
+ *
+ * @returns Error that prevented the frame from being transmitted.
+ *          No callout will be called.
  */
-bool nrf_802154_transmit_raw(uint8_t                              * p_data,
-                             const nrf_802154_transmit_metadata_t * p_metadata);
+nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                              * p_data,
+                                              const nrf_802154_transmit_metadata_t * p_metadata);
 
 /**
  * @brief Requests transmission at the specified time.
@@ -627,12 +638,16 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
  *                         @c extra_cca_attempts | @c 0
  *                         @c tx_timestamp_encode | @c 0
  *
- * @retval  true   The transmission procedure was scheduled.
- * @retval  false  The driver could not schedule the transmission procedure.
+ * @retval NRF_802154_TX_ERROR_NONE  The TX request was successful.
+ *                                   Transmit success or failure will be indicated by the callout.
+ *
+ * @returns Error that prevented the frame from being transmitted.
+ *          No callout will be called.
  */
-bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint64_t                                  tx_time,
-                                const nrf_802154_transmit_at_metadata_t * p_metadata);
+nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
+    uint8_t                                 * p_data,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
  * @brief Cancels a delayed transmission scheduled by a call to @ref nrf_802154_transmit_raw_at.
@@ -1085,11 +1100,15 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
  *                         @c tx_timestamp_encode | false
  *
- * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
- * @retval  false  The driver could not schedule the procedure chain.
+ * @retval NRF_802154_TX_ERROR_NONE  The TX request was successful.
+ *                                   Transmit success or failure will be indicated by the callout.
+ *
+ * @returns Error that prevented the frame from being transmitted.
+ *          No callout will be called.
  */
-bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
-                                     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
+nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
+    uint8_t                                      * p_data,
+    const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**
  * @brief Sets the minimum value of the backoff exponent (BE) in the CSMA-CA algorithm.

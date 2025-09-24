@@ -34,53 +34,86 @@
 
 #include <stddef.h>
 
-#include "nrf_802154.h"
 #include "nrf_802154_stats.h"
 
-#define NUMBER_OF_STAT_COUNTERS (sizeof(nrf_802154_stat_counters_t) / sizeof(uint32_t))
+#define NUMBER_OF_STAT_COUNTERS   (sizeof(nrf_802154_stat_counters_t) / sizeof(uint32_t))
+#define NUMBER_OF_STAT_TIMESTAMPS (sizeof(nrf_802154_stat_timestamps_t) / sizeof(uint64_t))
 
 /**@brief Structure holding statistics about the Radio Driver behavior. */
-volatile nrf_802154_stats_t g_nrf_802154_stats;
+nrf_802154_stats_t g_nrf_802154_stats;
+
+static void counters_get(nrf_802154_stat_counters_t * p_stat_counters)
+{
+    uint32_t * p_src = (uint32_t *)(&g_nrf_802154_stats.counters);
+    uint32_t * p_dst = (uint32_t *)(p_stat_counters);
+
+    for (size_t i = 0U; i < NUMBER_OF_STAT_COUNTERS; ++i)
+    {
+        *p_dst = nrf_802154_sl_atomic_load_u32(p_src);
+
+        p_src++;
+        p_dst++;
+    }
+}
+
+static void timestamps_get(nrf_802154_stat_timestamps_t * p_stat_timestamps)
+{
+    uint64_t * p_src = (uint64_t *)(&g_nrf_802154_stats.timestamps);
+    uint64_t * p_dst = (uint64_t *)(p_stat_timestamps);
+
+    for (size_t i = 0U; i < NUMBER_OF_STAT_TIMESTAMPS; ++i)
+    {
+        *p_dst = nrf_802154_sl_atomic_load_u64(p_src);
+
+        p_src++;
+        p_dst++;
+    }
+}
 
 void nrf_802154_stats_get(nrf_802154_stats_t * p_stats)
 {
-    *p_stats = g_nrf_802154_stats;
+    counters_get(&p_stats->counters);
+    timestamps_get(&p_stats->timestamps);
 }
 
 void nrf_802154_stat_counters_get(nrf_802154_stat_counters_t * p_stat_counters)
 {
-    *p_stat_counters = g_nrf_802154_stats.counters;
+    counters_get(p_stat_counters);
 }
 
 void nrf_802154_stat_counters_subtract(const nrf_802154_stat_counters_t * p_stat_counters)
 {
-    volatile uint32_t * p_dst = (volatile uint32_t *)(&g_nrf_802154_stats.counters);
-    const uint32_t    * p_src = (const uint32_t *)p_stat_counters;
+    uint32_t       * p_counter      = (uint32_t *)(&g_nrf_802154_stats.counters);
+    const uint32_t * p_rhs_opearand = (const uint32_t *)p_stat_counters;
 
-    for (size_t i = 0; i < NUMBER_OF_STAT_COUNTERS; ++i)
+    for (size_t i = 0U; i < NUMBER_OF_STAT_COUNTERS; ++i)
     {
-        nrf_802154_mcu_critical_state_t mcu_cs;
-
-        mcu_cs  = nrf_802154_mcu_critical_enter();
-        *p_dst -= *p_src;
-        nrf_802154_mcu_critical_exit(mcu_cs);
-
-        p_dst++;
-        p_src++;
+        nrf_802154_sl_atomic_sub_u32(p_counter, *p_rhs_opearand);
+        p_counter++;
+        p_rhs_opearand++;
     }
 }
 
 void nrf_802154_stat_timestamps_get(nrf_802154_stat_timestamps_t * p_stat_timestamps)
 {
-    *p_stat_timestamps = g_nrf_802154_stats.timestamps;
+    timestamps_get(p_stat_timestamps);
 }
 
 void nrf_802154_stat_counters_reset(void)
 {
-    volatile uint32_t * p_dst = (volatile uint32_t *)(&g_nrf_802154_stats.counters);
+    uint32_t * p_counter = (uint32_t *)(&g_nrf_802154_stats.counters);
 
     for (size_t i = 0; i < NUMBER_OF_STAT_COUNTERS; ++i)
     {
-        *(p_dst++) = 0U;
+        nrf_802154_sl_atomic_store_u32(p_counter, 0U);
+        p_counter++;
     }
 }
+
+#ifdef TEST
+void nrf_802154_stats_module_reset(void)
+{
+    memset(&g_nrf_802154_stats, 0, sizeof(g_nrf_802154_stats));
+}
+
+#endif

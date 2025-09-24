@@ -1043,17 +1043,17 @@ typedef enum
 /**
  * @brief Spinel data type description for return value of nrf_802154_transmit_raw
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_RET               SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_RET               SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for return value of nrf_802154_transmit_csma_ca_raw
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW_RET       SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW_RET       SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for return value of nrf_802154_transmit_raw_at
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT_RET            SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT_RET            SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for return value of nrf_802154_transmit_at_cancel

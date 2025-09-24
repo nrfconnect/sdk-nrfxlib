@@ -62,20 +62,6 @@
 bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_t req_orig);
 
 /**
- * @brief Processes hooks which are to fire before the transmission request and before
- *        attempt to terminate previous operation.
- *
- * @param[in] p_params         Pointer to the transmission parameters.
- * @param[in] notify_function  Function to be called to notify transmission failure.
- *
- * @retval true         Frame can be sent immediately.
- * @retval false        Hooks have handled the frame - upper layer should not worry about it anymore.
- */
-bool nrf_802154_core_hooks_pre_transmission(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function);
-
-/**
  * @brief Processes hooks which are to fire before the transmission but after previous operation
  *        has been already terminated.
  *

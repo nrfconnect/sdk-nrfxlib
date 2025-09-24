@@ -845,12 +845,14 @@ void nrf_802154_delayed_trx_deinit(void)
     }
 }
 
-bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p_frame,
-                                     uint64_t                                  tx_time,
-                                     const nrf_802154_transmit_at_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_delayed_trx_transmit(
+    const nrf_802154_frame_t                * p_frame,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
-    dly_op_data_t * p_dly_tx_data = available_dly_tx_slot_get();
-    bool            result        = false;
+    dly_op_data_t       * p_dly_tx_data = available_dly_tx_slot_get();
+    nrf_802154_tx_error_t error         = NRF_802154_TX_ERROR_TIMESLOT_DENIED;
+    bool                  result        = false;
 
     if (p_dly_tx_data != NULL)
     {
@@ -894,7 +896,12 @@ bool nrf_802154_delayed_trx_transmit(const nrf_802154_frame_t                * p
         result = dly_op_request(&dly_ts_param, p_dly_tx_data);
     }
 
-    return result;
+    if (result)
+    {
+        error = NRF_802154_TX_ERROR_NONE;
+    }
+
+    return error;
 }
 
 bool nrf_802154_delayed_trx_receive(uint64_t rx_time,

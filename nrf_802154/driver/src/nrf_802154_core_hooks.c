@@ -50,13 +50,10 @@
 #include "mac_features/nrf_802154_ie_writer.h"
 #include "mac_features/nrf_802154_security_writer.h"
 #include "mac_features/nrf_802154_tx_timestamp_provider.h"
-#include "mac_features/nrf_802154_ifs.h"
 #include "nrf_802154_encrypt.h"
 #include "nrf_802154_config.h"
 
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
-typedef bool (* pre_transmission_hook)(nrf_802154_transmit_params_t            * p_params,
-                                       nrf_802154_transmit_failed_notification_t notify_function);
 typedef nrf_802154_tx_error_t (* tx_setup_hook)(nrf_802154_transmit_params_t * p_params);
 typedef void (* transmitted_hook)(const nrf_802154_frame_t * p_frame);
 typedef void (* tx_failed_hook)(uint8_t * p_frame, nrf_802154_tx_error_t error);
@@ -81,18 +78,6 @@ static const abort_hook m_abort_hooks[] =
     nrf_802154_delayed_trx_abort,
 #endif
 
-#if NRF_802154_IFS_ENABLED
-    nrf_802154_ifs_abort,
-#endif
-
-    NULL,
-};
-
-static const pre_transmission_hook m_pre_transmission_hooks[] =
-{
-#if NRF_802154_IFS_ENABLED
-    nrf_802154_ifs_pretransmission,
-#endif
     NULL,
 };
 
@@ -117,9 +102,6 @@ static const transmitted_hook m_transmitted_hooks[] =
 {
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_transmitted_hook,
-#endif
-#if NRF_802154_IFS_ENABLED
-    nrf_802154_ifs_transmitted_hook,
 #endif
     NULL,
 };
@@ -214,31 +196,6 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
         }
 
         result = m_abort_hooks[i](term_lvl, req_orig);
-
-        if (!result)
-        {
-            break;
-        }
-    }
-
-    return result;
-}
-
-bool nrf_802154_core_hooks_pre_transmission(
-    nrf_802154_transmit_params_t            * p_params,
-    nrf_802154_transmit_failed_notification_t notify_function)
-{
-    bool result = true;
-
-    for (uint32_t i = 0; i < sizeof(m_pre_transmission_hooks) / sizeof(m_pre_transmission_hooks[0]);
-         i++)
-    {
-        if (m_pre_transmission_hooks[i] == NULL)
-        {
-            break;
-        }
-
-        result = m_pre_transmission_hooks[i](p_params, notify_function);
 
         if (!result)
         {

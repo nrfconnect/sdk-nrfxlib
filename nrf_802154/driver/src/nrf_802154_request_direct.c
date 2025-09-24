@@ -50,11 +50,11 @@
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "hal/nrf_radio.h"
 
-#define REQUEST_FUNCTION_PARMS(func_core, ...) \
-    bool result;                               \
-                                               \
-    result = func_core(__VA_ARGS__);           \
-                                               \
+#define REQUEST_FUNCTION_PARMS(func_core, result_type, ...)\
+    result_type result;                                    \
+                                                           \
+    result = func_core(__VA_ARGS__);                       \
+                                                           \
     return result;
 
 #define REQUEST_FUNCTION(func_core) \
@@ -71,7 +71,7 @@ void nrf_802154_request_init(void)
 
 bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_sleep, term_lvl)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_sleep, bool, term_lvl)
 }
 
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
@@ -81,6 +81,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                                 uint32_t                       id)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_receive,
+                           bool,
                            term_lvl,
                            req_orig,
                            notify_function,
@@ -93,6 +94,7 @@ nrf_802154_tx_error_t nrf_802154_request_transmit(nrf_802154_term_t             
                                                   nrf_802154_transmit_params_t * p_params)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_transmit,
+                           nrf_802154_tx_error_t,
                            term_lvl,
                            req_orig,
                            p_params)
@@ -100,37 +102,37 @@ nrf_802154_tx_error_t nrf_802154_request_transmit(nrf_802154_term_t             
 
 bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_ack_timeout_handle, p_param);
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_ack_timeout_handle, bool, p_param);
 }
 
 bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl, uint32_t time_us)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_energy_detection, term_lvl, time_us)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_energy_detection, bool, term_lvl, time_us)
 }
 
 bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_cca, term_lvl)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_cca, bool, term_lvl)
 }
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_continuous_carrier, term_lvl)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_continuous_carrier, bool, term_lvl)
 }
 
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
                                           const uint8_t   * p_data)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_modulated_carrier, term_lvl, p_data)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_modulated_carrier, bool, term_lvl, p_data)
 }
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 bool nrf_802154_request_buffer_free(uint8_t * p_data)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_notify_buffer_free, p_data)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_notify_buffer_free, bool, p_data)
 }
 
 bool nrf_802154_request_antenna_update(void)
@@ -140,7 +142,7 @@ bool nrf_802154_request_antenna_update(void)
 
 bool nrf_802154_request_channel_update(req_originator_t req_orig)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_channel_update, req_orig)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_channel_update, bool, req_orig)
 }
 
 bool nrf_802154_request_cca_cfg_update(void)
@@ -155,7 +157,7 @@ bool nrf_802154_request_rssi_measure(void)
 
 bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_core_last_rssi_measurement_get, p_rssi)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_last_rssi_measurement_get, bool, p_rssi)
 }
 
 static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame_props_t * p_props)
@@ -164,11 +166,16 @@ static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
-bool nrf_802154_request_transmit_raw_at(const nrf_802154_frame_t                * p_frame,
-                                        uint64_t                                  tx_time,
-                                        const nrf_802154_transmit_at_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_request_transmit_raw_at(
+    const nrf_802154_frame_t                * p_frame,
+    uint64_t                                  tx_time,
+    const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_transmit, p_frame, tx_time, p_metadata);
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_transmit,
+                           nrf_802154_tx_error_t,
+                           p_frame,
+                           tx_time,
+                           p_metadata);
 }
 
 bool nrf_802154_request_transmit_at_cancel(void)
@@ -181,25 +188,26 @@ bool nrf_802154_request_receive_at(uint64_t rx_time,
                                    uint8_t  channel,
                                    uint32_t id)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive, rx_time, timeout, channel, id);
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive, bool, rx_time, timeout, channel, id);
 }
 
 bool nrf_802154_request_receive_at_cancel(uint32_t id)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_cancel, id);
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_cancel, bool, id);
 }
 
 bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_scheduled_cancel, id);
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_scheduled_cancel, bool, id);
 }
 
 #endif
 
-bool nrf_802154_request_csma_ca_start(const nrf_802154_frame_t                     * p_frame,
-                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
+    const nrf_802154_frame_t                     * p_frame,
+    const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
-    REQUEST_FUNCTION_PARMS(nrf_802154_csma_ca_start, p_frame, p_metadata);
+    REQUEST_FUNCTION_PARMS(nrf_802154_csma_ca_start, nrf_802154_tx_error_t, p_frame, p_metadata);
 }
 
 #endif /* NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_DIRECT */

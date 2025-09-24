@@ -95,8 +95,8 @@ static nrf_802154_tx_client_t m_imm_tx_tx_client = {
     .p_iface = &m_imm_tx_tx_client_iface,
 };
 
-bool nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
-                                const nrf_802154_transmit_metadata_t * p_metadata)
+nrf_802154_tx_error_t nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
+                                                 const nrf_802154_transmit_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -131,5 +131,5 @@ bool nrf_802154_imm_tx_transmit(const nrf_802154_frame_t             * p_frame,
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
-    return result == NRF_802154_TX_ERROR_NONE;
+    return result;
 }

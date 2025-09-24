@@ -74,7 +74,6 @@ target_sources(nrf-802154-driver
     src/mac_features/nrf_802154_filter.c
     src/mac_features/nrf_802154_frame_parser.c
     src/mac_features/nrf_802154_ie_writer.c
-    src/mac_features/nrf_802154_ifs.c
     src/mac_features/nrf_802154_imm_tx.c
     src/mac_features/nrf_802154_security_pib_ram.c
     src/mac_features/nrf_802154_security_writer.c

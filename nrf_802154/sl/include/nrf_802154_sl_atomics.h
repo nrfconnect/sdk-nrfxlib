@@ -43,6 +43,16 @@
 extern "C" {
 #endif
 
+#ifdef __STATIC_INLINE__
+#undef __STATIC_INLINE__
+#endif
+
+#ifdef NRF_802154_SL_ATOMICS_DECLARE_ONLY
+#define __STATIC_INLINE__
+#else
+#define __STATIC_INLINE__ __STATIC_INLINE
+#endif
+
 /**@brief Type representing a mutex */
 typedef volatile uint32_t nrf_802154_sl_mutex_t;
 
@@ -88,6 +98,28 @@ typedef volatile uint8_t nrf_802154_sl_atomic_uint8_t;
  */
 void nrf_802154_sl_atomic_uint8_inc(nrf_802154_sl_atomic_uint8_t * p_value);
 
+/**@brief Atomic add to a variable of uint32_t type.
+ *
+ * Performs following code in an atomic way:
+ * @code
+ * *(p_value) += v;
+ * @endcode
+ *
+ * @param p_value   Pointer to a value to be changed.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_add_u32(uint32_t * p_value, uint32_t v);
+
+/**@brief Atomic subtract from a variable of uint32_t type.
+ *
+ * Performs following code in an atomic way:
+ * @code
+ * *(p_value) -= v;
+ * @endcode
+ *
+ * @param p_value   Pointer to a value to be changed.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_sub_u32(uint32_t * p_value, uint32_t v);
+
 /**@brief Atomic strong compare-and-swap operation (word variant).
  *
  * Performs compare-and-swap operation with sequentially consistent memory ordering.
@@ -100,9 +132,147 @@ void nrf_802154_sl_atomic_uint8_inc(nrf_802154_sl_atomic_uint8_t * p_value);
  * @retval  true   The object was assigned new value.
  * @retval  false  The object was not modified.
  */
-static inline bool nrf_802154_sl_atomic_cas_u32(uint32_t * p_obj,
-                                                uint32_t * p_expected,
-                                                uint32_t   desired)
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u32(uint32_t * p_obj,
+                                                    uint32_t * p_expected,
+                                                    uint32_t   desired);
+
+/**@brief Atomic strong compare-and-swap operation (half-word variant).
+ *
+ * Performs compare-and-swap operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ * @param[in] p_expected  Pointer to expected value.
+ *                        In case of CAS failure the argument will be updated with current obj value.
+ * @param[in] desired     Desired object value.
+ *
+ * @retval  true   The object was assigned new value.
+ * @retval  false  The object was not modified.
+ */
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u16(uint16_t * p_obj,
+                                                    uint16_t * p_expected,
+                                                    uint16_t   desired);
+
+/**@brief Atomic strong compare-and-swap operation (byte variant).
+ *
+ * Performs compare-and-swap operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ * @param[in] p_expected  Pointer to expected value.
+ *                        In case of CAS failure the argument will be updated with current obj value.
+ * @param[in] desired     Desired object value.
+ *
+ * @retval  true   The object was assigned new value.
+ * @retval  false  The object was not modified.
+ */
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u8(uint8_t * p_obj,
+                                                   uint8_t * p_expected,
+                                                   uint8_t   desired);
+
+/**@brief Atomic store operation (double-word variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u64(uint64_t * p_obj, uint64_t value);
+
+/**@brief Atomic store operation (word variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u32(uint32_t * p_obj, uint32_t value);
+
+/**@brief Atomic store operation (half-word variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u16(uint16_t * p_obj, uint16_t value);
+
+/**@brief Atomic store operation (byte variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u8(uint8_t * p_obj, uint8_t value);
+
+/**@brief Atomic load operation (double-word variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+__STATIC_INLINE__ uint64_t nrf_802154_sl_atomic_load_u64(uint64_t * p_obj);
+
+/**@brief Atomic load operation (word variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+__STATIC_INLINE__ uint32_t nrf_802154_sl_atomic_load_u32(uint32_t * p_obj);
+
+/**@brief Atomic load operation (half-word variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+__STATIC_INLINE__ uint16_t nrf_802154_sl_atomic_load_u16(uint16_t * p_obj);
+
+/**@brief Atomic load operation (byte variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+__STATIC_INLINE__ uint8_t nrf_802154_sl_atomic_load_u8(uint8_t * p_obj);
+
+#ifndef NRF_802154_SL_ATOMICS_DECLARE_ONLY
+
+__STATIC_INLINE__ void nrf_802154_sl_atomic_add_u32(uint32_t * p_value, uint32_t v)
+{
+    uint32_t value;
+
+    __DMB();
+
+    do
+    {
+        value  = __LDREXW((volatile uint32_t *)p_value);
+        value += v;
+    }
+    while (__STREXW(value, (volatile uint32_t *)p_value));
+
+    __DMB();
+}
+
+__STATIC_INLINE__ void nrf_802154_sl_atomic_sub_u32(uint32_t * p_value, uint32_t v)
+{
+    uint32_t value;
+
+    __DMB();
+
+    do
+    {
+        value  = __LDREXW((volatile uint32_t *)p_value);
+        value -= v;
+    }
+    while (__STREXW(value, (volatile uint32_t *)p_value));
+
+    __DMB();
+}
+
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u32(uint32_t * p_obj,
+                                                    uint32_t * p_expected,
+                                                    uint32_t   desired)
 {
     __DMB();
 
@@ -124,21 +294,9 @@ static inline bool nrf_802154_sl_atomic_cas_u32(uint32_t * p_obj,
     return true;
 }
 
-/**@brief Atomic strong compare-and-swap operation (half-word variant).
- *
- * Performs compare-and-swap operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj       Atomic variable object.
- * @param[in] p_expected  Pointer to expected value.
- *                        In case of CAS failure the argument will be updated with current obj value.
- * @param[in] desired     Desired object value.
- *
- * @retval  true   The object was assigned new value.
- * @retval  false  The object was not modified.
- */
-static inline bool nrf_802154_sl_atomic_cas_u16(uint16_t * p_obj,
-                                                uint16_t * p_expected,
-                                                uint16_t   desired)
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u16(uint16_t * p_obj,
+                                                    uint16_t * p_expected,
+                                                    uint16_t   desired)
 {
     __DMB();
 
@@ -160,21 +318,9 @@ static inline bool nrf_802154_sl_atomic_cas_u16(uint16_t * p_obj,
     return true;
 }
 
-/**@brief Atomic strong compare-and-swap operation (byte variant).
- *
- * Performs compare-and-swap operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj       Atomic variable object.
- * @param[in] p_expected  Pointer to expected value.
- *                        In case of CAS failure the argument will be updated with current obj value.
- * @param[in] desired     Desired object value.
- *
- * @retval  true   The object was assigned new value.
- * @retval  false  The object was not modified.
- */
-static inline bool nrf_802154_sl_atomic_cas_u8(uint8_t * p_obj,
-                                               uint8_t * p_expected,
-                                               uint8_t   desired)
+__STATIC_INLINE__ bool nrf_802154_sl_atomic_cas_u8(uint8_t * p_obj,
+                                                   uint8_t * p_expected,
+                                                   uint8_t   desired)
 {
     __DMB();
 
@@ -196,55 +342,52 @@ static inline bool nrf_802154_sl_atomic_cas_u8(uint8_t * p_obj,
     return true;
 }
 
-/**@brief Atomic store operation (word variant).
- *
- * Performs store operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj     Atomic variable object.
- * @param[in] value     New object value.
- */
-static inline void nrf_802154_sl_atomic_store_u32(uint32_t * p_obj, uint32_t value)
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u64(uint64_t * p_obj, uint64_t value)
+{
+    uint32_t primask = __get_PRIMASK();
+
+    __DMB();
+    __disable_irq();
+    *((volatile uint64_t *)p_obj) = value;
+    __set_PRIMASK(primask);
+    __DMB();
+}
+
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u32(uint32_t * p_obj, uint32_t value)
 {
     __DMB();
     *p_obj = value;
     __DMB();
 }
 
-/**@brief Atomic store operation (half-word variant).
- *
- * Performs store operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj     Atomic variable object.
- * @param[in] value     New object value.
- */
-static inline void nrf_802154_sl_atomic_store_u16(uint16_t * p_obj, uint16_t value)
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u16(uint16_t * p_obj, uint16_t value)
 {
     __DMB();
     *p_obj = value;
     __DMB();
 }
 
-/**@brief Atomic store operation (byte variant).
- *
- * Performs store operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj     Atomic variable object.
- * @param[in] value     New object value.
- */
-static inline void nrf_802154_sl_atomic_store_u8(uint8_t * p_obj, uint8_t value)
+__STATIC_INLINE__ void nrf_802154_sl_atomic_store_u8(uint8_t * p_obj, uint8_t value)
 {
     __DMB();
     *p_obj = value;
     __DMB();
 }
 
-/**@brief Atomic load operation (word variant).
- *
- * Performs load operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj       Atomic variable object.
- */
-static inline uint32_t nrf_802154_sl_atomic_load_u32(uint32_t * p_obj)
+__STATIC_INLINE__ uint64_t nrf_802154_sl_atomic_load_u64(uint64_t * p_obj)
+{
+    uint64_t r;
+    uint32_t primask = __get_PRIMASK();
+
+    __DMB();
+    __disable_irq();
+    r = *((volatile uint64_t *)p_obj);
+    __set_PRIMASK(primask);
+
+    return r;
+}
+
+__STATIC_INLINE__ uint32_t nrf_802154_sl_atomic_load_u32(uint32_t * p_obj)
 {
     uint32_t value;
 
@@ -255,13 +398,7 @@ static inline uint32_t nrf_802154_sl_atomic_load_u32(uint32_t * p_obj)
     return value;
 }
 
-/**@brief Atomic load operation (half-word variant).
- *
- * Performs load operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj       Atomic variable object.
- */
-static inline uint16_t nrf_802154_sl_atomic_load_u16(uint16_t * p_obj)
+__STATIC_INLINE__ uint16_t nrf_802154_sl_atomic_load_u16(uint16_t * p_obj)
 {
     uint16_t value;
 
@@ -272,13 +409,7 @@ static inline uint16_t nrf_802154_sl_atomic_load_u16(uint16_t * p_obj)
     return value;
 }
 
-/**@brief Atomic load operation (byte variant).
- *
- * Performs load operation with sequentially consistent memory ordering.
- *
- * @param[in] p_obj       Atomic variable object.
- */
-static inline uint8_t nrf_802154_sl_atomic_load_u8(uint8_t * p_obj)
+__STATIC_INLINE__ uint8_t nrf_802154_sl_atomic_load_u8(uint8_t * p_obj)
 {
     uint8_t value;
 
@@ -288,6 +419,8 @@ static inline uint8_t nrf_802154_sl_atomic_load_u8(uint8_t * p_obj)
 
     return value;
 }
+
+#endif /* NRF_802154_SL_ATOMICS_DECLARE_ONLY */
 
 #ifdef __cplusplus
 }

@@ -48,6 +48,7 @@
 #include "nrf_802154_serialization_error.h"
 #include "nrf_802154_buffer_mgr_dst.h"
 #include "nrf_802154_buffer_mgr_src.h"
+#include "nrf_802154_compiler.h"
 
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
@@ -575,90 +576,129 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
     switch (property)
     {
         case SPINEL_PROP_LAST_STATUS:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_CANCEL:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_SCHEDULED_CANCEL:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CONTINUOUS_CARRIER:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_MODULATED_CARRIER:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #endif
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ENERGY_DETECTION:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TX_POWER_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CAPABILITIES_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_STORE:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE_ALL:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_CLEAR:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW_AT:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_AT_CANCEL:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #if NRF_802154_CSMA_CA_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #endif // NRF_802154_CSMA_CA_ENABLED
 #if NRF_802154_TEST_MODES_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #endif // NRF_802154_TEST_MODES_ENABLED
 #if NRF_802154_IFS_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_SET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_SIFS_PERIOD_GET:
-        // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_GET:
-            // fall through
+            SWITCH_CASE_FALLTHROUGH;
+
 #endif // NRF_802154_IFS_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:
             nrf_802154_spinel_response_notifier_property_notify(property,

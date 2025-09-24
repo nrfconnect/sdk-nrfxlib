@@ -48,6 +48,7 @@
 #include <string.h>
 
 #include "nrf_802154.h"
+#include "nrf_802154_compiler.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_critical_section.h"
@@ -422,7 +423,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     else
     {
         metadata.data.transmitted.length = p_ack[0];
-        nrf_802154_stat_timestamp_read(&metadata.data.transmitted.time, last_ack_end_timestamp);
+        metadata.data.transmitted.time   = nrf_802154_stat_timestamp_read_last_ack_end_timestamp();
     }
 
     // Update the transmitted frame contents and update frame status flags
@@ -1088,10 +1089,10 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 }
 
 /** Initialize TX operation. */
-static bool tx_init(const nrf_802154_frame_t            * p_frame,
-                    nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode,
-                    uint8_t                               cca_attempts)
+static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 {
+    uint8_t cca_attempts = m_tx.cca ? (1 + m_tx.extra_cca_attempts) : 0;
+
     bool cca = cca_attempts > 0;
 
     if (!timeslot_is_granted())
@@ -1099,9 +1100,9 @@ static bool tx_init(const nrf_802154_frame_t            * p_frame,
         return false;
     }
 
-    uint32_t duration = nrf_802154_tx_duration_get(nrf_802154_frame_length_get(p_frame),
+    uint32_t duration = nrf_802154_tx_duration_get(nrf_802154_frame_length_get(&m_tx.frame),
                                                    cca,
-                                                   tx_frame_ack_is_requested(p_frame));
+                                                   tx_frame_ack_is_requested(&m_tx.frame));
 
     if (!nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
     {
@@ -1130,7 +1131,7 @@ static bool tx_init(const nrf_802154_frame_t            * p_frame,
 
     nrf_802154_trx_channel_set(m_tx.channel);
     m_flags.tx_with_cca = cca;
-    nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_frame->p_frame),
+    nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(m_tx.frame.p_frame),
                                   rampup_trigg_mode,
                                   cca_attempts,
                                   &m_tx.tx_power,
@@ -1444,7 +1445,7 @@ static void on_preconditions_denied(radio_state_t state)
 
         case RADIO_STATE_CCA_TX:
             m_flags.tx_diminished_prio = false;
-        // Fallthrough
+            SWITCH_CASE_FALLTHROUGH;
 
         case RADIO_STATE_TX:
         case RADIO_STATE_RX_ACK:
@@ -1487,11 +1488,11 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_CCA_TX:
-            (void)tx_init(&m_tx.frame, TRX_RAMP_UP_SW_TRIGGER, true);
+            (void)tx_init(TRX_RAMP_UP_SW_TRIGGER);
             break;
 
         case RADIO_STATE_TX:
-            (void)tx_init(&m_tx.frame, TRX_RAMP_UP_SW_TRIGGER, false);
+            (void)tx_init(TRX_RAMP_UP_SW_TRIGGER);
             break;
 
         case RADIO_STATE_ED:
@@ -1740,7 +1741,7 @@ void nrf_802154_trx_receive_frame_prestarted(void)
     NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
 
 #if (NRF_802154_STATS_COUNT_ENERGY_DETECTED_EVENTS)
-    nrf_802154_stat_counter_increment(received_energy_events);
+    nrf_802154_stat_counter_increment_received_energy_events();
 #endif
 
     nrf_802154_sl_ant_div_rx_preamble_detected_notify();
@@ -1795,7 +1796,7 @@ void nrf_802154_trx_receive_frame_started(void)
         (m_trx_receive_frame_notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U);
 
 #if (NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES)
-    nrf_802154_stat_counter_increment(received_preambles);
+    nrf_802154_stat_counter_increment_received_preambles();
 #endif
 
     switch (nrf_802154_pib_coex_rx_request_mode_get())
@@ -1803,7 +1804,7 @@ void nrf_802154_trx_receive_frame_started(void)
         case NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION:
             m_rx_prestarted_trig_count = 0;
             (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
-        /* Fallthrough */
+            SWITCH_CASE_FALLTHROUGH;
 
         case NRF_802154_COEX_RX_REQUEST_MODE_PREAMBLE:
             /* Request boosted preconditions */
@@ -2085,7 +2086,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
     if (m_flags.frame_filtered || nrf_802154_pib_promiscuous_get())
     {
-        nrf_802154_stat_counter_increment(received_frames);
+        nrf_802154_stat_counter_increment_received_frames();
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
         uint64_t ts = timer_coord_timestamp_get();
@@ -2095,7 +2096,7 @@ void nrf_802154_trx_receive_frame_received(void)
             ts -= RX_PHYEND_EVENT_LATENCY_US;
         }
 
-        nrf_802154_stat_timestamp_write(last_rx_end_timestamp, ts);
+        nrf_802154_stat_timestamp_write_last_rx_end_timestamp(ts);
 #endif
 
         nrf_802154_sl_ant_div_rx_frame_received_notify();
@@ -2163,7 +2164,7 @@ void nrf_802154_trx_receive_frame_received(void)
                 if (!nrf_802154_rsch_prec_is_approved(RSCH_PREC_COEX,
                                                       min_required_rsch_prio(RADIO_STATE_TX_ACK)))
                 {
-                    nrf_802154_stat_counter_increment(coex_denied_requests);
+                    nrf_802154_stat_counter_increment_coex_denied_requests();
                 }
 
                 mp_current_rx_buffer->free = false;
@@ -2299,7 +2300,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
     uint64_t ts = timer_coord_timestamp_get();
 
     // ts holds now timestamp of the PHYEND event
-    nrf_802154_stat_timestamp_write(last_tx_end_timestamp, ts);
+    nrf_802154_stat_timestamp_write_last_tx_end_timestamp(ts);
 
     if (m_flags.tx_with_cca)
     {
@@ -2310,7 +2311,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
                                             true,
                                             true) + RX_TX_TURNAROUND_TIME;
 
-        nrf_802154_stat_timestamp_write(last_cca_idle_timestamp, ts);
+        nrf_802154_stat_timestamp_write_last_cca_idle_timestamp(ts);
     }
 
 #endif
@@ -2464,7 +2465,7 @@ void nrf_802154_trx_receive_ack_received(void)
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
         uint64_t ts = timer_coord_timestamp_get();
 
-        nrf_802154_stat_timestamp_write(last_ack_end_timestamp, ts);
+        nrf_802154_stat_timestamp_write_last_ack_end_timestamp(ts);
 #endif
 
         rx_buffer_t * p_ack_buffer = mp_current_rx_buffer;
@@ -2541,7 +2542,7 @@ void nrf_802154_trx_transmit_frame_ccaidle(void)
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
 
     // Update stat timestamp of CCASTART event
-    nrf_802154_stat_timestamp_write(last_cca_start_timestamp, ts);
+    nrf_802154_stat_timestamp_write_last_cca_start_timestamp(ts);
 #endif
 
     if (m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE)
@@ -2557,7 +2558,7 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    nrf_802154_stat_counter_increment(cca_failed_attempts);
+    nrf_802154_stat_counter_increment_cca_failed_attempts();
 
     switch_to_idle();
 
@@ -2780,11 +2781,6 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
 
     if (result)
     {
-        result = nrf_802154_core_hooks_pre_transmission(p_params, &transmit_failed_notify);
-    }
-
-    if (result)
-    {
         result = current_operation_terminate(term_lvl, req_orig, true);
     }
 
@@ -2811,12 +2807,8 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
         state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
         m_tx = *p_params;
 
-        uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
-
         // coverity[check_return]
-        result = tx_init(&p_params->frame,
-                         ramp_up_mode_choose(req_orig),
-                         cca_attempts);
+        result = tx_init(ramp_up_mode_choose(req_orig));
 
         if (p_params->immediate && !result)
         {
