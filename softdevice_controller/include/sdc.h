@@ -142,6 +142,9 @@ extern "C" {
 /** @brief Default number of antennas supported by the local device in Channel Sounding. */
 #define SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED 1
 
+/** @brief Default number of extended feature pages that can be stored in the controller. */
+#define SDC_DEFAULT_EXTENDED_FEATURE_PAGE_COUNT 10
+
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -214,11 +217,24 @@ extern "C" {
  */
 #define SDC_MEM_SYNC_TRANSFER(num_links) ((num_links) > 0 ? (13 + (num_links) * 139) : 0)
 
+/** @brief Auxiliary defines, not to be used outside of this file. */
+#define __MEM_PER_EXTENDED_FEATURE_PAGE 24
+
 /** @brief Maximum memory required when supporting extended feature set.
  *
  * @param[in] num_links Total number of peripheral and central links supported.
+ * @param[in] num_pages Total number of extended feature pages supported.
+ *
  */
-#define SDC_MEM_EXTENDED_FEATURE_SET(num_links) ((num_links) > 0 ? (11 + (num_links) * 259) : 0)
+#define SDC_MEM_EXTENDED_FEATURE_SET_NEW(num_links, num_pages) ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
+
+/** @brief Maximum memory required when supporting extended feature set.
+ *
+ * @deprecated This define is deprecated and will be removed.
+ * @param[in] num_links Total number of peripheral and central links supported.
+ *
+ */
+#define SDC_MEM_EXTENDED_FEATURE_SET(num_links) ((num_links) > 0 ? (11 + (num_links) * (259)) : 0)
 
 /** @brief Maximum memory required when supporting frame space update.
  *
@@ -449,6 +465,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_CS_COUNT,
     /** See @ref sdc_cfg_t::cs_cfg. */
     SDC_CFG_TYPE_CS_CFG,
+    /** See @ref sdc_cfg_t::extended_feature_page_count */
+    SDC_CFG_TYPE_EXTENDED_FEATURE_PAGE_COUNT,
 };
 
 
@@ -719,6 +737,11 @@ typedef union
      *  Default: See @ref sdc_cfg_cs_cfg_t.
      */
     sdc_cfg_cs_cfg_t cs_cfg;
+    /** Configures the maximum number of Extended Feature Set pages that can be stored in the controller.
+     *
+     * Default: @ref SDC_DEFAULT_EXTENDED_FEATURE_PAGE_COUNT.
+     */
+    uint8_t extended_feature_page_count;
 } sdc_cfg_t;
 
 
