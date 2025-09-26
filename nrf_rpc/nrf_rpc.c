@@ -125,6 +125,7 @@ static uint8_t initialized_group_count;
 
 /* nRF RPC initialization status. */
 static bool is_initialized;
+static bool is_stopped;
 
 /* Error handler provided to the init function. */
 static nrf_rpc_err_handler_t global_err_handler;
@@ -134,6 +135,9 @@ static nrf_rpc_group_bound_handler_t global_bound_handler;
 
 static struct internal_task internal_task;
 static struct nrf_rpc_os_event internal_task_consumed;
+
+static struct nrf_rpc_os_mutex cleanup_mutex;
+static struct nrf_rpc_cleanup_handler *cleanup_handlers;
 
 /* Array with all defiend groups */
 NRF_RPC_AUTO_ARR(nrf_rpc_groups_array, "grp");
@@ -726,6 +730,19 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	return 0;
 }
 
+static void abort_all_ops(void)
+{
+	NRF_RPC_INF("Canceling all tasks.");
+	for (int i = 0; i < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE; i++) {
+		struct nrf_rpc_cmd_ctx *ctx = &cmd_ctx_pool[i];
+		nrf_rpc_os_mutex_lock(&ctx->mutex);
+		if (ctx->use_count > 0) {
+			nrf_rpc_os_msg_set(&ctx->recv_msg, NULL, 0);
+		}
+		nrf_rpc_os_mutex_unlock(&ctx->mutex);
+	}
+}
+
 /* Callback from transport layer that handles incoming. */
 static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *packet, size_t len,
 			    void *context)
@@ -739,6 +756,18 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 	err = header_decode(packet, len, &hdr);
 	if (err < 0) {
 		NRF_RPC_ERR("Packet too small");
+		goto cleanup_and_exit;
+	}
+
+	if (is_stopped &&
+	    (hdr.type == NRF_RPC_PACKET_TYPE_CMD ||
+	     hdr.type == NRF_RPC_PACKET_TYPE_EVT ||
+	     hdr.type == NRF_RPC_PACKET_TYPE_ACK ||
+	     hdr.type == NRF_RPC_PACKET_TYPE_RSP)) {
+		// drop only selected types of packets
+		// do not drop INITs and ERRORS
+
+		NRF_RPC_WRN("Dropping the packet.");
 		goto cleanup_and_exit;
 	}
 
@@ -974,33 +1003,41 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 		handler_data = ptr2;
 	}
 
-	cmd_ctx = cmd_ctx_reserve();
+	nrf_rpc_os_mutex_lock(&cleanup_mutex);
+	if (is_stopped) {
+		err = -NRF_EPERM;
+		nrf_rpc_os_mutex_unlock(&cleanup_mutex);
+	} else {
 
-	hdr.dst = cmd_ctx->remote_id;
-	hdr.src = cmd_ctx->id;
-	hdr.id = cmd & 0xFF;
-	hdr.src_group_id = group->data->src_group_id;
-	hdr.dst_group_id = group->data->dst_group_id;
-	header_cmd_encode(full_packet, &hdr);
+		cmd_ctx = cmd_ctx_reserve();
+		nrf_rpc_os_mutex_unlock(&cleanup_mutex); /* release the mutex as the context specific one has been acquired */
 
-	old_handler = cmd_ctx->handler;
-	old_handler_data = cmd_ctx->handler_data;
-	cmd_ctx->handler = handler;
-	cmd_ctx->handler_data = handler_data;
+		hdr.dst = cmd_ctx->remote_id;
+		hdr.src = cmd_ctx->id;
+		hdr.id = cmd & 0xFF;
+		hdr.src_group_id = group->data->src_group_id;
+		hdr.dst_group_id = group->data->dst_group_id;
+		header_cmd_encode(full_packet, &hdr);
 
-	NRF_RPC_DBG("Sending command 0x%02X from group 0x%02X", cmd,
-		    group->data->src_group_id);
+		old_handler = cmd_ctx->handler;
+		old_handler_data = cmd_ctx->handler_data;
+		cmd_ctx->handler = handler;
+		cmd_ctx->handler_data = handler_data;
 
-	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
+		NRF_RPC_DBG("Sending command 0x%02X from group 0x%02X", cmd,
+			group->data->src_group_id);
 
-	if (err >= 0) {
-		err = wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
+		err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
+
+		if (err >= 0) {
+			err = wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
+		}
+
+		cmd_ctx->handler = old_handler;
+		cmd_ctx->handler_data = old_handler_data;
+
+		cmd_ctx_release(cmd_ctx);
 	}
-
-	cmd_ctx->handler = old_handler;
-	cmd_ctx->handler_data = old_handler_data;
-
-	cmd_ctx_release(cmd_ctx);
 
 	return err;
 }
@@ -1121,6 +1158,8 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 		return 0;
 	}
 
+	nrf_rpc_os_mutex_init(&cleanup_mutex);
+
 	global_err_handler = err_handler;
 
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
@@ -1193,6 +1232,50 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	NRF_RPC_DBG("Done initializing nRF RPC module");
 
 	return err;
+}
+
+void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler)
+{
+	nrf_rpc_os_mutex_lock(&cleanup_mutex);
+
+	struct nrf_rpc_cleanup_handler *current;
+
+	// make sure not added twice
+	for (current = cleanup_handlers; current != NULL; current = current->next) {
+		if (current == handler) {
+			break;
+		}
+	}
+
+	if (current == NULL) {
+		handler->next = cleanup_handlers;
+		cleanup_handlers = handler;
+	}
+
+	nrf_rpc_os_mutex_unlock(&cleanup_mutex);
+}
+
+void nrf_rpc_stop(bool cleanup)
+{
+	nrf_rpc_os_mutex_lock(&cleanup_mutex);
+
+	is_stopped = true;
+	abort_all_ops();
+	if (cleanup) {
+		struct nrf_rpc_cleanup_handler *current;
+		for (current = cleanup_handlers; current != NULL; current = current->next) {
+			if (current->handler != NULL) {
+				current->handler(current->context);
+			}
+		}
+	}
+
+	nrf_rpc_os_mutex_unlock(&cleanup_mutex);
+}
+
+void nrf_rpc_resume(void)
+{
+	is_stopped = false;
 }
 
 int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,

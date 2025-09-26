@@ -171,6 +171,20 @@ struct nrf_rpc_err_report {
 	enum nrf_rpc_packet_type packet_type;
 };
 
+/** @brief Cleanup procedure list element.
+ */
+struct nrf_rpc_cleanup_handler
+{
+	/** @brief Handler to the cleanup function invoked on the call to @ref nrf_rpc_stop. */
+	void (*handler)(void *context);
+
+	/** @brief Custom context passed as the function parameter */
+	void *context;
+
+	/** @brief Pointer to the next element in the list. Managed automatically by the nrf_rpc */
+	struct nrf_rpc_cleanup_handler *next;
+};
+
 /** @brief Internal macro for parametrizing nrf_rpc groups.
  *
  * @param _name          Symbol name of the group.
@@ -356,6 +370,41 @@ void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler);
  * @return            0 on success or negative error code.
  */
 int nrf_rpc_init(nrf_rpc_err_handler_t err_handler);
+
+
+/** @brief Registers the cleanup handler.
+ *
+ * Calling this adds the handler to the list. The handler will be called automatically during @ref nrf_rpc_stop
+ * if the cleanup parameter is set to true.
+ * This API is used to clean up any custom states set during RPC operations, for example clean up callbacks set.
+ *
+ * @param handler  Pointer to the structure storing the cleanup handler. This handlers need to stay valid even
+ *                 after the function has finished.
+ *
+ */
+void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler);
+
+
+/** @brief Temporarily suspend all RPC communication
+ *
+ * Calling this function automatically fails all communication until @ref nrf_rpc_resume is called.
+ * It also causes all pending commands to fail immediately.
+ *
+ * @param cleanup set to true to also invoke all the custom cleanup handlers.
+ *
+ * @note If the cleanup parameter is set to true it may be needed to reset the peer before invoking
+ *       @ref nrf_rpc_resume.
+ *
+ */
+void nrf_rpc_stop(bool cleanup);
+
+/** @brief resumes RPC communication
+ *
+ * Calling this function reverts the effects of @ref nrf_rpc_stop.
+ *
+ */
+void nrf_rpc_resume(void);
+
 
 /** @brief Send a command and provide callback to handle response.
  *
