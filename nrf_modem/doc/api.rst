@@ -258,6 +258,13 @@ SoftSIM API
 
 .. doxygengroup:: nrf_modem_softsim
 
+.. _nrf_modem_rs_capture_api:
+
+RS Capture API
+**************
+
+.. doxygengroup:: nrf_modem_rs_capture
+
 OS specific definitions
 ***********************
 

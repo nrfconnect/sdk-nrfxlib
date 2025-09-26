@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Core library
+============
+
+* Added the :ref:`nrf_modem_rs_capture_api` to receive reference signal samples.
+
 nrf_modem 3.1.0
 ***************
 
