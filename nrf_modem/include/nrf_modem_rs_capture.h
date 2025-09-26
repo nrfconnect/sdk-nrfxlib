@@ -99,7 +99,7 @@ struct nrf_modem_rs_capture_prs_config {
 	 * Offsets are relative to the normal LTE gain settings for the serving cell.
 	 *
 	 * This pattern is repeated one after the other in the RS capture procedure.
-	 * The table must be filled entirely but same value can be set into several indices.
+	 * The table must be filled entirely, but the same value can be set into several indices.
 	 * The first value is applied in the first PRS occasion after SFN0.
 	 */
 	int8_t gain_offset[16];
@@ -109,7 +109,7 @@ struct nrf_modem_rs_capture_prs_config {
 	 * Narrowband 0 is reserved for the central narrowband exactly in the middle of system BW.
 	 *
 	 * This pattern is repeated one after the other in the RS capture procedure.
-	 * The table must be filled entirely but same value can be set into several indices.
+	 * The table must be filled entirely, but the same value can be set into several indices.
 	 * The first value is applied in the first PRS occasion after SFN0.
 	 */
 	uint8_t nb_pattern[16];
@@ -144,7 +144,7 @@ struct nrf_modem_rs_capture_prs_sample {
 	uint16_t mnc;
 	/** Index of the configuration used to capture the sample. Range: 0 ... 255
 	 *
-	 * Index matches to the one given in @ref nrf_modem_rs_capture_prs_config.
+	 * Index matches the one given in @ref nrf_modem_rs_capture_prs_config.
 	 */
 	uint8_t index;
 	/** Narrowband. Range: 0...16.
@@ -185,7 +185,7 @@ struct nrf_modem_rs_capture_prs_sample {
 	 * Only OFDM symbols containing PRS are stored except in 4 TX antenna configuration, where
 	 * every eight symbols is invalid.
 	 *
-	 * If present based on @ref num_samples variable, number of samples is
+	 * If present based on @ref num_samples variable, number of samples are
 	 * 2 (I+Q) * 8 PRS symbols * 8 PRBs * 12 subcarriers = 1536 samples.
 	 *
 	 * Centermost 6 PRB's (#1..#6, from #0..#7) within these 8 PRB's always correspond to
