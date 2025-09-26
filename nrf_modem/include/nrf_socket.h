@@ -1174,10 +1174,10 @@ int nrf_setdnsaddr(int family, const void *in_addr, nrf_socklen_t in_size);
 int nrf_socket_data_enabled_set(bool enabled);
 
 /**
- * @brief Get the state of data traffic through the socket interface.
+ * @brief Get the current data enabled state.
  *
  * @details
- * This function can be used to get the state of data traffic through the socket interface.
+ * This function is used to get the current data enabled state.
  *
  * @retval true if data is enabled.
  * @retval false if data is disabled.
