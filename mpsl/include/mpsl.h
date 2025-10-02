@@ -151,12 +151,6 @@ void mpsl_low_priority_process(void);
  */
 void mpsl_calibration_timer_handle(void);
 
-/** @brief RFU
- *
- * RFU
- */
-void mpsl_pan_rfu(void);
-
 /** @brief MPSL requesting CONSTLAT to be on.
  *
  * The application needs to implement this function.
