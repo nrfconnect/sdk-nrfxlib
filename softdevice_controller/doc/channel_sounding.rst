@@ -131,7 +131,7 @@ In addition to the supported capabilities listed above, the |controller| support
    * - Timing Parameter
      - Supported Times
    * - T_IP1
-     - 60 µs or greater.
+     - 30 µs or greater.
    * - T_IP2
      - 20 µs or greater.
    * - T_FCS
@@ -154,11 +154,7 @@ Users may define their own antenna switching behavior in the |NCS|.
 By using the :c:func:`cs_antenna_switch_func` function and devicetree, users can register GPIO-controlled antenna switches with the |controller|.
 The Channel Sounding implementation will then automatically use the registered pins to control an external antenna switch for multi-antenna designs.
 The pins assigned to a multi-antenna design will be reserved by the |controller| and cannot be used by other activity.
-If users do not want to use the implementation provided in the |NCS|, they must register their own callback function for antenna switching in :c:func:`sdc_support_channel_sounding`.
-
-.. note::
-   The |controller| requires an :c:type:`sdc_cs_antenna_switch_callback_t` antenna switching callback to :c:func:`sdc_support_channel_sounding` whenever it is configured with support for multiple antennas.
-   This is done automatically in the |NCS|.
+If users do not want to use the implementation provided in the |NCS|, they must register their own callback function for antenna switching in :c:func:`sdc_cs_antenna_switch_callback_set`.
 
 When using :c:func:`cs_antenna_switch_func`, users can register which pins control the antenna switch, as well as how the pins switch, using devicetree.
 An example declaration of an antenna switch in devicetree is as follows:

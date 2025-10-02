@@ -17,6 +17,15 @@ Bug fixes
 
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
+* Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
+
+Changes
+=======
+
+* The sdc_support_* functions now return void.
+  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
+* The Channel Sounding antenna switch callback must now be set with :c:func:`sdc_cs_antenna_switch_callback_set` instead of :c:func:`sdc_support_channel_sounding` when using multiple antennas.
+  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 
 nRF Connect SDK v3.1.0
 **********************
@@ -59,6 +68,7 @@ Changes
 * The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
   This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
 * ISO SDUs up to 1255 bytes are now supported for isochronous channels. (DRGN-25316)
+* The controller now supports T_IP1 times 30 µs or greater. (DRGN-26241)
 
 nRF Connect SDK v3.0.1
 **********************

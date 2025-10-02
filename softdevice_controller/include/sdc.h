@@ -148,6 +148,9 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
+/** @brief Temporary define to support both old and new sdc_support APIs. */
+#define SDC_USE_NEW_SDC_SUPPORT_API 1
+
 /**
  * @defgroup sdc_mem_defines Memory requirement defines
  *
@@ -161,7 +164,7 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_MINIMAL_CENTRAL_LINK_SIZE    755
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 867
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 871
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -224,17 +227,8 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  * @param[in] num_pages Total number of extended feature pages supported.
- *
  */
-#define SDC_MEM_EXTENDED_FEATURE_SET_NEW(num_links, num_pages) ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
-
-/** @brief Maximum memory required when supporting extended feature set.
- *
- * @deprecated This define is deprecated and will be removed.
- * @param[in] num_links Total number of peripheral and central links supported.
- *
- */
-#define SDC_MEM_EXTENDED_FEATURE_SET(num_links) ((num_links) > 0 ? (11 + (num_links) * (259)) : 0)
+#define SDC_MEM_EXTENDED_FEATURE_SET(num_links, num_pages) ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
 
 /** @brief Maximum memory required when supporting frame space update.
  *
@@ -782,8 +776,7 @@ int32_t sdc_init(sdc_fault_handler_t fault_handler);
  *
  * @returns Required memory size for the current configuration in bytes.
  * @retval -NRF_EOPNOTSUPP    Unsupported configuration.
- * @retval -NRF_ENOMEM        Configuration required over 64 kB of RAM that is
-                              not supported currently.
+ * @retval -NRF_ENOMEM        Configuration requires over INT32_MAX bytes of RAM.
  * @retval -NRF_EINVAL        Invalid argument provided.
  * @retval -NRF_EPERM         This API was called after @ref sdc_enable().
  */
@@ -828,507 +821,12 @@ int32_t sdc_disable(void);
  * The application must provide a buffer that is at least @ref SDC_BUILD_REVISION_SIZE
  * bytes long. The SoftDevice Controller will copy the build revision string to the provided buffer.
  *
- *  @param[in,out] p_build_revision  Build revision.
+ * @param[in,out] p_build_revision  Build revision.
  *
  * @retval 0            Success
  * @retval -NRF_EINVAL  Invalid argument provided
  */
 int32_t sdc_build_revision_get(uint8_t * p_build_revision);
-
-/** @brief Support Advertising State
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to the Advertising State.
- * Only non-connectable advertising is supported. To support connectable
- * advertising, call @ref sdc_support_peripheral().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Advertising state is not supported.
- */
-int32_t sdc_support_adv(void);
-
-/** @brief Support extended advertising
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to both legacy and extended advertising.
- *
- * To reduce the size of the final linked image, the application should
- * call either @ref sdc_support_adv() or @ref sdc_support_ext_adv().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Extended advertising state is not supported.
- */
-int32_t sdc_support_ext_adv(void);
-
-/** @brief Support Peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to the peripheral role.
- *
- * The application shall call either @ref sdc_support_adv() or
- * @ref sdc_support_ext_adv() to be able to support connection
- * establishment.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Peripheral role is not supported.
- */
-int32_t sdc_support_peripheral(void);
-
-/** @brief Support Scanning state
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to the scanning state.
- *
- * To reduce the size of the final linked image, the application should
- * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
- *
- * This API shall not be called together with
- * @ref sdc_support_central() or @ref sdc_support_ext_central().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Scanning state is not supported.
- */
-int32_t sdc_support_scan(void);
-
-/** @brief Support scanning for extended advertising PDUs
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to both legacy and extended scanning.
- *
- * To reduce the size of the final linked image, the application should
- * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
- *
- * This API shall not be called together with
- * @ref sdc_support_central() or @ref sdc_support_ext_central().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Extended scanning state is not supported.
- */
-int32_t sdc_support_ext_scan(void);
-
-/** @brief Support Scanner, Initiator, and Central role
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to the scanner, initiator, and central role.
- *
- * To reduce the size of the final linked image, the application should
- * not call both @ref sdc_support_central() and @ref sdc_support_ext_central().
- *
- * This API shall not be called together with
- * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  These features are not supported.
- */
-int32_t sdc_support_central(void);
-
-/** @brief Support Extended Scanner, Extended Initiator, and Central role
- *
- * After this API is called, the controller will support the HCI commands
- * and events related to the extended scanner, initiator, and central role.
- *
- * To reduce the size of the final linked image, the application should
- * not call both @ref sdc_support_central() and @ref sdc_support_ext_central().
- *
- * This API shall not be called together with
- * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  These features are not supported.
- */
-int32_t sdc_support_ext_central(void);
-
-/** @brief Support for scanning and initiating at the same time.
- *
- * After this API is called, the controller will support:
- *   - Creating a connection while passive or active scanning is enabled
- *   - Enabling passive or active scanning while a connection attempt is ongoing
- *
- * This API should be called only when centrals are supported (the application should
- * call either @ref sdc_support_central() or @ref sdc_support_ext_central()).
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Scanning and initiating in parallel is not supported.
- */
-int32_t sdc_support_parallel_scanning_and_initiating(void);
-
-/** @brief Support LE Power Class 1
- *
- * After this API is called, the controller will include LE Power Class 1 in the supported features.
- *
- * @note The controller only adds this feature bit, the user will have to know whether this is required.
- *
- * @retval 0          Success
- * @retval -NRF_EPERM This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- */
-int32_t sdc_support_le_power_class_1(void);
-
-/** @brief Support Data Length Extensions for a central device
- *
- * After this API is called, the controller will support data length extension in the central role.
- * That is:
- *  - DLE is marked supported in the LL Feature Exchange procedure.
- *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *    when a LL_LENGTH_REQ is received.
- *
- * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Data Length Extension or Central Role is not supported.
- */
-int32_t sdc_support_dle_central(void);
-
-/** @brief Support Data Length Extensions for a peripheral device
- *
- * After this API is called, the controller will support data length extension in the peripheral role.
- * That is:
- *  - DLE is marked supported in the LL Feature Exchange procedure.
- *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *    when a LL_LENGTH_REQ is received.
- *
- * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Data Length Extension or Peripheral Role is not supported.
- */
-int32_t sdc_support_dle_peripheral(void);
-
-/** @brief Support LE 2M PHY
- *
- * After this API is called, the controller will support LE 2M PHY. That is:
- *  - The controller can use 2M PHY in both the connected and non-connected state.
- *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
- *
- * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
- *       to enable the PHY update procedure.
- *
- * @retval 0           Success
- * @retval -NRF_EPERM  This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- */
-int32_t sdc_support_le_2m_phy(void);
-
-/** @brief Support LE Coded PHY
- *
- * After this API is called, the controller will support LE Coded PHY. That is:
- *  - The controller can use LE Coded PHY in both the connected and non-connected state.
- *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
- *
- * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
- *       to enable the PHY update procedure.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
- */
-int32_t sdc_support_le_coded_phy(void);
-
-/** @brief Support PHY Update Procedure for central role
- *
- * After this API is called, the controller will support PHY update procedure in central role. That is:
- *  - All HCI APIs for obtaining or changing PHYs are supported for central role.
- *
- * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
- */
-int32_t sdc_support_phy_update_central(void);
-
-/** @brief Support LE Coded PHY for peripheral role
- *
- * After this API is called, the controller will support PHY update procedure in peripheral role. That is:
- *  - All HCI APIs for obtaining or changing PHYs are supported for peripheral role.
- *
- * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
- */
-int32_t sdc_support_phy_update_peripheral(void);
-
-/** @brief Support LE Periodic Advertising in the Advertising state
- *
- * After this API is called, the controller will support the HCI commands
- * related to the Periodic Advertising State.
- *
- * The application shall also call @ref sdc_support_ext_adv() to enable
- * support for extended advertising before enabling support for periodic advertising.
- *
- * @note This API also enables support for ADI in periodic advertising packets.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
- */
-int32_t sdc_support_le_periodic_adv(void);
-
-/** @brief Support LE Periodic Advertising in the Synchronization state
- *
- * After this API is called, the controller will support the HCI commands
- * related to the Synchronization State.
- *
- * The application shall also call @ref sdc_support_ext_scan() to enable
- * support for scanning for periodic advertisers before enabling support for
- * this feature.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
- */
-int32_t sdc_support_le_periodic_sync(void);
-
-/** @brief Support LE Periodic Advertising with Responses in the Advertising state
- *
- * After this API is called, the controller will support the HCI commands
- * related to Periodic Advertising with Responses.
- *
- * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_adv(),
- * and at least one of @ref sdc_support_periodic_adv_sync_transfer_sender_central()
- * and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral()
- * to enable support for the extended advertising, periodic advertising,
- * and sync transfer sender features before enabling support for
- * Periodic Advertising with Responses.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Periodic Advertising with Responses is not supported.
- */
-int32_t sdc_support_le_periodic_adv_with_rsp(void);
-
-/** @brief Support LE Periodic Advertising with Responses in the Synchronization state
- *
- * After this API is called, the controller will support the HCI commands
- * related to Periodic Sync with Responses.
- *
- * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_sync(),
- * and at least one of @ref sdc_support_periodic_adv_sync_transfer_receiver_central and
- * @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral to enable support for extended
- * advertising, periodic advertising, and the sync transfer receiver features before enabling
- * support for Periodic Sync with Responses.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Periodic Sync with Responses is not supported.
- */
-int32_t sdc_support_le_periodic_sync_with_rsp(void);
-
-/** @brief Support LE Power Control for central role
- *
- * After this API is called, the controller will support the HCI commands
- * related to LE Power Control.
- *
- * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
- */
-int32_t sdc_support_le_power_control_central(void);
-
-/** @brief Support LE Power Control for peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * related to LE Power Control.
- *
- * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
- */
-int32_t sdc_support_le_power_control_peripheral(void);
-
-/** @brief Support LE Path Loss Monitoring
- *
- * After this API is called, the controller will support the HCI commands
- * related to LE Path Loss Monitoring.
- *
- * @note The application is required to call at least one of @ref sdc_support_le_power_control_central()
- *       and @ref sdc_support_le_power_control_peripheral() before enabling support for LE Path Loss Monitoring.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Path Loss Monitoring is not supported.
- */
-int32_t sdc_support_le_path_loss_monitoring(void);
-
-/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for central role
- *
- * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  SCA Update procedure is not supported.
- */
-int32_t sdc_support_sca_central(void);
-
-/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for peripheral role
- *
- * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  SCA Update procedure is not supported.
- */
-int32_t sdc_support_sca_peripheral(void);
-
-/** @brief Support LE Connection CTE response for central role
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Connection CTE Response.
- *
- * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
- */
-int32_t sdc_support_le_conn_cte_rsp_central(void);
-
-/** @brief Support LE Connection CTE response for peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Connection CTE Response.
- *
- * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
- */
-int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
-
-/** @brief Support LE Connectionless CTE Transmitter
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Connectionless CTE Transmitter.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Connectionless CTE Transmitter is not supported.
- */
-int32_t sdc_support_le_connectionless_cte_transmitter(void);
-
-/** @brief Support LE Privacy
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Privacy.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Privacy is not supported.
- */
- int32_t sdc_support_le_privacy(void);
-
-/** @brief Support for sending periodic advertising sync transfers as central role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_sender_central(void);
-
-/** @brief Support for sending periodic advertising sync transfers as peripheral role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_sender_peripheral(void);
-
-/** @brief Support for receiving periodic advertising sync transfers as central role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_receiver_central(void);
-
-/** @brief Support for receiving periodic advertising sync transfers as peripheral role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
-
-/** @brief Support Connected Isochronous streams in the peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * related to Connected Isochronous channels in the peripheral role
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Connected Isochronous streams in the peripheral role is not supported.
- */
-int32_t sdc_support_cis_peripheral(void);
-
-/** @brief Support Connected Isochronous streams in the central role
- *
- * After this API is called, the controller will support the HCI commands
- * related to Connected Isochronous channels in the central role
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Connected Isochronous streams in the central role is not supported.
- */
-int32_t sdc_support_cis_central(void);
-
-/** @brief Support Broadcast Isochronous streams as a source
- *
- * After this API is called, the controller will support the HCI commands
- * related to Broadcast Isochronous channels as a source
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as a source is not supported.
- */
-int32_t sdc_support_bis_source(void);
-
-/** @brief Support Broadcast Isochronous streams as a sink
- *
- * After this API is called, the controller will support the HCI commands
- * related to Broadcast Isochronous channels as a sink
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as a sink is not supported.
- */
-int32_t sdc_support_bis_sink(void);
 
 /** @brief Configure the controller to ignore HCI ISO data timestamps from the host
  *
@@ -1336,21 +834,8 @@ int32_t sdc_support_bis_sink(void);
  * This option can instruct the controller to ignore the timestamps, if the host sends timestamps that are not based on the controller's clock.
  *
  * @param ignore indicates if timestamps in HCI ISO data packets from the host should be ignored.
- *
- * @retval 0                Success
- * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as source and Connected Isochronous Channels are not supported.
  */
-int32_t sdc_iso_host_timestamps_ignore(bool ignore);
-
-/** @brief Support for Quality of Service (QoS) channel survey module
- *
- * After this API is called, the controller will support the @ref sdc_hci_cmd_vs_qos_channel_survey_enable HCI command
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP QoS channel survey is not supported.
- */
-int32_t sdc_support_qos_channel_survey(void);
+void sdc_iso_host_timestamps_ignore(bool ignore);
 
 /** @brief Support for setting the default radio TX power level
  *
@@ -1372,6 +857,533 @@ int32_t sdc_support_qos_channel_survey(void);
  */
 int32_t sdc_default_tx_power_set(int8_t requested_power_level);
 
+/** @brief Set antenna switch callback used by Channel Sounding
+ *
+ * @param[in] antenna_switch_cb Antenna Switching callback used to control an antennna switch
+ *                              in the case of a multiantenna application. May be NULL if no
+ *                              antenna switching is needed. See
+ *                              @ref sdc_cfg_cs_cfg_t::num_antennas_supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ */
+void sdc_cs_antenna_switch_callback_set(sdc_cs_antenna_switch_callback_t antenna_switch_cb);
+
+/** @brief Helper function that can be used for sdc_support_* APIs call
+ *
+ * @param[in] sdc_support_func sdc_support_* function to be called.
+ *
+ * @retval 0           @p sdc_support_func has been successfully called.
+ * @retval -NRF_EPERM  This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ */
+int32_t sdc_support_helper(void (*sdc_support_func)(void));
+
+/** @brief Support Advertising State
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the Advertising State.
+ * Only non-connectable advertising is supported. To support connectable
+ * advertising, call @ref sdc_support_peripheral().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_adv(void);
+
+/** @brief Support extended advertising
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to both legacy and extended advertising.
+ *
+ * To reduce the size of the final linked image, the application should
+ * call either @ref sdc_support_adv() or @ref sdc_support_ext_adv().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_ext_adv(void);
+
+/** @brief Support Peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the peripheral role.
+ *
+ * The application shall call either @ref sdc_support_adv() or
+ * @ref sdc_support_ext_adv() to be able to support connection
+ * establishment.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_peripheral(void);
+
+/** @brief Support Scanning state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the scanning state.
+ *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_central() or @ref sdc_support_ext_central().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_scan(void);
+
+/** @brief Support scanning for extended advertising PDUs
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to both legacy and extended scanning.
+ *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_central() or @ref sdc_support_ext_central().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_ext_scan(void);
+
+/** @brief Support Scanner, Initiator, and Central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the scanner, initiator, and central role.
+ *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_central() and @ref sdc_support_ext_central().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_central(void);
+
+/** @brief Support Extended Scanner, Extended Initiator, and Central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the extended scanner, initiator, and central role.
+ *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_central() and @ref sdc_support_ext_central().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_ext_central(void);
+
+/** @brief Support for scanning and initiating at the same time.
+ *
+ * After this API is called, the controller will support:
+ *   - Creating a connection while passive or active scanning is enabled
+ *   - Enabling passive or active scanning while a connection attempt is ongoing
+ *
+ * This API should be called only when centrals are supported (the application should
+ * call either @ref sdc_support_central() or @ref sdc_support_ext_central()).
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_parallel_scanning_and_initiating(void);
+
+/** @brief Support LE Power Class 1
+ *
+ * After this API is called, the controller will include LE Power Class 1 in the supported features.
+ *
+ * @note The controller only adds this feature bit, the user will have to know whether this is required.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_power_class_1(void);
+
+/** @brief Support Data Length Extensions for a central device
+ *
+ * After this API is called, the controller will support data length extension in the central role.
+ * That is:
+ *  - DLE is marked supported in the LL Feature Exchange procedure.
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *    when a LL_LENGTH_REQ is received.
+ *
+ * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_dle_central(void);
+
+/** @brief Support Data Length Extensions for a peripheral device
+ *
+ * After this API is called, the controller will support data length extension in the peripheral role.
+ * That is:
+ *  - DLE is marked supported in the LL Feature Exchange procedure.
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *    when a LL_LENGTH_REQ is received.
+ *
+ * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_dle_peripheral(void);
+
+/** @brief Support LE 2M PHY
+ *
+ * After this API is called, the controller will support LE 2M PHY. That is:
+ *  - The controller can use 2M PHY in both the connected and non-connected state.
+ *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
+ *       to enable the PHY update procedure.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_2m_phy(void);
+
+/** @brief Support LE Coded PHY
+ *
+ * After this API is called, the controller will support LE Coded PHY. That is:
+ *  - The controller can use LE Coded PHY in both the connected and non-connected state.
+ *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
+ *       to enable the PHY update procedure.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_coded_phy(void);
+
+/** @brief Support PHY Update Procedure for central role
+ *
+ * After this API is called, the controller will support PHY update procedure in central role. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported for central role.
+ *
+ * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_phy_update_central(void);
+
+/** @brief Support LE Coded PHY for peripheral role
+ *
+ * After this API is called, the controller will support PHY update procedure in peripheral role. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported for peripheral role.
+ *
+ * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_phy_update_peripheral(void);
+
+/** @brief Support LE Periodic Advertising in the Advertising state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the Periodic Advertising State.
+ *
+ * The application shall also call @ref sdc_support_ext_adv() to enable
+ * support for extended advertising before enabling support for periodic advertising.
+ *
+ * @note This API also enables support for ADI in periodic advertising packets.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_periodic_adv(void);
+
+/** @brief Support LE Periodic Advertising in the Synchronization state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the Synchronization State.
+ *
+ * The application shall also call @ref sdc_support_ext_scan() to enable
+ * support for scanning for periodic advertisers before enabling support for
+ * this feature.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_periodic_sync(void);
+
+/** @brief Support LE Periodic Advertising with Responses in the Advertising state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Periodic Advertising with Responses.
+ *
+ * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_adv(),
+ * and at least one of @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ * and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral()
+ * to enable support for the extended advertising, periodic advertising,
+ * and sync transfer sender features before enabling support for
+ * Periodic Advertising with Responses.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_periodic_adv_with_rsp(void);
+
+/** @brief Support LE Periodic Advertising with Responses in the Synchronization state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Periodic Sync with Responses.
+ *
+ * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_sync(),
+ * and at least one of @ref sdc_support_periodic_adv_sync_transfer_receiver_central and
+ * @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral to enable support for extended
+ * advertising, periodic advertising, and the sync transfer receiver features before enabling
+ * support for Periodic Sync with Responses.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_periodic_sync_with_rsp(void);
+
+/** @brief Support LE Power Control for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to LE Power Control.
+ *
+ * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_power_control_central(void);
+
+/** @brief Support LE Power Control for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to LE Power Control.
+ *
+ * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_power_control_peripheral(void);
+
+/** @brief Support LE Path Loss Monitoring
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to LE Path Loss Monitoring.
+ *
+ * @note The application is required to call at least one of @ref sdc_support_le_power_control_central()
+ *       and @ref sdc_support_le_power_control_peripheral() before enabling support for LE Path Loss Monitoring.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_path_loss_monitoring(void);
+
+/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for central role
+ *
+ * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_sca_central(void);
+
+/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_sca_peripheral(void);
+
+/** @brief Support LE Connection CTE response for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connection CTE Response.
+ *
+ * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_conn_cte_rsp_central(void);
+
+/** @brief Support LE Connection CTE response for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connection CTE Response.
+ *
+ * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_conn_cte_rsp_peripheral(void);
+
+/** @brief Support LE Connectionless CTE Transmitter
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connectionless CTE Transmitter.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_connectionless_cte_transmitter(void);
+
+/** @brief Support LE Privacy
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Privacy.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_privacy(void);
+
+/** @brief Support for sending periodic advertising sync transfers as central role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_periodic_adv_sync_transfer_sender_central(void);
+
+/** @brief Support for sending periodic advertising sync transfers as peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_periodic_adv_sync_transfer_sender_peripheral(void);
+
+/** @brief Support for receiving periodic advertising sync transfers as central role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_periodic_adv_sync_transfer_receiver_central(void);
+
+/** @brief Support for receiving periodic advertising sync transfers as peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
+
+/** @brief Support Connected Isochronous streams in the peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Connected Isochronous channels in the peripheral role
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_cis_peripheral(void);
+
+/** @brief Support Connected Isochronous streams in the central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Connected Isochronous channels in the central role
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_cis_central(void);
+
+/** @brief Support Broadcast Isochronous streams as a source
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Broadcast Isochronous channels as a source
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_bis_source(void);
+
+/** @brief Support Broadcast Isochronous streams as a sink
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Broadcast Isochronous channels as a sink
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_bis_sink(void);
+
+/** @brief Support for Quality of Service (QoS) channel survey module
+ *
+ * After this API is called, the controller will support the @ref sdc_hci_cmd_vs_qos_channel_survey_enable HCI command
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_qos_channel_survey(void);
+
 /** @brief Support Connection Subrating for central role
  *
  * After this API is called, the controller will support the HCI commands
@@ -1380,11 +1392,11 @@ int32_t sdc_default_tx_power_set(int8_t requested_power_level);
  * @note The application is required to call both @ref sdc_support_connection_subrating_central() and @ref sdc_support_connection_subrating_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Connection Subrating is not supported.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_connection_subrating_central(void);
+void sdc_support_connection_subrating_central(void);
 
 /** @brief Support Connection Subrating for peripheral role
  *
@@ -1394,22 +1406,22 @@ int32_t sdc_support_connection_subrating_central(void);
  * @note The application is required to call both @ref sdc_support_connection_subrating_central() and @ref sdc_support_connection_subrating_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Connection Subrating is not supported.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_connection_subrating_peripheral(void);
+void sdc_support_connection_subrating_peripheral(void);
 
 /** @brief Support Extended Feature Set
  *
  * After this API is called, the controller will support the HCI commands
  * related to Extended Feature Set.
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Extended Feature Set is not supported.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
- int32_t sdc_support_extended_feature_set(void);
+void sdc_support_extended_feature_set(void);
 
 /** @brief Support Frame Space Update for central role
  *
@@ -1420,11 +1432,11 @@ int32_t sdc_support_connection_subrating_peripheral(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Frame Space Update is not supported.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_frame_space_update_central(void);
+void sdc_support_frame_space_update_central(void);
 
 /** @brief Support Frame Space Update for peripheral role
  *
@@ -1435,52 +1447,52 @@ int32_t sdc_support_frame_space_update_central(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Frame Space Update is not supported.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_frame_space_update_peripheral(void);
+void sdc_support_frame_space_update_peripheral(void);
 
 /** @brief Support Channel Sounding test command
  *
  * After this API is called, the controller will support the HCI command
  * HCI LE Channel Sounding Test
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Channel Sounding Test is not supported
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_channel_sounding_test(void);
+void sdc_support_channel_sounding_test(void);
 
 /** @brief Support Channel Sounding Step Mode 3
  *
  * After this API is called, the controller will support Channel Sounding Step Mode 3
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_channel_sounding_mode3(void);
+void sdc_support_channel_sounding_mode3(void);
 
 /** @brief  Support Channel Sounding Initiator role
  *
  * After this API is called, the controller will support Channel Sounding Initiator role
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_channel_sounding_initiator_role(void);
+void sdc_support_channel_sounding_initiator_role(void);
 
 /** @brief  Support Channel Sounding Reflector role
  *
  * After this API is called, the controller will support Channel Sounding Reflector role
  *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_channel_sounding_reflector_role(void);
+void sdc_support_channel_sounding_reflector_role(void);
 
 /** @brief Support LE Channel Sounding
  *
@@ -1490,16 +1502,11 @@ int32_t sdc_support_channel_sounding_reflector_role(void);
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
  *
- * @param[in] antenna_switch_cb Antenna Switching callback used to control an antennna switch
- *                              in the case of a multiantenna application. May be NULL if no
- *                              antenna switching is needed. See
- *                              @ref sdc_cfg_cs_cfg_t::num_antennas_supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-int32_t sdc_support_channel_sounding(sdc_cs_antenna_switch_callback_t antenna_switch_cb);
+void sdc_support_channel_sounding(void);
 
 #ifdef __cplusplus
 }
