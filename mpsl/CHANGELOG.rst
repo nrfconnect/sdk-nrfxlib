@@ -7,165 +7,6 @@ Changelog
    :local:
    :depth: 2
 
-
-All the notable changes to this project are documented on this page.
-
-Main branch
-***********
-
-nRF Connect SDK v3.1.0
-**********************
-
-Changes
-=======
-
-* The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` added by the :file:`mpsl_hwres.h` file need to be implemented by MPSL users. (KRKNWK-15977)
-* For the nRF54L Series devices, the inter-domain PPIB connections for Front-End Modules are configured internally in the MPSL.
-  You no longer need to configure the PPIB connections.
-  The field ``ppib_channels`` of the :c:struct:`mpsl_fem_gpiote_pin_config_t` structure is removed. (KRKNWK-15977)
-* Added the ``phy`` parameter to the function :c:func:`mpsl_fem_tx_power_split` and to the function type :c:type:`mpsl_fem_power_model_output_fetch_t`. (KRKNWK-20435)
-
-Added
-=====
-
-* Added the :file:`mpsl_hwres.h` file, which defines an API for hardware resources allocation. (KRKNWK-15977)
-* Added support for the nRF21540 Front-End Module in GPIO/SPI mode on the nRF54L Series SoCs. (KRKNWK-15977)
-* Added support for the Simple GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-20506)
-* Added support for boosting the current timeslot priority for the nRF 802.15.4 Radio Driver. (KRKNWK-19125)
-* Added :c:func:`mpsl_clock_hfclk_src_request`, :c:func:`mpsl_clock_hfclk_src_release`, and :c:func:`mpsl_clock_hfclk_src_is_running` to manage the high-frequency clock for a given source.
-  The old API (:c:func:`mpsl_clock_hfclk_request`, :c:func:`mpsl_clock_hfclk_release`, and :c:func:`mpsl_clock_hfclk_is_running`) has been deprecated and will be removed in a future release.
-
-Bug fixes
-=========
-
-* Fixed a rare issue where radio events would be dropped if high-frequency crystal tuning was needed due to a large temperature change when starting the HFXO.
-  In the worst-case scenario, MPSL would not recover from this state and continue to drop radio events.
-  This issue applies only to the nRF54L Series devices. (DRGN-25261)
-
-Removed
-=======
-
-* Removed the deprecated function :c:func:`mpsl_fem_simple_gpio_interface_config_get`.
-
-nRF Connect SDK v3.0.0
-**********************
-
-Changes
-=======
-
-* Documented that the :c:func:`mpsl_clock_task_trigger_on_rtc_start_set` function is supported only on the nRF52 and nRF53 Series.
-* Added support for the nRF21540 GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-19928)
-* The activation of the nRF2220 Front-End Module CS pin now requires a call to the :c:func:`mpsl_fem_enable` function. (KRKNWK-19588)
-* Applied Errata 22 and Errata 24 to the Front-End Modules on the nRF54L15 SoC. (KRKNWK-19588)
-* The activation of the nRF21540 Front-End Module PDN pin (in both GPIO and GPIO+SPI modes) now requires a call to the :c:func:`mpsl_fem_enable` function.
-  The ``PA time gap`` configuration parameter of the nRF21540 Front-End Module can now have greater values, that allow to activate the ``TX_EN`` pin earlier during the ramp-up of the RADIO.
-  The nRF21540 Front-End Module now requires fewer resources (PPI/DPPI channels, EGU channels).
-  For the nRF21540 Front-End Module, only one compare channel of a TIMER is required to configure PA or LNA activation for the :c:enumerator:`MPSL_FEM_EVENT_TYPE_TIMER` event type.
-* The callback passed to the :c:func:`mpsl_clock_hfclk_request` function will be executed when the HFCLK has started and is stable (EVENT_XOTUNED has occurred). (KRKNWK-19689)
-
-Added
-=====
-
-* Added the functions :c:func:`mpsl_clock_ctrl_source_register` and :c:func:`mpsl_clock_ctrl_source_unregister` to provide :ref:`Experimental <nrf:software_maturity>` support for running MPSL with an external clock driver.
-  The APIs are only supported on nR54H Series SoCs.
-  Using these functions makes it possible to use an external clock driver, such as one provided by the |NCS|.
-  This fixes an issue on nRF54H Series where MPSL would assert or get suboptimal performance when other application components attempt to use a clock. (DRGN-21843)
-* On the nRF54L15 SoC, Errata 39 is now applied.
-* Added the defines :c:macro:`MPSL_TIMER0` to clarify which timer is being used by MPSL and the timeslot implementation. (DRGN-24434)
-* New API provided for integration with an external power management system.
-  The API is only supported on nRF54H Series SoCs.
-  This API makes it possible to use an external power management system, such as the one provided by the |NCS|, to request low latency mode and to request wakeup in time for a future event.
-  Added the functions :c:func:`mpsl_pm_init` and :c:func:`mpsl_pm_uninit` to enable and disable integration.
-  Added the functions :c:func:`mpsl_pm_params_get`, :c:func:`mpsl_pm_low_latency_requested`, :c:func:`mpsl_pm_low_latency_state_set` and :c:func:`mpsl_pm_low_latency_state_get` to register wakeup time and request low latency. (DRGN-17150)
-* Added the functions :c:func:`mpsl_fem_nrf2220_temperature_changed`, :c:func:`mpsl_fem_nrf2220_temperature_changed_update_request`, and :c:func:`mpsl_fem_nrf2220_temperature_changed_update_now` to compensate the temperature of the nRF2220 Front-End Module. (KRKNWK-19862)
-
-Removed
-=======
-
-* Removed the deprecated function :c:func:`mpsl_fem_prepare_powerdown`. (KRKNWK-16691)
-
-Bug fixes
-=========
-
-* Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run.
-  In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
-* Fixed an issue where :c:func:`mpsl_constlat_request_callback` would be called more often than :c:func:`mpsl_lowpower_request_callback`. (DRGN-25031)
-  This would only occur under rare conditions when two timing events are spaced very close to each other.
-  This may cause an assertion if the nrfx power driver is used to implement these callbacks.
-  The issue causes the power consumption to increase, and may eventually lead to the assertion.
-
-nRF Connect SDK v2.9.2
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue where the GRTC interrupt could be left pending after :c:func:`mpsl_init` had run. In |NCS| this could cause stack corruption early in the Zephyr init sequence after a softreset. (DRGN-24850)
-
-nRF Connect SDK v2.9.1
-**********************
-
-Added
-=====
-
-* On the nRF54L15 SoC, Errata 39 is now applied.
-
-nRF Connect SDK v2.9.0
-**********************
-
-Bug fixes
-=========
-* Fixed an issue where the functions :c:func:`mpsl_clock_hfclk_request` and :c:func:`mpsl_clock_hfclk_release` could end up not working after :c:func:`mpsl_uninit`
-  This could happen if LFRC was used as clock source (DRGN-23325)
-
-nRF Connect SDK v2.8.0
-**********************
-
-Changes
-=======
-
-* Removed support for running MPSL on the nRF54L15 PDK v0.7.0 and earlier. (DRGN-23325)
-* Removed support for running MPSL on the Engineering A revision of the nRF54H20 SoC. (DRGN-23325)
-* On nRF54L Series devices, the application now needs to implement :c:func:`mpsl_constlat_request_callback` and :c:func:`mpsl_lowpower_request_callback`.
-  This is already added to the MPSL driver in the |NCS|. (DRGN-22562)
-* Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
-* The timeslot implementation now starts ``TIMER0`` a couple microseconds later.
-  It now starts when the ``MPSL_TIMESLOT_SIGNAL_START`` callback is given.
-
-Added
-=====
-
-* Added production support for the nRF54L Series. (DRGN-23325)
-* Added :c:func:`mpsl_fem_enable` to allow turning on the Front-End Module earlier than through a call to :c:func:`mpsl_fem_pa_configuration_set` (KRKNWK-19275).
-  Added implementation of :c:func:`mpsl_fem_enable` for nRF2220 Front-End Module.
-* Added the defines :c:macro:`MPSL_PPI_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC10_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC20_CHANNELS_USED_MASK`, and :c:macro:`MPSL_DPPIC020_CHANNELS_USED_MASK`.
-  These represent the same resources as ``MPSL_RESERVED_PPI_CHANNELS``, but also specify the DPPI controller the channels belongs to.
-* Added the defines :c:macro:`MPSL_PPIB11_CHANNELS_USED_MASK`, :c:macro:`MPSL_PPIB21_CHANNELS_USED_MASK`, and :c:macro:`MPSL_IPCT130_CHANNELS_USED_MASK`.
-  These represent the PPIB and IPCT resources used.
-
-nRF Connect SDK v2.7.0
-**********************
-
-Changes
-=======
-
-* Fixed a rare issue that could cause a scheduler assert if interrupts were disabled for a longer period of time (DRGN-24327).
-  Note that disabling interrupts for a longer period of time is not allowed.
-* The default bit width within timeslots for ``TIMER0`` has been increased from 24 to 32 bits.
-  The user may still configure ``TIMER0`` however they like during the timeslot. (DRGN-19050)
-* New FEM protocol APIs are provided to control the PA power, the previous APIs are removed.
-  This change does not affect applications developed in the |NCS| context.
-  :c:func:`mpsl_fem_pa_power_control_set` replaces :c:func:`mpsl_fem_pa_gain_set`.
-  :c:func:`mpsl_fem_caps_get` replaces :c:func:`mpsl_fem_pa_is_configured`.
-  The :c:struct:`mpsl_tx_power_split_t` structure contains the new field ``fem_pa_power_control`` to be used with the :c:func:`mpsl_fem_pa_power_control_set` function.
-  The :c:type:`mpsl_fem_gain_t` type is deprecated, please use :c:type:`mpsl_fem_pa_power_control_t` type instead (KRKNWK-18729).
-* The FEM libraries for nRF2220 and nRF2240 no more link directly to the TWIM library.
-
-  * The TWI implementation now needs to be provided externally.
-  * The limitation that only the TWIM0 instance could be used for nRF2220 and nRF2240 devices is removed.
-  * :c:struct:`mpsl_fem_twi_if_t` replaces :c:struct:`mpsl_fem_twi_config_t`.
-  * The ``twi_if`` field replaces the ``twi_config`` field within :c:struct:`mpsl_fem_nrf2220_interface_config_t` and :c:struct:`mpsl_fem_nrf2240_interface_config_t` (KRKNWK-19010).
-
 nRF Connect SDK v2.6.3
 **********************
 
@@ -245,15 +86,6 @@ Bug fixes
 
 * Fixed an issue where the scheduler could put events in the past (DRGN-17851, DRGN-18105).
 
-nRF Connect SDK v2.1.3
-**********************
-
-All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
-
-Bug fixes
-=========
-* Fixed an issue where the scheduler could put events in the past. (DRGN-17923, DRGN-18105)
-
 nRF Connect SDK v2.1.0
 **********************
 
@@ -309,16 +141,6 @@ Bug fixes
 * Fixed an issue where :c:func:`mpsl_init` would reject a certain clock configuration for no longer applicable legacy reasons (DRGN-16884).
 * Fixed an issue where MPSL could assert when radio notifications on ACTIVE (:c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_ACTIVE` or :c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_BOTH`) were used (DRGN-16642).
 * Fixed an issue where :c:func:`mpsl_uninit` would hang indefinitely when the RC oscillator was used as the Low Frequency Clock source (DRGN-16515).
-* Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events. This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
-
-nRF Connect SDK v1.9.2
-**********************
-
-All the notable changes included in the |NCS| v1.9.2 release are documented in this section.
-
-Bug fixes
-=========
-
 * Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events. This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
 
 nRF Connect SDK v1.9.0
@@ -400,14 +222,6 @@ Bug fixes
 
 * Fixed an issue where the clock configuration option :c:member:`mpsl_clock_lfclk_cfg_t.skip_wait_lfclk_started` did not work as expected with nRF5340 devices (DRGN-15223).
 
-nRF Connect SDK v1.5.1
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue where the clock configuration option :c:member:`mpsl_clock_lfclk_cfg_t.skip_wait_lfclk_started` did not work as expected with nRF5340 devices (DRGN-15223).
-
 nRF Connect SDK v1.5.0
 **********************
 
@@ -429,21 +243,6 @@ Bug fixes
 * Fixed an issue where the low-frequency clock was configured incorrectly when the source configuration signal was set to either External Full swing or External Low swing (DRGN-15064).
 
 * Fixed an issue where MPSL waited for the low-frequency clock to start even though it was configured not to wait for it (DRGN-15176).
-
-nRF Connect SDK v1.4.1
-**********************
-
-Added
-=====
-
-* Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
-  which does not wait for the start of Low Frequency Clock. (DRGN-14204)
-
-Bugfixes
-========
-
-* Fixed an issue where Low Frequency Clock was configured incorrectly
-  when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
 
 nRF Connect SDK v1.4.0
 **********************

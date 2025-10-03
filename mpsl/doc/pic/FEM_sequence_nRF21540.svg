@@ -1,1 +1,297 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="SEQUENCE" height="738px" preserveAspectRatio="none" style="width:650px;height:738px;background:#FFFFFF;" version="1.1" viewBox="0 0 650 738" width="650px" zoomAndPan="magnify"><defs/><g><g><title>Application</title><rect fill="transparent" height="273.4609" width="8" x="47.1118" y="36.2969"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="51" x2="51" y1="36.2969" y2="309.7578"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="51" x2="51" y1="309.7578" y2="350.5625"/><g><title>Application</title><rect fill="transparent" height="99.3984" width="8" x="47.1118" y="350.5625"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="51" x2="51" y1="350.5625" y2="449.9609"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="51" x2="51" y1="449.9609" y2="490.7656"/><g><title>Application</title><rect fill="transparent" height="212.9297" width="8" x="47.1118" y="490.7656"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="51" x2="51" y1="490.7656" y2="703.6953"/></g><g><title>FEM module</title><rect fill="transparent" height="273.4609" width="8" x="301.9126" y="36.2969"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="304.9658" x2="304.9658" y1="36.2969" y2="309.7578"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="304.9658" x2="304.9658" y1="309.7578" y2="350.5625"/><g><title>FEM module</title><rect fill="transparent" height="99.3984" width="8" x="301.9126" y="350.5625"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="304.9658" x2="304.9658" y1="350.5625" y2="449.9609"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="304.9658" x2="304.9658" y1="449.9609" y2="490.7656"/><g><title>FEM module</title><rect fill="transparent" height="212.9297" width="8" x="301.9126" y="490.7656"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="304.9658" x2="304.9658" y1="490.7656" y2="703.6953"/></g><g><title>Hardware</title><rect fill="transparent" height="273.4609" width="8" x="492.7861" y="36.2969"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="496.7124" x2="496.7124" y1="36.2969" y2="309.7578"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="496.7124" x2="496.7124" y1="309.7578" y2="350.5625"/><g><title>Hardware</title><rect fill="transparent" height="99.3984" width="8" x="492.7861" y="350.5625"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="496.7124" x2="496.7124" y1="350.5625" y2="449.9609"/></g><line style="stroke:#A80036;stroke-width:1;stroke-dasharray:1.0,4.0;" x1="496.7124" x2="496.7124" y1="449.9609" y2="490.7656"/><g><title>Hardware</title><rect fill="transparent" height="212.9297" width="8" x="492.7861" y="490.7656"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5.0,5.0;" x1="496.7124" x2="496.7124" y1="490.7656" y2="703.6953"/></g><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="92.2236" x="5" y="5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="78.2236" x="12" y="24.9951">Application</text><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="92.2236" x="5" y="702.6953"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="78.2236" x="12" y="722.6904">Application</text><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="99.8936" x="255.9658" y="5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="85.8936" x="262.9658" y="24.9951">FEM module</text><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="99.8936" x="255.9658" y="702.6953"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="85.8936" x="262.9658" y="722.6904">FEM module</text><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="82.1475" x="455.7124" y="5"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68.1475" x="462.7124" y="24.9951">Hardware</text><rect fill="#00A9CE" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="82.1475" x="455.7124" y="702.6953"/><text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68.1475" x="462.7124" y="722.6904">Hardware</text><polygon fill="#181818" points="293.9126,63.4297,303.9126,67.4297,293.9126,71.4297,297.9126,67.4297" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="299.9126" y1="67.4297" y2="67.4297"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="123.7476" x="58.1118" y="62.3638">mpsl_fem_enable()</text><polygon fill="#181818" points="484.7861,92.5625,494.7861,96.5625,484.7861,100.5625,488.7861,96.5625" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="305.9126" x2="490.7861" y1="96.5625" y2="96.5625"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="108.5195" x="312.9126" y="91.4966">activate PDN pin</text><polygon fill="#181818" points="293.9126,182.2266,303.9126,186.2266,293.9126,190.2266,297.9126,186.2266" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="299.9126" y1="186.2266" y2="186.2266"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="218.6006" x="58.1118" y="120.6294">mpsl_fem_lna_configuration_set()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91.3555" x="58.1118" y="135.7622">configure LNA</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80.082" x="58.1118" y="150.895">time = 40us</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="94.1167" x="58.1118" y="166.0278">timer=TIMER0</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="91.9458" x="58.1118" y="181.1606">event=rx_end</text><line style="stroke:#181818;stroke-width:1;" x1="305.9126" x2="347.9126" y1="215.3594" y2="215.3594"/><line style="stroke:#181818;stroke-width:1;" x1="347.9126" x2="347.9126" y1="215.3594" y2="228.3594"/><line style="stroke:#181818;stroke-width:1;" x1="306.9126" x2="347.9126" y1="228.3594" y2="228.3594"/><polygon fill="#181818" points="316.9126,224.3594,306.9126,228.3594,316.9126,232.3594,312.9126,228.3594" style="stroke:#181818;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111.1665" x="312.9126" y="210.2935">calculate timings</text><polygon fill="#181818" points="484.7861,253.4922,494.7861,257.4922,484.7861,261.4922,488.7861,257.4922" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="305.9126" x2="490.7861" y1="257.4922" y2="257.4922"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="166.8735" x="312.9126" y="252.4263">configure TIMER0 to 27us</text><polygon fill="#181818" points="484.7861,297.7578,494.7861,301.7578,484.7861,305.7578,488.7861,301.7578" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="490.7861" y1="301.7578" y2="301.7578"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="51.1367" x="58.1118" y="281.5591">start Rx</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="82.9194" x="58.1118" y="296.6919">start TIMER0</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="139.9868" x="203.9556" y="333.9683">Waiting for TIMER0 event</text><line style="stroke:#181818;stroke-width:1;" x1="496.7861" x2="538.7861" y1="386.8281" y2="386.8281"/><line style="stroke:#181818;stroke-width:1;" x1="538.7861" x2="538.7861" y1="386.8281" y2="399.8281"/><line style="stroke:#181818;stroke-width:1;" x1="497.7861" x2="538.7861" y1="399.8281" y2="399.8281"/><polygon fill="#181818" points="507.7861,395.8281,497.7861,399.8281,507.7861,403.8281,503.7861,399.8281" style="stroke:#181818;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="89.667" x="503.7861" y="366.6294">TIMER0 event</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="123.3223" x="503.7861" y="381.7622">activate RX_EN pin</text><line style="stroke:#181818;stroke-width:1;" x1="496.7861" x2="538.7861" y1="428.9609" y2="428.9609"/><line style="stroke:#181818;stroke-width:1;" x1="538.7861" x2="538.7861" y1="428.9609" y2="441.9609"/><line style="stroke:#181818;stroke-width:1;" x1="497.7861" x2="538.7861" y1="441.9609" y2="441.9609"/><polygon fill="#181818" points="507.7861,437.9609,497.7861,441.9609,507.7861,445.9609,503.7861,441.9609" style="stroke:#181818;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="131.3838" x="503.7861" y="423.895">RADIO READY event</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="71.4893" x="238.2043" y="474.1714">RX operation</text><polygon fill="#181818" points="484.7861,507.8984,494.7861,511.8984,484.7861,515.8984,488.7861,511.8984" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="490.7861" y1="511.8984" y2="511.8984"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48.9341" x="58.1118" y="506.8325">stop Rx</text><line style="stroke:#181818;stroke-width:1;" x1="496.7861" x2="538.7861" y1="556.1641" y2="556.1641"/><line style="stroke:#181818;stroke-width:1;" x1="538.7861" x2="538.7861" y1="556.1641" y2="569.1641"/><line style="stroke:#181818;stroke-width:1;" x1="497.7861" x2="538.7861" y1="569.1641" y2="569.1641"/><polygon fill="#181818" points="507.7861,565.1641,497.7861,569.1641,507.7861,573.1641,503.7861,569.1641" style="stroke:#181818;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="85.1855" x="503.7861" y="535.9653">rx_end event</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="139.5723" x="503.7861" y="551.0981">deactivate RX_EN pin</text><polygon fill="#181818" points="293.9126,594.2969,303.9126,598.2969,293.9126,602.2969,297.9126,598.2969" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="299.9126" y1="598.2969" y2="598.2969"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="230.8008" x="58.1118" y="593.231">mpsl_fem_lna_configuartion_clear()</text><polygon fill="#181818" points="484.7861,623.4297,494.7861,627.4297,484.7861,631.4297,488.7861,627.4297" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="305.9126" x2="490.7861" y1="627.4297" y2="627.4297"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="130.2539" x="312.9126" y="622.3638">deconfigure TIMER0</text><polygon fill="#181818" points="293.9126,652.5625,303.9126,656.5625,293.9126,660.5625,297.9126,656.5625" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="51.1118" x2="299.9126" y1="656.5625" y2="656.5625"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="126.147" x="58.1118" y="651.4966">mpsl_fem_disable()</text><polygon fill="#181818" points="484.7861,681.6953,494.7861,685.6953,484.7861,689.6953,488.7861,685.6953" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="305.9126" x2="490.7861" y1="685.6953" y2="685.6953"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="124.7695" x="312.9126" y="680.6294">deactivate PDN pin</text><!--SRC=[XL9XJzim4FtkNt705_YmAeD97PKwARHXHO8EHPFAf4YHvroBLUVisGumJVllS-8LcZ2qV8hzthrxVdS75Qub8IorhQIuK0qwnJt2KPASdQK9EtY5jr1wFii6q3NVTj1uFFiuXEJctd-s-1EEvkVP- -oKCRULPBZbDJZyqI09X5yCmdVBhPT26ax-Weljnkg6gfbMskvP638lDVd8URoN7jblnimB2eUfCKeAxgMcG-0EmhbFkCnkeDPLex33mx6FBxYj7hcDw6B5M520TvzQ8aoWDawLQwnB9FvTuV49Q-y3l5X1WBdmyg7Dz7Q-12FfZM95l1IQrdBJsCvgwT0VdnIqkqIuNgO5ULaZJE53qhXuiDElLpTPdXI43qX-Qf-2aMhd8NOHN8cc6soeaBHnVOilBQ8KU0sduyOzFpJG9k1yo0JofuBYN-GoDXgDLbpw80lhC8E_4fsP034MYdSI-rX1pydaTsKMizdZvkdywWlaMJh_5WjOrog_0sqmHjJ9zorg4npkoyGuTYqh_4TJzl-HjDiGHY8KSjiRy0Gg7CRtXbmbtQlzQCk72_87]--></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by Microsoft Visio, SVG Export FEM_sequence_nRF21540.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="4.63375in" height="7.33623in" viewBox="0 0 333.63 528.208" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st11">
+	<style type="text/css">
+	<![CDATA[
+		.st1 {stroke:#000000;stroke-linecap:butt;stroke-width:1}
+		.st2 {stroke:#000000;stroke-dasharray:1,4;stroke-linecap:butt;stroke-width:1}
+		.st3 {fill:#00a9ce;stroke:none;stroke-linecap:butt;stroke-width:1.125}
+		.st4 {fill:#ffffff;font-family:Calibri;font-size:1.00001em}
+		.st5 {marker-end:url(#mrkr4-78);stroke:#000000;stroke-linecap:butt;stroke-width:1}
+		.st6 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.28409090909091}
+		.st7 {fill:none;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st8 {fill:#000000;font-family:Arial;font-size:0.833336em}
+		.st9 {fill:none;stroke:none;stroke-linecap:butt;stroke-width:1}
+		.st10 {fill:#000000;font-family:Arial;font-size:0.666664em}
+		.st11 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-78" class="st6" refX="-7.04" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-3.52,-3.52) "/>
+		</marker>
+	</defs>
+	<g>
+		<title>Page-1</title>
+		<g id="shape1402-1" transform="translate(562.589,23.8477) rotate(90)">
+			<title>Sheet.1402</title>
+			<path d="M0 528.21 L187 528.21" class="st1"/>
+		</g>
+		<g id="shape1403-4" transform="translate(562.589,210.844) rotate(90)">
+			<title>Sheet.1403</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1404-7" transform="translate(562.589,241.447) rotate(90)">
+			<title>Sheet.1404</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1405-10" transform="translate(562.589,284.396) rotate(90)">
+			<title>Sheet.1405</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1406-13" transform="translate(562.589,315) rotate(90)">
+			<title>Sheet.1406</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1407-16" transform="translate(562.589,357.949) rotate(90)">
+			<title>Sheet.1407</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1408-19" transform="translate(562.589,388.553) rotate(90)">
+			<title>Sheet.1408</title>
+			<path d="M0 528.21 L116 528.21" class="st1"/>
+		</g>
+		<g id="shape1409-22" transform="translate(653.339,23.8477) rotate(90)">
+			<title>Sheet.1409</title>
+			<path d="M0 528.21 L187 528.21" class="st1"/>
+		</g>
+		<g id="shape1410-25" transform="translate(653.339,210.844) rotate(90)">
+			<title>Sheet.1410</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1411-28" transform="translate(653.339,241.447) rotate(90)">
+			<title>Sheet.1411</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1412-31" transform="translate(653.339,284.396) rotate(90)">
+			<title>Sheet.1412</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1413-34" transform="translate(653.339,315) rotate(90)">
+			<title>Sheet.1413</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1414-37" transform="translate(653.339,357.949) rotate(90)">
+			<title>Sheet.1414</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1415-40" transform="translate(653.339,388.553) rotate(90)">
+			<title>Sheet.1415</title>
+			<path d="M0 528.21 L116 528.21" class="st1"/>
+		</g>
+		<g id="shape1416-43" transform="translate(797.095,24.0728) rotate(90.0244)">
+			<title>Sheet.1416</title>
+			<path d="M0 528.21 L187 528.21" class="st1"/>
+		</g>
+		<g id="shape1417-46" transform="translate(797.339,210.844) rotate(90)">
+			<title>Sheet.1417</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1418-49" transform="translate(797.339,241.447) rotate(90)">
+			<title>Sheet.1418</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1419-52" transform="translate(797.339,284.396) rotate(90)">
+			<title>Sheet.1419</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1420-55" transform="translate(797.339,315) rotate(90)">
+			<title>Sheet.1420</title>
+			<path d="M0 528.21 L42.95 528.21" class="st1"/>
+		</g>
+		<g id="shape1421-58" transform="translate(797.339,357.949) rotate(90)">
+			<title>Sheet.1421</title>
+			<path d="M0 528.21 L30.6 528.21" class="st2"/>
+		</g>
+		<g id="shape1422-61" transform="translate(797.339,388.553) rotate(90)">
+			<title>Sheet.1422</title>
+			<path d="M0 528.21 L116 528.21" class="st1"/>
+		</g>
+		<g id="shape1423-64" transform="translate(1.3802,-504.361)">
+			<title>Sheet.1423</title>
+			<desc>Application</desc>
+			<rect x="0" y="505.486" width="66" height="22.7227" class="st3"/>
+			<text x="5.36" y="520.45" class="st4">Application</text>		</g>
+		<g id="shape1427-67" transform="translate(86.1302,-504.361)">
+			<title>Sheet.1427</title>
+			<desc>FEM module</desc>
+			<rect x="0" y="505.486" width="78" height="22.7227" class="st3"/>
+			<text x="8.2" y="520.45" class="st4">FEM module</text>		</g>
+		<g id="shape1433-70" transform="translate(239.636,-504.361)">
+			<title>Sheet.1433</title>
+			<desc>Hardware</desc>
+			<rect x="0" y="505.486" width="58.5" height="22.7227" class="st3"/>
+			<text x="5.15" y="520.45" class="st4">Hardware</text>		</g>
+		<g id="shape1438-73" transform="translate(34.3802,-443.212)">
+			<title>Sheet.1438</title>
+			<path d="M0 528.21 L79.21 528.21" class="st5"/>
+		</g>
+		<g id="shape1439-79" transform="translate(39.6302,-478.136)">
+			<title>Sheet.1439</title>
+			<desc>configure LNA</desc>
+			<rect x="0" y="516.508" width="69.0178" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">configure LNA</text>		</g>
+		<g id="shape1440-82" transform="translate(39.6302,-466.786)">
+			<title>Sheet.1440</title>
+			<desc>time = 40 us</desc>
+			<rect x="0" y="516.508" width="69.0178" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">time = 40 us</text>		</g>
+		<g id="shape1441-85" transform="translate(39.6302,-455.436)">
+			<title>Sheet.1441</title>
+			<desc>timer=TIMER1</desc>
+			<rect x="0" y="516.508" width="69.0178" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">timer=TIMER1</text>		</g>
+		<g id="shape1442-88" transform="translate(39.6302,-444.087)">
+			<title>Sheet.1442</title>
+			<desc>event=rx_end</desc>
+			<rect x="0" y="516.508" width="69.0178" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">event=rx_end</text>		</g>
+		<g id="shape1447-91" transform="translate(128.957,-414.659)">
+			<title>Sheet.1447</title>
+			<desc>calculate timings</desc>
+			<rect x="0" y="516.508" width="78" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">calculate timings</text>		</g>
+		<g id="shape1450-94" transform="translate(121.392,-367.051) rotate(-0.405518)">
+			<title>Sheet.1450</title>
+			<path d="M0 528.21 L136.66 528.21" class="st5"/>
+		</g>
+		<g id="shape1451-99" transform="translate(128.957,-379.288)">
+			<title>Sheet.1451</title>
+			<desc>set TIMER1</desc>
+			<rect x="0" y="516.508" width="117" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">set TIMER1</text>		</g>
+		<g id="shape1452-102" transform="translate(128.957,-367.938)">
+			<title>Sheet.1452</title>
+			<desc>compare channels to 9us and 27us</desc>
+			<rect x="0" y="516.508" width="138.426" height="11.7" class="st9"/>
+			<text x="0" y="524.76" class="st10">compare channels to 9us and 27us</text>		</g>
+		<g id="shape1454-105" transform="translate(33.0961,-345.213) rotate(-0.139286)">
+			<title>Sheet.1454</title>
+			<path d="M0 528.21 L227.4 528.21" class="st5"/>
+		</g>
+		<g id="shape1455-110" transform="translate(39.6302,-346.089)">
+			<title>Sheet.1455</title>
+			<desc>start Rx</desc>
+			<rect x="0" y="516.508" width="78" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">start Rx</text>		</g>
+		<g id="shape1457-113" transform="translate(34.1035,-323.365) rotate(-0.0300095)">
+			<title>Sheet.1457</title>
+			<path d="M0 528.21 L227.39 528.21" class="st5"/>
+		</g>
+		<g id="shape1458-118" transform="translate(39.6302,-324.239)">
+			<title>Sheet.1458</title>
+			<desc>start TIMER1</desc>
+			<rect x="0" y="516.508" width="117" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">start TIMER1</text>		</g>
+		<g id="shape1459-121" transform="translate(90.4087,-296.732)">
+			<title>Sheet.1459</title>
+			<desc>Waiting for TIMER1 event</desc>
+			<rect x="0" y="518.308" width="118.816" height="9.9" class="st7"/>
+			<text x="0" y="526.26" class="st8">Waiting for TIMER1 event</text>		</g>
+		<g id="shape1464-124" transform="translate(203.13,-271.786)">
+			<title>Sheet.1464</title>
+			<desc>TIMER1 event</desc>
+			<rect x="0" y="516.508" width="65.6765" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">TIMER1 event</text>		</g>
+		<g id="shape1465-127" transform="translate(203.13,-260.436)">
+			<title>Sheet.1465</title>
+			<desc>deassert PDN</desc>
+			<rect x="0" y="516.508" width="65.6765" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">deassert PDN</text>		</g>
+		<g id="shape1471-130" transform="translate(203.13,-198.233)">
+			<title>Sheet.1471</title>
+			<desc>TIMER1 event</desc>
+			<rect x="0" y="516.508" width="65.6765" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">TIMER1 event</text>		</g>
+		<g id="shape1472-133" transform="translate(205.38,-186.884)">
+			<title>Sheet.1472</title>
+			<desc>activate LNA</desc>
+			<rect x="0" y="516.508" width="63.4265" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">activate LNA</text>		</g>
+		<g id="shape1473-136" transform="translate(128.957,-149.626)">
+			<title>Sheet.1473</title>
+			<desc>Rx operation</desc>
+			<rect x="0" y="518.308" width="63.4265" height="9.9" class="st7"/>
+			<text x="0" y="526.26" class="st8">Rx operation</text>		</g>
+		<g id="shape1475-139" transform="translate(34.3802,-123.806)">
+			<title>Sheet.1475</title>
+			<path d="M0 528.21 L227.71 528.21" class="st5"/>
+		</g>
+		<g id="shape1476-144" transform="translate(39.6302,-124.68)">
+			<title>Sheet.1476</title>
+			<desc>stop Rx</desc>
+			<rect x="0" y="516.508" width="68.25" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">stop Rx</text>		</g>
+		<g id="shape1481-147" transform="translate(196.38,-102.831)">
+			<title>Sheet.1481</title>
+			<desc>rx_end event</desc>
+			<rect x="0" y="516.508" width="117" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">rx_end event</text>		</g>
+		<g id="shape1482-150" transform="translate(196.38,-91.4812)">
+			<title>Sheet.1482</title>
+			<desc>deactivate LNA</desc>
+			<rect x="0" y="516.508" width="136.5" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">deactivate LNA</text>		</g>
+		<g id="shape1484-153" transform="translate(34.3802,-59.0072)">
+			<title>Sheet.1484</title>
+			<path d="M0 528.21 L83.71 528.21" class="st5"/>
+		</g>
+		<g id="shape1485-158" transform="translate(39.6302,-59.8816)">
+			<title>Sheet.1485</title>
+			<desc>deactivate FEM</desc>
+			<rect x="0" y="516.508" width="73.125" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">deactivate FEM</text>		</g>
+		<g id="shape1487-161" transform="translate(125.13,-37.1575)">
+			<title>Sheet.1487</title>
+			<path d="M0 528.21 L136.96 528.21" class="st5"/>
+		</g>
+		<g id="shape1488-166" transform="translate(128.957,-38.032)">
+			<title>Sheet.1488</title>
+			<desc>assert PDN</desc>
+			<rect x="0" y="516.508" width="97.5" height="11.7" class="st7"/>
+			<text x="0" y="525.36" class="st8">assert PDN</text>		</g>
+		<g id="shape1490-169" transform="translate(118.044,-412.166)">
+			<title>Dynamic connector</title>
+			<path d="M7.09 529.51 L50.45 529.51 L50.45 541.08 L14.13 541.08" class="st5"/>
+		</g>
+		<g id="shape1491-174" transform="translate(1.125,-1.125)">
+			<title>Sheet.1491</title>
+			<desc>Application</desc>
+			<rect x="0" y="505.486" width="66" height="22.7227" class="st3"/>
+			<text x="5.36" y="520.45" class="st4">Application</text>		</g>
+		<g id="shape1492-177" transform="translate(86.1302,-1.125)">
+			<title>Sheet.1492</title>
+			<desc>FEM module</desc>
+			<rect x="0" y="505.486" width="78" height="22.7227" class="st3"/>
+			<text x="8.2" y="520.45" class="st4">FEM module</text>		</g>
+		<g id="shape1493-180" transform="translate(239.88,-1.125)">
+			<title>Sheet.1493</title>
+			<desc>Hardware</desc>
+			<rect x="0" y="505.486" width="58.5" height="22.7227" class="st3"/>
+			<text x="5.15" y="520.45" class="st4">Hardware</text>		</g>
+		<g id="shape1494-183" transform="translate(90.4087,-224.294)">
+			<title>Sheet.1494</title>
+			<desc>Waiting for TIMER1 event</desc>
+			<rect x="0" y="518.308" width="118.816" height="9.9" class="st7"/>
+			<text x="0" y="526.26" class="st8">Waiting for TIMER1 event</text>		</g>
+		<g id="shape1495-186" transform="translate(261.72,-260.58)">
+			<title>Dynamic connector.1495</title>
+			<path d="M7.09 531.04 L-26.53 531.04 L-26.53 539.55 L0.05 539.55" class="st5"/>
+		</g>
+		<g id="shape1496-191" transform="translate(261.668,-186.412)">
+			<title>Dynamic connector.1496</title>
+			<path d="M7.09 531.04 L-26.53 531.04 L-26.53 539.55 L0.05 539.55" class="st5"/>
+		</g>
+		<g id="shape1497-196" transform="translate(262.044,-91.5094)">
+			<title>Dynamic connector.1497</title>
+			<path d="M7.09 531.04 L-26.85 531.04 L-26.85 539.55 L0.05 539.55" class="st5"/>
+		</g>
+	</g>
+</svg>
