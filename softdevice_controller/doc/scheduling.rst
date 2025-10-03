@@ -64,20 +64,20 @@ The following table summarizes the priorities.
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
    |                             | * Scanner in the synchronized state receiving auxiliary packets (``AUX_CHAIN_IND``)               |
    |                             | * Scanner in the synchronized state sending auxiliary packets (``AUX_SYNC_SUBEVENT_RSP``)         |
-   |                             | * Connectable Advertiser/Broadcaster which hasn't been able to send advertisements in a long time |
-   |                             | * Scanner with interval not equal to the scan window and which hasn't scanned for a full window   |
-   |                             |   in a long time                                                                                  |
+   |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
+   |                             | * Scanner which has been blocked for a long time                                                  |
+   |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
    |                             | * Connected Isochronous channel setup                                                             |
    |                             | * Connected Isochronous channels that are about to time out                                       |
    |                             | * Isochronous Broadcaster                                                                         |
-   |                             | * Synchronized Receiver receiving the first BN subevents of relevant BISes in a BIG event         |
+   |                             | * Synchronized Receiver in the synchronizing state                                                |
+   |                             | * Synchronized Receiver in the synchronized state where the synchronization is about to be lost   |
    |                             | * Synchronized Receiver receiving packets in a BIG control subevent                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
-   | Fourth priority             | * Scanner when the scan window is equal to the scan interval and the scanner has been able to     |
-   |                             |   run a timing-event at least once in the last couple of scan intervals.                          |
+   | Fourth priority             | * Scanner when the scan window is equal to the scan interval                                      |
    |                             | * Quality of Service channel survey                                                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Fifth priority              | * 802.15.4 radio driver                                                                           |
@@ -178,7 +178,7 @@ ACL connection timing
 
 ACL connection timing-events are scheduled every connection interval.
 Each connection event is allocated a window of length :math:`\mathsf{t_{event}}` for transmission and reception of packets.
-In the |NCS|, this time allocation is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`hci_vs_sdc_event_length_set`.
+In the |NCS|, this time allocation is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_event_length_set`.
 This allows the application to control the bandwidth of each link.
 If :ref:`Connection Event Length Extension <connection_timing_with_connection_event_length_extension>` is enabled, the time available for each connection event may be extended beyond the configured value.
 
@@ -340,10 +340,11 @@ Central and peripheral links can extend the event if there is radio time availab
 
 The connection event is the time within a timing-event reserved for sending or receiving packets.
 The |controller| can be configured to dynamically extend the connection event length to fit the maximum number of packets inside the connection event before the timing-event must be ended.
+The time is extended one packet pair at a time until the maximum extend time is reached.
+The connection event cannot be longer than the connection interval; when the interval is reached, the connection event ends and the next connection event begins.
+A connection event cannot be extended if it will collide with another timing-event, regardless of the priorities of the timing-events.
 In |NCS| connection event extension is enabled by default.
-By default, the connection event is extended as much as possible up to one connection interval.
-That is, either until the start of the next connection event, or another conflicting timing-event of equal or higher priority.
-It can be turned off by using the :kconfig:option:`CONFIG_BT_CTLR_SDC_CONN_EVENT_EXTEND_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`hci_vs_sdc_conn_event_extend`.
+It can be turned off using the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_conn_event_extend`.
 
 To get the maximum bandwidth on a single link, Connection Event Length Extension should be enabled and the connection interval should be increased.
 This will allow the |controller| to send more packets within the event and limit the overhead of processing between connection events.
@@ -360,21 +361,12 @@ Here :math:`\mathsf{C1}` can utilize the free time left by a previously disconne
 
    Multilink scheduling and Connection Event Length Extension
 
-Scanner and Initiator timing
-****************************
+Scanner timing
+**************
 
 Scanning is a periodic activity where the |controller| listens for packets from Advertisers.
-Initiating is a periodic activity where the |controller| tries to connect to an Advertiser by first listening for packets from an Advertiser.
-When the |controller| starts scanning or initiating, it will listen for packets on the primary advertising channels.
-If the |controller| is configured to accept extended advertising packets, and it receives a packet with a pointer to a secondary advertising channel, it will continue to listen on this secondary advertising channel to receive the auxiliary packet.
-
-The `Primary channel Scanner timing`_ and `Secondary channel Scanner timing`_ sections describe how scanner and initiator timing-events are scheduled.
-The sections only refer to scanner timing-events, but initiator timing-events are scheduled in the same way.
-
-  .. note::
-     The priority of scanner and initiator timing-events are different.
-     See :ref:`scheduling_priorities_table` for details.
-
+When the |controller| starts scanning, it will listen for packets on the primary advertising channels.
+If the |controller| is configured to accept extended advertising packets, and it receives a packet with a pointer to a secondary advertising channel, it will continue to scan on this channel to receive the auxiliary packet.
 
 Primary channel Scanner timing
 ==============================
@@ -418,16 +410,27 @@ In the following figure there is free time available between link timing-events,
 
    Scanner timing - always after connections
 
-The |controller| will avoid causing other timing-events to be dropped when scheduling new primary channel scanner timing-events.
-Other timing-events, such as advertising, may be interleaved with the scanning activity.
-Additionally, when the scan window is equal to the scan interval, the |controller| will always return to primary channel scanning after the interleaved timing-event.
+The following figure shows a Scanner with a long :math:`\mathsf{scanWindow}` which will cause some connection timing-events to be dropped.
+
+.. figure:: pic/schedule/scanner_timing_5_one_conn_long_window.svg
+   :alt: Alt text: A diagram showing the Scanner with one long connection causing packets to be dropped.
+   :align: center
+   :width: 80%
+
+   Scanner timing - one connection, long window
+
+Primary channel cooperative scanning
+------------------------------------
+
+When the sum of the scan windows is set equal to the scan interval, the |controller| will schedule new primary channel scanner timing-events cooperatively.
+This allows other timing-events, such as advertising, to be interleaved with the scanning activity.
 
 .. figure:: pic/schedule/scanner_timing_coop.svg
    :alt: Alt text: A diagram showing other timing activities interleaving primary channel scanning.
    :align: center
    :width: 80%
 
-   Scanner timing - primary channel scanning interleaved with other timing activities
+   Scanner timing - when window is equal to interval, scanning is cooperative
 
 Secondary channel Scanner timing
 ================================
@@ -475,27 +478,6 @@ Therefore, the Scanner cannot decide when the secondary scanning timing-events w
 
    Scanner timing - secondary scan timing-events will interleave with connections
 
-
-.. _concurrent_scanner_initiator_timing:
-
-Concurrent scanner and initiator timing
-=======================================
-
-When the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option is enabled, the application can run the scanner and initiator in parallel.
-The scanner and initiator timing-events will be combined or scheduled separately depending on the parameters provided when starting the scanner and initiator.
-When the timing-events are combined, each received packet is received and processed both by the scanner and initiator.
-When the timing-events are scheduled separately, only one of the roles is processing an incoming packet.
-
-The timing-events are combined only if all the following conditions are met:
-
- * The scanner is configured to run with a scan duration of 0 (without timeout).
- * The scanner and initiator are configured to scan on the same primary PHYs.
- * The scanner and initiator are configured to use the same own address type.
- * The scanner and initiator have the same scan interval configuration.
- * The scanner and initiator have the same scan window configuration.
-
-In most cases it is more efficient to have the timing-events combined, because then incoming packets will be processed by both roles.
-This means that the application should use parameters that meet the conditions outlined above, unless the specific use case dictates otherwise.
 
 Timing when synchronized to a periodic advertiser
 *************************************************
@@ -617,7 +599,7 @@ The duration of the periodic advertising event can be decreased by using the LE 
 See the :ref:`periodic_advertiser_timing` section for more information.
 
 The synchronized receiver may close a timing-event early in order to save energy.
-It can do this if it has received all payloads in a BIG event.
+It can do this if it has received all payloads in a BIG event 
 
 .. figure:: pic/schedule/broadcast_iso_timing.svg
    :alt: Alt text: Broadcast ISO channels timing
@@ -625,52 +607,6 @@ It can do this if it has received all payloads in a BIG event.
    :width: 80%
 
    Broadcast isochronous channels timing-events
-
-Channel Sounding timing
-***********************
-
-Channel Sounding timing-events are scheduled to occur at a static offset from the ACL anchor point, which is defined in Volume 6, Part B, Section 4.5.1 of the `Bluetooth Core Specification`_, as the start of the first packet in an ACL connection event.
-
-This static offset is selected by the |controller| and negotiated with the peer.
-Assuming the peer accepts the selection, the |controller| will select an offset that is smaller than the ACL interval, large enough to allow the exchange of a packet pair with the current ACL DLE configuration, and larger than the configured ACL event length.
-Therefore, the main approach for selecting the Channel Sounding offset is to use the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or the vendor-specific HCI command defined by the :c:func:`hci_vs_sdc_event_length_set` function.
-
-Furthermore, the Channel Sounding timing-activity will occupy time based on the subevent length negotiated by the controllers.
-The subevent length can be suggested by the host using the Min_Subevent_Len and Max_Subevent_Len parameters of the ``LE CS Set Procedure Parameters`` HCI command.
-
-The controller will also reserve up to about 0.5 ms before each subevent, as well as reserve time for window widening equivalent to up to 1000 ppm (0.1%) of the static offset.
-Therefore, the ACL parameters may need to reserve space for these overheads in order to avoid conflicts with the Channel Sounding timing-activity.
-
-See the figure below for an example.
-
-.. figure:: pic/schedule/channel_sounding_offset_selection.svg
-   :alt: Alt text: Channel Sounding timing
-   :align: center
-   :width: 80%
-
-   Channel Sounding timing-events
-
-Care must be taken when selecting the ACL event spacing and ACL interval, if multiple links are to be used.
-The ACL event spacing must allow sufficient time for the CS timing-activity, as shown in the figure below.
-
-.. figure:: pic/schedule/channel_sounding_multiple_links.svg
-   :alt: Alt text: Channel Sounding timing with multiple centrals
-   :align: center
-   :width: 80%
-
-   Channel Sounding timing-events with multiple centrals
-
-When using both connected isochronous channels and Channel Sounding simultaneously, the considerations discussed above and in the :ref:`scheduling_of_connected_iso` section still apply.
-However, since both are defined relative to the timing-events of the ACL connection, they can easily conflict.
-The simplest way to avoid conflicts between these timing-activities is to use the :kconfig:option:`CONFIG_BT_CTLR_SDC_CIG_RESERVED_TIME_US` kconfig option, or the vendor-specific HCI command defined by the :c:func:`sdc_hci_cmd_vs_cig_reserved_time_set` function, to reserve time within the ISO interval for the Channel Sounding timing-activity.
-This is easiest to achieve if the ISO interval is equal to or a multiple of the ACL interval, as shown below.
-
-.. figure:: pic/schedule/channel_sounding_multiple_links_plus_iso.svg
-   :alt: Alt text: Channel Sounding timing with connected ISO
-   :align: center
-   :width: 80%
-
-   Channel Sounding timing-events with ISO streams on multiple connections
 
 Timeslot API timing
 *******************
@@ -703,7 +639,7 @@ Scanner, observer, and initiator events can therefore cause connection packets t
 To reduce the chance of colliding connections, configure all connection intervals to have a common factor.
 This common factor should be greater than or equal to :math:`\mathsf{\sum{t_{event-Cx}}}`.
 For example, for eight connections with an event length of 2.5 ms, the lowest recommended connection interval is 20 ms.
-This means all connections would then have a connection interval of 20 ms or a multiple of 20 ms, such as 40 ms or 60 ms.
+This means all connections would then have a connection interval of 20 ms or a multiple of 20 ms, such as 40 ms, 60 ms, and so on.
 
 To summarize, when only Central roles are running, all central role intervals (such as connection interval and Scanner interval) should have a common factor.
 This common factor should be greater than or equal to :math:`\mathsf{\sum{t_{event-Cx}} + scanWindow}`.

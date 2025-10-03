@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <mdk/compiler_abstraction.h>
+#include <cmsis_compiler.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -49,7 +49,7 @@ enum sdc_hci_opcode_ip
  *
  * See Core_v5.4, Vol 2, Part C, Section 3.3
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint8_t slot3_packets : 1;
     uint8_t slot5_packets : 1;
@@ -119,7 +119,7 @@ typedef struct __PACKED __ALIGN(1)
  *
  * See Core_v5.4, Vol 4, Part E, Section 6.27
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint8_t hci_inquiry : 1;
     uint8_t hci_inquiry_cancel : 1;
@@ -219,8 +219,8 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t previously_used_11_7 : 1;
     uint8_t previously_used_12_0 : 1;
     uint8_t hci_set_afh_host_channel_classification : 1;
-    uint8_t hci_le_cs_read_remote_fae_table : 1;
-    uint8_t hci_le_cs_write_cached_remote_fae_table : 1;
+    uint8_t rfu_12_2 : 1;
+    uint8_t rfu_12_3 : 1;
     uint8_t hci_read_inquiry_scan_type : 1;
     uint8_t hci_write_inquiry_scan_type : 1;
     uint8_t hci_read_inquiry_mode : 1;
@@ -251,12 +251,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_read_clock : 1;
     uint8_t hci_read_loopback_mode : 1;
     uint8_t hci_write_loopback_mode : 1;
-    uint8_t hci_enable_implementation_under_test_mode : 1;
+    uint8_t hci_enable_device_under_test_mode : 1;
     uint8_t hci_setup_synchronous_connection_request : 1;
     uint8_t hci_accept_synchronous_connection_request : 1;
     uint8_t hci_reject_synchronous_connection_request : 1;
-    uint8_t hci_le_cs_create_config : 1;
-    uint8_t hci_le_cs_remove_config : 1;
+    uint8_t rfu_16_6 : 1;
+    uint8_t rfu_16_7 : 1;
     uint8_t hci_read_extended_inquiry_response : 1;
     uint8_t hci_write_extended_inquiry_response : 1;
     uint8_t hci_refresh_encryption_key : 1;
@@ -286,9 +286,9 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_send_keypress_notification : 1;
     uint8_t hci_io_capability_request_negative_reply : 1;
     uint8_t hci_read_encryption_key_size : 1;
-    uint8_t hci_le_cs_read_local_supported_capabilities : 1;
-    uint8_t hci_le_cs_read_remote_supported_capabilities : 1;
-    uint8_t hci_le_cs_write_cached_remote_supported_capabilities : 1;
+    uint8_t rfu_20_5 : 1;
+    uint8_t rfu_20_6 : 1;
+    uint8_t rfu_20_7 : 1;
     uint8_t previously_used_21_0 : 1;
     uint8_t previously_used_21_1 : 1;
     uint8_t previously_used_21_2 : 1;
@@ -308,19 +308,19 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_read_flow_control_mode : 1;
     uint8_t hci_write_flow_control_mode : 1;
     uint8_t hci_read_data_block_size : 1;
-    uint8_t hci_le_cs_test : 1;
-    uint8_t hci_le_cs_test_end : 1;
+    uint8_t rfu_23_3 : 1;
+    uint8_t rfu_23_4 : 1;
     uint8_t previously_used_23_5 : 1;
     uint8_t previously_used_23_6 : 1;
     uint8_t previously_used_23_7 : 1;
     uint8_t hci_read_enhanced_transmit_power_level : 1;
-    uint8_t hci_le_cs_security_enable : 1;
+    uint8_t rfu_24_1 : 1;
     uint8_t previously_used_24_2 : 1;
     uint8_t previously_used_24_3 : 1;
     uint8_t previously_used_24_4 : 1;
     uint8_t hci_read_le_host_support : 1;
     uint8_t hci_write_le_host_support : 1;
-    uint8_t hci_le_cs_set_default_settings : 1;
+    uint8_t rfu_24_7 : 1;
     uint8_t hci_le_set_event_mask : 1;
     uint8_t hci_le_read_buffer_size_v1 : 1;
     uint8_t hci_le_read_local_supported_features : 1;
@@ -352,10 +352,10 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_receiver_test_v1 : 1;
     uint8_t hci_le_transmitter_test_v1 : 1;
     uint8_t hci_le_test_end : 1;
-    uint8_t hci_le_enable_monitoring_advertisers : 1;
-    uint8_t hci_le_cs_set_channel_classification : 1;
-    uint8_t hci_le_cs_set_procedure_parameters : 1;
-    uint8_t hci_le_cs_procedure_enable : 1;
+    uint8_t rfu_28_7 : 1;
+    uint8_t rfu_29_0 : 1;
+    uint8_t rfu_29_1 : 1;
+    uint8_t rfu_29_2 : 1;
     uint8_t hci_enhanced_setup_synchronous_connection : 1;
     uint8_t hci_enhanced_accept_synchronous_connection : 1;
     uint8_t hci_read_local_supported_codecs : 1;
@@ -492,21 +492,19 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_set_default_subrate_command : 1;
     uint8_t hci_le_subrate_request_command : 1;
     uint8_t hci_le_set_extended_advertising_parameters_v2 : 1;
-    uint8_t hci_le_set_decision_data : 1;
-    uint8_t hci_le_set_decision_instructions : 1;
+    uint8_t rfu_46_3 : 1;
+    uint8_t rfu_46_4 : 1;
     uint8_t hci_le_set_periodic_advertising_subevent_data : 1;
     uint8_t hci_le_set_periodic_advertising_response_data : 1;
     uint8_t hci_le_set_periodic_sync_subevent : 1;
     uint8_t hci_le_extended_create_connection_v2 : 1;
     uint8_t hci_le_set_periodic_advertising_parameters_v2 : 1;
-    uint8_t hci_le_read_all_local_supported_features : 1;
-    uint8_t hci_le_read_all_remote_features : 1;
-    uint8_t hci_le_set_host_feature_v2 : 1;
-    uint8_t hci_le_add_device_to_monitored_advertisers_list : 1;
-    uint8_t hci_le_remove_device_from_monitored_advertisers_list : 1;
-    uint8_t hci_le_clear_monitored_advertisers_list : 1;
-    uint8_t hci_le_read_monitored_advertisers_list_size : 1;
-    uint8_t hci_le_frame_space_update : 1;
+    uint8_t rfu_47_2 : 1;
+    uint8_t rfu_47_3 : 1;
+    uint8_t rfu_47_4 : 1;
+    uint8_t rfu_47_5 : 1;
+    uint8_t rfu_47_6 : 1;
+    uint8_t rfu_47_7 : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -517,7 +515,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 
 /** @brief Read Local Version Information return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint8_t hci_version;
     uint16_t hci_subversion;
@@ -527,21 +525,21 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_ip_read_local_version_information_return_t;
 
 /** @brief Read Local Supported Commands return parameter(s). */
-typedef union __PACKED __ALIGN(1)
+typedef __PACKED_UNION
 {
     sdc_hci_ip_supported_commands_t params;
     uint8_t raw[64];
 } sdc_hci_cmd_ip_read_local_supported_commands_return_t;
 
 /** @brief Read Local Supported Features return parameter(s). */
-typedef union __PACKED __ALIGN(1)
+typedef __PACKED_UNION
 {
     sdc_hci_ip_lmp_features_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_ip_read_local_supported_features_return_t;
 
 /** @brief Read BD_ADDR return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint8_t bd_addr[6];
 } sdc_hci_cmd_ip_read_bd_addr_return_t;
@@ -554,14 +552,15 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v5.4,
  * Vol 4, Part E, Section 7.4.1
  *
- * This command reads the values for the version information for the local Controller.
+ * This command reads the values for the version information for the local
+ * Controller.
  *
- * The HCI_Version information defines the version information of the HCI layer. The
- * LMP_Version information defines the version of the LMP. The Company_Identifier
- * information indicates the manufacturer of the local device.
+ * The HCI_Version information defines the version information of the HCI layer.
+ * The LMP_Version information defines the version of the LMP. The
+ * Company_Identifier information indicates the manufacturer of the local device.
  *
  * The HCI_Subversion and LMP_Subversion are vendor-specific.
  *
@@ -579,18 +578,20 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v5.4,
  * Vol 4, Part E, Section 7.4.2
  *
- * This command reads the list of HCI commands supported for the local Controller.
+ * This command reads the list of HCI commands supported for the local
+ * Controller.
  *
- * This command shall return the Supported_Commands configuration parameter.
+ * This command shall return the Supported_Commands configuration
+ * parameter.
  *
  * See Section 6.27 for more information.
  *
  * Event(s) generated (unless masked away):
- * When the HCI_Read_Local_Supported_Commands command has completed, an
- * HCI_Command_Complete event shall be generated.
+ * When the HCI_Read_Local_Supported_Commands command has completed,
+ * an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
  *
@@ -602,16 +603,16 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v5.4,
  * Vol 4, Part E, Section 7.4.3
  *
- * This command requests a list of the supported features for the local BR/EDR Controller.
- * This command will return a list of the LMP features. For details see [Vol 2] Part C,
- * Section 3.2.
+ * This command requests a list of the supported features for the local BR/EDR
+ * Controller. This command will return a list of the LMP features. For details see
+ * [Vol 2] Part C, Link Manager Protocol Specification.
  *
  * Event(s) generated (unless masked away):
- * When the HCI_Read_Local_Supported_Features command has completed, an
- * HCI_Command_Complete event shall be generated.
+ * When the HCI_Read_Local_Supported_Features command has completed,
+ * an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
  *
@@ -623,17 +624,18 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v5.4,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address
  * (BD_ADDR). (See [Vol 2] Part B, Section 1.2 and [Vol 3] Part C, Section 3.2.1).
  *
- * On an LE Controller, this command shall read the Public Device Address as defined in
- * [Vol 6] Part B, Section 1.3. If this Controller does not have a Public Device Address, the
- * value 0x000000000000 shall be returned.
+ * On an LE Controller, this command shall read the Public Device Address as
+ * defined in [Vol 6] Part B, Section 1.3. If this Controller does not have a Public
+ * Device Address, the value 0x000000000000 shall be returned.
  *
- * On a BR/EDR/LE Controller, the public address shall be the same as the BD_ADDR.
+ * On a BR/EDR/LE Controller, the public address shall be the same as the
+ * BD_ADDR.
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Read_BD_ADDR command has completed, an

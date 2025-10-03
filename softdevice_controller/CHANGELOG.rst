@@ -9,394 +9,19 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v2.6.4-DRGN-25465-branch
+****************************************
 
-Bug fixes
-=========
-
-* Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
-* Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
-* Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
+All the notable changes included in the |NCS| v2.6.4-DRGN-25465 release are documented in this section.
 
 Changes
 =======
 
-* The sdc_support_* functions now return void.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
-* The Channel Sounding antenna switch callback must now be set with :c:func:`sdc_cs_antenna_switch_callback_set` instead of :c:func:`sdc_support_channel_sounding` when using multiple antennas.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
-
-nRF Connect SDK v3.1.0
-**********************
-
-Added
-=====
-
-* Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
-* Support for generating paEventCounter reports using the VS Enable Periodic Advertising Event Counter Reports command (DRGN-25444).
-* The :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` functions, which can reduce the NVM usage of Channel Sounding by removing support for the Initiator or Reflector role (DRGN-23607).
-
-Bug fixes
-=========
-
-* Fixed a rare issue where the controller would assert when scanning and initiating simultaneously. (DRGN-25478)
-
-  The issue would only happen if all the following conditions are met:
-
-    * The scan interval and scan window used by the initiator were not equal to those used by the scanner.
-    * The Bluetooth host temporarily stopped pulling HCI events.
-    * The initiator received a connectable ``ADV_EXT_IND``.
-
-* Fixed an issue where mode-0 steps in a Channel Sounding subevent would compensate for a random frequency actuation error when using the LE CS Test HCI command (DRGN-25522).
-* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
-* Fixed an issue where the controller could assert when receiving on the Coded PHY over an ACL connection.
-  This would occur when coding indicator or length byte was corrupted, causing the controller to listen for more than 27 bytes on S8 Coded PHY. (DRGN-24930)
-* Fixed a rare issue where the controller could stop responding when using coexistence interfaces with the SoftDevice Controller on nRF52 or nRF53 Series devices. (DRGN-25846)
-* Fixed a rare issue where the controller acting as a central would cause the link to time out.
-  This would occur when a connection subrate factor greater than ``1`` was used, and a conflicting scheduling activity was running. (DRGN-25801)
-* Fixed an issue where the controller would stop generating advertising reports while running an extended scanner. (DRGN-25859)
-
-Changes
-=======
-
-* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x0F`` to indicate compatibility with Bluetooth Core Specification v6.1 (DRGN-25531).
-* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
-  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
-  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
-  This reverts the changes done by DRGN-21085. (DRGN-24882)
-* The packets received on Coded PHY with reserved for future use (RFU) values in the coding indicator (CI) field are now treated as CRC errors.
-  This would occur when the CI field is corrupted in noisy environments, causing the controller to decode at an incorrect rate. (DRGN-25037)
-* ISO SDUs up to 1255 bytes are now supported for isochronous channels. (DRGN-25316)
-* The controller now supports T_IP1 times 30 µs or greater. (DRGN-26241)
-
-nRF Connect SDK v3.0.1
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller would assert when terminating a connection created from PAwR.
-  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled. (DRGN-25200)
-
-nRF Connect SDK v3.0.0
-**********************
-
-Added
-=====
-
-* Support generating the HCI LE CIS Established v2 event. (DRGN-24112)
-* Support for the Advertising Coding Selection feature as an advertiser or scanner. (DRGN-23744)
-
-  * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
-  * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
-* Support for multiple packet pairs in an ACL event when using LLPM mode. (DRGN-16157)
-
-Changes
-=======
-
-* The Channel Sounding feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-24060)
-* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands.
-  This behavior was changed to accommodate ES-27170. (DRGN-24660)
-* The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
-* Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
-* Reduced latency when changing the list of subevents to which a Periodic Advertising with Responses Scanner is synchronized. (DRGN-24543)
-* A CIS peripheral will now reject an invalid ``LL_CIS_REQ`` if one of the following condition is met:
-
-  * ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` is less than 255 µs.
-  * ``ISO_Interval`` is not an integer multiple of ``SDU_Interval_C_To_P`` or ``SDU_Interval_P_To_C`` when unframed PDU is used.
-  * ``BN_C_To_P`` or ``BN_P_To_C`` is smaller than the value required by the configuration when an unframed PDU is used.
-
-  This only applies when the burst number (BN) in the corresponding direction (``BN_C_To_P`` or ``BN_P_To_C``) is non-zero. (DRGN-23304)
-
-Bug fixes
-=========
-
-* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
-* Fixed an issue where the controller would fail to synchronize with a BIS Broadcaster. (DRGN-24670)
-
-  This would occur when the Broadcaster has set ``Num_Bis=1``, ``NSE > 1``, and ``Sub_Interval == BIS_Spacing``.
-  Previously, the controller would raise the LE BIG Sync Established event with status set to ``Unsupported Feature or Parameter value (0x11)``.
-* Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
-* Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
-
-  The issue would only happen if all the following conditions are met:
-
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
-    * :kconfig:option:`BT_CTLR_SDC_SCAN_BUFFER_COUNT` is set to the non-default value 2.
-    * The initiator has received a connectable ``ADV_EXT_IND``.
-    * The initiator is canceled.
-* Fixed an issue where the central device would disconnect 40 s after responding to a ``LL_SUBRATE_REQ`` with reason ``LMP Response Timeout (0x22)``.
-  This would only occur on nRF52 Series and nRF53 Series devices. (DRGN-24310)
-* Fixed a very rare issue where the scanner would assert, hang or stop producing reports when scanning and initiating at the same time. (DRGN-24370)
-
-  The issue would only happen if all the following conditions are met:
-
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
-    * The timing events are not combined for the scanner and the initiator.
-    * The initiator is canceled or the scanner is stopped after receiving an extended advertising PDU pointing to a AUX_ADV_IND or AUX_CHAIN_IND PDU, but the AUX_ADV_IND or AUX_CHAIN_IND PDU was not received yet.
-      The issue may also occur if the reception of the AUX_ADV_IND or AUX_CHAIN_IND fails to be scheduled.
-
-    See :ref:`concurrent_scanner_initiator_timing` for information on how to select parameters where the timing events are combined.
-* Fixed a rare issue where the scanner would fail to receive a secondary channel packet. (DRGN-24300)
-
-  The issue would only happen if all the conditions are met:
-
-    * The configured scan window is larger than 500 milliseconds.
-    * The ``ADV_EXT_IND`` is received at the very end of the scan window.
-* Fixed an issue where the CIS peripheral would not be able to receive after the first subevent.
-  This would only happen if the subevent interval is large or if the CIS is configured with interleaved packing. (DRGN-24359)
-* Fixed an issue where the CIS peripheral would report wrong SDU sequence numbers upon receiving. (DRGN-24359)
-
-  The issue would only happen if all the following conditions are met:
-
-    * The subevent interval is large, or if the CIS is configured with interleaved packing.
-    * There are scheduling conflicts.
-* Fixed an issue where an application running on a nRF54L Series device would sometimes fail to receive an ACL packet after it had sent a packet on Coded PHY with S=2.
-  The issue would only happen when the application explicitly asked to use the coding scheme S=2. (DRGN-23691)
-* Fixed an issue where a CIS Peripheral would assert when receiving an invalid ``LL_CIS_REQ``.
-  This would only happen if unframed PDUs were used. (DRGN-24706)
-* Fixed a rare issue where the controller would assert when in a connection. (DRGN-24749)
-
-  The issue would only happen if all the following conditions are met:
-
-    * A feature requiring long control packets is enabled, for example, CIS, Sync Transfer, or Channel Sounding.
-    * A short event length is used.
-    * The data length is not updated
-* Fixed an issue where the central would disconnect without sending a ``LL_TERMINATE_IND`` when the user sent the Disconnect HCI command.
-  This issue occurred when the central was blocked by another higher-priority role for extended periods. (DRGN-24784)
-* Fixed a rare assert when stopping a CIG or BIG.
-  This issue would only occur when another CIG or BIG role was active at the same time. (DRGN-24938)
-* Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
-  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection.
-  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled. (DRGN-24929)
-
-nRF Connect SDK v2.9.2
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue where disconnect could happen if multiple peripheral links were active and encrypted. (DRGN-24784)
-* Fixed a rare issue where the controller running on an nRF54 Series device would send a corrupted packet with a valid CRC.
-  This could lead to sending a packet with an invalid MIC in the case of an encrypted connection. (DRGN-24929)
-  The issue would occur if the :kconfig:option:`CONFIG_FPU` and :kconfig:option:`CONFIG_FPU_SHARING` Kconfig options are enabled.
-
-nRF Connect SDK v2.9.0
-**********************
-
-Added
-=====
-
-* Production support for scanning and initiating at the same time. (DRGN-23824)
-* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding step mode-3.
-* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding multiple antenna elements.
-* :ref:`Experimental <nrf:software_maturity>` support for the following Channel Sounding HCI commands:
-
-    * LE CS Write Cached Remote Supported Capabilities
-    * LE CS Write Cached Remote FAE Table
-    * LE CS Remove Config
-
-Changes
-=======
-
-* The vendor-specific Set Connection Event Trigger HCI command has been removed. (DRGN-23981)
-* The documentation for the vendor-specific ISO Read TX Timestamp command has been updated to represent the returned value. (DRGN-23708)
-
-Bug fixes
-=========
-
-* Fixed an issue where the CIS central running on an nRF53 Series device could set an invalid MIC when sending encrypted ISO packets. (DRGN-23776)
-* Fixed a rare issue where the scanner may give a single advertising report with corrupted data when restarting scanning.
-  The issue would only happen when the scanner received a long extended advertising packet that did not fit into a single advertising report and the scanning was stopped explicitly or through a timeout. (DRGN-23966)
-* Fixed an issue where the CIS TX Power was set according to the LE Power Control state of the previous CIS in a CIG. (DRGN-21721)
-* Fixed an issue where the BIS receiver running with FEM could enable the radio at the wrong time, causing the receiver to drop packets and lose sync. (DRGN-23891)
-* Fixed an issue where the controller would raise Number Of Completed Packets events for a disconnected CIS. (DRGN-23869)
-
-nRF Connect SDK v2.8.0
-**********************
-
-Added
-=====
-
-* Production support for the nRF54L Series. (DRGN-23325)
-* Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
-* Support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command.
-  When enabled, one report is generated when the anchor point of a connection is updated.
-  This information can be used to synchronize two applications running on a central and a peripheral device. (DRGN-22662)
-* Vendor-specific command for triggering a peripheral task at the start of a radio event.
-  See :c:func:`sdc_hci_cmd_vs_set_event_start_task`. (DRGN-20737)
-* Support for the LE Set Default Subrate and LE Subrate Request HCI commands. (DRGN-19745)
-* Support for ISO broadcaster handles in the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` and :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` commands (DRGN-23441).
-* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding (CS) on nRF54L Series devices.
-  Currently, the |controller| only supports one subevent per event.
-  The following HCI commands are now supported:
-
-    * LE CS Read Local Supported Capabilities
-    * LE CS Read Remote Supported Capabilities
-    * LE CS Security Enable
-    * LE CS Set Default Settings
-    * LE CS Read Remote FAE Table
-    * LE CS Create Config
-    * LE CS Set Channel Classification
-    * LE CS Set Procedure Parameters
-    * LE CS Procedure Enable
-    * LE CS Test
-    * LE CS Test End
-
-* The defines :c:macro:`SDC_PPI_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPI_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC10_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC00_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC020_CHANNELS_USED_MASK`, and :c:macro:`SDC_DPPIC030_CHANNELS_USED_MASK`.
-  These represent the PPI resources used in the SoftDevice Controller.
-* The defines :c:macro:`SDC_PPIB00_CHANNELS_USED_MASK`, :c:macro:`SDC_PPIB10_CHANNELS_USED_MASK`, :c:macro:`SDC_PPIB020_CHANNELS_USED_MASK`, and :c:macro:`SDC_PPIB030_CHANNELS_USED_MASK`.
-  These represent the PPIB resources used in the SoftDevice Controller.
-
-Changes
-=======
-
-* Removed support for running the SoftDevice Controller on the nRF54L15 PDK v0.7.0 and earlier. (DRGN-23325)
-* Removed support for running the SoftDevice Controller on the Engineering A revision of the nRF54H20 SoC. (DRGN-23325)
-* The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x0E`` to indicate compatibility with Bluetooth Core Specification v6.0 (DRGN-23211).
-* The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
-* The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
-* The vendor-specific Set Connection Event Trigger command has been deprecated.
-  Users interested in similar functionality are encouraged to use the VS Set Event Start Task command instead. (DRGN-20737)
-* Extended Connection Events are not re-enabled on HCI Reset.
-  The state before HCI Reset is preserved, either the value of :kconfig:option:`CONFIG_BT_CTLR_SDC_CONN_EVENT_EXTEND_DEFAULT` or the most recent call to :c:func:`sdc_hci_cmd_vs_conn_event_extend`. (DRGN-22687)
-* The paths to the library files for SoftDevice Controller and MPSL were changed to use the device family. (DRGN-21939)
-
-    * ``cortex-m4`` changed to ``nrf52``
-    * ``cortex-m33+nodsp`` changed to ``nrf53``
-    * ``nrf54l15_cpuapp`` changed to ``nrf54l``
-    * ``nrf54h20_cpurad`` changed to ``nrf54h``
-* For a Synchronized Receiver, the priority of the first ``BN`` subevents of relevant BISes in a BIG event now have an elevated priority.
-  This should improve reliability of ISO data being received by a Synchronized Receiver running alongside a role of lower priority.
-  For more details, see the :ref:`scheduling_priorities_table` table.
-* The SoftDevice Controller can now utilize more than 64K of memory buffer passed to :c:func:`sdc_enable`. (DRGN-22067)
-* If LE Power Control is not being used, the TX power of CISes is now the same as for the corresponding ACL connection. (DRGN-23291)
-* Generating the Number of Completed Packets event is now prioritized above all other events.
-  The event is generated irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
-* When a link disconnects, the controller will now raise one or more Number Of Completed Packets events for data packets not ACKed by the peer device. (DRGN-23302)
-* Isochronous roles may now produce HCI ISO data with SDUs containing the ``0b01`` packet status flag which indicates possibly invalid data.
-  This is the case if the peer sends invalid data. (DRGN-23420)
-
-Bug fixes
-=========
-
-* Fixed a rare assert that could happen when disabling a periodic advertising set with responses. (DRGN-22443)
-* Fixed an issue where the length byte of the HCI packet could be incorrect.
-  This could happen when the packet contained an LE BIG Sync Established event or LE BIG Complete event with status not equal to success. (DRGN-22441)
-* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY.
-  This issue was present in v2.6 and v2.7 releases. (DRGN-22652)
-* Fixed an issue where the extended scanner would not generate a truncated advertising report after the coexistence interface aborted the reception of an ``AUX_CHAIN_IND`` packet. (DRGN-22686)
-* Fixed a very rare issue where the controller stopped generating advertising reports.
-  On nRF52 Series and nRF53 Series devices, this would happen at least one hour after the scanner started.
-  On nRF54L and nRF54H Series devices, this would occur immediately after the scanner started. (DRGN-22678)
-
-  It would only happen when one of the following applies:
-
-    * There was another central-like scheduling activity running. Examples of roles with such activities are the ACL central, periodic advertiser, isochronous broadcaster and the CIS central.
-      This activity was configured with an event length or event spacing equal or greater than the scan interval.
-      This is typically only true for use cases where the application enables isochronous channels or uses very short scan windows.
-    * The scanner was configured with scan window equal to scan interval (continuous scanning).
-    * The central-like scheduling activity required less than 1 ms to complete at the point in time where the scanner started.
-* Fixed a rare issue where the scanner would be stuck in the synchronizing state after failing to receive an ``AUX_ADV_IND`` packet.
-  This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, private address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
-* Fixed an issue where the controller could generate the LE Advertising Set Terminated event one event sooner than expected. (DRGN-22705)
-
-  This could only happen when all of the following apply:
-
-    * a non-zero Max_Extended_Advertising_Events parameter was used in the LE Set Extended Advertising Enable command.
-    * other ongoing activities in the controller prevented the first advertising event from taking place when the advertising set was created.
-* Fixed an issue where calling the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` function without the LE Power Control feature enabled could cause the controller to de-reference a NULL pointer. (DRGN-22930)
-* Fixed an issue where the Central failed to receive the last packet in an isochronous event.
-  This could only happen if the Connected Isochronous Stream Creation procedure was initiated by the host before the Encryption Start procedure completed. (DRGN-22879)
-* Fixed an assert that could happen when using the coexistence interface. (DRGN-23002)
-
-  This could happen when any of the following controller activities were ongoing:
-
-    * Isochronous Broadcaster
-    * Connected Isochronous channel in the peripheral role
-    * Periodic Sync with Responses
-* Fixed an issue where LE Power Control was not being used for CISes which are not the first CIS in a CIG. (DRGN-23291)
-* Fixed an issue where the SoftDevice Controller in the peripheral role could terminate a connection due to a MIC failure during a valid encryption start procedure.
-  This could only happen if the ``LL_ENC_RSP`` packet was corrupted due to on-air interference. (DRGN-23204)
-* Fixed an issue where received unframed Isochronous SDUs were not reported to be a SDU interval apart.
-  This could happen when the ISO interval is greater than the SDU interval and multiple SDUs can be received in a single ISO interval. (DRGN-23586)
-* Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
-* Fixed a rare issue in the controller that could lead to a bus fault. (DRGN-22036)
-
-  This could only happen when all of the following conditions were met:
-
-    * The host was too slow at pulling HCI events.
-    * One or more HCI events had been masked in the controller.
-    * The controller was raising ACL or ISO data to the host.
-
-nRF Connect SDK v2.7.0
-**********************
-
-Added
-=====
-
-* Experimental support for scanning and initiating at the same time. (DRGN-19050)
-* Vendor-specific HCI command to set the channel map for scanning and initiating.
-  See :c:func:`sdc_hci_cmd_vs_scan_channel_map_set` (DRGN-19730).
-* Vendor-specific HCI command to configure the scanner and initiator to either accept or reject extended advertising packets.
-  See :c:func:`sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set` (DRGN-21755).
-* Vendor-specific HCI command to change the scheduling priorities.
-  Currently, this only supports changing the priority of initiator activities on the auxiliary channels.
-  Note that unless documented otherwise, any non-default priorities are not tested.
-  This means that there is no guarantee that the controller works as intended when non-tested priorities are used.
-  See :c:func:`sdc_hci_cmd_vs_set_role_priority` (DRGN-21226).
-
-Changes
-=======
-
-* The |controller| will now schedule all scanner primary channel timing-events cooperatively even when the sum of the scan windows is less than the scan interval.
-  If the |controller| is unable to schedule a full scan window for a long time, the scheduling priority will be raised to ensure a full window is scheduled.
-
-  Generally, this change will result in either increased scanning time, or similar scanning time to before.
-  In cases where there are many conflicting activities within the scan window, this change may result in reduced scanning time. (DRGN-19050)
-* Scan windows are no longer limited to 16 seconds. (DRGN-19050)
-* The deprecated structure members ``sdc_rand_source_t.rand_prio_low_get`` and ``sdc_rand_source_t.rand_prio_high_get`` have been removed.
-  This change does not affect applications developed in the |NCS| context. (DRGN-20473)
-* The HCI commands used to configure a scanner or initiator no longer return ``BT_HCI_ERR_INVALID_PARAM`` when the sum of scan windows is greater than the scan interval.
-  Now the controller will truncate the scan windows so that the sum of the windows fit within the scan interval. (DRGN-21710)
-* The vendor-specific Set Connection Event Trigger command can now be used with advertising sets. (DRGN-21665)
-* The application can now configure the amount of RAM allocated for the RX ISO SDUs.
-  The |controller| now uses the field ``rx_sdu_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t``.
-  The macro :c:macro:`SDC_MEM_ISO_RX_SDU_POOL_SIZE` has been changed to take the maximum RX SDU size as an input.
-  This change does not affect applications developed in the |NCS| context. (DRGN-21650)
-* The application can now configure the amount of RAM allocated for the TX ISO SDUs.
-  The fields ``tx_sdu_buffer_count`` and ``tx_sdu_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t`` are added.
-  The fields ``tx_hci_buffer_count`` and ``tx_hci_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t`` are removed.
-  The macros :c:macro:`SDC_MEM_ISO_TX_PDU_POOL_SIZE` and :c:macro:`SDC_MEM_ISO_TX_SDU_POOL_SIZE` replace :c:macro:`SDC_MEM_ISO_TX_POOL_SIZE`.
-  This change does not affect applications developed in the |NCS| context. (DRGN-21650)
-* The function :c:func:`sdc_soc_ecb_block_encrypt` has been removed.
-  Using :file:`mpsl_ecb.h` is now recommended instead. (DRGN-21603)
+* Enabled the LE Power Class 1 feature support bit in the controller.
 * The ability to configure a periodic advertiser with subevents but without response slots has been removed.
   This is due to an errata to the Bluetooth Core Specification v5.4 no longer allowing this configuration. (DRGN-22189)
-
-Bug fixes
-=========
-
-* Fixed an issue where an assert could happen if an initiator ran for more than 2147 seconds before connecting (DRGN-22163).
-* Fixed an extremely rare race condition where using :c:func:`sdc_soc_ecb_block_encrypt` from an ISR could lead to encryption failures. (DRGN-21603)
-* Fixed an issue where the vendor-specific ISO Read TX Timestamp command returned a timestamp that was 41 µs too small (DRGN-21605).
-* Fixed an issue where an assert could happen if a CIS peripheral stopped receiving packets from the CIS central.
-  This would only occur after the window widening reached at least half of the ISO interval in magnitude.
-  Assuming worst case clock accuracies on both central and peripheral, this would correspond to 2.4, 3.7, and 4.9 seconds for ISO intervals of 5 ms, 7.5 ms, and 10 ms.
-  This issue would not occur if the supervision timeout was set to a value smaller than the ones mentioned above (DRGN-21619).
-* Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
-  This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
-* Fixed an issue where the |controller| would accept the HCI LE Set Random Address command while passive scanning had been enabled.
-  The |controller| now returns the error code ``0x0D`` in this case. (DRGN-19050)
-* Fixed an issue where a BIS Broadcaster would transmit invalid parameters in the BIG Info if a BIG was created with ``num_bis`` set to ``1`` and ``packing`` set to ``1`` (interleaved).
-  This could happen with both the LL Create BIG and LL Create BIG Test commands (DRGN-21912).
-* Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
-* Fixed an issue where the |controller| could assert if a BIS Receiver stops receiving packets from the BIS Broadcaster. (DRGN-21949)
-* Fixed an issue where the |controller| could in some rare cases generate an LE Periodic Advertising Subevent Data Request for a subevent it did not have the memory capacity for. (DRGN-21839)
-* Fixed an issue where an assert could happen if the peripheral received a connection update indication.
-  This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
-* Fixed an issue where the |controller| could assert when scanning or advertising on Coded PHY using SPI FEM on the nRF53 series. (DRGN-21962)
+* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
+  This behavior was changed to accommodate ES-27170.
 
 nRF Connect SDK v2.6.4
 **********************
@@ -481,7 +106,7 @@ Changes
   :c:func:`sdc_hci_cmd_vs_set_power_control_apr_handling` have been replaced by
   :c:func:`sdc_hci_cmd_vs_set_power_control_request_params` (DRGN-17355).
 * The controller now always returns the error code ``0x0D`` if a connection attempt is made while another is still pending.
-  Previously, this was not the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
+  Previously, this wasn't the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
 * The scheduling priority for initiator events where the scan window is equal to the scan interval is lowered to the third scheduling priority.
   For other configurations of scan window and scan interval the priority is unchanged. (DRGN-20831)
 * The vendor-specific Set event length for ACL connections HCI command now accepts values lower than 1250 us. (DRGN-20796)
@@ -505,6 +130,8 @@ Bug fixes
 * Fixed an assert that could happen if the LE Set Periodic Advertising Response Data command was issued more than once without fetching the Command Complete Event. (DRGN-20432)
 * Fixed an issue where the controller would assert during cooperative active scanning or when running a cooperative initiator.
   This could happen when the controller was about to send a scan request or connect indication. (DRGN-20832)
+* Fixed an issue where the controller would assert when initiating a connection to an extended advertiser.
+  This could happen when both external radio coexistence and FEM were enabled. (DRGN-16013)
 * Fixed an issue where the nRF5340 DK consumed too much current while scanning.
   This could happen if the controller was running with TX power higher than 0 dB. (DRGN-20862)
 * Fixed an assert that could happen if the Periodic Sync with Responses was terminated. (DRGN-20956)
@@ -516,23 +143,6 @@ Bug fixes
   Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
   The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
 * Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet. (DRGN-21253)
-
-nRF Connect SDK v2.5.2
-**********************
-
-All the notable changes included in the |NCS| v2.5.2 release are documented in this section.
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller stopped generating advertising reports.
-  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
-  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND``. (DRGN-21020)
-* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
-  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
-  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
-  The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
-* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet. (DRGN-21262)
 
 nRF Connect SDK v2.5.0
 **********************
@@ -610,24 +220,6 @@ Bug fixes
 * Fixed an issue where the controller acting as a central would assert when receiving a non-compliant LL_PHY_RSP from a peer device (DRGN-20578).
 * Fixed an issue that could occur when the Host Number of Complete Packets command was sent with a connection handle the controller had already raised a disconnect event for.
   The controller would return ``BT_HCI_ERR_INVALID_PARAM`` to the command, which would mean that the host could not return the buffer to the controller (DRGN-20654).
-
-nRF Connect SDK v2.4.3
-**********************
-
-All the notable changes included in the |NCS| v2.4.3 release are documented in this section.
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller stopped generating advertising reports.
-  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
-  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND`` (DRGN-21020).
-* Fixed an issue where the continuous extended scanner would not be able to receive the ``AUX_ADV_IND`` packet if the time between the ``ADV_EXT_IND`` and ``AUX_ADV_IND`` was more than 840 μs (DRGN-19460).
-* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
-  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
-  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
-  The controller also validates the handles provided in the Host Number of Complete Packets command (DRGN-21085).
-* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet (DRGN-21262).
 
 nRF Connect SDK v2.4.0
 **********************
@@ -854,8 +446,8 @@ Bug fixes
 
 * Fixed an issue where Advertiser Address Type in the LE Periodic Advertising Sync Established event was never set to 0x02 or 0x03, even if the advertiser's address was resolved (DRGN-17110).
 * Fixed an issue where Advertiser Address Type was not set in the LE Periodic Advertising Sync Established event when using the Periodic Advertiser List (DRGN-17110).
-* Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned ``Unknown Advertiser Identifier (0x42)``.
-* Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned ``Unknown Advertiser Identifier (0x42)``.
+* Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unknown Advertiser Identifier (0x42)".
+* Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned "Unknown Advertiser Identifier (0x42)".
 * Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).
 * Fixed an issue where the advertiser would incorrectly set Offset Adjust in the SyncInfo when the offset to the ``AUX_SYNC_IND`` is large (DRGN-16887).
 * Fixed an issue where issuing a legitimate connection update could result in an ``BT_HCI_ERR_INVALID_PARAM`` error (DRGN-17324).
@@ -963,16 +555,6 @@ Bug fixes
 * Fixed an issue where an assert may occur when legacy advertiser is used after "HCI LE Clear Advertising Sets" (DRGN-15993).
 * Fixed an issue where an assert could occur when in LLPM mode and the connection interval was more than 1 ms (DRGN-16079).
 
-nRF Connect SDK v1.6.1
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
-* Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
-
-
 nRF Connect SDK v1.6.0
 **********************
 
@@ -1013,7 +595,7 @@ Bug fixes
 * Fixed an issue where, in rare cases, an assert could occur when receiving a packet as a slave.
   This could only occur after performing a data length procedure on Coded PHY (DRGN-15251).
 * Fixed an issue where "HCI Read RSSI" would always return a Command Disallowed (0x0C) error code (DRGN-15310).
-* Fixed an issue where setting radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned ``Unsupported Feature or Parameter value (0x11)``.
+* Fixed an issue where setting radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unsupported Feature or Parameter value (0x11)".
   Now the controller will select an output power level that is lower or equal to the one requested.
   The command returns success and the selected power level (DRGN-15369).
 * Fixed an issue where an assert could occur when running an extended advertiser with maximum data length and minimum interval on Coded PHY.
@@ -1024,21 +606,6 @@ Bug fixes
 * Fixed an issue where the controller may still have pending events after :c:func:`sdc_hci_evt_get()` returns false.
   This would only occur if the host has masked out events (DRGN-15758).
 * Fixed an issue where the extended scanner generated reports containing truncated data from a chained advertising PDU (DRGN-13338).
-
-nRF Connect SDK v1.5.1
-**********************
-
-Added
-=====
-
-* Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
-
-Bug fixes
-=========
-
-* Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
-* The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
-* Fixed an issue where setting a legacy advertiser's scan response data using extended advertising HCI commands corrupted the advertising data (DRGN-15465).
 
 nRF Connect SDK v1.5.0
 **********************
@@ -1073,7 +640,7 @@ Bug fixes
 * Fixed an issue where a directed advertiser used a resolvable address as the ``TargetA`` when the local device address was set to public or random device address (DRGN-13921).
 * Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data that was longer than it could fit within the advertising interval.
   Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
-* Fixed an issue where the link would disconnect with reason ``LMP Response Timeout (0x22)``.
+* Fixed an issue where the link would disconnect with reason "LMP Response Timeout (0x22)".
   This would occur if the "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
@@ -1178,7 +745,7 @@ Changes
 * The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
 * The previously implemented Vendor Specific HCI command opcodes are now offset with 0x100.
 * The previously implemented Vendor Specific HCI event codes are now offset with 0x80.
-* When the controller receives an unknown command, it will raise ``Command Status event`` instead of ``Command Complete event``.
+* When the controller receives an unknown command, it will raise "Command Status event" instead of "Command Complete event".
 * When in slave latency, the controller now picks up data from the host for transmission earlier than it used to.
 * In the LE Extended Advertising Report, the Direct Address Type values 0x02, 0x03, and 0xFE will only be used when the Scanning Filter Policy is equal to 0x02 or 0x03 and TargetA is a resolvable private address.
   If the address is resolved, then the Direct Address Type will contain the same value as the Own Address Type parameter of the command LE Set Extended Scan Parameters.
