@@ -13,6 +13,11 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Bug fixes
+=========
+
+* Fixed unintended clearing of POWER interrupts caused by clearing CLOCK interrupts in :c:func:`mpsl_init()` and :c:func:`mpsl_uninit()`. (DRGN-26338)
+
 nRF Connect SDK v3.1.0
 **********************
 

@@ -12,6 +12,16 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* :c:func:`sdc_hci_cmd_vs_cs_params_set` to set preferred internal CS parameters for the controller to use.
+
+Changes
+=======
+
+* c:func:`sdc_hci_cmd_vs_set_cs_event_length` has been removed, the same functionality is now provided with :c:func:`sdc_hci_cmd_vs_cs_params_set`.
+
 Bug fixes
 =========
 
