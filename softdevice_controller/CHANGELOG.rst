@@ -12,20 +12,26 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* :c:func:`sdc_hci_cmd_vs_cs_params_set` to set preferred internal CS parameters for the controller to use.
+
+Changes
+=======
+
+* :c:func:`sdc_hci_cmd_vs_set_cs_event_length` has been removed, the same functionality is now provided with :c:func:`sdc_hci_cmd_vs_cs_params_set`.
+* The sdc_support_* functions now return void.
+  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
+* The Channel Sounding antenna switch callback must now be set using :c:func:`sdc_cs_antenna_switch_callback_set` instead of :c:func:`sdc_support_channel_sounding` when using multiple antennas.
+  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
+
 Bug fixes
 =========
 
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 * Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
-
-Changes
-=======
-
-* The sdc_support_* functions now return void.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
-* The Channel Sounding antenna switch callback must now be set with :c:func:`sdc_cs_antenna_switch_callback_set` instead of :c:func:`sdc_support_channel_sounding` when using multiple antennas.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 
 nRF Connect SDK v3.1.0
 **********************
