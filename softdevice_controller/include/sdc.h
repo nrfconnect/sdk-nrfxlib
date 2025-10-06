@@ -26,7 +26,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
+#include "nrfx.h"
 #include "nrf_errno.h"
 
 /** @brief Default resource configuration tag. */
@@ -147,9 +147,6 @@ extern "C" {
 
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
-
-/** @brief Temporary define to support both old and new sdc_support APIs. */
-#define SDC_USE_NEW_SDC_SUPPORT_API 1
 
 /**
  * @defgroup sdc_mem_defines Memory requirement defines

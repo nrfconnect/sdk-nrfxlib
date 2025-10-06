@@ -107,8 +107,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_CONN_ANCHOR_POINT_UPDATE_EVENT_REPORT_ENABLE = 0xfd1f,
     /** @brief See @ref sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(). */
     SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
-    /** @brief See @ref sdc_hci_cmd_vs_set_cs_event_length(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_CS_EVENT_LENGTH = 0xfd21,
     /** @brief See @ref sdc_hci_cmd_vs_cs_params_set(). */
     SDC_HCI_OPCODE_CMD_VS_CS_PARAMS_SET = 0xfd22,
 };
@@ -747,13 +745,6 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Set to 1 to enable, 0 to disable. */
     uint8_t enable;
 } sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t;
-
-/** @brief Set event length for CS events command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Allocated CS event length in microseconds. */
-    uint32_t cs_event_length_us;
-} sdc_hci_cmd_vs_set_cs_event_length_t;
 
 /** @brief Set custom control parameters for CS command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -1715,32 +1706,6 @@ uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hc
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t * p_params);
-
-/** @brief Set event length for CS events.
- *
- * Set the event length for CS events.
- *
- * In case the number of subevents per event is one, the event length the same as
- * the subevent length.
- *
- * In case the number of subevents per event is greater than one, the event length is
- * the total expected time occupied by all subevents and the spacing between them, given
- * by the formula:
- *
- * event length = T_SUBEVENT_INTERVAL x (N_SUBEVENTS_PER_EVENT - 1) + T_SUBEVENT_LEN
- *
- * Some additional margin may also be needed.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_cs_event_length(const sdc_hci_cmd_vs_set_cs_event_length_t * p_params);
 
 /** @brief Set custom control parameters for CS.
  *
