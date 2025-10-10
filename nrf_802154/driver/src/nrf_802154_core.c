@@ -711,14 +711,11 @@ static bool critical_section_enter_and_verify_timeslot_length(void)
 {
     bool result = nrf_802154_critical_section_enter();
 
-    if (result)
+    if (result && !critical_section_can_be_processed_now())
     {
-        if (!critical_section_can_be_processed_now())
-        {
-            result = false;
+        result = false;
 
-            nrf_802154_critical_section_exit();
-        }
+        nrf_802154_critical_section_exit();
     }
 
     return result;
@@ -2479,12 +2476,10 @@ void nrf_802154_trx_receive_ack_received(void)
         {
             const uint8_t * p_cmd = nrf_802154_frame_mac_command_id_get(&m_tx.frame);
 
-            if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
+            if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ) &&
+                nrf_802154_frame_pending_bit_is_set(&m_current_rx_frame_data))
             {
-                if (nrf_802154_frame_pending_bit_is_set(&m_current_rx_frame_data))
-                {
-                    should_receive = true;
-                }
+                should_receive = true;
             }
         }
 
@@ -3002,13 +2997,10 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data)
 
     if (in_crit_sect)
     {
-        if (timeslot_is_granted())
+        if (timeslot_is_granted() && nrf_802154_trx_receive_is_buffer_missing())
         {
-            if (nrf_802154_trx_receive_is_buffer_missing())
-            {
-                rx_buffer_in_use_set(p_buffer);
-                nrf_802154_trx_receive_buffer_set(rx_buffer_get());
-            }
+            rx_buffer_in_use_set(p_buffer);
+            nrf_802154_trx_receive_buffer_set(rx_buffer_get());
         }
 
         nrf_802154_critical_section_exit();
@@ -3129,18 +3121,15 @@ bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi)
         in_crit_sect = critical_section_enter_and_verify_timeslot_length();
     }
 
-    if (rssi_started && in_crit_sect)
+    if (rssi_started && in_crit_sect && timeslot_is_granted())
     {
         // Checking if a timeslot is granted is valid only in a critical section
-        if (timeslot_is_granted())
+        rssi_started = nrf_802154_trx_rssi_measure_is_started();
+        if (rssi_started)
         {
-            rssi_started = nrf_802154_trx_rssi_measure_is_started();
-            if (rssi_started)
-            {
-                rssi_measurement_wait();
-                *p_rssi = rssi_last_measurement_get();
-                result  = true;
-            }
+            rssi_measurement_wait();
+            *p_rssi = rssi_last_measurement_get();
+            result  = true;
         }
     }
 

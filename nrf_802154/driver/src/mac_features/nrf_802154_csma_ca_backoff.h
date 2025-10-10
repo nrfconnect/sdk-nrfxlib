@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Nordic Semiconductor ASA
+ * Copyright (c) 2025, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -32,46 +32,37 @@
  *
  */
 
-/**
- * @file
- *   This file supplies bitmasks specifying which of the peripherals are used
- *   by the 802.15.4 driver.
- *
- * Bitmasks currently provided applies to:
- *   - PPI or DPPI channels (g_nrf_802154_used_nrf_ppi_channels)
- *   - PPI or DPPI channel groups (g_nrf_802154_used_nrf_ppi_groups)
- */
+#ifndef NRF_802154_CSMA_CA_BACKOFF_H__
+#define NRF_802154_CSMA_CA_BACKOFF_H__
 
-#include "nrf_802154_peripherals.h"
-
+#include <stdbool.h>
 #include <stdint.h>
 
-#if NRF_802154_VERIFY_PERIPHS_ALLOC_AGAINST_MPSL
-/* Obtaining the MPSL_RESERVED_.. macros */
-#include "mpsl.h"
-#endif
+/**
+ * @defgroup nrf_802154_csma_ca_backoff 802.15.4 driver CSMA-CA support
+ * @{
+ * @ingroup nrf_802154_csma_ca
+ * @brief CSMA-CA procedure.
+ */
 
-#if defined(PPI_PRESENT)
-#define NRF_802154_PPI_CH_USED_MSK NRF_802154_PPI_CHANNELS_USED_MASK
-#define NRF_802154_PPI_GR_USED_MSK NRF_802154_PPI_GROUPS_USED_MASK
-#elif defined(DPPI_PRESENT)
-#define NRF_802154_PPI_CH_USED_MSK NRF_802154_DPPI_CHANNELS_USED_MASK
-#define NRF_802154_PPI_GR_USED_MSK NRF_802154_DPPI_GROUPS_USED_MASK
-#else
-#error Unsupported chip family
-#endif
+/** @brief Gets the number of backoff periods to wait before the next CCA attempt of CSMA/CA.
+ *
+ * When test modes are not enabled, the number of backoff periods is a random value in the range
+ * from 0 to (2^BE - 1), where BE is the current backoff exponent, as defined in IEEE Std. 802.15.4.
+ *
+ * When test modes are enabled the returned value depends on the value returned by
+ * @c nrf_802154_pib_test_mode_csmaca_backoff_get .
+ *
+ * @note Consecutive calls to this function may return different values.
+ *
+ * @param[in] be Backoff Exponent. Allowed range 0...8.
+ *
+ * @return Number of backoff periods to wait before the next CCA attempt
+ */
+uint8_t nrf_802154_csma_ca_backoff_periods_get(uint8_t be);
 
-const uint32_t g_nrf_802154_used_nrf_ppi_channels = NRF_802154_PPI_CH_USED_MSK;
-const uint32_t g_nrf_802154_used_nrf_ppi_groups = NRF_802154_PPI_GR_USED_MSK;
+/**
+ *@}
+ **/
 
-#if NRF_802154_VERIFY_PERIPHS_ALLOC_AGAINST_MPSL
-
-#if ((NRF_802154_PPI_CH_USED_MSK & MPSL_RESERVED_PPI_CHANNELS) != 0UL)
-#error PPI channels for 802.15.4 driver overlap with MPSL channels
-#endif
-
-#if ((NRF_802154_PPI_GR_USED_MSK & MPSL_RESERVED_PPI_GROUPS) != 0UL)
-#error PPI groups for 802.15.4 driver overlap with MPSL groups
-#endif
-
-#endif // NRF_802154_VERIFY_PERIPHS_ALLOC_AGAINST_MPSL
+#endif // NRF_802154_CSMA_CA_BACKOFF_H__

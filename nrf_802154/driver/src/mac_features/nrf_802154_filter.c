@@ -393,12 +393,9 @@ static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_t * p_frame_d
     const uint8_t * p_dst_addr  = nrf_802154_frame_dst_addr_get(p_frame_data);
     uint8_t         frame_type  = nrf_802154_frame_type_get(p_frame_data);
 
-    if (p_dst_panid != NULL)
+    if (p_dst_panid != NULL && !dst_pan_id_check(p_dst_panid, frame_type))
     {
-        if (!dst_pan_id_check(p_dst_panid, frame_type))
-        {
-            return NRF_802154_RX_ERROR_INVALID_DEST_ADDR;
-        }
+        return NRF_802154_RX_ERROR_INVALID_DEST_ADDR;
     }
 
     uint8_t dst_addr_size =

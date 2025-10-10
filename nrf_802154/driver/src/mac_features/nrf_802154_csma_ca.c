@@ -56,7 +56,7 @@
 #include "nrf_802154_request.h"
 #include "nrf_802154_tx_power.h"
 #include "nrf_802154_stats.h"
-#include "platform/nrf_802154_random.h"
+#include "nrf_802154_csma_ca_backoff.h"
 #include "rsch/nrf_802154_rsch.h"
 #include "nrf_802154_sl_timer.h"
 #include "nrf_802154_sl_atomics.h"
@@ -136,14 +136,12 @@ static void priority_leverage(void)
                                        NRF_802154_COEX_TX_REQUEST_MODE_CCA_START);
 
     // Leverage priority only after the first backoff in the specified Coex TX request mode
-    if (first_transmit_attempt && coex_requires_boosted_prio)
+    // It should always be possible to update this timeslot's priority here
+    if (first_transmit_attempt && coex_requires_boosted_prio &&
+        !nrf_802154_rsch_delayed_timeslot_priority_update(NRF_802154_RESERVED_CSMACA_ID,
+                                                          RSCH_PRIO_TX))
     {
-        // It should always be possible to update this timeslot's priority here
-        if (!nrf_802154_rsch_delayed_timeslot_priority_update(NRF_802154_RESERVED_CSMACA_ID,
-                                                              RSCH_PRIO_TX))
-        {
-            NRF_802154_ASSERT(false);
-        }
+        NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -212,58 +210,13 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 }
 
 /**
- * @brief Calculates number of backoff periods as random value according to IEEE Std. 802.15.4.
- */
-static uint8_t backoff_periods_calc_random(void)
-{
-    return nrf_802154_random_get() % (1U << m_be);
-}
-
-/**
- * @brief Calculates number of backoff periods to wait before the next CCA attempt of CSMA/CA
- *
- * @return Number of backoff periods
- */
-static uint8_t backoff_periods_calc(void)
-{
-    uint8_t result;
-
-#if NRF_802154_TEST_MODES_ENABLED
-
-    switch (nrf_802154_pib_test_mode_csmaca_backoff_get())
-    {
-        case NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM:
-            result = backoff_periods_calc_random();
-            break;
-
-        case NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MAX:
-            result = (1U << m_be) - 1U;
-            break;
-
-        case NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MIN:
-            result = 0U;
-            break;
-
-        default:
-            result = backoff_periods_calc_random();
-            NRF_802154_ASSERT(false);
-            break;
-    }
-#else
-    result = backoff_periods_calc_random();
-#endif
-
-    return result;
-}
-
-/**
  * @brief Delay CCA procedure for random (2^BE - 1) unit backoff periods.
  */
 static void random_backoff_start(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    uint64_t backoff_us = backoff_periods_calc() * UNIT_BACKOFF_PERIOD;
+    uint64_t backoff_us = nrf_802154_csma_ca_backoff_periods_get(m_be) * UNIT_BACKOFF_PERIOD;
 
     rsch_dly_ts_param_t backoff_ts_param =
     {
@@ -491,5 +444,22 @@ static void csma_ca_tx_done(uint8_t                                   * p_frame,
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
+
+#ifdef TEST
+void nrf_802154_csma_ca_module_reset(void)
+{
+    m_state      = CSMA_CA_STATE_IDLE;
+    m_nb         = 0;
+    m_be         = 0;
+    m_frame      = (nrf_802154_frame_t){0};
+    m_data_props = (nrf_802154_transmitted_frame_props_t){0};
+    m_tx_channel = 0;
+#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
+    m_tx_timestamp_encode = false;
+#endif
+    m_state = CSMA_CA_STATE_IDLE;
+}
+
+#endif // TEST
 
 #endif // NRF_802154_CSMA_CA_ENABLED
