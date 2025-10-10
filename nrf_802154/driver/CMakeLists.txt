@@ -56,7 +56,6 @@ target_sources(nrf-802154-driver
     src/nrf_802154_notification_direct.c
     src/nrf_802154_notification_swi.c
     src/nrf_802154_pib.c
-    src/nrf_802154_peripherals_alloc.c
     src/nrf_802154_queue.c
     src/nrf_802154_request_direct.c
     src/nrf_802154_request_swi.c
@@ -70,6 +69,7 @@ target_sources(nrf-802154-driver
     src/nrf_802154_tx_work_buffer.c
     src/nrf_802154_tx_power.c
     src/mac_features/nrf_802154_csma_ca.c
+    src/mac_features/nrf_802154_csma_ca_backoff.c
     src/mac_features/nrf_802154_delayed_trx.c
     src/mac_features/nrf_802154_filter.c
     src/mac_features/nrf_802154_frame_parser.c
