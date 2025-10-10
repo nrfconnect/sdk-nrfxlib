@@ -126,8 +126,8 @@ config NRF_802154_ACK_TIMEOUT_CUSTOM_US
 	  use the default and recommended value of the ACK timeout.
 
 config NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
-    bool "Enable Transmit Timestamp Feature"
+    bool "Transmit timestamp injection"
     help
-        Enable Transmit Timestamp feature.
+        Enable Transmit timestamp injection feature.
 
 endif # NRF_802154_RADIO_DRIVER || NRF_802154_SERIALIZATION
