@@ -8,17 +8,18 @@ nrf_cc3xx_mbedcrypto library
    :local:
    :depth: 2
 
-The nrf_cc3xx_mbedcrypto library is software library to interface with the Arm CryptoCell hardware accelerator that is available on the nRF52840 SoC, the nRF53 Series, and the nRF91 Series.
+The nrf_cc3xx_mbedcrypto library is a software library used by the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS| to interface with the Arm CryptoCell hardware accelerator that is available on the nRF52840 SoC, the nRF53 Series, and the nRF91 Series.
 The library adds hardware support for selected cryptographic algorithms.
+
+.. note::
+   Do not link to this library directly.
+   See :ref:`nrf:psa_crypto_support` for information on how to enable its related driver.
 
 Integration with Mbed TLS
 =========================
-The nrf_cc3xx_mbedcrypto library provides low-level integration with the Mbed TLS version provided in nRF Connect SDK.
-Some of the APIs expressed in this library use the Mbed TLS "alternative implementation" abstraction layer.
 
-.. note::
-   It is not recommended to link to this library directly. Use the :ref:`nrf:nrf_security`.
-
+The nrf_cc3xx_mbedcrypto library provides low-level integration with the Mbed TLS version provided in the |NCS|.
+Some of the APIs expressed in this library use the Mbed TLS :ref:`legacy crypto <nrf:legacy_crypto_support>` abstraction layer.
 
 Supported cryptographic algorithms
 ==================================
@@ -133,8 +134,9 @@ Otherwise, the library will default to use the clib functions :c:func:`calloc` a
 
 PSA driver integration
 ======================
-Starting from version 0.9.13, the nrf_oberon library contains a companion library that provides PSA driver integration for select features.
-This must be used with the :ref:`nrf:nrf_security`.
+
+Starting from version 0.9.13, the nrf_cc3xx_mbedcrypto library contains a companion nrf_cc3xx_platform library that provides access to low-level CryptoCell APIs.
+Both must be used through the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS|.
 
 Supported features
 ------------------
@@ -155,20 +157,8 @@ The supported features for the PSA driver companion library are:
 
 Initializing the library
 ------------------------
-The library requires initialization before use.
-You can initialize it by calling the :c:func:`mbedtls_platform_setup`/:c:func:`mbedtls_platform_teardown` functions.
 
-.. code-block:: c
-    :caption: Initializing the library
-
-    int ret;
-    static mbedtls_platform_context platform_context = {0};
-
-    ret = mbedtls_platform_setup(&platform_context);
-    if (ret != 0) {
-            /* Failed to initialize nrf_cc3xx_mbedcrypto platform */
-            return ret,
-    }
+Use the library through the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS|.
 
 .. note::
    There is no need to enable/disable the CC310 hardware by writing to the ``NRF_CRYPTOCELL->ENABLE`` and ``NRF_CRYPTOCELL_S->ENABLE`` registers.

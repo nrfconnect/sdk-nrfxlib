@@ -1,7 +1,12 @@
 .. _crypto:
 
-Crypto Libraries
-################
+Cryptographic libraries
+#######################
+
+The cryptographic libraries in this section are backends for the following components in the |NCS|:
+
+* nrf_cc3xx_platform, nrf_cc3xx_mbedcrypto, and nrf_oberon are used by the :ref:`nrf:crypto_drivers`.
+* nrf_cc310_bl is used by the :ref:`nrf:doc_bl_crypto` library.
 
 .. toctree::
    :maxdepth: 2
