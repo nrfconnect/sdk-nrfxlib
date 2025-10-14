@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* Updated to library version 1.1.0.
+* Improved fuel gauge accuracy for small-capacity batteries using nPM1304.
+* The `discard_positive_deltaz` member of the :c:struct:`nrf_fuel_gauge_runtime_parameters` structure now affects the secondary cell variant too. Setting it to true (default) will disallow state-of-charge to increase unless the battery is charging.
+
 nRF Connect SDK v3.0.0
 **********************
 
