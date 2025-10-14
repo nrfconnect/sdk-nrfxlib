@@ -25,8 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "nrf.h"
-#include "nrf_peripherals.h"
+#include "nrfx.h"
 #include "nrf_errno.h"
 
 /** @brief The shortest allowed timeslot event in microseconds. */
