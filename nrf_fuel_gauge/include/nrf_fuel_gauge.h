@@ -170,7 +170,7 @@ struct nrf_fuel_gauge_runtime_parameters {
 	/* Set to NAN to ignore. */
 	float d;
 	/* Primary cell: when true, do not let state-of-charge increase.
-	 * Secondary cell: parameter not used.
+	 * Secondary cell: when true, do not let state-of-charge increase unless when charging.
 	 */
 	bool discard_positive_deltaz;
 };
