@@ -5,7 +5,7 @@
 #
 
 config NRF_FUEL_GAUGE
-	bool "Enable nRF Fuel Gauge library"
+	bool "nRF Fuel Gauge library"
 	select REQUIRES_FULL_LIBC
 
 if NRF_FUEL_GAUGE
