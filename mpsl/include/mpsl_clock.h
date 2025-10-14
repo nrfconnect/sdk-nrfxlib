@@ -24,7 +24,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "nrfx.h"
-#include "nrf_errno.h"
 #if !defined (NRF54H_SERIES)
 #include "hal/nrf_clock.h"
 #endif /* !NRF54H20_XXAA */
