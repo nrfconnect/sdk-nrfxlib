@@ -22,8 +22,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
-#include "nrf_peripherals.h"
+#include "nrfx.h"
 #include "nrf_errno.h"
 #include "mpsl_clock.h"
 #include "mpsl_hwres.h"

@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <nrf.h>
+#include <nrfx.h>
 
 #ifdef __cplusplus
 extern "C" {
