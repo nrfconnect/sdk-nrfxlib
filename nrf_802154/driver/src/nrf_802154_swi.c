@@ -39,13 +39,15 @@
  */
 
 #include "nrf_802154_swi.h"
+#include "nrf_802154_swi_callouts.h"
 
 #include <stdbool.h>
-#include <stdint.h>
 
-#include "compiler_abstraction.h"
-#include "nrf_802154.h"
 #include "nrf_802154_config.h"
+#if !NRF_802154_INTERNAL_SWI_IRQ_HANDLING
+#include "nrf_802154_irq_handlers.h"
+#endif
+#include "nrf_802154_peripherals.h"
 #include "platform/nrf_802154_irq.h"
 
 #if NRF_802154_INTERNAL_SWI_IRQ_HANDLING
@@ -55,20 +57,7 @@
 #define SWI_IRQHandler nrf_802154_swi_irq_handler ///< Symbol of SWI IRQ handler.
 #endif
 
-__WEAK void nrf_802154_trx_swi_irq_handler(void)
-{
-    /* Implementation provided by other module if necessary */
-}
-
-__WEAK void nrf_802154_notification_swi_irq_handler(void)
-{
-    /* Implementation provided by other module if necessary */
-}
-
-__WEAK void nrf_802154_request_swi_irq_handler(void)
-{
-    /* Implementation provided by other module if necessary */
-}
+static bool initialized = false;
 
 static void swi_irq_handler(void)
 {
@@ -79,14 +68,12 @@ static void swi_irq_handler(void)
 
 void nrf_802154_swi_init(void)
 {
-    static bool initialized = false;
-
     if (!initialized)
     {
-        nrf_802154_irq_init(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE),
-                            NRF_802154_SWI_PRIORITY,
-                            swi_irq_handler);
-        nrf_802154_irq_enable(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE));
+        IRQn_Type irq_number = nrfx_get_irq_number(NRF_802154_EGU_INSTANCE);
+
+        nrf_802154_irq_init(irq_number, NRF_802154_SWI_PRIORITY, &swi_irq_handler);
+        nrf_802154_irq_enable(irq_number);
         initialized = true;
     }
 }
@@ -95,3 +82,11 @@ void SWI_IRQHandler(void)
 {
     swi_irq_handler();
 }
+
+#ifdef TEST
+void nrf_802154_swi_module_reset(void)
+{
+    initialized = false;
+}
+
+#endif // TEST

@@ -65,8 +65,8 @@ void nrf_802154_trx_ppi_for_disable(void);
 /**
  * @brief Set PPIs to connect trigger event with tasks needed to ramp up.
  *
- * When @p trigg_mode is TRX_RAMP_UP_SW_TRIGGER, the trigger event is RADIO_DISABLED and
- * PPI connections are made to it.
+ * When @p trigg_mode is TRX_RAMP_UP_SW_TRIGGER, the trigger event is EGU_TRIGGER_TASK
+ * on DPPI platforms and RADIO_DISABLED on PPI platforms.
  * When @p trigg_mode is TRX_RAMP_UP_HW_TRIGGER, the trigger event is defined outside the module
  * and PPI connections are only partially created. To complete the connection creation, the trigger
  * event must be connected to the (D)PPI channel specified with
@@ -74,16 +74,20 @@ void nrf_802154_trx_ppi_for_disable(void);
  *
  * Connections created by this function in DPPI variant and TRX_RAMP_UP_SW_TRIGGER mode:
  *
- *       RADIO_DISABLED ----> EGU -----> ramp_up_task
+ *       EGU_TRIGGER_EVT--+
+ *                        |
+ *       RADIO_DISABLED --+-> EGU -----> ramp_up_task
  *                      |          \--> self disable
  *               if (start_timer)
  *                      \-------------> TIMER_START
  *
  * Connections created by this function in DPPI variant and TRX_RAMP_UP_HW_TRIGGER mode:
  *
- *       [DPPI] -----------------------> RADIO_TASK_DISABLE
+ *       [DPPI] -----------------------> EGU_TRIGGER_TASK
  *
- *       RADIO_DISABLED ----> EGU -----> ramp_up_task
+ *       EGU_TRIGGER_EVT--+
+ *                        |
+ *       RADIO_DISABLED --+-> EGU -----> ramp_up_task
  *                      |           \--> self disable
  *               if (start_timer)
  *                      \--------------> TIMER_START

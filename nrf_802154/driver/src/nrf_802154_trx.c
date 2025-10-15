@@ -603,8 +603,11 @@ static void trigger_disable_to_start_rampup(void)
 {
     if (!nrf_802154_trx_ppi_for_ramp_up_was_triggered())
     {
+#if defined(DPPI_PRESENT)
+        nrf_egu_task_trigger(NRF_802154_EGU_INSTANCE, NRF_802154_EGU_TRIGGER_TASK);
+#else
         nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
-        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+#endif
     }
 }
 

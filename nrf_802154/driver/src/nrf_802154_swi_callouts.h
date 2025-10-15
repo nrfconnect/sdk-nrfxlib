@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Nordic Semiconductor ASA
+ * Copyright (c) 2025, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -32,31 +32,24 @@
  *
  */
 
-#ifndef NRF_802154_SWI_H__
-#define NRF_802154_SWI_H__
+#ifndef NRF_802154_SWI_CALLOUTS_H__
+#define NRF_802154_SWI_CALLOUTS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * @defgroup nrf_802154_swi 802.15.4 driver SWI management
- * @{
- * @ingroup nrf_802154
- * @brief SWI manager for the 802.15.4 driver.
- */
+/** @brief Callout from SWI for nrf_802154_trx module. */
+void nrf_802154_trx_swi_irq_handler(void);
 
-/**
- * @brief Initializes the SWI module.
- */
-void nrf_802154_swi_init(void);
+/** @brief Callout from SWI for nrf_802154_notification_swi module. */
+void nrf_802154_notification_swi_irq_handler(void);
 
-/**
- *@}
- **/
+/** @brief Callout from SWI for nrf_802154_request_swi module. */
+void nrf_802154_request_swi_irq_handler(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // NRF_802154_SWI_H__
+#endif /* NRF_802154_SWI_CALLOUTS_H__ */

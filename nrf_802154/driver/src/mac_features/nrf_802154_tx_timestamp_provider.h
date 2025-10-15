@@ -40,7 +40,7 @@
 
 #include "nrf_802154_types_internal.h"
 
-#define NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE (sizeof(uint64_t))
+#define NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE (sizeof(uint32_t))
 
 /**
  * @brief TX setup hook for the tx timestamp provider module.

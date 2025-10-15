@@ -63,6 +63,7 @@ target_sources(nrf-802154-driver
     src/nrf_802154_rx_buffer.c
     src/nrf_802154_stats.c
     src/nrf_802154_swi.c
+    src/nrf_802154_swi_callouts_weak.c
     src/nrf_802154_trx.c
     src/nrf_802154_trx_dppi.c
     src/nrf_802154_trx_ppi.c
