@@ -143,20 +143,20 @@ In addition to the supported capabilities listed above, the |controller| support
 
 .. note::
    The T_SW time reported is based on the implementation of antenna switching in the |NCS|, as described in :ref:`cs_multiple_antenna_support`.
-   If users implement their own switching functions, they must ensure that the new implementation meets the timing requirements reported in :ref:`cs_supported_capabilities`.
+   If you implement your own switching functions, you must ensure that the new implementation meets the timing requirements reported in :ref:`cs_supported_capabilities`.
 
 .. _cs_multiple_antenna_support:
 
 Multiple antennas support
 -------------------------
 
-Users may define their own antenna switching behavior in the |NCS|.
-By using the :c:func:`cs_antenna_switch_func` function and devicetree, users can register GPIO-controlled antenna switches with the |controller|.
+You may define your own antenna switching behavior in the |NCS|.
+By using the :c:func:`cs_antenna_switch_func` function and devicetree, you can register GPIO-controlled antenna switches with the |controller|.
 The Channel Sounding implementation will then automatically use the registered pins to control an external antenna switch for multi-antenna designs.
 The pins assigned to a multi-antenna design will be reserved by the |controller| and cannot be used by other activity.
-If users do not want to use the implementation provided in the |NCS|, they must register their own callback function for antenna switching in :c:func:`sdc_cs_antenna_switch_callback_set`.
+If you do not want to use the implementation provided in the |NCS|, you must register your own callback function for antenna switching in :c:func:`sdc_cs_antenna_switch_callback_set`.
 
-When using :c:func:`cs_antenna_switch_func`, users can register which pins control the antenna switch, as well as how the pins switch, using devicetree.
+When using :c:func:`cs_antenna_switch_func`, you can register which pins control the antenna switch, as well as how the pins switch, using devicetree.
 An example declaration of an antenna switch in devicetree is as follows:
 
 .. code-block:: devicetree
@@ -238,7 +238,7 @@ Multiplexing mode can be configured with devicetree as follows:
     multiplexing-mode = <1>;
   };
 
-If a design does not use four antennas, users can register fewer pins to achieve the desired behavior:
+If a design does not use four antennas, you can register fewer pins to achieve the desired behavior:
 
 .. code-block:: devicetree
 
