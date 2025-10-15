@@ -17,7 +17,7 @@
 #define __NRF_DM_H_
 
 #include <stdint.h>
-#include "nrf.h"
+#include "nrfx.h"
 #include "nrf_dm_version.h"
 
 #ifdef __cplusplus
