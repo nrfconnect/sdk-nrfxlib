@@ -43,7 +43,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "compiler_abstraction.h"
+#include "nrfx.h"
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 #include "platform/nrf_802154_irq.h"
