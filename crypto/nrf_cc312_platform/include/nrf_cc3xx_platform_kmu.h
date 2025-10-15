@@ -15,7 +15,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "nrf.h"
+#include "nrfx.h"
 
 #if defined(NRF91_SERIES) || defined(NRF5340_XXAA_APPLICATION)
 
