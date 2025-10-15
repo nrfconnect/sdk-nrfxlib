@@ -25,6 +25,8 @@ Changes
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 * The Channel Sounding antenna switch callback must now be set using :c:func:`sdc_cs_antenna_switch_callback_set` instead of :c:func:`sdc_support_channel_sounding` when using multiple antennas.
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
+* The Quality of Service (QoS) channel survey feature now supports incremental channel surveying, allowing it to be used even if there is insufficient time for a full survey.
+  The minimum interval has been reduced from 7.5 ms to 3 ms. (DRGN-26108)
 
 Bug fixes
 =========

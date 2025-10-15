@@ -546,7 +546,7 @@ typedef struct __PACKED __ALIGN(1)
 {
     /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
     uint8_t enable;
-    /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
+    /** @brief Requested average interval for the measurements and reports. Valid range is from 3000
      *         to 4000000. If set to 0, the measurements will be scheduled at every available
      *         opportunity.
      */
