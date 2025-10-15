@@ -46,7 +46,7 @@
 
 #if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
 
-static uint64_t  m_tx_timestamp_us;    ///< Cached transmit timestamp.
+static uint32_t  m_tx_timestamp_us;    ///< Cached transmit timestamp.
 static uint8_t * mp_tx_timestamp_addr; ///< Cached tx timestamp placeholder address.
 
 nrf_802154_tx_error_t nrf_802154_tx_timestamp_provider_tx_setup(
@@ -127,8 +127,14 @@ void nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
      * This function executes approximately 32us before the first bit of PHR.
      * The calculation takes it into account by adding 32us to the current time.
      */
-    m_tx_timestamp_us = nrf_802154_sl_timer_current_time_get() + 32;
-    host_64_to_big(m_tx_timestamp_us, mp_tx_timestamp_addr);
+    NRF_STATIC_ASSERT(NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE == 4,
+                      "Currently, only TX timestamp size 4 can be handled.");
+    /* The current time value is 64 bits (8 bytes).
+     * Since the timestamp size is 32 bits (4 bytes),
+     * only the least significant 32 bits are used.
+     */
+    m_tx_timestamp_us = (uint32_t)(nrf_802154_sl_timer_current_time_get()) + 32U;
+    host_32_to_little(m_tx_timestamp_us, mp_tx_timestamp_addr);
 
     mp_tx_timestamp_addr = NULL;
 }
