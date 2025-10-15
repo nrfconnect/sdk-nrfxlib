@@ -14,8 +14,7 @@
  * File defines a set of functions and variables called by Gazell Link Layer.
  */
 
-#include <nrf.h>
-#include <nrf_peripherals.h>
+#include <nrfx.h>
 
 #ifdef __cplusplus
 extern "C" {
