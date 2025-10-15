@@ -48,7 +48,7 @@
 #include "nrf_802154_trx_ppi_api.h"
 #include "nrf_802154_utils.h"
 
-#include <nrf_erratas.h>
+#include <nrfx.h>
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"
