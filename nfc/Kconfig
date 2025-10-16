@@ -5,9 +5,9 @@
 #
 
 config NFC_T2T_NRFXLIB
-	bool "Enable NFC Type 2 Tag library"
+	bool "NFC Type 2 Tag library"
 	depends on HAS_HW_NRF_NFCT
 
 config NFC_T4T_NRFXLIB
-	bool "Enable NFC Type 4 Tag library"
+	bool "NFC Type 4 Tag library"
 	depends on HAS_HW_NRF_NFCT
