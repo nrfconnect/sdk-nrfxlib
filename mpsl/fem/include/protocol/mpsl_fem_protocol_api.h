@@ -29,20 +29,32 @@
 #include "mpsl_tx_power.h"
 #include "mpsl_fem_types.h"
 
-/** @brief PA and LNA functionality types. */
-typedef enum
+/** @brief Applicable values for @ref mpsl_fem_functionality_t type. */
+enum MPSL_FEM_FUNCTIONALITY
 {
-    MPSL_FEM_PA  = 1 << 0,                     /**< PA Functionality. */
-    MPSL_FEM_LNA = 1 << 1,                     /**< LNA Functionality. */
+    MPSL_FEM_PA  = 1U << 0,                    /**< PA Functionality. */
+    MPSL_FEM_LNA = 1U << 1,                    /**< LNA Functionality. */
     MPSL_FEM_ALL = MPSL_FEM_PA | MPSL_FEM_LNA  /**< Both PA and LNA Functionalities. */
-} mpsl_fem_functionality_t;
+};
 
-/** @brief PA and LNA activation event types. */
-typedef enum
+/** @brief PA and LNA functionality types.
+ *
+ *  Applicable values are defined in @ref MPSL_FEM_FUNCTIONALITY.
+ */
+typedef uint8_t mpsl_fem_functionality_t;
+
+/** @brief Applicable values for @ref mpsl_fem_event_type_t type. */
+enum MPSL_FEM_EVENT_TYPE
 {
     MPSL_FEM_EVENT_TYPE_TIMER,                 /**< Timer Event type. */
     MPSL_FEM_EVENT_TYPE_GENERIC                /**< Generic Event type. */
-} mpsl_fem_event_type_t;
+};
+
+/** @brief PA and LNA activation event type
+ *
+ * Applicable values are defined in @ref MPSL_FEM_EVENT_TYPE.
+ */
+typedef uint8_t mpsl_fem_event_type_t;
 
 /** @brief Type representing a multiple-subscribable hardware event.
  *

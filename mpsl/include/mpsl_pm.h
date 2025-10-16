@@ -26,12 +26,18 @@ extern "C" {
 
 #define MPSL_PM_EVENT_TIME_INVALID UINT64_MAX
 
-/** @brief MPSL Power Management state in regards to next event. */
-typedef enum
+/** @brief Applicable values for @ref mpsl_pm_event_state_t type. */
+enum MPSL_PM_EVENT_STATE
 {
   MPSL_PM_EVENT_STATE_BEFORE_EVENT = 0,
   MPSL_PM_EVENT_STATE_NO_EVENTS_LEFT
-} mpsl_pm_event_state_t;
+};
+
+/** @brief MPSL Power Management state in regards to next event.
+ *
+ *  Applicable values are defined in @ref MPSL_PM_EVENT_STATE.
+ */
+typedef uint8_t mpsl_pm_event_state_t;
 
 /** @brief MPSL Power Management parameters.
  *
@@ -53,6 +59,15 @@ typedef struct
  */
 bool mpsl_pm_params_get(mpsl_pm_params_t * p_params);
 
+/** @brief Applicable values for @ref mpsl_pm_low_latency_state_t type. */
+enum MPSL_PM_LOW_LATENCY_STATE
+{
+  MPSL_PM_LOW_LATENCY_STATE_OFF = 0,
+  MPSL_PM_LOW_LATENCY_STATE_REQUESTING,
+  MPSL_PM_LOW_LATENCY_STATE_ON,
+  MPSL_PM_LOW_LATENCY_STATE_RELEASING
+};
+
 /** @brief MPSL Power Management low latency state.
  *
  * The different states of low latency requests. The external power management system shall use
@@ -63,14 +78,10 @@ bool mpsl_pm_params_get(mpsl_pm_params_t * p_params);
  * When low latency state is either OFF, REQUESTING or ON, the external power management system shall call
  * @ref mpsl_pm_low_latency_requested and initiate transition to the appropriate state. MPSL
  * will only request low latency in the OFF state, and only release low latency in the REQUESTING or ON states.
+ *
+ * Applicable values are defined in @ref MPSL_PM_LOW_LATENCY_STATE.
  */
-typedef enum
-{
-  MPSL_PM_LOW_LATENCY_STATE_OFF = 0,
-  MPSL_PM_LOW_LATENCY_STATE_REQUESTING,
-  MPSL_PM_LOW_LATENCY_STATE_ON,
-  MPSL_PM_LOW_LATENCY_STATE_RELEASING
-} mpsl_pm_low_latency_state_t;
+typedef uint8_t mpsl_pm_low_latency_state_t;
 
 /** @brief Get low latency request status.
  *
