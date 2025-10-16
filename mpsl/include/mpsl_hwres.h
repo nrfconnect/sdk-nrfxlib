@@ -55,19 +55,8 @@
 extern "C" {
 #endif
 
-/* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
-/* This corresponds to the PPI channels 19, 30, and 31. */
-#define MPSL_NRF52_PPI_CHANNELS_USED_MASK       (0xc0080000)
-/* This corresponds to the DPPI channels 0, 1, and 2. */
-#define MPSL_NRF53_DPPIC_CHANNELS_USED_MASK     (0x00000007)
-#define MPSL_NRF54L_DPPIC10_CHANNELS_USED_MASK  (0x00000001)
-#define MPSL_NRF54L_DPPIC20_CHANNELS_USED_MASK  (0x00000001)
-#define MPSL_NRF54L_PPIB11_CHANNELS_USED_MASK   (0x00000001)
-#define MPSL_NRF54L_PPIB21_CHANNELS_USED_MASK   (0x00000001)
-#define MPSL_NRF54H_DPPIC020_CHANNELS_USED_MASK (0x00000001)
-#define MPSL_NRF54H_IPCT130_CHANNELS_USED_MASK  (0x00000001)
+#include "mpsl_hwres_zephyr.h"
 
-#if !defined(__ZEPHYR__)
 #if defined(NRF52_SERIES)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
 #define MPSL_PPI_CHANNELS_USED_MASK MPSL_NRF52_PPI_CHANNELS_USED_MASK
@@ -97,7 +86,6 @@ extern "C" {
     #define MPSL_TIMER0 NRF_TIMER10
 #else
     #define MPSL_TIMER0 NRF_TIMER020
-#endif
 #endif
 
 #ifdef __cplusplus

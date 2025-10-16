@@ -27,6 +27,7 @@ extern "C" {
 #include "mpsl_clock.h"
 #include "mpsl_hwres.h"
 #include "mpsl_hwres_ppi.h"
+#include "mpsl_dppi.h"
 
 /** @brief High IRQ priority
  *
