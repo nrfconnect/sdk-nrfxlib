@@ -23,8 +23,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <nrf.h>
-#include <nrf_peripherals.h>
+#include <nrfx.h>
 #include "nrf_errno.h"
 #include "mpsl_tx_power.h"
 #include "mpsl_fem_types.h"

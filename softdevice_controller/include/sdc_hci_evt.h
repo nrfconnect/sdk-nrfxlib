@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <mdk/compiler_abstraction.h>
+#include <nrfx.h>
 
 /**
  * @defgroup HCI_TYPES Types

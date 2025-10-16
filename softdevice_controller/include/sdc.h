@@ -26,7 +26,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
+#include "nrfx.h"
 #include "nrf_errno.h"
 
 /** @brief Default resource configuration tag. */

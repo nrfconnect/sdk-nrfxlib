@@ -23,8 +23,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
-#include "nrf_errno.h"
+#include "nrfx.h"
 #if !defined (NRF54H_SERIES) && !defined (NRF92_SERIES)
 #include "hal/nrf_clock.h"
 #endif /* !NRF54H20_XXAA && !NRF92H20_XXAA */

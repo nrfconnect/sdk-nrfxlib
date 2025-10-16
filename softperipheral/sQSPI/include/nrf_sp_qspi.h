@@ -7,12 +7,11 @@
 #ifndef NRF_SP_QSPI_H__
 #define NRF_SP_QSPI_H__
 
-#include "nrf.h" // Resolve nrfXX_types.h for the correct target to get definitions for __IO, __IOM etc.
+#include "nrfx.h" // Resolve nrfXX_types.h for the correct target to get definitions for __IO, __IOM etc.
 #if defined (NRF_FLPR)
 extern char __soft_periph_com_start__[];
 #define NRF_SP_QSPI_BASE ((uint32_t)&__soft_periph_com_start__)
 #elif defined (NRF_APPLICATION)
-#include "nrfx_config.h"
 #define NRF_SP_QSPI_BASE (NRF_SQSPI_SP_FIRMWARE_ADDR + 0x3b40)
 #else
   #pragma warning "Processor not defined."
