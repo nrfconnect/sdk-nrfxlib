@@ -72,6 +72,7 @@ extern "C" {
 
 typedef enum
 {
+  SDC_HCI_MSG_TYPE_NONE = 0x00,
   SDC_HCI_MSG_TYPE_DATA = 0x02,
   SDC_HCI_MSG_TYPE_EVT  = 0x04,
   SDC_HCI_MSG_TYPE_ISO  = 0x08,

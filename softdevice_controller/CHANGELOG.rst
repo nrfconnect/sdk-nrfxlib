@@ -12,7 +12,38 @@ All the notable changes to this project are documented on this page.
 nRF Connect SDK v2.6.4-DRGN-25465-branch
 ****************************************
 
-All the notable changes included in the |NCS| v2.6.4-DRGN-25465 release are documented in this section.
+Added
+=====
+
+* Central-only and Peripheral-only library variants for the nRF54L Series devices. (DRGN-25081)
+* Initial prototype support for the nRF54LM20 device (DRGN-24919).
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would assert when terminating a connection created from PAwR. (DRGN-25200)
+  The issue would occur if the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option was enabled.
+
+Changes
+=======
+
+* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
+  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
+  This reverts the changes done by DRGN-21085. (DRGN-24882)
+
+nRF Connect SDK v3.0.0
+**********************
+
+Added
+=====
+
+* Support generating the HCI LE CIS Established v2 event. (DRGN-24112)
+* Support for the Advertising Coding Selection feature as an advertiser or scanner. (DRGN-23744)
+
+  * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
+  * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
+* Support for multiple packet pairs in an ACL event when using LLPM mode. (DRGN-16157)
 
 Changes
 =======
