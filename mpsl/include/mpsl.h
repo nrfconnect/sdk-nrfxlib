@@ -26,6 +26,7 @@ extern "C" {
 #include "nrf_errno.h"
 #include "mpsl_clock.h"
 #include "mpsl_hwres.h"
+#include "mpsl_dppi.h"
 
 /** @brief High IRQ priority
  *
