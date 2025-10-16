@@ -86,12 +86,19 @@ typedef uint8_t mpsl_cx_op_map_t;
 typedef uint8_t mpsl_cx_prio_t;
 
 /**
- * @brief Coexistence request signal triggers.
+ * @brief Applicable values to @ref mpsl_cx_req_trig_t type.
  */
-typedef enum
+enum MPSL_CX_REQ_TRIG
 {
     MPSL_CX_REQ_TRIG_INSTANT,  ///< Request is triggered instantly, during @ref mpsl_cx_request call
-} mpsl_cx_req_trig_t;
+};
+
+/**
+ * @brief Type for coexistence request signal triggers.
+ *
+ * Applicable values are defined in @ref MPSL_CX_REQ_TRIG.
+ */
+typedef uint8_t mpsl_cx_req_trig_t;
 
 /**
  * @brief Structure with parameters describing next coexistence request.
