@@ -253,6 +253,7 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief QoS Connection Event Report.
  *
  * A QoS Connection Event report gives information about the connection event.
+ * See also @ref sdc_hci_cmd_vs_qos_conn_event_report_enable().
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1041,8 +1042,10 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  *
  * This vendor specific command is used to enable or disable generation of QoS Connection event
  * reports.
- * See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. When enabled, one report will be generated
- * every connection event.
+ * See @ref sdc_hci_subevent_vs_qos_conn_event_report_t.
+ * When enabled, one report is generated every scheduled connection event.
+ * That is, QoS Connection Connection event reports are not generated for skipped connection events.
+ * Connection events may be skipped due to scheduling conflicts, peripheral latency, or subrating.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
  *
