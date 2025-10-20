@@ -6,9 +6,8 @@
 include(common.cmake)
 
 set(NRFXLIB_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH "NRFXLIB root directory")
-if (CONFIG_NFC_T2T_NRFXLIB OR
-    CONFIG_NFC_T4T_NRFXLIB)
-	add_subdirectory(nfc)
+if(CONFIG_NFC_T2T_NRFXLIB OR CONFIG_NFC_T4T_NRFXLIB)
+  add_subdirectory(nfc)
 endif()
 
 add_subdirectory_ifdef(CONFIG_NRF_MODEM               nrf_modem)
