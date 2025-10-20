@@ -27,6 +27,9 @@ Changes
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 * The Quality of Service (QoS) channel survey feature now supports incremental channel surveying, allowing it to be used even if there is insufficient time for a full survey.
   The minimum interval has been reduced from 7.5 ms to 3 ms. (DRGN-26108)
+* The function :c:func:`sdc_support_channel_sounding` has been removed.
+  The :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` functions should be used instead.
+  This change does not affect applications developed in the |NCS| context. (DRGN-26504)
 
 Bug fixes
 =========
