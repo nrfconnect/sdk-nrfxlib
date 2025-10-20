@@ -426,18 +426,6 @@ static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 		const struct nrf_rpc_tr *transport = group->transport;
 		struct nrf_rpc_group_data *data = group->data;
 
-		NRF_RPC_ASSERT(transport != NULL);
-
-		/* Initialize all dependencies of `receive_handler` before calling the transport
-		 * init to avoid possible data race if `receive_handler` was invoked before this
-		 * function was completed. */
-		if (auto_free_rx_buf(transport)) {
-			err = nrf_rpc_os_event_init(&data->decode_done_event);
-			if (err < 0) {
-				continue;
-			}
-		}
-
 		err = transport->api->init(transport, receive_cb, NULL);
 		if (err) {
 			NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
@@ -1138,6 +1126,7 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
 				 const struct nrf_rpc_group)) {
 		struct nrf_rpc_group_data *data = group->data;
+		const struct nrf_rpc_tr *transport = group->transport;
 
 		if (group_id >= 0xFF) {
 			return -NRF_ENOMEM;
@@ -1148,6 +1137,18 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 		group_id++;
 		if (group->flags & NRF_RPC_FLAGS_WAIT_ON_INIT) {
 			wait_count++;
+		}
+
+		NRF_RPC_ASSERT(transport != NULL);
+
+		/* Initialize all groups' members before starting transports to avoid the risk of
+		 * receiving a packet for a group that hasn't been initialized yet in case a single
+		 * transport is used across multiple groups. */
+		if (auto_free_rx_buf(transport)) {
+			err = nrf_rpc_os_event_init(&data->decode_done_event);
+			if (err < 0) {
+				return err;
+			}
 		}
 	}
 
