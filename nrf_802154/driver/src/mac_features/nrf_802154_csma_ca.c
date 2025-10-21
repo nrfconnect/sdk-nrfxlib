@@ -380,6 +380,15 @@ static bool csma_ca_can_abort(nrf_802154_term_t              term_lvl,
     return result;
 }
 
+static void csma_ca_finish_failed(uint8_t                                   * p_frame,
+                                  nrf_802154_tx_error_t                       error,
+                                  const nrf_802154_transmit_done_metadata_t * p_metadata)
+{
+    nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
+    nrf_802154_frame_parser_data_clear(&m_frame);
+    nrf_802154_notify_transmit_failed(p_frame, error, p_metadata);
+}
+
 static void csma_ca_failed(uint8_t                                   * p_frame,
                            nrf_802154_tx_error_t                       error,
                            const nrf_802154_transmit_done_metadata_t * p_metadata,
@@ -396,18 +405,12 @@ static void csma_ca_failed(uint8_t                                   * p_frame,
         case NRF_802154_TX_ERROR_TIMESLOT_ENDED:
             if (channel_busy())
             {
-                nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
-                nrf_802154_frame_parser_data_clear(&m_frame);
-                nrf_802154_notify_transmit_failed(p_frame,
-                                                  NRF_802154_TX_ERROR_BUSY_CHANNEL,
-                                                  p_metadata);
+                csma_ca_finish_failed(p_frame, error, p_metadata);
             }
             break;
 
         default:
-            nrf_802154_sl_atomic_store_u8((uint8_t *)&m_state, CSMA_CA_STATE_IDLE);
-            nrf_802154_frame_parser_data_clear(&m_frame);
-            nrf_802154_notify_transmit_failed(p_frame, error, p_metadata);
+            csma_ca_finish_failed(p_frame, error, p_metadata);
             break;
     }
 
