@@ -2777,6 +2777,11 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
     if (result)
     {
         result = current_operation_terminate(term_lvl, req_orig, true);
+
+        if (!result)
+        {
+            error = NRF_802154_TX_ERROR_BUSY_CHANNEL;
+        }
     }
 
     if (result)
