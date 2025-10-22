@@ -9,19 +9,23 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v2.6.4-DRGN-25465-branch
-****************************************
+nRF Connect SDK v2.6-branch-NCSIDB-1718
+***************************************
 
-All the notable changes included in the |NCS| v2.6.4-DRGN-25465 release are documented in this section.
+All the notable changes included in the |NCS| v2.6-branch-NCSIDB-1718 release are documented in this section.
 
 Changes
 =======
 
-* Enabled the LE Power Class 1 feature support bit in the controller.
-* The ability to configure a periodic advertiser with subevents but without response slots has been removed.
-  This is due to an errata to the Bluetooth Core Specification v5.4 no longer allowing this configuration. (DRGN-22189)
-* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
-  This behavior was changed to accommodate ES-27170.
+* When controller to host flow control is enabled, the controller no longer waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller no longer validates the handles provided in the Host Number of Complete Packets command.
+  That is, the handles provided may belong to a Disconnection Complete event which has not yet been processed by the host.
+  This reverts the changes done by DRGN-21085. (DRGN-24882)
+
+nRF Connect SDK v2.6.4-DRGN-25465-branch
+****************************************
+
+All the notable changes included in the |NCS| v2.6.4-DRGN-25465 release are documented in this section.
 
 nRF Connect SDK v2.6.4
 **********************
