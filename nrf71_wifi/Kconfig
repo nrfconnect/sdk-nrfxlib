@@ -1,0 +1,11 @@
+#
+# Copyright (c) 2025 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+menu "nrf71_Wi-Fi firmware interface library"
+
+config NRF71_WIFI
+	bool
+	default y
+endmenu
