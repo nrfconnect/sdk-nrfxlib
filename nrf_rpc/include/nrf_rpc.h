@@ -252,11 +252,11 @@ struct nrf_rpc_cleanup_handler
  *                     error occurred in context of this group. Can be NULL if
  *                     group does not want to receive error notifications.
  */
-#define NRF_RPC_GROUP_DEFINE(_name, _strid, _transport, _ack_handler, _ack_data,  \
-			     _err_handler)				          \
-	NRF_RPC_GROUP_DEFINE_INTERNAL__(_name, _strid, _transport, _ack_handler,  \
-					_ack_data, _err_handler, NULL, true,      \
-					true)				          \
+#define NRF_RPC_GROUP_DEFINE(_name, _strid, _transport, _ack_handler, _ack_data, _err_handler)     \
+	NRF_RPC_GROUP_DEFINE_INTERNAL__(_name, _strid, _transport, _ack_handler, _ack_data,        \
+					_err_handler, NULL,                                        \
+					IS_ENABLED(CONFIG_NRF_RPC_GROUP_DEFAULT_WAIT_ON_INIT),     \
+					IS_ENABLED(CONFIG_NRF_RPC_GROUP_DEFAULT_INITIATOR))
 
 /** @brief Define a non-blocking group of commands and events.
  *

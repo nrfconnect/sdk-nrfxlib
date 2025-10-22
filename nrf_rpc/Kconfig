@@ -46,6 +46,21 @@ config NRF_RPC_GROUP_INIT_WAIT_TIME
 	  The number of milliseconds to wait for the remote cores to send group
 	  init packets with destination group IDs. Set to -1 to wait forever.
 
+config NRF_RPC_GROUP_DEFAULT_INITIATOR
+	bool "Initiate group binding by default"
+	default y
+	help
+	  For each group defined with NRF_RPC_GROUP_DEFINE macro, initiate the
+	  group binding when calling nrf_rpc_init(). This is achieved by sending
+	  an initialization packet to the peer.
+
+config NRF_RPC_GROUP_DEFAULT_WAIT_ON_INIT
+	bool "Wait for group binding by default"
+	default y
+	help
+	  For each group defined with NRF_RPC_GROUP_DEFINE macro, wait until the
+	  group is bound when calling nrf_rpc_init().
+
 config NRF_RPC_THREAD_POOL_SIZE
 	int "Number of threads in local thread pool"
 	default 3
