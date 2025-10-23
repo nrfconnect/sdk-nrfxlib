@@ -419,48 +419,6 @@ static void internal_tx_handler(void)
 	}
 }
 
-static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
-{
-	int err = 0;
-	void *iter;
-	const struct nrf_rpc_group *group;
-
-	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
-				 const struct nrf_rpc_group)) {
-		const struct nrf_rpc_tr *transport = group->transport;
-		struct nrf_rpc_group_data *data = group->data;
-
-		err = transport->api->init(transport, receive_cb, NULL);
-		if (err) {
-			NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
-			continue;
-		}
-
-		group->data->transport_initialized = true;
-
-		if (group->flags & NRF_RPC_FLAGS_INITIATOR) {
-			err = group_init_send(group);
-			if (err) {
-				NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s err: %d",
-					data->src_group_id, group->strid, err);
-				continue;
-			}
-		}
-	}
-
-	/* Group initialization errors are not propagated to the caller. */
-	err = 0;
-
-	if (waiting_group_count > 0) {
-		err = nrf_rpc_os_event_wait(&groups_init_event, CONFIG_NRF_RPC_GROUP_INIT_WAIT_TIME);
-		if (err) {
-			NRF_RPC_ERR("Not all groups are ready to use.");
-		}
-	}
-
-	return err;
-}
-
 /* ======================== Receiving Packets ======================== */
 
 /* Find in array and execute command or event handler */
@@ -1143,10 +1101,9 @@ void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler)
 	global_bound_handler = bound_handler;
 }
 
-int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
+int nrf_rpc_setup(nrf_rpc_err_handler_t err_handler, nrf_rpc_group_bound_handler_t bound_handler)
 {
 	int err;
-	int i;
 	void *iter;
 	const struct nrf_rpc_group *group;
 	uint8_t group_id = 0;
@@ -1161,6 +1118,7 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	nrf_rpc_os_mutex_init(&cleanup_mutex);
 
 	global_err_handler = err_handler;
+	global_bound_handler = bound_handler;
 
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
 				 const struct nrf_rpc_group)) {
@@ -1194,8 +1152,6 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	group_count = group_id;
 	waiting_group_count = wait_count;
 
-	memset(&cmd_ctx_pool, 0, sizeof(cmd_ctx_pool));
-
 	err = nrf_rpc_os_init(execute_packet);
 	if (err < 0) {
 		return err;
@@ -1211,7 +1167,7 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 		return err;
 	}
 
-	for (i = 0; i < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE; i++) {
+	for (int i = 0; i < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE; i++) {
 		cmd_ctx_pool[i].id = i;
 		err = nrf_rpc_os_mutex_init(&cmd_ctx_pool[i].mutex);
 		if (err < 0) {
@@ -1223,15 +1179,83 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 		}
 	}
 
-	err = transport_init(receive_handler);
-	if (err < 0) {
-		return err;
-	}
-
 	is_initialized = true;
 	NRF_RPC_DBG("Done initializing nRF RPC module");
 
 	return err;
+}
+
+int nrf_rpc_bind(void)
+{
+	int err;
+	void *iter;
+	const struct nrf_rpc_group *group;
+
+	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
+		const struct nrf_rpc_tr *transport = group->transport;
+		struct nrf_rpc_group_data *data = group->data;
+
+		if (!group->data->transport_initialized) {
+			err = transport->api->init(transport, receive_handler, NULL);
+			if (err) {
+				NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
+				continue;
+			}
+
+			group->data->transport_initialized = true;
+		}
+
+		if (group->flags & NRF_RPC_FLAGS_INITIATOR) {
+			err = group_init_send(group);
+			if (err) {
+				NRF_RPC_ERR("Failed to send group init packet for group id: %d "
+					    "strid: %s err: %d",
+					    data->src_group_id, group->strid, err);
+				continue;
+			}
+		}
+	}
+
+	/* Group initialization errors are not propagated to the caller. */
+	err = 0;
+
+	if (waiting_group_count > 0) {
+		err = nrf_rpc_os_event_wait(&groups_init_event,
+					    CONFIG_NRF_RPC_GROUP_INIT_WAIT_TIME);
+		if (err) {
+			NRF_RPC_ERR("Not all groups are ready to use.");
+		}
+	}
+
+	return err;
+}
+
+void nrf_rpc_unbind(void)
+{
+	void *iter;
+	const struct nrf_rpc_group *group;
+
+	initialized_group_count = 0;
+
+	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
+		group->data->dst_group_id = NRF_RPC_ID_UNKNOWN;
+	}
+}
+
+int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
+{
+	int err;
+
+	if (is_initialized) {
+		return 0;
+	}
+
+	err = nrf_rpc_setup(err_handler, global_bound_handler);
+	if (err < 0) {
+		return err;
+	}
+
+	return nrf_rpc_bind();
 }
 
 void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler)

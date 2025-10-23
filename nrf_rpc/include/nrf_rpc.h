@@ -364,6 +364,8 @@ void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler);
 
 /** @brief Initialize the nRF RPC
  *
+ * Calling this function is equivalent to calling both @ref nrf_rpc_setup and @ref nrf_rpc_bind.
+ *
  * @param err_handler Error handler that will be called to report error in
  *                    nRF RPC.
  *
@@ -371,6 +373,52 @@ void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler);
  */
 int nrf_rpc_init(nrf_rpc_err_handler_t err_handler);
 
+/** @brief Initialize the nRF RPC internal state.
+ *
+ * Sets up all variables related to nRF RPC, including contexts, groups, and transports.
+ * It does not initiate any communication with the peer.
+ *
+ * @note This function can be invoked multiple times; however, only the first call has an effect.
+ * @note This function is not thread-safe and should not be called concurrently from multiple
+ * threads.
+ *
+ * @warning This function is experimental and subject to change or removal without prior notice.
+ *
+ * @param err_handler   Error handler that will be called to report an error in the nRF RPC.
+ * @param bound_handler Bound handler that will be called when a group is bound with the peer.
+ *
+ * @return              0 on success or negative error code.
+ */
+int nrf_rpc_setup(nrf_rpc_err_handler_t err_handler, nrf_rpc_group_bound_handler_t bound_handler);
+
+/** @brief Binds the nRF RPC groups.
+ *
+ * Sends an initializaton packet to the peer for each group defined with the @ref
+ * NRF_RPC_FLAGS_INITIATOR flag. It then waits until all groups defined with the @ref
+ * NRF_RPC_FLAGS_WAIT_ON_INIT flag have been bound.
+ *
+ * A group is considered bound when an initialization packet for that group is received from the
+ * peer, indicating the numerical identifier assigned to the group by the peer.
+ *
+ * The function may time out if some groups are not bound within the duration specified by the
+ * CONFIG_NRF_RPC_GROUP_INIT_WAIT_TIME Kconfig option.
+ *
+ * @note This function is not thread-safe; should not be called concurrently from multiple threads.
+ *
+ * @warning This function is experimental and subject to change or removal without prior notice.
+ *
+ * @return 0 on success or negative error code.
+ */
+int nrf_rpc_bind(void);
+
+/** @brief Unbinds the nRF RPC groups.
+ *
+ * Resets the effect of @ref nrf_rpc_bind so that no groups are considered bound after returning
+ * from this function.
+ *
+ * @warning This function is experimental and subject to change or removal without prior notice.
+ */
+void nrf_rpc_unbind(void);
 
 /** @brief Registers the cleanup handler.
  *
