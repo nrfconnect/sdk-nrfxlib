@@ -1499,18 +1499,6 @@ void sdc_support_channel_sounding_initiator_role(void);
  */
 void sdc_support_channel_sounding_reflector_role(void);
 
-/** @brief Support LE Channel Sounding
- *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding.
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
- *
- * @note This function is deprecated. Do not use.
- */
-void sdc_support_channel_sounding(void);
-
 #ifdef __cplusplus
 }
 #endif
