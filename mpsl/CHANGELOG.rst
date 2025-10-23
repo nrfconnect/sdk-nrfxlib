@@ -22,6 +22,7 @@ Bug fixes
 =========
 
 * Fixed unintended clearing of POWER interrupts caused by clearing CLOCK interrupts in :c:func:`mpsl_init()` and :c:func:`mpsl_uninit()`. (DRGN-26338)
+* Fixed an assert that could occur on the nRF54H20 SoC if MRAM was not forced on all the time, for example, if the CONFIG_MRAM_LATENCY_AUTO_REQ Kconfig option is set to ``n``. (DRGN-26065)
 
 nRF Connect SDK v3.1.0
 **********************
