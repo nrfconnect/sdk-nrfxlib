@@ -31,8 +31,8 @@ extern "C" {
 /** @brief The number of channels for 802.15.4 protocol. */
 #define MPSL_TOTAL_NUM_OF_802154_CHANNELS 16
 
-/** @brief Applicable values for @ref mpsl_phy_t type. */
-enum MPSL_PHY
+/** @brief Type enumerating PHYs. */
+typedef enum
 {
     MPSL_PHY_BLE_1M,
     MPSL_PHY_BLE_2M,
@@ -46,13 +46,7 @@ enum MPSL_PHY
     MPSL_PHY_NRF_4Mbit0_25,
     MPSL_PHY_NRF_4Mbit_0BT6,
     MPSL_PHY_NRF_4Mbit_0BT4,
-};
-
-/** @brief PHY type.
- *
- * Applicable values are defined in @ref MPSL_PHY.
- */
-typedef uint8_t mpsl_phy_t;
+} mpsl_phy_t;
 
 /** TX power, dBm. */
 typedef int8_t mpsl_tx_power_t;
