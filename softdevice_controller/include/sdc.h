@@ -398,7 +398,7 @@ typedef void (*sdc_callback_t)(void);
 
 /** @brief Function prototype for antenna switching callback in Channel Sounding.
  *
- *  See also @ref sdc_cs_antenna_switch_callback_set
+ *  See also @ref sdc_support_channel_sounding
  *
  *  @param[in] antenna_index The index of the antenna being switched to.
  *                           Valid range [0, @ref sdc_cfg_cs_cfg_t::num_antennas_supported - 1]
@@ -1473,11 +1473,7 @@ void sdc_support_channel_sounding_mode3(void);
 
 /** @brief  Support Channel Sounding Initiator role
  *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Initiator role
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
+ * After this API is called, the controller will support Channel Sounding Initiator role
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
@@ -1487,8 +1483,18 @@ void sdc_support_channel_sounding_initiator_role(void);
 
 /** @brief  Support Channel Sounding Reflector role
  *
+ * After this API is called, the controller will support Channel Sounding Reflector role
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_sounding_reflector_role(void);
+
+/** @brief Support LE Channel Sounding
+ *
  * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Reflector role
+ * related to Channel Sounding.
  *
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
@@ -1497,7 +1503,7 @@ void sdc_support_channel_sounding_initiator_role(void);
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-void sdc_support_channel_sounding_reflector_role(void);
+void sdc_support_channel_sounding(void);
 
 #ifdef __cplusplus
 }
