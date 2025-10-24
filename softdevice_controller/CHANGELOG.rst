@@ -27,14 +27,6 @@ Changes
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 * The Quality of Service (QoS) channel survey feature now supports incremental channel surveying, allowing it to be used even if there is insufficient time for a full survey.
   The minimum interval has been reduced from 7.5 ms to 3 ms. (DRGN-26108)
-* The function :c:func:`sdc_support_channel_sounding` has been removed.
-  The :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` functions should be used instead.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26504)
-* The controller will now attempt to maintain the same ACL event spacing between two connections using the ``WinOffset`` and ``Instant`` fields of the ``LL_CONNECTION_UPDATE_IND`` packet.
-  This will improve scheduling performance when performing the Connection Parameter Update control procedure and the controller is acting as a central on multiple links.
-  For more details, see :ref:`Connection update scheduling and timing <connection_update_scheduling_and_timing>`. (DRGN-25782)
-* The controller will now attempt to maintain the same offset between two connections using the ``SubrateBaseEvent`` field of the ``LL_SUBRATE_IND`` packet.
-  This will improve scheduling performance when performing the Connection Subrate Update control procedure and the controller is acting as a central on multiple links. (DRGN-25975)
 
 Bug fixes
 =========
