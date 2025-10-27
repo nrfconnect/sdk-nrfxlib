@@ -286,27 +286,6 @@ In the figure below, all four central links are on the faster PHY, and a Scanner
    Optimal packing of four links and a Scanner
 
 
-.. _connection_update_scheduling_and_timing:
-
-Connection update scheduling and timing
----------------------------------------
-
-When a connection update is performed, the Central will try to update the anchor point to schedule the connection :math:`\mathsf{t_{event-C0}}` from the previous connection.
-The anchor point is adjusted using the window offset field of the connection update control packet to achieve the configured event spacing.
-
-.. figure:: pic/schedule/multilink_conn_anchor_update.svg
-   :alt: Alt text: A diagram showing multilink scheduling with connection anchor update
-   :align: center
-   :width: 80%
-
-   Multilink scheduling - connection anchor update
-
-.. note::
-   The anchor is calculated from the connection prior to this one, so the connections must be updated to the desired intervals in the order they were established.
-   A connection that is lost and re-established using the same event-spacing will be placed in the original position.
-   The original connection establishment order should be used to update the intervals for this case.
-
-
 Peripheral connection setup and connection timing
 =================================================
 
