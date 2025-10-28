@@ -16,6 +16,7 @@ Added
 =====
 
 * :c:func:`sdc_hci_cmd_vs_cs_params_set` to set preferred internal CS parameters for the controller to use.
+* Central-only and Peripheral-only library variants for the nRF54H Series devices. (DRGN-25197)
 
 Changes
 =======
