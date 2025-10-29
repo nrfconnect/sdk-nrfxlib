@@ -38,7 +38,7 @@
 #include "nrf_802154_assert.h"
 #include <stdint.h>
 #include "nrfx.h"
-#include <soc/nrfx_coredep.h>
+#include <lib/nrfx_coredep.h>
 
 #ifdef __STATIC_INLINE__
 #undef __STATIC_INLINE__
