@@ -33,16 +33,17 @@
  */
 
 #include "nrf_802154_config.h"
+#include "nrf_802154_peripherals.h"
 
-#if NRF_802154_ENCRYPTION_ACCELERATOR_ECB
+#if NRF_802154_ENCRYPTION_ENABLED && defined(NRF_802154_ENCRYPTION_ACCELERATOR_ECB)
 
+#include <nrfx.h>
 #include "nrf_802154_aes_ccm.h"
 
 #include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "nrf_802154_const.h"
-#include "nrf_802154_config.h"
 #include "nrf_802154_tx_work_buffer.h"
 #if defined(CONFIG_MPSL)
 #include "mpsl_ecb.h"
@@ -614,4 +615,4 @@ void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame)
     m_aes_ccm_data.raw_frame = NULL;
 }
 
-#endif /* NRF_802154_ENCRYPTION_ACCELERATOR_ECB */
+#endif /* NRF_802154_ENCRYPTION_ENABLED && defined(NRF_802154_ENCRYPTION_ACCELERATOR_ECB) */

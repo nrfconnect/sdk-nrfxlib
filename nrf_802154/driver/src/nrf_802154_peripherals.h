@@ -42,8 +42,6 @@
 
 #include <nrfx.h>
 #include "nrf_802154_config.h"
-#include "nrf_802154_debug.h"
-#include "nrf_802154_debug_core.h"
 
 #if defined(NRF52_SERIES)
 #include "nrf_802154_peripherals_nrf52.h"
@@ -152,24 +150,6 @@ extern "C" {
 #ifndef NRF_802154_RTC_USED_MASK
 #define NRF_802154_RTC_USED_MASK (1 << NRF_802154_RTC_INSTANCE_NO)
 #endif
-
-/**
- * @def NRF_802154_GPIO_PINS_USED_MASK
- *
- * Bit mask of GPIO pins used by the 802.15.4 driver.
- */
-#ifndef NRF_802154_GPIO_PINS_USED_MASK
-#define NRF_802154_GPIO_PINS_USED_MASK NRF_802154_DEBUG_PINS_USED_MASK
-#endif // NRF_802154_GPIO_PINS_USED_MASK
-
-/**
- * @def NRF_802154_GPIOTE_CHANNELS_USED_MASK
- *
- * Bit mask of GPIOTE peripherals used by the 802.15.4 driver.
- */
-#ifndef NRF_802154_GPIOTE_CHANNELS_USED_MASK
-#define NRF_802154_GPIOTE_CHANNELS_USED_MASK NRF_802154_DEBUG_GPIOTE_CHANNELS_USED_MASK
-#endif // NRF_802154_GPIOTE_CHANNELS_USED_MASK
 
 /**
  * @def NRF_802154_EGU_NOTIFICATION_USED_CHANNELS_MASK

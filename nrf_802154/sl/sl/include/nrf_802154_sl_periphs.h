@@ -12,8 +12,11 @@
 #ifndef NRF_802154_SL_PERIPHS_H__
 #define NRF_802154_SL_PERIPHS_H__
 
-#include <nrfx.h>
-#include <nrf.h>
+/* This file must not include nrf.h or nrfx.h directly or indirectly,
+ * to avoid circular dependencies.
+ */
+
+#include "nrf_802154_config_soc.h"
 
 #if NRF_802154_USE_INTERNAL_INCLUDES
 #include "nrf_802154_sl_periphs_internal.h"
@@ -27,16 +30,16 @@
  *
  */
 #ifndef NRF_802154_EGU_INSTANCE_NO
-#if defined(NRF52_SERIES) || defined(NRF5340_XXAA)
+#if defined(NRF_802154_SOC_NRF52_SERIES) || defined(NRF_802154_SOC_NRF53_SERIES)
 #define NRF_802154_EGU_INSTANCE_NO 0
-#elif defined(NRF54L_SERIES)
+#elif defined(NRF_802154_SOC_NRF54L_SERIES)
 #define NRF_802154_EGU_INSTANCE_NO 10
-#elif defined(NRF54H_SERIES)
+#elif defined(NRF_802154_SOC_NRF54H_SERIES)
 #define NRF_802154_EGU_INSTANCE_NO 020
 #endif
 #endif
 
-#if defined(NRF53_SERIES)
+#if defined(NRF_802154_SOC_NRF53_SERIES)
 /**
  * @def NRF_802154_EGU_INSTANCE
  *
@@ -138,7 +141,7 @@
  *
  */
 #ifndef NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE
-#if defined(DPPI_PRESENT)
+#if defined(NRF_802154_SOC_DPPI_PRESENT)
 #define NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE 13U
 #else
 #define NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE 13U
@@ -155,7 +158,7 @@
  *
  */
 #ifndef NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE
-#if defined(DPPI_PRESENT)
+#if defined(NRF_802154_SOC_DPPI_PRESENT)
 #define NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE 11U
 #else
 #define NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE 14U
@@ -181,7 +184,7 @@
  *
  */
 #ifndef NRF_802154_PPI_TIMESTAMP_GROUP
-#if defined(DPPI_PRESENT)
+#if defined(NRF_802154_SOC_DPPI_PRESENT)
 #define NRF_802154_PPI_TIMESTAMP_GROUP 1U
 #else
 #define NRF_802154_PPI_TIMESTAMP_GROUP 2U
@@ -204,7 +207,7 @@
 #define NRF_802154_SL_EGU_USED_CHANNELS_MASK \
     NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK
 
-#if defined(NRF54L_SERIES)
+#if defined(NRF_802154_SOC_NRF54L_SERIES)
 /**
  * @def NRF_802154_SL_DPPIC_INSTANCE_NO
  *
@@ -223,9 +226,9 @@
  */
 #define NRF_802154_SL_DPPIC_INSTANCE NRFX_CONCAT_2(NRF_DPPIC, NRF_802154_SL_DPPIC_INSTANCE_NO)
 
-#endif // defined(NRF54L_SERIES)
+#endif // defined(NRF_802154_SOC_NRF54L_SERIES)
 
-#if defined(NRF54H_SERIES)
+#if defined(NRF_802154_SOC_NRF54H_SERIES)
 
 /**
  * @def NRF_802154_SL_DPPIC_INSTANCE_NO
@@ -245,6 +248,6 @@
  */
 #define NRF_802154_SL_DPPIC_INSTANCE NRFX_CONCAT_2(NRF_DPPIC, NRF_802154_SL_DPPIC_INSTANCE_NO)
 
-#endif // defined(NRF54H_SERIES)
+#endif // defined(NRF_802154_SOC_NRF54H_SERIES)
 
 #endif // NRF_802154_SL_PERIPHS_H__

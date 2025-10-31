@@ -12,7 +12,11 @@
 #ifndef NRF_802154_SL_PERIPHS_H__
 #define NRF_802154_SL_PERIPHS_H__
 
-#include <nrfx.h>
+/* This file must not include nrf.h or nrfx.h directly or indirectly,
+ * to avoid circular dependencies.
+ */
+
+#include "nrf_802154_config_soc.h"
 
 #if NRF_802154_USE_INTERNAL_INCLUDES
 #include "nrf_802154_sl_periphs_internal.h"

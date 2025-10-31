@@ -16,8 +16,6 @@ Using CMake
 
 The nRF 802.15.4 Radio Driver supports the CMake build system and can be directly included in a project using the CMake build system with the ``add_subdirectory(nrfxlib/nrf_802154)`` CMake command.
 
-To do so, you must first set the ``NRF52_SERIES`` or ``NRF53_SERIES`` CMake variable to ``1``, depending on the used SoC family.
-
 If building on a single core SoC, you should then do the following:
 
 1. Link the following libraries (CMake targets) to the application library:

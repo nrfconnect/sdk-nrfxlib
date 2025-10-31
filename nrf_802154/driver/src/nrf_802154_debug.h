@@ -45,63 +45,11 @@
 #include "nrf_802154_config.h"
 #include "nrf_802154_sl_log.h"
 #include "nrf_802154_debug_log.h"
-#include "nrf_802154_debug_core.h"
+#include "nrf_802154_debug_peripherals.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define PIN_DBG_RADIO_EVT_END           11
-#define PIN_DBG_RADIO_EVT_DISABLED      12
-#define PIN_DBG_RADIO_EVT_READY         13
-#define PIN_DBG_RADIO_EVT_FRAMESTART    14
-#define PIN_DBG_RADIO_EVT_EDEND         25
-#define PIN_DBG_RADIO_EVT_PHYEND        24
-
-#define PPI_DBG_RADIO_EVT_END           0
-#define PPI_DBG_RADIO_EVT_DISABLED      1
-#define PPI_DBG_RADIO_EVT_READY         2
-#define PPI_DBG_RADIO_EVT_FRAMESTART    3
-#define PPI_DBG_RADIO_EVT_EDEND         4
-#define PPI_DBG_RADIO_EVT_PHYEND        5
-
-#define GPIOTE_DBG_RADIO_EVT_END        0
-#define GPIOTE_DBG_RADIO_EVT_DISABLED   1
-#define GPIOTE_DBG_RADIO_EVT_READY      2
-#define GPIOTE_DBG_RADIO_EVT_FRAMESTART 3
-#define GPIOTE_DBG_RADIO_EVT_EDEND      4
-#define GPIOTE_DBG_RADIO_EVT_PHYEND     5
-
-#if ENABLE_DEBUG_GPIO
-
-#define NRF_802154_DEBUG_PINS_USED_MASK            ((1 << PIN_DBG_RADIO_EVT_END) |        \
-                                                    (1 << PIN_DBG_RADIO_EVT_DISABLED) |   \
-                                                    (1 << PIN_DBG_RADIO_EVT_READY) |      \
-                                                    (1 << PIN_DBG_RADIO_EVT_FRAMESTART) | \
-                                                    (1 << PIN_DBG_RADIO_EVT_EDEND) |      \
-                                                    (1 << PIN_DBG_RADIO_EVT_PHYEND))
-
-#define NRF_802154_DEBUG_PPI_CHANNELS_USED_MASK    ((1 << PPI_DBG_RADIO_EVT_END) |        \
-                                                    (1 << PPI_DBG_RADIO_EVT_DISABLED) |   \
-                                                    (1 << PPI_DBG_RADIO_EVT_READY) |      \
-                                                    (1 << PPI_DBG_RADIO_EVT_FRAMESTART) | \
-                                                    (1 << PPI_DBG_RADIO_EVT_EDEND) |      \
-                                                    (1 << PPI_DBG_RADIO_EVT_PHYEND))
-
-#define NRF_802154_DEBUG_GPIOTE_CHANNELS_USED_MASK ((1 << GPIOTE_DBG_RADIO_EVT_END) |        \
-                                                    (1 << GPIOTE_DBG_RADIO_EVT_DISABLED) |   \
-                                                    (1 << GPIOTE_DBG_RADIO_EVT_READY) |      \
-                                                    (1 << GPIOTE_DBG_RADIO_EVT_FRAMESTART) | \
-                                                    (1 << GPIOTE_DBG_RADIO_EVT_EDEND) |      \
-                                                    (1 << GPIOTE_DBG_RADIO_EVT_PHYEND))
-
-#else // ENABLE_DEBUG_GPIO
-
-#define NRF_802154_DEBUG_PINS_USED_MASK            0
-#define NRF_802154_DEBUG_PPI_CHANNELS_USED_MASK    0
-#define NRF_802154_DEBUG_GPIOTE_CHANNELS_USED_MASK 0
-
-#endif // ENABLE_DEBUG_GPIO
 
 /**
  * @brief Initializes debug helpers for the nRF 802.15.4 driver.

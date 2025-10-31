@@ -40,7 +40,11 @@
 #ifndef NRF_802154_PERIPHERALS_NRF54H_H__
 #define NRF_802154_PERIPHERALS_NRF54H_H__
 
-#include <nrfx.h>
+/* This file must not include nrf.h or nrfx.h directly or indirectly,
+ * to avoid circular dependencies.
+ */
+
+#include "nrf_802154_config_soc.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_sl_periphs.h"
 
@@ -297,6 +301,8 @@ extern "C" {
  *
  */
 #define NRF_802154_TIMER_INSTANCE_NO 022
+
+#define NRF_802154_ENCRYPTION_ACCELERATOR_CCM
 
 #ifdef __cplusplus
 }
