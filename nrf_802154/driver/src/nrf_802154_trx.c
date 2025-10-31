@@ -42,13 +42,14 @@
 #include "nrf_802154_compiler.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_debug.h"
 #include "nrf_802154_peripherals.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_rssi.h"
 #include "nrf_802154_trx_ppi_api.h"
 #include "nrf_802154_utils.h"
 
-#include <nrf_erratas.h>
+#include <nrfx.h>
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"

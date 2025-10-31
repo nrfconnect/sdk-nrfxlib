@@ -33,8 +33,9 @@
  */
 
 #include "nrf_802154_config.h"
+#include "nrf_802154_peripherals.h"
 
-#if NRF_802154_ENCRYPTION_ENABLED && !NRF_802154_ENCRYPTION_ACCELERATOR_ECB
+#if NRF_802154_ENCRYPTION_ENABLED && defined(NRF_802154_ENCRYPTION_ACCELERATOR_CCM)
 
 /** Configures if the CCM's OUT.PTR pointer points to the same memory location as PACKETPTR register
  *  of the RADIO.
@@ -48,6 +49,7 @@
 #define CCM_ADATA_ATTR_ID                    13 ///< Attribute field that identifies the adata CCM job
 #define CCM_MDATA_ATTR_ID                    14 ///< Attribute field that identifies the mdata CCM job
 
+#include <nrfx.h>
 #include "nrf_802154_aes_ccm.h"
 
 #include <string.h>
@@ -383,4 +385,4 @@ void nrf_802154_aes_ccm_transform_reset(void)
     memset(m_nonce, 0, sizeof(m_nonce));
 }
 
-#endif // NRF_802154_ENCRYPTION_ENABLED && !NRF_802154_ENCRYPTION_ACCELERATOR_ECB
+#endif // NRF_802154_ENCRYPTION_ENABLED && defined(NRF_802154_ENCRYPTION_ACCELERATOR_CCM)

@@ -40,9 +40,12 @@
 #ifndef NRF_802154_PERIPHERALS_NRF53_H__
 #define NRF_802154_PERIPHERALS_NRF53_H__
 
-#include <nrfx.h>
+/* This file must not include nrf.h or nrfx.h directly or indirectly,
+ * to avoid circular dependencies.
+ */
+
+#include "nrf_802154_config_soc.h"
 #include "nrf_802154_config.h"
-#include "nrf_802154_debug.h"
 #include "nrf_802154_sl_periphs.h"
 
 #ifdef __cplusplus
@@ -332,6 +335,8 @@ extern "C" {
 #ifndef NRF_802154_DPPI_GROUPS_USED_MASK
 #define NRF_802154_DPPI_GROUPS_USED_MASK 0UL
 #endif // NRF_802154_DPPI_GROUPS_USED_MASK
+
+#define NRF_802154_ENCRYPTION_ACCELERATOR_ECB
 
 #ifdef __cplusplus
 }

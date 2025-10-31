@@ -52,6 +52,7 @@ target_sources(nrf-802154-driver
     src/nrf_802154_core_hooks.c
     src/nrf_802154_critical_section.c
     src/nrf_802154_debug.c
+    src/nrf_802154_debug_gpio.c
     src/nrf_802154_encrypt.c
     src/nrf_802154_notification_direct.c
     src/nrf_802154_notification_swi.c
