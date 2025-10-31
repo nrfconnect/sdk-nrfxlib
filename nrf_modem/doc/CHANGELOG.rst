@@ -17,6 +17,20 @@ Core library
 
 * Added the :ref:`nrf_modem_rs_capture_api` to receive reference signal samples.
 
+DECT NR+
+========
+
+* Added:
+
+  * The :c:func:`nrf_modem_dect_phy_test_rf_tx_cw_control` function to control continuous wave transmission for device certification purposes.
+  * The :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_HANDLE_IN_USE` enumeration value.
+
+Sockets
+=======
+
+* Added the :c:macro:`NRF_SO_SENDCB` socket option to set a callback to be called when a send operation is done sending data on air and the data has been acknowledged by the peer, if required by the network protocol.
+  This socket option is supported by the mfw_nrf9151-ntn modem firmware.
+
 nrf_modem 3.1.0
 ***************
 

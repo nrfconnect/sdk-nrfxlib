@@ -305,6 +305,9 @@ extern "C" {
 #define NRF_SO_TCP_SRV_SESSTIMEO 55
 /** Set a callback for poll events (write-only).
  *  See @ref nrf_modem_pollcb_t for the callback function type.
+ *
+ * @note The callback is executed in an interrupt context.
+ *	 Take care to offload any processing as appropriate.
  */
 #define NRF_SO_POLLCB 60
 /** Release Assistance Indication (RAI) (write-only).
@@ -323,6 +326,50 @@ extern "C" {
  *       modem firmware version 2.0.2 and newer.
  */
 #define NRF_SO_IPV6_DELAYED_ADDR_REFRESH 62
+/**
+ * Set a callback to be called when a send operation is done sending data on air and
+ * the data has been acknowledged by the peer, if required by the network protocol, or until the
+ * timeout, given by the @ref NRF_SO_SNDTIMEO socket option, is reached. Valid timeout values are
+ * 1 to 600 seconds.
+ * See @ref nrf_modem_sendcb_t for the callback function type.
+ *
+ * @note The callback is executed in an interrupt context.
+ *	 Take care to offload any processing as appropriate.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9151-ntn
+ *
+ * This socket option cannot be used along the @ref NRF_MSG_WAITACK send flag.
+ */
+#define NRF_SO_SENDCB 63
+/** @} */
+
+/**
+ * @defgroup nrf_socket_options_sendcb Socket option values for send callback.
+ * @brief Socket send callback parameters.
+ * @ingroup nrf_socket
+ * @{
+ */
+/**
+ * @brief This structure is used to describe the parameters to a send callback function.
+ */
+struct nrf_modem_sendcb_params {
+	/** Socket handle */
+	int fd;
+	/** Status. Can be 0 on successful send or NRF_EAGAIN on timeout. */
+	int status;
+	/** Number of bytes that was sent. */
+	size_t bytes_sent;
+};
+
+/** Callback for send events */
+typedef void (*nrf_modem_sendcb_t)(const struct nrf_modem_sendcb_params *params);
+
+/** @c nrf_send() and @c nrf_sendto() callback */
+struct nrf_modem_sendcb {
+	/** Callback function */
+	nrf_modem_sendcb_t callback;
+};
 /** @} */
 
 /**
@@ -347,7 +394,10 @@ extern "C" {
 #define NRF_MSG_WAITALL 0x100
 /** Request a blocking send operation until the request is acknowledged.
  *  When used in @c nrf_send() or @c nrf_sendto(), the operation will block until the data has been
- *  sent on-air and acknowledged by the peer, if required by the network protocol.
+ *  sent on-air and acknowledged by the peer, if required by the network protocol, or until the
+ *  timeout, given by the @ref NRF_SO_SNDTIMEO socket option, is reached. Valid timeout values are
+ *  1 to 600 seconds.
+ *  This send flag cannot be used along the @ref NRF_SO_SENDCB socket option.
  */
 #define NRF_MSG_WAITACK 0x200
 /** @} */
@@ -866,6 +916,8 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
+ * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
+ *               ongoing.
  */
 ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
 
@@ -881,6 +933,8 @@ ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
+ * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
+ *               ongoing.
  */
 ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
 		   const struct nrf_sockaddr *dest_addr, nrf_socklen_t dest_len);
