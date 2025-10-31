@@ -33,7 +33,7 @@
  */
 
 #include "nrf_802154_swi_callouts.h"
-#include "compiler_abstraction.h"
+#include <nrfx.h>
 
 __WEAK void nrf_802154_trx_swi_irq_handler(void)
 {

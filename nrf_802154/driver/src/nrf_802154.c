@@ -49,6 +49,7 @@
 #include <string.h>
 
 #include "nrf_802154_config.h"
+#include "nrf_802154_facade_helpers.h"
 #include "nrf_802154_utils.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_core.h"
@@ -91,25 +92,6 @@
 static uint8_t m_tx_buffer[RAW_PAYLOAD_OFFSET + MAX_PACKET_SIZE];
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
-
-static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame_props_t * p_props)
-{
-    return p_props->dynamic_data_is_set || !(p_props->is_secured);
-}
-
-static inline bool are_extra_cca_attempts_valid(const nrf_802154_transmit_at_metadata_t * p_data)
-{
-    return !p_data->cca || (p_data->extra_cca_attempts < UINT8_MAX);
-}
-
-static inline bool is_tx_timestamp_request_valid(const bool tx_timestamp_encode)
-{
-#if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
-    return true;
-#else
-    return !tx_timestamp_encode;
-#endif
-}
 
 void nrf_802154_channel_set(uint8_t channel)
 {
@@ -403,16 +385,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                           
 
     if (p_metadata == NULL)
     {
-        static const nrf_802154_transmit_metadata_t metadata_default =
-        {
-            .frame_props         = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .cca                 = true,
-            .tx_power            = {.use_metadata_value = false},
-            .tx_channel          = {.use_metadata_value = false},
-            .tx_timestamp_encode = false
-        };
-
-        p_metadata = &metadata_default;
+        p_metadata = nrf_802154_transmit_metadata_default_ptr_get();
     }
 
     result = nrf_802154_frame_parser_data_init(p_data,
@@ -432,8 +405,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                           
 
     if (result)
     {
-        result = are_frame_properties_valid(&p_metadata->frame_props) &&
-                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
+        result = nrf_802154_transmit_metadata_is_valid(p_metadata);
     }
 
     if (result)
@@ -459,21 +431,14 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
     bool                              result;
     nrf_802154_frame_t                frame;
     nrf_802154_tx_error_t             error;
-    nrf_802154_transmit_at_metadata_t metadata_default =
-    {
-        .frame_props         = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-        .cca                 = true,
-        .tx_power            = {.use_metadata_value = false},
-        .extra_cca_attempts  = 0,
-        .tx_timestamp_encode = false,
-    };
+    nrf_802154_transmit_at_metadata_t metadata_default;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     if (p_metadata == NULL)
     {
-        metadata_default.channel = nrf_802154_channel_get();
-        p_metadata               = &metadata_default;
+        nrf_802154_transmit_at_metadata_default_prepare(&metadata_default);
+        p_metadata = &metadata_default;
     }
 
     result = nrf_802154_frame_parser_data_init(p_data,
@@ -493,9 +458,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
 
     if (result)
     {
-        result = are_frame_properties_valid(&p_metadata->frame_props) &&
-                 are_extra_cca_attempts_valid(p_metadata) &&
-                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
+        result = nrf_802154_transmit_at_metadata_is_valid(p_metadata);
     }
 
     if (result)
@@ -766,15 +729,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
 
     if (p_metadata == NULL)
     {
-        static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
-        {
-            .frame_props         = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .tx_power            = {.use_metadata_value = false},
-            .tx_channel          = {.use_metadata_value = false},
-            .tx_timestamp_encode = false
-        };
-
-        p_metadata = &metadata_default;
+        p_metadata = nrf_802154_transmit_csma_ca_metadata_default_ptr_get();
     }
 
     result = nrf_802154_frame_parser_data_init(p_data,
@@ -794,8 +749,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
 
     if (result)
     {
-        result = are_frame_properties_valid(&p_metadata->frame_props) &&
-                 is_tx_timestamp_request_valid(p_metadata->tx_timestamp_encode);
+        result = nrf_802154_transmit_csma_ca_metadata_is_valid(p_metadata);
     }
 
     if (result)

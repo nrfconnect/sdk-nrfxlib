@@ -25,6 +25,12 @@ Notable changes
 * The experimental IFS feature has been removed. (KRKNWK-20788)
 * The return value of :c:func:`nrf_802154_transmit_raw`, :c:func:`nrf_802154_transmit_csma_ca_raw`, and :c:func:`nrf_802154_transmit_raw_at` was updated.
   These API functions now return ``nrf_802154_tx_error_t`` instead of ``bool``. (KRKNWK-18536)
+* The following header files no longer include ``nrf.h`` or ``nrfx.h`` to avoid circular dependencies (KRKNWK-20956):
+
+    * ``nrf_802154_peripherals_nrf52.h``
+    * ``nrf_802154_peripherals_nrf53.h``
+    * ``nrf_802154_peripherals_nrf54h.h``
+    * ``nrf_802154_peripherals_nrf54l.h``
 
 Added
 =====

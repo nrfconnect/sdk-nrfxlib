@@ -43,6 +43,13 @@
 #include <stdint.h>
 
 #include "nrfx.h"
+
+#ifdef ENABLE_DEBUG_GPIO
+
+#if !defined(NRF52_SERIES)
+#error "ENABLE_DEBUG_GPIO is supported only for nRF52 series devices."
+#endif
+
 #include "hal/nrf_gpio.h"
 #include "hal/nrf_gpiote.h"
 #include "hal/nrf_ppi.h"
@@ -95,19 +102,11 @@ static void radio_event_gpio_toggle_init(void)
     nrf_ppi_channel_enable(NRF_PPI, (nrf_ppi_channel_t)PPI_DBG_RADIO_EVT_READY);
 }
 
-/**
- * @brief Initialize GPIO to set it simulated arbiter events.
- */
-static void raal_simulator_gpio_init(void)
-{
-#if RAAL_SIMULATOR
-    nrf_gpio_cfg_output(PIN_DBG_TIMESLOT_ACTIVE);
-    nrf_gpio_cfg_output(PIN_DBG_RAAL_CRITICAL_SECTION);
-#endif
-}
+#endif /* ENABLE_DEBUG_GPIO */
 
 void nrf_802154_debug_gpio_init(void)
 {
+#ifdef ENABLE_DEBUG_GPIO
     radio_event_gpio_toggle_init();
-    raal_simulator_gpio_init();
+#endif
 }
