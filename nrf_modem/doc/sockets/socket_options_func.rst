@@ -372,3 +372,43 @@ NRF_SO_SEC_CIPHERSUITE_USED
    Get chosen TLS cipher suite.
    This option is read-only.
    The socket option is supported from modem firmware v2.x.x.
+
+Supported flags for socket functions
+************************************
+
+The following flags are supported for socket functions such as :c:func:`nrf_send`, :c:func:`nrf_recv`, :c:func:`nrf_sendto`, and :c:func:`nrf_recvfrom`:
+
+*  :c:macro:`NRF_MSG_PEEK`
+      Returns data from the beginning of receive queue without removing it from the input queue.
+      This flag is only supported for the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions.
+      When this flag is used, the data is copied into the provided buffer but remains in the socket's input queue for future reads.
+      Subsequent calls to :c:func:`nrf_recv` or :c:func:`nrf_recvfrom` returns the same data until it is read without the :c:macro:`NRF_MSG_PEEK` flag.
+      This flag is useful when an application needs to inspect incoming data without consuming it, allowing for multiple reads of the same data.
+      The default behavior is to remove the data from the input queue after it has been read.
+
+* :c:macro:`NRF_MSG_DONTWAIT`
+     Enables non-blocking operation for this specific function call.
+     If the operation blocks, the function returns immediately with ``-1`` and sets ``errno`` to ``NRF_EAGAIN`` or ``NRF_EWOULDBLOCK``.
+     This flag has no effect if the socket is already set to non-blocking mode using :c:func:`nrf_fcntl`.
+     This flag is useful when an application wants to perform a single non-blocking operation on a socket that is otherwise in blocking mode.
+     The default behavior is to follow the socket's blocking mode.
+
+* :c:macro:`NRF_MSG_WAITALL`
+     Requests that the function blocks read operation until the full amount of data requested has been received.
+     This flag is only supported for the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions.
+     This flag is not valid for datagram sockets
+     If this flag is used, the function continues to block and wait for more data until either the requested number of bytes has been received or an error occurs.
+     If the connection is closed before all requested data is received, the function returns the number of bytes that were actually received.
+     This flag is useful when an application needs to ensure that it receives a complete message or data block in a single operation.
+     The default behavior is to return as soon as any data is available, even if it is less than the requested amount.
+
+* :c:macro:`NRF_MSG_WAITACK`
+     Requests a blocking send operation until the request is acknowledged.
+     This flag is only supported for the :c:func:`nrf_send` and :c:func:`nrf_sendto` functions.
+     When this flag is used, write operations on datagram sockets are blocked until the data has been sent on air, and write operations on stream sockets are blocked until data reception is acknowledged by the peer.
+     The operation timeout can be configured using the :c:macro:`NRF_SO_SNDTIMEO` socket option.
+     The valid timeout values are 1 to 600 seconds.
+     For the :c:macro:`NRF_SOCK_STREAM` socket type , the operation is blocked until the data is acknowledged by the peer, and for the :c:macro:`NRF_SOCK_DGRAM` socket type, until the data is sent on-air by the modem.
+     This flag is useful in scenarios where confirmation of receipt is critical.
+     The default behavior is to return immediately after queuing the data for sending, without waiting for acknowledgment.
+     This send flag cannot be used along with the :c:macro:`NRF_SO_SENDCB` socket option.
