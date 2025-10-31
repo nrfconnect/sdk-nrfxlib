@@ -17,6 +17,7 @@ Changes
 =======
 
 * The types :c:type:`mpsl_phy_t`, :c:type:`mpsl_fem_event_type_t`, :c:type:`mpsl_fem_functionality_t`, :c:type:`mpsl_cx_req_trig_t`, :c:type:`mpsl_pm_event_state_t` and :c:type:`mpsl_pm_low_latency_state_t` are now a fixed-width ``uint8_t`` to not rely on compiler specific size of an enum type. (KRKNWK-20877)
+* The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` have been moved to the :file:`mpsl_hwres_ppi.h` file. (DRGN-26373)
 
 Bug fixes
 =========
