@@ -143,6 +143,13 @@ enum nrf_modem_dect_phy_err {
 	 */
 	NRF_MODEM_DECT_PHY_ERR_RADIO_MODE_CONFLICT = 0x100B,
 	/**
+	 * @brief Handle is already in use.
+	 *
+	 * Each operation given to the modem must have a unique handle among all uncompleted
+	 * operations. Handles may be reused after an operation completes.
+	 */
+	NRF_MODEM_DECT_PHY_ERR_HANDLE_IN_USE = 0x100C,
+	/**
 	 * @brief Unsupported carrier.
 	 */
 	NRF_MODEM_DECT_PHY_ERR_UNSUPPORTED_CARRIER = 0x6000,
@@ -1438,6 +1445,36 @@ struct nrf_modem_dect_phy_band_get_event {
 };
 
 /**
+ * @brief Test RF TX CW operation codes.
+ */
+enum nrf_modem_dect_phy_test_rf_tx_cw_oper {
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_OPER_ON,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_OPER_OFF,
+};
+
+/**
+ * @brief Test RF TX CW operation status codes.
+ */
+enum nrf_modem_dect_phy_test_rf_tx_cw_err {
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_NO_ERROR = 0,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_ERROR = -1,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_TX_ALREADY_ON = -100,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_TX_ALREADY_OFF = -101,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_BUFFER_RESERVE_FAILED = -102,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_INVALID_OPERATION = -103,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_DSP_CONFIG_FAILURE = -104,
+	NRF_MODEM_DECT_PHY_TEST_RF_TX_CW_ERR_MSG_SEND_FAILED = -105,
+};
+
+/**
+ * @brief Test RF TX CW control event.
+ */
+struct nrf_modem_dect_phy_test_rf_tx_cw_control_event {
+	/** @brief Operation result. */
+	enum nrf_modem_dect_phy_test_rf_tx_cw_err err;
+};
+
+/**
  * @brief STF cover sequence control event.
  */
 struct nrf_modem_dect_phy_stf_control_event {
@@ -1601,6 +1638,10 @@ enum nrf_modem_dect_phy_event_id {
 	 * @brief Event to indicate the completion of STF configuration.
 	 */
 	NRF_MODEM_DECT_PHY_EVT_STF_CONFIG,
+	/**
+	 * @brief Event to indicate the completion of the test RF TX CW configuration.
+	 */
+	NRF_MODEM_DECT_PHY_EVT_TEST_RF_TX_CW_CONTROL_CONFIG,
 };
 
 /**
@@ -1636,6 +1677,7 @@ struct nrf_modem_dect_phy_event {
 		struct nrf_modem_dect_phy_capability_get_event capability_get;
 		struct nrf_modem_dect_phy_band_get_event band_get;
 		struct nrf_modem_dect_phy_latency_info_event latency_get;
+		struct nrf_modem_dect_phy_test_rf_tx_cw_control_event test_rf_tx_cw_control;
 		struct nrf_modem_dect_phy_stf_control_event stf_cover_seq_control;
 		struct nrf_modem_dect_phy_link_config_event link_config;
 	};
@@ -1988,6 +2030,35 @@ int nrf_modem_dect_phy_latency_get(void);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  */
 int nrf_modem_dect_phy_time_get(void);
+
+/**
+ * @brief Control continuous wave transmission.
+ *
+ * The default, applied at each initialization, is OFF.
+ *
+ * Continuous wave transmission can only be turned on when the DECT PHY interface is not
+ * initialized. DECT PHY interface initialization is not allowed when continuous wave transmission
+ * is on.
+ *
+ * @note
+ * This API is intended for certification purposes only.
+ * It should not be used for normal operation.
+ *
+ * This operation is performed asynchronously.
+ * Completion of this operation is indicated by the
+ * @ref NRF_MODEM_DECT_PHY_EVT_TEST_RF_TX_CW_CONTROL_CONFIG event.
+ *
+ * @param operation Control operation code.
+ * @param carrier Carrier on which the wave is transmitted.
+ * @param power Power of the transmission in dBm.
+ *
+ * @retval 0           Request was sent to modem.
+ * @retval -NRF_EPERM  The Modem library is not initialized.
+ * @retval -NRF_EFAULT No event handler is set.
+ * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ */
+int nrf_modem_dect_phy_test_rf_tx_cw_control(enum nrf_modem_dect_phy_test_rf_tx_cw_oper operation,
+					uint16_t carrier, int8_t power);
 
 /**
  * @brief STF cover sequence control.
