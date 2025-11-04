@@ -43,6 +43,7 @@ Bug fixes
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 * Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
+* Fixed an issue where an incorrect TX power value was set when using ‐7 dBm on the nRF54L Series devices. (DRGN-26470)
 
 nRF Connect SDK v3.1.0
 **********************
