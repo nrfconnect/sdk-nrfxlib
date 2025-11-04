@@ -11,9 +11,6 @@
  * @ingroup  mpsl
  *
  * This file defines fixed hardware resources used by the MPSL.
- * It also defines an API to dynamically allocate some of hardware
- * resources. The allocation functions are expected to be implemented
- * outside of the MPSL.
  * @{
  */
 
@@ -24,6 +21,7 @@
 #include <stdint.h>
 #include "nrf.h"
 #include "nrf_peripherals.h"
+#include "mpsl_hwres_ppi.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,40 +60,6 @@ extern "C" {
 #else
     #define MPSL_TIMER0 NRF_TIMER020
 #endif
-
-#if defined(DPPI_PRESENT) || defined(DOXYGEN)
-
-/** @brief Allocate a DPPI channel of a DPPIC controller instance.
- *
- *  @param[in]  p_dppic    Pointer to a DPPIC controller instance.
- *  @param[out] p_dppi_ch  Allocated DPPI channel number on the given DPPIC instance.
- *                         Value written at this pointer is valid only on successful
- *                         allocation.
- *
- *  @retval true   Allocation successful.
- *  @retval false  Allocation failed.
- */
-bool mpsl_hwres_dppi_channel_alloc(NRF_DPPIC_Type * p_dppic, uint8_t * p_dppi_ch);
-
-#endif /* DPPI_PRESENT */
-
-#if defined(PPIB_PRESENT) || defined(DOXYGEN)
-
-/** @brief Allocate a PPIB channel of a PPIB-to-PPIB interconnection.
- *
- * @param[in]  p_ppib    Pointer to a PPIB instance.
- * @param[out] p_ppib_ch Allocated PPIB channel number the for PPIB-to-PPIB
- *                       interconnection identified by the @p p_ppib being one
- *                       of the sides of the interconnection.
- *                       Value written at this pointer valid only on successful
- *                       allocation.
- *
- *  @retval true   Allocation successful.
- *  @retval false  Allocation failed.
- */
-bool mpsl_hwres_ppib_channel_alloc(NRF_PPIB_Type * p_ppib, uint8_t * p_ppib_ch);
-
-#endif /* PPIB_PRESENT */
 
 #ifdef __cplusplus
 }
