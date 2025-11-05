@@ -17,6 +17,9 @@ Added
 
 * :c:func:`sdc_hci_cmd_vs_cs_params_set` to set preferred internal CS parameters for the controller to use.
 * Central-only and Peripheral-only library variants for the nRF54H Series devices. (DRGN-25197)
+* Support for the LE Read All Local Supported Features and LE Read All Remote Features HCI commands. (DRGN-25216)
+* Support for the LE Frame Space Update HCI command. (DRGN-23612)
+* Support for the LE Connection Rate Request, LE Set Default Rate Parameters, and LE Read Minimum Supported Connection Interval HCI commands. (DRGN-23668)
 
 Changes
 =======

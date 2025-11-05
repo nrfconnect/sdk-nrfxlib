@@ -295,6 +295,12 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE_V2 = 0x2097,
     /** @brief See @ref sdc_hci_cmd_le_frame_space_update(). */
     SDC_HCI_OPCODE_CMD_LE_FRAME_SPACE_UPDATE = 0x209d,
+    /** @brief See @ref sdc_hci_cmd_le_conn_rate_request(). */
+    SDC_HCI_OPCODE_CMD_LE_CONN_RATE_REQUEST = 0x20a1,
+    /** @brief See @ref sdc_hci_cmd_le_set_default_rate_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_RATE_PARAMS = 0x20a2,
+    /** @brief See @ref sdc_hci_cmd_le_read_min_supported_conn_interval(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_MIN_SUPPORTED_CONN_INTERVAL = 0x20a3,
 };
 
 /** @brief LE subevent Code values. */
@@ -332,6 +338,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_CS_TEST_END_COMPLETE = 0x33,
     /** @brief See @ref sdc_hci_subevent_le_frame_space_update_complete_t. */
     SDC_HCI_SUBEVENT_LE_FRAME_SPACE_UPDATE_COMPLETE = 0x35,
+    /** @brief See @ref sdc_hci_subevent_le_conn_rate_change_t. */
+    SDC_HCI_SUBEVENT_LE_CONN_RATE_CHANGE = 0x37,
 };
 
 /** @brief Advertising Event Properties parameters. */
@@ -587,6 +595,14 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t duplicate_filter_initially_enabled : 1;
     uint8_t rfu : 5;
 } sdc_hci_le_periodic_adv_create_sync_options_params_t;
+
+/** @brief LE Read Minimum Supported Connection Interval groups. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t group_min;
+    uint16_t group_max;
+    uint16_t group_stride;
+} sdc_hci_le_read_min_supported_conn_interval_group_t;
 
 /** @brief LE Set CIG Parameters array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -1418,6 +1434,35 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t phys;
     uint16_t spacing_types;
 } sdc_hci_subevent_le_frame_space_update_complete_t;
+
+/** @brief LE Connection Rate Change.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.50
+ *
+ * The HCI_LE_Connection_Rate_Change event is used to indicate that the Connection
+ * Rate Update procedure has completed.
+ *
+ * The event shall be issued if the HCI_LE_Connection_Rate_Request command was
+ * issued by the Host or if the connection parameters are updated following a request
+ * from the peer device. If no parameters are updated following a request from the peer
+ * device or the parameters were changed using the Connection Update procedure or the
+ * Connection Subrate Update procedure, then this event shall not be issued.
+ *
+ * Note: The parameter values returned in this event can be different from the parameter
+ * values provided by the Host through the HCI_LE_Connection_Rate_Request command
+ * (Section 7.8.154).
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint16_t conn_interval;
+    uint16_t subrate_factor;
+    uint16_t peripheral_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+} sdc_hci_subevent_le_conn_rate_change_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -2817,6 +2862,43 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t phys;
     uint16_t spacing_types;
 } sdc_hci_cmd_le_frame_space_update_t;
+
+/** @brief LE Connection Rate Request command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint16_t conn_interval_min;
+    uint16_t conn_interval_max;
+    uint16_t subrate_min;
+    uint16_t subrate_max;
+    uint16_t max_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+    uint16_t min_ce_length;
+    uint16_t max_ce_length;
+} sdc_hci_cmd_le_conn_rate_request_t;
+
+/** @brief LE Set Default Rate Parameters command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_interval_min;
+    uint16_t conn_interval_max;
+    uint16_t subrate_min;
+    uint16_t subrate_max;
+    uint16_t max_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+    uint16_t min_ce_length;
+    uint16_t max_ce_length;
+} sdc_hci_cmd_le_set_default_rate_params_t;
+
+/** @brief LE Read Minimum Supported Connection Interval return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t min_supported_conn_interval;
+    uint8_t num_groups;
+    sdc_hci_le_read_min_supported_conn_interval_group_t groups[];
+} sdc_hci_cmd_le_read_min_supported_conn_interval_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -9649,6 +9731,188 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_frame_space_update(const sdc_hci_cmd_le_frame_space_update_t * p_params);
+
+/** @brief LE Connection Rate Request.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.154
+ *
+ * This command is used by a Central or a Peripheral to request a change to
+ * existing connection parameters (see Section 4.5.1) using the Connection Rate Update
+ * procedure (see [Vol 6] Part B, Section 5.1.32) or the Connection Rate Request
+ * procedure (see [Vol 6] Part B, Section 5.1.33).
+ *
+ * The Connection_Interval_Min and Connection_Interval_Max parameters are used to
+ * define the minimum and maximum allowed connection interval.
+ *
+ * The Subrate_Min and Subrate_Max parameters specify the range of acceptable
+ * subrating factors being requested.
+ *
+ * The Max_Latency parameter specifies the maximum allowed Peripheral latency in units
+ * of subrated connection events. The same maximum shall apply irrespective of the
+ * subrating factor actually chosen.
+ *
+ * The Continuation_Number parameter specifies the number of underlying connection
+ * intervals to remain active after a packet other than an empty packet is transmitted or
+ * received.
+ *
+ * The Supervision_Timeout parameter specifies the link supervision timeout for the
+ * connection.
+ *
+ * If this command is issued on the Central, then it also sets the acceptable
+ * parameters for requests from the Peripheral (see [Vol 6] Part B, Section 5.1.33).
+ * The acceptable parameters set by this command override those provided via the
+ * HCI_LE_Set_Default_Rate_Parameters command or any values set by previous uses
+ * of this command on the same connection.
+ * The Min_CE_Length and Max_CE_Length parameters provide the Controller with the
+ * expected minimum and maximum length of the connection events. The Controller is not
+ * required to use these values.
+ *
+ * If this command is issued on the Central before the devices have performed the Feature
+ * Exchange procedure, then the Controller shall complete that procedure before initiating
+ * the Connection Rate Request procedure.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *  Type     Condition                                                        Error Code
+ *  MC       One or more CS procedures are enabled.                           Command Disallowed
+ * (0x0C)
+ *  MC       A Connection Parameters Request procedure or a Connec-           Command Disallowed
+ * (0x0C)
+ *           tion Subrate Request procedure is in progress.
+ *  MC       The Connection_Handle parameter does not identify an es-         Unknown Connection
+ * Identifier
+ *           tablished ACL connection.                                        (0x02)
+ *  MC       Subrate_Max × (Max_Latency + 1) is greater than 500.             Invalid HCI Command
+ * Param-
+ *                                                                            eters (0x12)
+ *  MC       Connection_Interval_Max × Subrate_Max × (Max_Latency +           Invalid HCI Command
+ * Param-
+ *           1) is greater than or equal to Supervision_Timeout × 40.         eters (0x12)
+ *  MC       Connection_Interval_Max is less than Connection_Interval_-       Invalid HCI Command
+ * Param-
+ *           Min.                                                             eters (0x12)
+ *  MC       Connection_Interval_Min and Connection_Interval_Max              Unsupported LL
+ * Parameter
+ *           specify a range of connection intervals which is not suppor-     Value (0x20)
+ *           ted by the Controller.
+ *  MC       Connection_Interval_Max is less than connIntervalRequired        Unsupported Feature or
+ * Pa-
+ *           (see [Vol 6] Part B, Section 4.5.10).                            rameter Value (0x11)
+ *  MC       Subrate_Max is less than Subrate_Min.                            Invalid HCI Command
+ * Param-
+ *                                                                            eters (0x12)
+ *  MC       Continuation_Number is greater than or equal to Sub-             Invalid HCI Command
+ * Param-
+ *           rate_Max.                                                        eters (0x12)
+ *  MC       The Connection Rate (Host Support) bit is not set in the local   Unsupported Remote
+ * Feature
+ *           or remote device’s FeatureSet.                                   (0x1A)
+ *  MC       Max_CE_Length is less than Min_CE_Length                         Invalid HCI Command
+ * Param-
+ *                                                                            eters (0x12)
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Connection_Rate_Request command,
+ * the Controller shall send the HCI_Command_Status event to the Host. An
+ * HCI_LE_Connection_Rate_Change event shall be generated when the Connection
+ * Rate Update procedure or the Connection Rate Request procedure has completed.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_conn_rate_request(const sdc_hci_cmd_le_conn_rate_request_t * p_params);
+
+/** @brief LE Set Default Rate Parameters.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.155
+ *
+ * This command is used by the Host to set the initial values of the acceptable parameters
+ * for the Connection Rate Request procedure for all future ACL connections where the
+ * Controller is Central. The command does not affect any existing connection.
+ *
+ * The parameters have the same meanings as those in the
+ * HCI_LE_Connection_Rate_Request command (see Section 7.8.154).
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *  Type     Condition                                              Error Code
+ *  MC       Subrate_Max × (Max_Latency + 1) is greater than 500.   Invalid HCI Command Parameters
+ *                                                                  (0x12)
+ *  MC       Connection_Interval_Max × Subrate_Max × (Max_La-       Invalid HCI Command Parameters
+ *           tency + 1) is greater than or equal to Supervi-        (0x12)
+ *           sion_Timeout × 40.
+ *  MC       Connection_Interval_Max is less than Connection_In-    Invalid HCI Command Parameters
+ *           terval_Min.                                            (0x12)
+ *  MC       Subrate_Max is less than Subrate_Min.                  Invalid HCI Command Parameters
+ *                                                                  (0x12)
+ *  MC       Continuation_Number is greater than or equal to Sub-   Invalid HCI Command Parameters
+ *           rate_Max.                                              (0x12)
+ *  MC       Max_CE_Length is less than Min_CE_Length               Invalid HCI Command Parameters
+ *                                                                  (0x12)
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Set_Default_Rate_Parameters command,
+ * the Controller shall send the HCI_Command_Complete event to the Host.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_default_rate_params(const sdc_hci_cmd_le_set_default_rate_params_t * p_params);
+
+/** @brief LE Read Minimum Supported Connection Interval.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.156
+ *
+ * This command is used by the Host to determine the minimum supported connection
+ * interval and which other connection intervals (see [Vol 6] Part B, Section 4.5.1) the
+ * Controller supports.
+ *
+ * Each group shall represent a set of supported connection intervals forming an
+ * arithmetic sequence starting at Group_Min[i], ending at Group_Max[i], and in steps of
+ * Group_Stride[i]. For example, if Group_Min[i] = 0x0005, Group_Max[i] = 0x003C, and
+ * Group_Strides[i] = 0x000B, then this group indicates that the Controller supports the
+ * intervals 0.625 ms, 2.000 ms, 3.375 ms, 4.750 ms, 6.125 ms, and 7.500 ms.
+ *
+ * The returned groups should include between them every supported value that is in ECV
+ * and not in RCV but may include values in RCV. A supported value may be in more
+ * than one group. The Controller shall not include any group that only contains values
+ * from RCV or the minimum supported. If it would require too many groups to represent
+ * all supported values, then the Controller should represent as many supported values as
+ * possible.
+ *
+ * For example, if the Controller returns Num_Groups = 2, Group_Min[0] = 0x0005,
+ * Group_Max[0] = 0x0050, Group_Strides[0] = 0x0005, Group_Min[1] = 0x0050,
+ * Group_Max[1] = 0x0320, and Group_Strides[1] = 0x0008, then the Controller supports
+ * all connection interval values in RCV, all values up to 10 ms that are multiples of 625 μs,
+ * and all values between 10 ms and 100 ms that are multiples of 1 ms. If the Controller
+ * supports any other values, it should have included more groups.
+ *
+ * If the Controller only supports values from RCV, then it shall set Num_Groups to zero.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_Minimum_Supported_Connection_Interval command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_supported_conn_interval_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 
