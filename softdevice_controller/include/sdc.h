@@ -225,13 +225,20 @@ extern "C" {
  * @param[in] num_links Total number of peripheral and central links supported.
  * @param[in] num_pages Total number of extended feature pages supported.
  */
-#define SDC_MEM_EXTENDED_FEATURE_SET(num_links, num_pages) ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
+#define SDC_MEM_EXTENDED_FEATURE_SET(num_links, num_pages) \
+     ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
 
 /** @brief Maximum memory required when supporting frame space update.
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
 #define SDC_MEM_FRAME_SPACE_UPDATE(num_links) ((num_links) > 0 ? (12 + (num_links) * 68) : 0)
+
+/** @brief Maximum memory required when supporting shorter connection intervals.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_SHORTER_CONNECTION_INTERVALS(num_links) ((num_links) > 0 ? (12 + (num_links) * 52) : 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
@@ -367,7 +374,9 @@ extern "C" {
  * @param[in] max_antenna_paths_supported Maximum number of antenna paths supported in CS.
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
-#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
+#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) \
+     ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
+      + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
@@ -1449,6 +1458,36 @@ void sdc_support_frame_space_update_central(void);
  *       it is called at the right time.
  */
 void sdc_support_frame_space_update_peripheral(void);
+
+/** @brief Support Shorter Connection Intervals for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Shorter Connection Intervals.
+ *
+ * @note The application is required to call both @ref sdc_support_shorter_connection_intervals_central()
+ *       and @ref sdc_support_shorter_connection_intervals_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_shorter_connection_intervals_central(void);
+
+/** @brief Support Shorter Connection Intervals for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Shorter Connection Intervals.
+ *
+ * @note The application is required to call both @ref sdc_support_shorter_connection_intervals_central()
+ *       and @ref sdc_support_shorter_connection_intervals_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_shorter_connection_intervals_peripheral(void);
 
 /** @brief Support Channel Sounding test command
  *
