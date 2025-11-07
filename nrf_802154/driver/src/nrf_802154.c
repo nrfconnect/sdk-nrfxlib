@@ -59,6 +59,7 @@
 #include "nrf_802154_pib.h"
 #include "nrf_802154_request.h"
 #include "nrf_802154_rx_buffer.h"
+#include "nrf_802154_trx.h"
 #include "nrf_802154_tx_power.h"
 #include "nrf_802154_stats.h"
 #include "nrf_802154_swi.h"
@@ -626,6 +627,16 @@ bool nrf_802154_promiscuous_get(void)
 void nrf_802154_promiscuous_set(bool enabled)
 {
     nrf_802154_pib_promiscuous_set(enabled);
+}
+
+bool nrf_802154_pa_modulation_fix_get(void)
+{
+    return nrf_802154_trx_pa_modulation_fix_get();
+}
+
+void nrf_802154_pa_modulation_fix_set(bool enable)
+{
+    nrf_802154_trx_pa_modulation_fix_set(enable);
 }
 
 void nrf_802154_rx_on_when_idle_set(bool enabled)

@@ -163,6 +163,23 @@ void nrf_802154_trx_enable(void);
 void nrf_802154_trx_disable(void);
 
 /**
+ * @brief Returns if the radio has PA modulation fix enabled.
+ *
+ * @retval true   PA modulation fix is enabled.
+ * @retval false  PA modulation fix is disabled.
+ */
+bool nrf_802154_trx_pa_modulation_fix_get(void);
+
+/**
+ * @brief Enables or disables the PA modulation fix.
+ *
+ * @note The PA modulation fix is enabled by default on the chips that require it.
+ *
+ * @param[in]  enable  If the PA modulation fix is to be enabled.
+ */
+void nrf_802154_trx_pa_modulation_fix_set(bool enable);
+
+/**
  * @brief Updates currently used antenna.
  *
  * This function sets the antenna to be used based on antenna diversity interface
