@@ -20,7 +20,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <nrf.h>
+#include <nrfx.h>
 #include <nrf_errno.h>
 
 #include <mpsl_fem_config_common.h>

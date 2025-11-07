@@ -21,7 +21,7 @@
 
 #include "mpsl_fem_config_common.h"
 #include "mpsl_fem_nrf22xx_twi_config_common.h"
-#include "nrf.h"
+#include "nrfx.h"
 
 #ifdef __cplusplus
 extern "C" {

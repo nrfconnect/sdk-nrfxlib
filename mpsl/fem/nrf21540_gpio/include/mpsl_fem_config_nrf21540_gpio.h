@@ -20,7 +20,7 @@
 #include <stdbool.h>
 #include "mpsl_fem_config_common.h"
 #include "mpsl_fem_config_nrf21540_common.h"
-#include "nrf.h"
+#include "nrfx.h"
 
 #ifdef __cplusplus
 extern "C" {
