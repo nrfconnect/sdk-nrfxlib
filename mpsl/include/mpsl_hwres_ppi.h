@@ -19,6 +19,8 @@
 #ifndef MPSL_HWRES_PPI_H__
 #define MPSL_HWRES_PPI_H__
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <nrfx.h>
 
 #ifdef __cplusplus

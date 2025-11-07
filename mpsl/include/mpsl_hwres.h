@@ -17,11 +17,45 @@
 #ifndef MPSL_HWRES_H__
 #define MPSL_HWRES_H__
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "nrf.h"
-#include "nrf_peripherals.h"
-#include "mpsl_hwres_ppi.h"
+/*  The xx_SERIES macros are defined here to keep this file independent
+    of the MDK. This allows the header file to be used in nrfx without
+    creating circular dependencies. */
+#if defined(NRF52805_XXAA) || defined(NRF52810_XXAA) || \
+    defined(NRF52811_XXAA) || defined(NRF52820_XXAA) || \
+    defined(NRF52832_XXAA) || defined(NRF52832_XXAB) || \
+    defined(NRF52833_XXAA) || defined(NRF52840_XXAA)
+    #ifndef NRF52_SERIES
+        #define NRF52_SERIES
+    #endif
+#endif
+
+#if defined(NRF5340_XXAA) || defined(NRF5340_XXAA_APPLICATION) || defined(NRF5340_XXAA_NETWORK)
+    #ifndef NRF53_SERIES
+        #define NRF53_SERIES
+    #endif
+#endif
+
+#if defined(NRF54L05_XXAA) || defined(NRF54LV10A_ENGA_XXAA) || \
+    defined(NRF54L10_XXAA) || defined(NRF54L15_XXAA) || \
+    defined(NRF54LM20A_ENGA_XXAA) || \
+    defined(NRF54LS05B_ENGA_XXAA) || \
+    defined(NRF7120_ENGA_XXAA)
+    #ifndef LUMOS_XXAA
+        #define LUMOS_XXAA
+    #endif
+#endif
+
+#if defined(NRF54H20_XXAA)
+    #ifndef NRF54H_SERIES
+        #define NRF54H_SERIES
+    #endif
+#endif
+
+#if defined(NRF9230_ENGB_XXAA)
+    #ifndef NRF92_SERIES
+        #define NRF92_SERIES
+    #endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,7 +76,7 @@ extern "C" {
     #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
     #define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
-#elif defined(NRF54H_SERIES) || defined(GRTC_PRESENT)
+#elif defined(NRF54H_SERIES) || defined(NRF92_SERIES)
     #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
     #define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
