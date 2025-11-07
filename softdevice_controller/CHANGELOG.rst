@@ -9,10 +9,20 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v2.6-branch-NCSIDB-1718
-***************************************
+nRF Connect SDK v2.6-branch-NCSIDB-1718-preview2
+************************************************
 
-All the notable changes included in the |NCS| v2.6-branch-NCSIDB-1718 release are documented in this section.
+All the notable changes included in the |NCS| v2.6-branch-NCSIDB-1718-preview2 tag are documented in this section.
+
+Changes
+=======
+* Removed hardcoded LE Power Class 1 feature bit from the supported features.
+  Use sdc_support_le_power_class_1() call to include LE Power Class 1 in the supported features.
+
+nRF Connect SDK v2.6-branch-NCSIDB-1718-preview1
+************************************************
+
+All the notable changes included in the |NCS| v2.6-branch-NCSIDB-1718-preview1 tag are documented in this section.
 
 Changes
 =======
@@ -26,6 +36,15 @@ nRF Connect SDK v2.6.4-DRGN-25465-branch
 ****************************************
 
 All the notable changes included in the |NCS| v2.6.4-DRGN-25465 release are documented in this section.
+
+Changes
+=======
+
+* Enabled the LE Power Class 1 feature support bit in the controller.
+* The ability to configure a periodic advertiser with subevents but without response slots has been removed.
+  This is due to an errata to the Bluetooth Core Specification v5.4 no longer allowing this configuration. (DRGN-22189)
+* The LE Channel Selection Algorithm event is no longer raised when a connection was established as a peripheral using legacy advertising commands. (DRGN-24660)
+  This behavior was changed to accommodate ES-27170.
 
 nRF Connect SDK v2.6.4
 **********************
