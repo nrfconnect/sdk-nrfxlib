@@ -39,6 +39,8 @@ Changes
   For more details, see :ref:`Connection update scheduling and timing <connection_update_scheduling_and_timing>`. (DRGN-25782)
 * The controller will now attempt to maintain the same offset between two connections using the ``SubrateBaseEvent`` field of the ``LL_SUBRATE_IND`` packet.
   This will improve scheduling performance when performing the Connection Subrate Update control procedure and the controller is acting as a central on multiple links. (DRGN-25975)
+* The SoftDevice Controller header files now include the :file:`nrfx.h` file, adding a dependency on `nrfx`_.
+  The SoftDevice Controller has been tested for compatibility with the `nrfx`_ revision used by the corresponding ``sdk-nrf`` revision. (DRGN-26373)
 
 Bug fixes
 =========

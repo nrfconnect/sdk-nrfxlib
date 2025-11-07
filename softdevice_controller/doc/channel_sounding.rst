@@ -34,7 +34,6 @@ In all tests, the CS subevent length has been set to less than the ACL connectio
 Support status
 **************
 
-Channel Sounding is currently supported only on the nRF54L15 SoC.
 CS can be enabled by building with the :kconfig:option:`CONFIG_BT_CTLR_CHANNEL_SOUNDING` Kconfig option enabled.
 When enabling CS in the |controller|, all CS-related commands are supported.
 

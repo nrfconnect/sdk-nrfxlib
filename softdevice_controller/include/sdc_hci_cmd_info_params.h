@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <mdk/compiler_abstraction.h>
+#include <nrfx.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -507,6 +507,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_clear_monitored_advertisers_list : 1;
     uint8_t hci_le_read_monitored_advertisers_list_size : 1;
     uint8_t hci_le_frame_space_update : 1;
+    uint8_t hci_le_set_resolvable_private_address_timeout_v2 : 1;
+    uint8_t hci_le_enable_ota_utp_mode : 1;
+    uint8_t hci_le_utp_send : 1;
+    uint8_t hci_le_connection_rate_request : 1;
+    uint8_t hci_le_set_default_rate_parameters : 1;
+    uint8_t hci_le_read_minimum_supported_connection_interval : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -579,7 +585,7 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.2,
  * Vol 4, Part E, Section 7.4.2
  *
  * This command reads the list of HCI commands supported for the local Controller.

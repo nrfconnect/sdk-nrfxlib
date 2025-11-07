@@ -27,8 +27,7 @@ extern "C" {
 
 
 #include <stdint.h>
-#include <stdbool.h>
-#include "nrf.h"
+#include "mpsl_hwres.h"
 
 #if defined(NRF52_SERIES)
   /* PPI channels 17 - 31, for the nRF52 Series */
