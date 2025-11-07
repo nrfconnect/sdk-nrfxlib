@@ -26,7 +26,6 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
 #include "nrf_errno.h"
 
 /** @brief Default resource configuration tag. */
@@ -1438,6 +1437,9 @@ void sdc_support_extended_feature_set(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
+ * @note The application shall also call @ref sdc_support_extended_feature_set()
+ *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
+ *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
@@ -1452,6 +1454,9 @@ void sdc_support_frame_space_update_central(void);
  * @note The application is required to call both @ref sdc_support_frame_space_update_central()
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
+ *
+ * @note The application shall also call @ref sdc_support_extended_feature_set()
+ *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
@@ -1468,6 +1473,11 @@ void sdc_support_frame_space_update_peripheral(void);
  *       and @ref sdc_support_shorter_connection_intervals_peripheral()
  *       if both central and peripheral roles are supported.
  *
+ * @note The application shall also call @ref sdc_support_extended_feature_set(), and at least one of
+ *       @ref sdc_support_connection_subrating_central and @ref sdc_support_connection_subrating_peripheral
+ *       to enable support for Extended Feature Set and Connection Subrating
+ *       before enabling support for Shorter Connection Intervals.
+ *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
@@ -1482,6 +1492,11 @@ void sdc_support_shorter_connection_intervals_central(void);
  * @note The application is required to call both @ref sdc_support_shorter_connection_intervals_central()
  *       and @ref sdc_support_shorter_connection_intervals_peripheral()
  *       if both central and peripheral roles are supported.
+ *
+ * @note The application shall also call @ref sdc_support_extended_feature_set(), and at least one of
+ *       @ref sdc_support_connection_subrating_central and @ref sdc_support_connection_subrating_peripheral
+ *       to enable support for Extended Feature Set and Connection Subrating
+ *       before enabling support for Shorter Connection Intervals.
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
