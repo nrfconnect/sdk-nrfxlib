@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.1-branch
+***************************
+
+Bug fixes
+=========
+
+* Fixed an issue where an incorrect TX power value was set when using ‐7 dBm on the nRF54L Series devices. (DRGN-26470)
+
 nRF Connect SDK v3.1.0
 **********************
 
