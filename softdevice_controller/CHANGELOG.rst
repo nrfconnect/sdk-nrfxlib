@@ -49,6 +49,8 @@ Bug fixes
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 * Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
 * Fixed an issue where an incorrect TX power value was set when using ‐7 dBm on the nRF54L Series devices. (DRGN-26470)
+* Fixed an issue where the controller would be unable to connect to a peer device when configured with scan window equal to scan interval. (DRGN-26625)
+  This would only occur when the time between two periodic activities was less than a millisecond.
 
 nRF Connect SDK v3.1.0
 **********************
