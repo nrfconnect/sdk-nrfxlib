@@ -7,7 +7,7 @@
 #ifndef MPSL_DPPI_PROTOCOL_API_H__
 #define MPSL_DPPI_PROTOCOL_API_H__
 
-#include "nrf_peripherals.h"
+#include "nrfx.h"
 #if (defined DPPIC_PRESENT || defined DOXYGEN)
 
 /**
