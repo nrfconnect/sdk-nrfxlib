@@ -1473,8 +1473,8 @@ void sdc_support_frame_space_update_peripheral(void);
  *       and @ref sdc_support_shorter_connection_intervals_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @note The application shall also call @ref sdc_support_extended_feature_set(), and at least one of
- *       @ref sdc_support_connection_subrating_central and @ref sdc_support_connection_subrating_peripheral
+ * @note The application shall also call @ref sdc_support_extended_feature_set() and
+ *       @ref sdc_support_connection_subrating_central
  *       to enable support for Extended Feature Set and Connection Subrating
  *       before enabling support for Shorter Connection Intervals.
  *
@@ -1493,8 +1493,8 @@ void sdc_support_shorter_connection_intervals_central(void);
  *       and @ref sdc_support_shorter_connection_intervals_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @note The application shall also call @ref sdc_support_extended_feature_set(), and at least one of
- *       @ref sdc_support_connection_subrating_central and @ref sdc_support_connection_subrating_peripheral
+ * @note The application shall also call @ref sdc_support_extended_feature_set() and
+ *       @ref sdc_support_connection_subrating_peripheral
  *       to enable support for Extended Feature Set and Connection Subrating
  *       before enabling support for Shorter Connection Intervals.
  *
