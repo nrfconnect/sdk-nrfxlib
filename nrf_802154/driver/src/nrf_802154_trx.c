@@ -175,6 +175,11 @@ void nrf_802154_radio_irq_handler(void); ///< Prototype required by internal RAD
 #define NRF_802154_TRX_TEST_MODE_ALLOW_LATE_TX_ACK 0
 #endif
 
+#if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) && (defined(NRF5340_XXAA) || \
+    NRF54L_CONFIGURATION_56_ENABLE)
+#define NRF_802154_TRX_PA_MODULATION_FIX
+#endif
+
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 /// System Clock Frequency (Core Clock) provided by nrfx.
 extern uint32_t SystemCoreClock;
@@ -242,6 +247,10 @@ static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver s
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
 static volatile uint8_t  m_remaining_cca_attempts;
+
+#if defined(NRF_802154_TRX_PA_MODULATION_FIX)
+static bool m_pa_modulation_fix_enabled = true;
+#endif /* NRF_802154_TRX_PA_MODULATION_FIX */
 
 static void timer_frequency_set_1mhz(void);
 
@@ -803,14 +812,16 @@ static void pa_modulation_fix_apply(bool enable)
     volatile uint32_t * p_radio_reg;
 
 #if defined(NRF5340_XXAA)
+#define PA_MOD_FILTER_VALUE 0x40081B08
     p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x584UL);
-#elif NRF54L_CONFIGURATION_56_ENABLE
+#elif NRF54L_CONFIGURATION_56_ENABLE /* MLTPAN-56 */
+#define PA_MOD_FILTER_VALUE 0x01280001ul
     p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x8C4UL);
 #else
     #error Unknown SoC
 #endif
 
-    if (enable)
+    if (enable && m_pa_modulation_fix_enabled)
     {
         mpsl_fem_caps_t fem_caps = {};
 
@@ -818,16 +829,9 @@ static void pa_modulation_fix_apply(bool enable)
 
         if ((fem_caps.flags & MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED) != 0)
         {
-#if defined(NRF5340_XXAA)
             m_pa_mod_filter_latched    = *(p_radio_reg);
             m_pa_mod_filter_is_latched = true;
-            *(p_radio_reg)             = 0x40081B08;
-#elif NRF54L_CONFIGURATION_56_ENABLE
-            // MLTPAN-56
-            m_pa_mod_filter_latched    = *(p_radio_reg);
-            m_pa_mod_filter_is_latched = true;
-            *(p_radio_reg)             = 0x01280001ul;
-#endif
+            *(p_radio_reg)             = PA_MOD_FILTER_VALUE;
         }
     }
     else if (m_pa_mod_filter_is_latched)
@@ -841,12 +845,33 @@ static void pa_modulation_fix_apply(bool enable)
 #endif /* !defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
 }
 
+void nrf_802154_trx_pa_modulation_fix_set(bool enable)
+{
+#if defined(NRF_802154_TRX_PA_MODULATION_FIX)
+    m_pa_modulation_fix_enabled = enable;
+#else
+    (void)enable;
+#endif /* NRF_802154_TRX_PA_MODULATION_FIX */
+}
+
+bool nrf_802154_trx_pa_modulation_fix_get(void)
+{
+#if defined(NRF_802154_TRX_PA_MODULATION_FIX)
+    return m_pa_modulation_fix_enabled;
+#else
+    return false;
+#endif /* NRF_802154_TRX_PA_MODULATION_FIX */
+}
+
 void nrf_802154_trx_module_reset(void)
 {
     m_trx_state                      = TRX_STATE_DISABLED;
     m_timer_value_on_radio_end_event = 0;
     m_transmit_with_cca              = false;
     mp_receive_buffer                = NULL;
+#if defined(NRF_802154_TRX_PA_MODULATION_FIX)
+    m_pa_modulation_fix_enabled = true;
+#endif /* NRF_802154_TRX_PA_MODULATION_FIX */
 
     memset(&m_flags, 0, sizeof(m_flags));
 }

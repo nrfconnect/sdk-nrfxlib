@@ -801,8 +801,8 @@ void nrf_802154_promiscuous_set(bool enabled);
 /**
  * @brief Checks if the radio is in the promiscuous mode.
  *
- * @retval True   Radio is in the promiscuous mode.
- * @retval False  Radio is not in the promiscuous mode.
+ * @retval true   Radio is in the promiscuous mode.
+ * @retval false  Radio is not in the promiscuous mode.
  */
 bool nrf_802154_promiscuous_get(void);
 
@@ -833,8 +833,8 @@ void nrf_802154_auto_ack_set(bool enabled);
 /**
  * @brief Checks if the auto ACK is enabled.
  *
- * @retval True   Auto ACK is enabled.
- * @retval False  Auto ACK is disabled.
+ * @retval true   Auto ACK is enabled.
+ * @retval false  Auto ACK is disabled.
  */
 bool nrf_802154_auto_ack_get(void);
 
@@ -926,8 +926,8 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  * @param[in]  length    Length of @p p_data.
  * @param[in]  data_type Type of data to be set. Refer to the @ref nrf_802154_ack_data_t type.
  *
- * @retval True   Address successfully added to the list.
- * @retval False  Not enough memory to store this address in the list.
+ * @retval true   Address successfully added to the list.
+ * @retval false  Not enough memory to store this address in the list.
  */
 bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
                              bool                  extended,
@@ -953,8 +953,8 @@ bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
  * @param[in]  data_type Type of data to be removed. Refer to the @ref nrf_802154_ack_data_t type.
  *
- * @retval True   Address removed from the list.
- * @retval False  Address not found in the list.
+ * @retval true   Address removed from the list.
+ * @retval false  Address not found in the list.
  */
 bool nrf_802154_ack_data_clear(const uint8_t       * p_addr,
                                bool                  extended,
@@ -1007,8 +1007,8 @@ void nrf_802154_auto_pending_bit_set(bool enabled);
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
  *
- * @retval True   The address is successfully added to the list.
- * @retval False  Not enough memory to store the address in the list.
+ * @retval true   The address is successfully added to the list.
+ * @retval false  Not enough memory to store the address in the list.
  */
 bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended);
 
@@ -1027,8 +1027,8 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended);
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
  *
- * @retval True   The address is successfully removed from the list.
- * @retval False  No such address in the list.
+ * @retval true   The address is successfully removed from the list.
+ * @retval false  No such address in the list.
  */
 bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended);
 
@@ -1532,6 +1532,23 @@ void nrf_802154_cst_writer_period_set(uint16_t period);
  * @param[in]  anchor_time  Anchor time value.
  */
 void nrf_802154_cst_writer_anchor_time_set(uint64_t anchor_time);
+
+/**
+ * @brief Returns if the radio has PA modulation fix enabled.
+ *
+ * @retval true   PA modulation fix is enabled.
+ * @retval false  PA modulation fix is disabled.
+ */
+bool nrf_802154_pa_modulation_fix_get(void);
+
+/**
+ * @brief Enables or disables the PA modulation fix.
+ *
+ * @note The PA modulation fix is enabled by default on the chips that require it.
+ *
+ * @param[in] enable  True to enable the PA modulation fix; false to disable it.
+ */
+void nrf_802154_pa_modulation_fix_set(bool enable);
 
 /**
  * @}
