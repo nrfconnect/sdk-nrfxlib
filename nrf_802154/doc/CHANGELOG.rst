@@ -42,6 +42,12 @@ Added
 * Added a TX diagnostic mode that permits sending arbitrary data payloads.
   Enable this feature with the :c:macro:`NRF_802154_TX_DIAGNOSTIC_MODE` configuration macro.
   When enabled, the driver must be built with reduced functionality. (KRKNWK-20784)
+* Added support for controlling the PA modulation fix at runtime. (KRKNWK-21006)
+
+  The fix is enabled by default on all SoCs that require it.
+  You can use the :c:func:`nrf_802154_pa_modulation_fix_set` function to enable or disable the fix at runtime.
+
+  On SoCs that do not require the fix, enabling it has no effect.
 
 nRF Connect SDK v3.1.0 - nRF 802.15.4 Radio Driver
 **************************************************
