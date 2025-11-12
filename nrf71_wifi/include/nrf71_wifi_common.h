@@ -931,6 +931,19 @@ struct temp_vbat_config {
 #define TWT_EXTEND_SP_EDCA  0x1
 #define DISABLE_DFS_CHANNELS 0x2
 
+#define NRF_WIFI_FTM_INITIATOR_ENABLE (1 << 0)
+#define NRF_WIFI_FTM_RESPONDER_ENABLE (1 << 1)
+#define NRF_WIFI_LCI_ENABLE (1 << 2)
+#define NRF_WIFI_CIVILOC_ENABLE (1 << 3)
+#define NRF_WIFI_GAS_ENABLE (1 << 4)
+
+struct nrf_wifi_ftm_loc_params{
+/** Enable = 1, Disable=0 */
+unsigned char ftm_enable;
+/** Capabilities NRF_WIFI_FTM_INITIATOR_ENABLE  & etc*/
+unsigned char capabilities;
+};
+
 /**
  * @brief This structure defines the command responsible for initializing the UMAC.
  *  After the host driver brings up, the host sends NRF_WIFI_CMD_INIT to the RPU.
@@ -1016,6 +1029,8 @@ struct nrf_wifi_cmd_sys_init {
 	 *  in the case of coexistence with Short Range radio.
 	 */
 	unsigned int inband_scan_type;
+       /** @ref nrf_wifi_ftm_loc_params */
+       struct nrf_wifi_ftm_loc_params  ftm_loc_params;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2056,6 +2071,8 @@ enum nrf_wifi_rf_test {
 	NRF_WIFI_RF_TEST_READ_REGS,
 	NRF_WIFI_RF_TEST_SET_MEM,
 	NRF_WIFI_RF_TEST_READ_MEM,
+	NRF_WIFI_SET_TEMP_VOLT_RECAL_PARAMS = 64,
+	NRF_WIFI_SET_CALIB_CTRL_PARAMS,
 	NRF_WIFI_RF_TEST_MAX,
 };
 
@@ -2077,6 +2094,8 @@ enum nrf_wifi_rf_test_event {
 	NRF_WIFI_RF_TEST_EVENT_READ_REGS,
 	NRF_WIFI_RF_TEST_EVENT_SET_MEM,
 	NRF_WIFI_RF_TEST_EVENT_READ_MEM,
+	NRF_WIFI_EVENT_SET_TEMP_VOLT_RECAL_PARAMS = 64,
+	NRF_WIFI_EVENT_SET_CALIB_CTRL_PARAMS,
 	NRF_WIFI_RF_TEST_EVENT_MAX,
 };
 
