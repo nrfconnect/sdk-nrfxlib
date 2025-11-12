@@ -24,6 +24,7 @@ Added
 Changes
 =======
 
+* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x10`` to indicate compatibility with Bluetooth Core Specification v6.2 (DRGN-26598).
 * :c:func:`sdc_hci_cmd_vs_set_cs_event_length` has been removed, the same functionality is now provided with :c:func:`sdc_hci_cmd_vs_cs_params_set`.
 * The sdc_support_* functions now return void.
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)

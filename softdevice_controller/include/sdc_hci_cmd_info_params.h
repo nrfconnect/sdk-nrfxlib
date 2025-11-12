@@ -117,7 +117,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Supported HCI commands.
  *
- * See Core_v5.4, Vol 4, Part E, Section 6.27
+ * See Core Specification, Vol 4, Part E, Section 6.27
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -560,7 +560,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.2,
  * Vol 4, Part E, Section 7.4.1
  *
  * This command reads the values for the version information for the local Controller.
@@ -608,7 +608,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.2,
  * Vol 4, Part E, Section 7.4.3
  *
  * This command requests a list of the supported features for the local BR/EDR Controller.
@@ -629,7 +629,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.2,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address

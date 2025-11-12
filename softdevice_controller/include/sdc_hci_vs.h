@@ -292,7 +292,7 @@ typedef struct __PACKED __ALIGN(1)
  * The HCI_VS_conn_anchor_point_update_report event indicates that the device
  * updated the anchor point for an ACL connection.
  * The anchor point represents the start of the first packet of a connection event.
- * See Core_v5.4, Vol 6, Part B, Section 4.5.1.
+ * See Core Specification, Vol 6, Part B, Section 4.5.1.
  *
  * The controller only generates HCI_VS_conn_anchor_point_update_report events
  * if instructed to do so using the
@@ -567,8 +567,8 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t apr_enable;
     /** @brief The valid range is [0, 4095]. Default value is 2048. */
     uint16_t beta;
-    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in
-     *         Core_v5.4, Vol 6, Part B, Section 5.1.17.1. Default value is -70 dBm.
+    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in Core
+     *         Specification, Vol 6, Part B, Section 5.1.17.1. Default value is -70 dBm.
      */
     int8_t lower_limit;
     /** @brief The upper limit of the RSSI golden range. Default value is -30 dBm. */
@@ -1450,7 +1450,7 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * the transmitter and receiver:
  * CIS_reference_anchor_point = tx_time_stamp + CIG_Sync_Delay - CIS_Sync_Delay
  * BIG_reference_anchor_point = tx_time_stamp + PTO * ISO_Interval
- * See also Core_v6.0, Vol 6, Part G, Section 3.
+ * See also Core Specification, Vol 6, Part G, Section 3.
  *
  * If the Host issues this command with a connection handle that does not exist,
  * or the connection handle is not associated with a CIS or BIS, the Controller
@@ -1668,7 +1668,7 @@ uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start
  * sdc_hci_subevent_vs_conn_anchor_point_update_report_t.
  *
  * When enabled, the controller will start producing reports for all ACL connections whenever
- * a connection anchor point is updated. See Core_v5.4, Vol 6, Part B, Section 4.5.1.
+ * a connection anchor point is updated. See Core Specification, Vol 6, Part B, Section 4.5.1.
  *
  * This event is generated every connection interval.
  * For peripheral connections, the generation of this event is skipped if no packet from the

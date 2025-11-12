@@ -67,7 +67,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read RSSI.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.2,
  * Vol 4, Part E, Section 7.5.4
  *
  * This command reads the Received Signal Strength Indication (RSSI) value from a
