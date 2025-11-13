@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.1.99
+***********************
+
+Added
+=====
+
+* Added the possibility to measure command execution time.
+  You can enable this feature with the :kconfig:option:`CONFIG_NRF_RPC_COMMAND_TIME_MEASURE` Kconfig option.
+  You must also implement the :c:func:`nrf_rpc_os_timestamp_get_now` function, which returns the current timestamp expressed in milliseconds.
+
 nRF Connect SDK v3.1.0
 **********************
 

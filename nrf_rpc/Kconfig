@@ -70,4 +70,11 @@ config NRF_RPC_THREAD_POOL_SIZE
 	  the remote side. If there is no available threads then remote side
 	  will wait.
 
+config NRF_RPC_COMMAND_TIME_MEASURE
+	bool "Measure command execution time"
+	help
+	  Measure the time between sending the command and receiving the response
+	  and log the value. Time measured includes the transmission and reception
+	  time. Log level for the time measurement is CONFIG_NRF_RPC_LOG_LEVEL_INF.
+
 endif # NRF_RPC

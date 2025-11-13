@@ -944,6 +944,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	const uint8_t **rsp_packet = NULL;
 	size_t *rsp_len = NULL;
 	struct nrf_rpc_cmd_ctx *cmd_ctx;
+	uint64_t processing_time;
 
 	NRF_RPC_ASSERT(group != NULL);
 	NRF_RPC_ASSERT((cmd & 0xFF) != NRF_RPC_ID_UNKNOWN);
@@ -984,11 +985,23 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 
 		NRF_RPC_DBG("Sending command 0x%02X from group 0x%02X", cmd,
 			group->data->src_group_id);
+		if(IS_ENABLED(CONFIG_NRF_RPC_COMMAND_TIME_MEASURE)) {
+			processing_time = nrf_rpc_os_timestamp_get_now();
+		}
 
 		err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 		if (err >= 0) {
 			err = wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
+		}
+
+		if(IS_ENABLED(CONFIG_NRF_RPC_COMMAND_TIME_MEASURE)) {
+			processing_time = nrf_rpc_os_timestamp_get_now() - processing_time;
+			NRF_RPC_INF("Command 0x%02X from group 0x%02X execution time %llums", cmd,
+			group->data->src_group_id, processing_time);
+		}
+		else {
+			(void)processing_time;
 		}
 
 		cmd_ctx->handler = old_handler;
