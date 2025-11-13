@@ -169,6 +169,12 @@ void* nrf_rpc_os_tls_get(void);
  */
 void nrf_rpc_os_tls_set(void *data);
 
+/** @brief Get the current timestamp value.
+ *
+ * @return Current timestamp in milliseconds.
+ */
+uint64_t nrf_rpc_os_timestamp_get_now(void);
+
 /** @brief Reserve one context from command context pool.
  *
  * If there is no available context then this function waits for it.
