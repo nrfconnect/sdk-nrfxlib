@@ -5,9 +5,6 @@
  *SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef __HOST_RPU_UMAC_IF_H
-#define __HOST_RPU_UMAC_IF_H
-
 /**
  * @file
  * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
@@ -15,6 +12,10 @@
  * @brief Control interface between host and RPU
  */
 
+#ifndef __NRF71_WIFI_CTRL_H
+#define __NRF71_WIFI_CTRL_H
+
+#include "nrf71_wifi_rf.h"
 #include "nrf71_wifi_common.h"
 
 #define MAX_NRF_WIFI_UMAC_CMD_SIZE 400
@@ -726,30 +727,6 @@ struct nrf_wifi_scan_params {
 #define NRF_WIFI_VHT_CAPABILITY_MASK_VALID (1 << 3)
 
 #define NRF_WIFI_CMD_HT_VHT_CAPABILITY_DISABLE_HT (1 << 0)
-#define NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE 256
-
-/**
- * @brief This structure contains specific information about the VHT (Very High Throughput)
- *  and HT ((High Throughput)) capabilities.
- *
- */
-
-struct nrf_wifi_ht_vht_capabilities {
-	/** Indicate which of the following parameters are valid */
-	unsigned int valid_fields;
-	/** Indicate which capabilities have been specified */
-	unsigned short nrf_wifi_flags;
-	/** HT Capability information element (from association request when
-	 *  used with NRF_WIFI_UMAC_CMD_NEW_STATION).
-	 */
-	unsigned char ht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
-	/** Specify which bits of the ht_capability are masked */
-	unsigned char ht_capability_mask[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
-	/** VHT Capability information element */
-	unsigned char vht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
-	/** Specify which bits in vht_capability to which attention should be paid */
-	unsigned char vht_capability_mask[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
-} __NRF_WIFI_PKD;
 
 #define NRF_WIFI_SIGNAL_TYPE_NONE 1
 #define NRF_WIFI_SIGNAL_TYPE_MBM 2
@@ -840,8 +817,6 @@ struct nrf_wifi_connect_common_info {
 	struct nrf_wifi_ssid ssid;
 	/** IE's nrf_wifi_ie */
 	struct nrf_wifi_ie wpa_ie;
-	/** VHT Capability information element nrf_wifi_ht_vht_capabilities */
-	struct nrf_wifi_ht_vht_capabilities ht_vht_capabilities;
 	/** A 16-bit value indicating the ethertype that will be used for key negotiation.
 	 *  If it is not specified, the value defaults to 0x888E.
 	 */
@@ -872,6 +847,20 @@ struct nrf_wifi_connect_common_info {
 #define NRF_WIFI_BEACON_DATA_MAX_TAIL_LEN 512
 #define NRF_WIFI_BEACON_DATA_MAX_PROBE_RESP_LEN 400
 
+
+/**
+ * @brief This structure provides information about bss color code. 
+ *
+ */
+struct nrf_wifi_he_bss_color {
+	/** Current HE bss color */
+	unsigned char nrf_wifi_colour;
+	/** enable HE bss color */
+	unsigned char nrf_wifi_enabled;
+	/** Partial AID equation define */
+	unsigned char nrf_wifi_partial;
+} __NRF_WIFI_PKD;
+
 /**
  * @brief This structure provides information about beacon and probe data.
  *
@@ -890,6 +879,10 @@ struct nrf_wifi_beacon_data {
 	unsigned char tail[NRF_WIFI_BEACON_DATA_MAX_TAIL_LEN];
 	/** probe response template */
 	unsigned char probe_resp[NRF_WIFI_BEACON_DATA_MAX_PROBE_RESP_LEN];
+	/** Checking bss colour information */
+	struct nrf_wifi_he_bss_color he_bss_color;
+	/** Checking bss color valid or not */
+	unsigned char he_bss_color_valid;
 } __NRF_WIFI_PKD;
 
 #define NRF_WIFI_STA_FLAG_INVALID (1 << 0)
@@ -1818,21 +1811,127 @@ struct nrf_wifi_sta_flags2 {
 
 } __NRF_WIFI_PKD;
 
-#define NRF_WIFI_CMD_SET_STATION_SUPP_RATES_VALID (1 << 0)
-#define NRF_WIFI_CMD_SET_STATION_AID_VALID (1 << 1)
-#define NRF_WIFI_CMD_SET_STATION_PEER_AID_VALID (1 << 2)
-#define NRF_WIFI_CMD_SET_STATION_STA_CAPABILITY_VALID (1 << 3)
-#define NRF_WIFI_CMD_SET_STATION_EXT_CAPABILITY_VALID (1 << 4)
-#define NRF_WIFI_CMD_SET_STATION_STA_VLAN_VALID (1 << 5)
-#define NRF_WIFI_CMD_SET_STATION_HT_CAPABILITY_VALID (1 << 6)
-#define NRF_WIFI_CMD_SET_STATION_VHT_CAPABILITY_VALID (1 << 7)
-#define NRF_WIFI_CMD_SET_STATION_OPMODE_NOTIF_VALID (1 << 9)
-#define NRF_WIFI_CMD_SET_STATION_SUPPORTED_CHANNELS_VALID (1 << 10)
-#define NRF_WIFI_CMD_SET_STATION_SUPPORTED_OPER_CLASSES_VALID (1 << 11)
-#define NRF_WIFI_CMD_SET_STATION_STA_FLAGS2_VALID (1 << 12)
-#define NRF_WIFI_CMD_SET_STATION_STA_WME_UAPSD_QUEUES_VALID (1 << 13)
-#define NRF_WIFI_CMD_SET_STATION_STA_WME_MAX_SP_VALID (1 << 14)
-#define NRF_WIFI_CMD_SET_STATION_LISTEN_INTERVAL_VALID (1 << 15)
+#define NRF_WIFI_CMD_NEW_STATION_SUPP_RATES_VALID (1 << 0)
+#define NRF_WIFI_CMD_NEW_STATION_AID_VALID (1 << 1)
+#define NRF_WIFI_CMD_NEW_STATION_PEER_AID_VALID (1 << 2)
+#define NRF_WIFI_CMD_NEW_STATION_STA_CAPABILITY_VALID (1 << 3)
+#define NRF_WIFI_CMD_NEW_STATION_EXT_CAPABILITY_VALID (1 << 4)
+#define NRF_WIFI_CMD_NEW_STATION_STA_VLAN_VALID (1 << 5)
+#define NRF_WIFI_CMD_NEW_STATION_HT_CAPABILITY_VALID (1 << 6)
+#define NRF_WIFI_CMD_NEW_STATION_VHT_CAPABILITY_VALID (1 << 7)
+#define NRF_WIFI_CMD_NEW_STATION_HE_CAPABILITY_VALID (1 << 8)
+#define NRF_WIFI_CMD_NEW_STATION_OPMODE_NOTIF_VALID (1 << 9)
+#define NRF_WIFI_CMD_NEW_STATION_SUPPORTED_CHANNELS_VALID (1 << 10)
+#define NRF_WIFI_CMD_NEW_STATION_SUPPORTED_OPER_CLASSES_VALID (1 << 11)
+#define NRF_WIFI_CMD_NEW_STATION_STA_FLAGS2_VALID (1 << 12)
+#define NRF_WIFI_CMD_NEW_STATION_STA_WME_UAPSD_QUEUES_VALID (1 << 13)
+#define NRF_WIFI_CMD_NEW_STATION_STA_WME_MAX_SP_VALID (1 << 14)
+#define NRF_WIFI_CMD_NEW_STATION_LISTEN_INTERVAL_VALID (1 << 15)
+#define NRF_WIFI_MLD_ADDR_VALID (1<<16)
+#define NRF_WIFI_CMD_NEW_STATION_6GHZ_CAPABILITY_VALID (1 << 17)
+
+#define NRF_WIFI_HT_MCS_MASK_LEN 10
+#define NRF_WIFI_HT_MCS_RES_LEN 3
+
+/**
+ * @brief MCS information.
+ *
+ */
+struct nrf_wifi_event_mcs_info {
+        /** RX mask */
+        unsigned char nrf_wifi_rx_mask[NRF_WIFI_HT_MCS_MASK_LEN];
+        /** Highest supported RX rate */
+        unsigned short nrf_wifi_rx_highest;
+        /** TX parameters */
+        unsigned char nrf_wifi_tx_params;
+        /** reserved */
+        unsigned char nrf_wifi_reserved[NRF_WIFI_HT_MCS_RES_LEN];
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief HT capabilties information.
+ *
+ */
+
+struct nrf_wifi_sta_ht_cap {
+	/** HT capabilities, as in the HT information IE */
+	unsigned short nrf_wifi_cap;
+	/** HT A-MPDU parameters information */
+	unsigned char ampdu_params_info;
+	/** MCS information. nrf_wifi_event_mcs_info */
+	struct nrf_wifi_event_mcs_info mcs;
+	/** HT extended capabilities information */
+	unsigned short extended_ht_cap_info;
+	/** HT Transmit Beamforming Capabilities information */
+	unsigned int tx_BF_cap_info;
+	/** HT ASEL Capability information */
+	unsigned char antenna_selection_info;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief VHT MCS information.
+ *
+ */
+
+struct nrf_wifi_event_vht_mcs_info {
+        /** RX MCS map 2 bits for each stream, total 8 streams */
+        unsigned short rx_mcs_map;
+        /** Indicates highest long GI VHT PPDU data rate
+         *  STA can receive. Rate expressed in units of 1 Mbps.
+         *  If this field is 0 this value should not be used to
+         *  consider the highest RX data rate supported.
+         */
+        unsigned short rx_highest;
+        /** TX MCS map 2 bits for each stream, total 8 streams */
+        unsigned short tx_mcs_map;
+        /** Indicates highest long GI VHT PPDU data rate
+         *  STA can transmit. Rate expressed in units of 1 Mbps.
+         *  If this field is 0 this value should not be used to
+         *  consider the highest TX data rate supported.
+         */
+        unsigned short tx_highest;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief VHT capabilities information
+ *
+ */
+
+struct nrf_wifi_sta_vht_cap {
+	/** VHT capability , as in the VHT information IE */
+	unsigned short nrf_wifi_cap;
+	/** MCS supported rates in VHT */
+	struct nrf_wifi_event_vht_mcs_info vht_mcs;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief HE capabilities information.
+ *
+ */
+
+struct nrf_wifi_he_cap_elem {
+	/** HE MAC capabilities information */
+	unsigned char mac_cap_info[6];
+	/** HE PHY capabilities information */
+	unsigned char phy_cap_info[11];
+	/** Optinal for 4,8, or 12 octes of Supported HE-MCS,
+	 *  NSS set field
+	 *  and PPE Thresholds field.
+	 */
+	unsigned char optional[37];
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief HE 6Ghz capabilities information.
+ *
+ */
+
+struct nrf_wifi_event_sta_he_6ghz_cap {
+	/** 1 indicates 6ghz HE Supported */
+	signed char nrf_wifi_he_6gh_supported;
+	/** HE 6Ghz capability, as in the HE 6Ghz information IE */
+	unsigned short nrf_wifi_cap;
+} __NRF_WIFI_PKD;
 
 /**
  * @brief This structure represents the information needed to update a station entry
@@ -1863,10 +1962,16 @@ struct nrf_wifi_umac_chg_sta_info {
 	struct nrf_wifi_supported_oper_classes supported_oper_classes;
 	/** station flags mask/set nrf_wifi_sta_flag_update nrf_wifi_sta_flag_update */
 	struct nrf_wifi_sta_flag_update sta_flags2;
-	/** HT capabilities of station */
-	unsigned char ht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
+	/** HT/VHT/HE capabilities of station */
+	struct nrf_wifi_sta_ht_cap ht_capability;
 	/** VHT capabilities of station */
-	unsigned char vht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
+	struct nrf_wifi_sta_vht_cap vht_capability;
+	/** HE capabilities of station */
+	struct nrf_wifi_he_cap_elem he_capability;
+	/** HE capabilities length of station */
+	unsigned char nrf_wifi_he_capa_len;
+	/** 6Ghz capabilities of station */
+	struct nrf_wifi_event_sta_he_6ghz_cap he_6ghz_capability;
 	/** Station mac address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
 	/** Information if operating mode field is used */
@@ -1881,6 +1986,24 @@ struct nrf_wifi_umac_chg_sta_info {
 	unsigned char wme_max_sp;
 } __NRF_WIFI_PKD;
 
+#define NRF_WIFI_CMD_SET_STATION_SUPP_RATES_VALID (1 << 0)
+#define NRF_WIFI_CMD_SET_STATION_AID_VALID (1 << 1)
+#define NRF_WIFI_CMD_SET_STATION_PEER_AID_VALID (1 << 2)
+#define NRF_WIFI_CMD_SET_STATION_STA_CAPABILITY_VALID (1 << 3)
+#define NRF_WIFI_CMD_SET_STATION_EXT_CAPABILITY_VALID (1 << 4)
+#define NRF_WIFI_CMD_SET_STATION_STA_VLAN_VALID (1 << 5)
+#define NRF_WIFI_CMD_SET_STATION_HT_CAPABILITY_VALID (1 << 6)
+#define NRF_WIFI_CMD_SET_STATION_VHT_CAPABILITY_VALID (1 << 7)
+#define NRF_WIFI_CMD_SET_STATION_HE_CAPABILITY_VALID (1 << 8)
+#define NRF_WIFI_CMD_SET_STATION_OPMODE_NOTIF_VALID (1 << 9)
+#define NRF_WIFI_CMD_SET_STATION_SUPPORTED_CHANNELS_VALID (1 << 10)
+#define NRF_WIFI_CMD_SET_STATION_SUPPORTED_OPER_CLASSES_VALID (1 << 11)
+#define NRF_WIFI_CMD_SET_STATION_STA_FLAGS2_VALID (1 << 12)
+#define NRF_WIFI_CMD_SET_STATION_STA_WME_UAPSD_QUEUES_VALID (1 << 13)
+#define NRF_WIFI_CMD_SET_STATION_STA_WME_MAX_SP_VALID (1 << 14)
+#define NRF_WIFI_CMD_SET_STATION_LISTEN_INTERVAL_VALID (1 << 15)
+#define NRF_WIFI_CMD_SET_STATION_6GHZ_CAPABILITY_VALID (1 << 17)
+
 /**
  * @brief This structure defines the command for updating the parameters of a station entry.
  *
@@ -1894,23 +2017,6 @@ struct nrf_wifi_umac_cmd_chg_sta {
 	/** nrf_wifi_umac_chg_sta_info */
 	struct nrf_wifi_umac_chg_sta_info info;
 } __NRF_WIFI_PKD;
-
-#define NRF_WIFI_CMD_NEW_STATION_SUPP_RATES_VALID (1 << 0)
-#define NRF_WIFI_CMD_NEW_STATION_AID_VALID (1 << 1)
-#define NRF_WIFI_CMD_NEW_STATION_PEER_AID_VALID (1 << 2)
-#define NRF_WIFI_CMD_NEW_STATION_STA_CAPABILITY_VALID (1 << 3)
-#define NRF_WIFI_CMD_NEW_STATION_EXT_CAPABILITY_VALID (1 << 4)
-#define NRF_WIFI_CMD_NEW_STATION_STA_VLAN_VALID (1 << 5)
-#define NRF_WIFI_CMD_NEW_STATION_HT_CAPABILITY_VALID (1 << 6)
-#define NRF_WIFI_CMD_NEW_STATION_VHT_CAPABILITY_VALID (1 << 7)
-#define NRF_WIFI_CMD_NEW_STATION_OPMODE_NOTIF_VALID (1 << 9)
-#define NRF_WIFI_CMD_NEW_STATION_SUPPORTED_CHANNELS_VALID (1 << 10)
-#define NRF_WIFI_CMD_NEW_STATION_SUPPORTED_OPER_CLASSES_VALID (1 << 11)
-#define NRF_WIFI_CMD_NEW_STATION_STA_FLAGS2_VALID (1 << 12)
-#define NRF_WIFI_CMD_NEW_STATION_STA_WME_UAPSD_QUEUES_VALID (1 << 13)
-#define NRF_WIFI_CMD_NEW_STATION_STA_WME_MAX_SP_VALID (1 << 14)
-#define NRF_WIFI_CMD_NEW_STATION_LISTEN_INTERVAL_VALID (1 << 15)
-#define NRF_WIFI_MLD_ADDR_VALID (1<<16)
 
 /**
  * @brief This structure describes the parameters for adding a new station entry to the RPU.
@@ -1940,10 +2046,16 @@ struct nrf_wifi_umac_add_sta_info {
 	struct nrf_wifi_supported_oper_classes supported_oper_classes;
 	/** station flags mask/set nrf_wifi_sta_flag_update */
 	struct nrf_wifi_sta_flag_update sta_flags2;
-	/** HT capabilities of station */
-	unsigned char ht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
+	/** HT/VHT/HE capabilities of station */
+	struct nrf_wifi_sta_ht_cap ht_capability;
 	/** VHT capabilities of station */
-	unsigned char vht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
+	struct nrf_wifi_sta_vht_cap vht_capability;
+	/** HE capabilities of station */
+	struct nrf_wifi_he_cap_elem he_capability;
+	/** HE capabilities length of station */
+	unsigned char nrf_wifi_he_capa_len;
+	/** HE 6Ghz capabilities of station */
+	struct nrf_wifi_event_sta_he_6ghz_cap he_6ghz_capability;
 	/** Station mac address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
 	/** Information if operating mode field is used */
@@ -1983,6 +2095,7 @@ struct nrf_wifi_umac_cmd_add_sta {
 #define NRF_WIFI_CMD_BEACON_INFO_CONTROL_PORT_NO_ENCRYPT (1 << 1)
 #define NRF_WIFI_CMD_BEACON_INFO_P2P_CTWINDOW_VALID (1 << 6)
 #define NRF_WIFI_CMD_BEACON_INFO_P2P_OPPPS_VALID (1 << 7)
+#define NRF_WIFI_CMD_BEACON_INFO_HE_BSS_COLOR_VALID (1 << 8)
 
 /**
  * @brief This structure describes the parameters required to be passed to the RPU when
@@ -2376,6 +2489,10 @@ struct nrf_wifi_umac_config_twt_info {
 	unsigned char twt_resp_status;
 	/** TWT early wake duration */
 	unsigned int twt_wake_ahead_duration;
+	/** Interval between twt request retries */
+	unsigned char twt_retry_interval;
+	/** TWT request retry count */
+	unsigned char twt_retry_count;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2820,53 +2937,6 @@ struct nrf_wifi_umac_cmd_conn_info {
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
-/* TODD: Review below later, for now to get build working */
-/**
- * @brief Types of connection protected/un-protected.
- *
- */
-
-enum nrf_wifi_conn_type {
-	/* Connection to be non-protected */
-	NRF_WIFI_CONN_TYPE_OPEN,
-	/* Connection to be protected */
-	NRF_WIFI_CONN_TYPE_SECURE,
-};
-
-/**
- * @brief This structure specifies the parameters to be used when sending an association request.
- *
- */
-
-struct nrf_wifi_umac_assoc_info {
-	/** Frequency of the selected channel in MHz */
-	unsigned int center_frequency;
-	/** ssid nrf_wifi_ssid */
-	struct nrf_wifi_ssid ssid;
-	/** MAC address (various uses) */
-	unsigned char nrf_wifi_bssid[NRF_WIFI_ETH_ADDR_LEN];
-	/**  WPA information element data. nrf_wifi_ie */
-	struct nrf_wifi_ie wpa_ie;
-	/** Whether management frame protection (IEEE 802.11w) is used for the association */
-	unsigned char use_mfp;
-	/** Indicating whether user space controls IEEE 802.1X port. If set, the RPU will
-	 *  assume that the port is unauthorized until authorized by user space.
-	 *  Otherwise, port is marked authorized by default in station mode.
-	 */
-	signed char control_port;
-	/** Previous BSSID used in flag */
-	unsigned int prev_bssid_flag;
-	/** Previous BSSID used in Re-assoc. */
-	unsigned char prev_bssid[NRF_WIFI_ETH_ADDR_LEN];
-	/** Bss max idle timeout value in sec wich will be encapsulated into
-	 *  BSS MAX IDLE IE in assoc request frame.
-	 */
-	unsigned short bss_max_idle_time;
-	/** Connection type */
-	unsigned char conn_type;
-} __NRF_WIFI_PKD;
-
-
 enum link_mode {
 	NRF_WIFI_MODE_11B = 1,
 	NRF_WIFI_MODE_11A,
@@ -3087,24 +3157,6 @@ struct nrf_wifi_interface_info {
 	struct nrf_wifi_ssid ssid;
 } __NRF_WIFI_PKD;
 
-#define NRF_WIFI_HT_MCS_MASK_LEN 10
-#define NRF_WIFI_HT_MCS_RES_LEN 3
-
-/**
- * @brief MCS information.
- *
- */
-struct nrf_wifi_event_mcs_info {
-	/** Highest supported RX rate */
-	unsigned short nrf_wifi_rx_highest;
-	/** RX mask */
-	unsigned char nrf_wifi_rx_mask[NRF_WIFI_HT_MCS_MASK_LEN];
-	/** TX parameters */
-	unsigned char nrf_wifi_tx_params;
-	/** reserved */
-	unsigned char nrf_wifi_reserved[NRF_WIFI_HT_MCS_RES_LEN];
-} __NRF_WIFI_PKD;
-
 /**
  * @brief This structure represents HT capability parameters.
  *
@@ -3168,29 +3220,6 @@ struct nrf_wifi_event_rate {
 	/** Bitrate in units of 100 kbps */
 	unsigned short nrf_wifi_bitrate;
 } __NRF_WIFI_PKD;
-/**
- * @brief VHT MCS information.
- *
- */
-
-struct nrf_wifi_event_vht_mcs_info {
-	/** RX MCS map 2 bits for each stream, total 8 streams */
-	unsigned short rx_mcs_map;
-	/** Indicates highest long GI VHT PPDU data rate
-	 *  STA can receive. Rate expressed in units of 1 Mbps.
-	 *  If this field is 0 this value should not be used to
-	 *  consider the highest RX data rate supported.
-	 */
-	unsigned short rx_highest;
-	/** TX MCS map 2 bits for each stream, total 8 streams */
-	unsigned short tx_mcs_map;
-	/** Indicates highest long GI VHT PPDU data rate
-	 *  STA can transmit. Rate expressed in units of 1 Mbps.
-	 *  If this field is 0 this value should not be used to
-	 *  consider the highest TX data rate supported.
-	 */
-	unsigned short tx_highest;
-} __NRF_WIFI_PKD;
 
 /**
  * @brief This structure represents VHT capability parameters.
@@ -3203,6 +3232,52 @@ struct nrf_wifi_event_sta_vht_cap {
 	unsigned int nrf_wifi_cap;
 	/** Refer nrf_wifi_event_vht_mcs_info */
 	struct nrf_wifi_event_vht_mcs_info vht_mcs;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents HE mcs support rates.
+ *
+ */
+
+struct nrf_wifi_he_mcs_nss_supp {
+	/** Channel width less than 80MHz,
+	 *  Rx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short rx_mcs_80;
+	/** Channel width less than 80MHz,
+	 *  Tx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short tx_mcs_80;
+	/** Channel width 160MHz,
+	 *  Rx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short rx_mcs_160;
+	/** Channel width 160MHz,
+	 *  Tx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short tx_mcs_160;
+	/** Channel width less than 80p80MHz,
+	 *  Rx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short rx_mcs_80p80;
+	/** Channel width less than 80p80MHz,
+	 *  Tx MCS map 2 bits for each stream and total 8 streams.
+	 */
+	unsigned short tx_mcs_80p80;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents HE capabilities information.
+ *
+ */
+
+struct nrf_wifi_event_sta_he_cap {
+	/** 1 indicates HE Supported */
+	signed char nrf_wifi_he_supported;
+	/** HE capabilties information */
+	struct nrf_wifi_he_cap_elem he_cap_elem;
+	/** HE MCS support rates information */
+	struct nrf_wifi_he_mcs_nss_supp he_mcs_nss_supp;
 } __NRF_WIFI_PKD;
 
 /**
@@ -3222,6 +3297,10 @@ struct nrf_wifi_event_supported_band {
 	struct nrf_wifi_event_sta_ht_cap ht_cap;
 	/** VHT capabilities in this band */
 	struct nrf_wifi_event_sta_vht_cap vht_cap;
+	/** HE capabilities in this band */
+	struct nrf_wifi_event_sta_he_cap he_cap;
+	/** 6Ghz HE capabilities in this band */
+	struct nrf_wifi_event_sta_he_6ghz_cap he_6ghz_cap;
 	/** the band this structure represents */
 	signed char band;
 } __NRF_WIFI_PKD;
@@ -3880,6 +3959,49 @@ struct nrf_wifi_sap_ps_get_frames {
 	/** Number of frames to be transmitted in this service period */
 	signed char num_frames;
 
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief Types of connection protected/un-protected.
+ *
+ */
+enum nrf_wifi_conn_type {
+	/* Connection to be non-protected */
+	NRF_WIFI_CONN_TYPE_OPEN,
+	/* Connection to be protected */
+	NRF_WIFI_CONN_TYPE_SECURE,
+};
+
+/**
+ * @brief This structure specifies the parameters to be used when sending an association request.
+ *
+ */
+struct nrf_wifi_umac_assoc_info {
+	/** Frequency of the selected channel in MHz */
+	unsigned int center_frequency;
+	/** ssid nrf_wifi_ssid */
+	struct nrf_wifi_ssid ssid;
+	/** MAC address (various uses) */
+	unsigned char nrf_wifi_bssid[NRF_WIFI_ETH_ADDR_LEN];
+	/**  WPA information element data. nrf_wifi_ie */
+	struct nrf_wifi_ie wpa_ie;
+	/** Whether management frame protection (IEEE 802.11w) is used for the association */
+	unsigned char use_mfp;
+	/** Indicating whether user space controls IEEE 802.1X port. If set, the RPU will
+	 *  assume that the port is unauthorized until authorized by user space.
+	 *  Otherwise, port is marked authorized by default in station mode.
+	 */
+	signed char control_port;
+	/** Previous BSSID used in flag */
+	unsigned int prev_bssid_flag;
+	/** Previous BSSID used in Re-assoc. */
+	unsigned char prev_bssid[NRF_WIFI_ETH_ADDR_LEN];
+	/** Bss max idle timeout value in sec wich will be encapsulated into
+	 *  BSS MAX IDLE IE in assoc request frame.
+	 */
+	unsigned short bss_max_idle_time;
+	/** Connection type */
+	unsigned char conn_type;
 } __NRF_WIFI_PKD;
 
 /**

@@ -5,12 +5,20 @@
  *SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef __HOST_RPU_SYS_IF_H__
-#define __HOST_RPU_SYS_IF_H__
+/**
+ * @file
+ * @addtogroup nrf71_wifi_fw_if Wi-Fi driver and firmware interface
+ * @{
+ * @brief System interface between host and RPU
+ */
 
+#ifndef __NRF71_WIFI_COMMON_H__
+#define __NRF71_WIFI_COMMON_H__
+
+#include "nrf71_wifi_rf.h"
 #include "common/pack_def.h"
 
-#define NRF_WIFI_RF_PARAMS_SIZE	200
+
 #define NRF_WIFI_RF_PARAMS_CONF_SIZE 42
 
 #define MAX_NUM_OF_RX_QUEUES 3
@@ -232,6 +240,8 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_OFFLOAD_RAW_TX_CTRL,
 	/** Configure SGI/LGI */
 	NRF_WIFI_CMD_GI_CONFIG,
+	/** Enable BCC OR LDPC */
+	NRF_WIFI_CMD_CODING_TYPE_CONFIG,
 };
 
 /**
@@ -1849,7 +1859,7 @@ struct nrf_wifi_cmd_gi_config {
 #define HW_SLEEP_ENABLE 2
 #define SW_SLEEP_ENABLE 1
 #define SLEEP_DISABLE 0
-#define HW_DELAY 25000
+#define HW_DELAY 7200
 #define SW_DELAY 5000
 #define BCN_TIMEOUT 20000
 #define CALIB_SLEEP_CLOCK_ENABLE 1
@@ -2017,89 +2027,17 @@ enum wifi_operation_modes {
 	WIFI_MODE_LIMIT_CHK = 0x2f,
 };
 
-#define NRF_WIFI_DEF_RF_PARAMS "0000000000001C00000000000000004030303838383838380000000050EC000000000000000000000000214365003F032424001000002800323500000C7608017D8105010071630300EED501001F6F00003B350100F52E0000E35E0000B7B6000066EFFEFFB5F60000896200007A840200E28FFCFF08080808040A140100000000A1A101FA000000680150003B0207262D2D28281A120A140E0600"
 
-#define NRF_WIFI_RF_PARAMS_OFF_RESV_1 0
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_X0 6
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PDADJM7 7
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PDADJM0 11
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR2G 15
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR2GM0M7 16
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM7 18
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM0 21
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_RXGNOFF 24
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_MAX_TEMP 28
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_MIN_TEMP 29
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_TXP_BOFF_2GH 30
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_TXP_BOFF_2GL 31
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_TXP_BOFF_5GH 32
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_TXP_BOFF_5GL 33
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_TXP_BOFF_V 34
-#define NRF_WIFI_RF_PARAMS_OFF_CALIB_RESV_2 37
-
-#define NRF_WIFI_PHY_CALIB_FLAG_RXDC 1
-#define NRF_WIFI_PHY_CALIB_FLAG_TXDC 2
-#define NRF_WIFI_PHY_CALIB_FLAG_TXPOW 0
-#define NRF_WIFI_PHY_CALIB_FLAG_TXIQ 8//8
-#define NRF_WIFI_PHY_CALIB_FLAG_RXIQ 16//16
-#define NRF_WIFI_PHY_CALIB_FLAG_DPD  32
-#define NRF_WIFI_PHY_CALIB_FLAG_ENHANCED_TXDC 64
-
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXDC (1<<16)
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXDC (2<<16)
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXPOW (0<<16)
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXIQ (0<<16)
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXIQ (0<<16)
-#define NRF_WIFI_PHY_SCAN_CALIB_FLAG_DPD (0<<16)
-#define NRF_WIFI_LP_PHY_CALIB_FLAG_RXDC (1<<24)
-
-#define NRF_WIFI_DEF_PHY_CALIB (NRF_WIFI_PHY_CALIB_FLAG_RXDC |\
-		NRF_WIFI_PHY_CALIB_FLAG_TXDC |\
-		NRF_WIFI_PHY_CALIB_FLAG_RXIQ |\
-		NRF_WIFI_PHY_CALIB_FLAG_TXIQ |\
-		NRF_WIFI_PHY_CALIB_FLAG_TXPOW |\
-		NRF_WIFI_PHY_CALIB_FLAG_DPD |\
-		NRF_WIFI_PHY_CALIB_FLAG_ENHANCED_TXDC |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXDC |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXDC |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXIQ |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXIQ |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXPOW |\
-		NRF_WIFI_PHY_SCAN_CALIB_FLAG_DPD |\
-		NRF_WIFI_LP_PHY_CALIB_FLAG_RXDC)
-
-/* Temperature based calibration params */
-#define NRF_WIFI_DEF_PHY_TEMP_CALIB (NRF_WIFI_PHY_CALIB_FLAG_RXDC |\
-				NRF_WIFI_PHY_CALIB_FLAG_TXDC |\
-				NRF_WIFI_PHY_CALIB_FLAG_ENHANCED_TXDC |\
-				NRF_WIFI_PHY_CALIB_FLAG_RXIQ |\
-				NRF_WIFI_PHY_CALIB_FLAG_TXIQ |\
-				NRF_WIFI_PHY_CALIB_FLAG_TXPOW |\
-				NRF_WIFI_PHY_CALIB_FLAG_DPD)
-
-
-#define NRF_WIFI_TEMP_CALIB_PERIOD (1024 * 1024) /* micro seconds */
-#define NRF_WIFI_TEMP_CALIB_THRESHOLD (40)
-#define NRF_WIFI_TEMP_CALIB_ENABLE 0
-
-/* Battery voltage changes base calibrations and voltage thresholds */
-#define NRF_WIFI_DEF_PHY_VBAT_CALIB (NRF_WIFI_PHY_CALIB_FLAG_DPD)
-#define NRF_WIFI_VBAT_VERYLOW (3) /* Corresponds to (2.5+3*0.07)=2.71V */
-#define NRF_WIFI_VBAT_LOW  (6)  /* Correspond to (2.5+6*0.07)=2.92V */
-#define NRF_WIFI_VBAT_HIGH (12) /* Correspond to (2.5+12*0.07)=3.34V */
-
-#define VBAT_OFFSET_MILLIVOLT (2500)
-#define VBAT_SCALING_FACTOR (70)
-
-enum ANT_GAIN_OFFSETS {
-	ANT_GAIN_2G_OFST = 181,
-	ANT_GAIN_5G_BAND1_OFST,
-	ANT_GAIN_5G_BAND2_OFST,
-	ANT_GAIN_5G_BAND3_OFST,
-	NUM_ANT_GAIN = 4
-};
-
-
+/**
+ * @enum nrf_wifi_rf_test
+ * @brief Enumerates the available RF test commands for the Wi-Fi RPU.
+ *
+ * This enumeration defines the various RF test commands that can be issued to the
+ * Radio Processing Unit (RPU) for testing, calibration, and debugging purposes.
+ * The commands cover a range of RF test operations such as ADC capture, packet capture,
+ * tone generation, DPD, RSSI measurement, sleep, temperature reading, XO calibration,
+ * register/memory access, and compensation/calibration routines.
+ */
 enum nrf_wifi_rf_test {
 	NRF_WIFI_RF_TEST_RX_ADC_CAP,
 	NRF_WIFI_RF_TEST_RX_STAT_PKT_CAP,
@@ -2144,6 +2082,7 @@ enum nrf_wifi_rf_test_event {
 
 #define MAX_REGS_CONF 8
 #define MAX_MEM_CONF 8
+#define CAL_MEM_SIZE 500
 
 /* Holds the RX capture related info */
 struct nrf_wifi_rf_test_capture_params {
@@ -2336,6 +2275,14 @@ struct nrf_wifi_rf_get_rx_debug_stats {
 	unsigned int spatialReuseCnt;
 } __NRF_WIFI_PKD;
 
+/*! Enum for selecting operating mode of RF
+    rx_only_mode: Only RX is supported in this mode.
+    trx_normal_mode: Both RX and TX are supported by RF. */
+typedef enum {
+	rx_only_mode,
+	trx_normal_mode
+}sys_oper_mode_e;
+
 /**
  * @struct nrf_wifi_rf_config_regs
  * @brief Holds configuration details for RPU registers.
@@ -2373,6 +2320,37 @@ struct nrf_wifi_rf_config_mem {
 	unsigned int mem_addr[MAX_MEM_CONF];
 
 } __NRF_WIFI_PKD;
+
+/**
+ * @struct nrf_wifi_rf_calib
+ * @brief Holds calibration configuration details for RPU.
+ */
+struct nrf_wifi_rf_calib
+{
+    /** Test identifier */
+    unsigned char test;
+
+    /** RF calibration bit map */
+    unsigned int rf_calib_bit_map;
+
+    sys_oper_mode_e sys_operating_mode;
+
+    /** Result structure to store calibration results */
+    unsigned char rf_calib_results[CAL_MEM_SIZE];
+} __NRF_WIFI_PKD;
+
+/**
+ * @struct nrf_wifi_rf_read_calib_results
+ * @brief Read calibration results structure for the current channel.
+ */
+struct nrf_wifi_rf_read_calib_results
+{
+    /** Test identifier */
+    unsigned char test;
+
+    unsigned char rf_calib_results[CAL_MEM_SIZE];
+} __NRF_WIFI_PKD;
+
 
 /* TODO: Below OTP + PCB loss won't work for nRF71, but added
  * here to avoid code churn. Need to revisit this.
@@ -2684,4 +2662,14 @@ struct nrf_wifi_tx_pwr_ceil_params {
 #endif /* NRF70_2_4G_ONLY */
 } __NRF_WIFI_PKD;
 
-#endif /* __HOST_RPU_SYS_IF_H__ */
+struct nrf_wifi_cmd_coding_type_config {
+	/** umac header, see &nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+	/** 0 = BCC 1= LDPC */
+	unsigned char coding_type;
+} __NRF_WIFI_PKD;
+
+/**
+ * @}
+ */
+#endif /* __NRF71_WIFI_COMMON_H__ */
