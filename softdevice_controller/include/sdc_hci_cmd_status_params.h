@@ -91,6 +91,7 @@ typedef struct __PACKED __ALIGN(1)
  * be set to 127.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_RSSI command has completed, an HCI_Command_Complete
  * event shall be generated.
  *
