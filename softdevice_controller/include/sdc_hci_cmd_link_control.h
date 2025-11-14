@@ -97,8 +97,10 @@ typedef struct __PACKED __ALIGN(1)
  * later point in time using the same connection handle.
  *
  * Errors:
+ *
  * See Section 4.5.2 for a list of error types and descriptions.
  *
+ * <pre>
  * Type   Condition                                                                     Error code
  * MC     On the Central, the Controller has not received the HCI_LE_Create_CIS         Command
  *        command for the same CIS (a previous CIS with the same CIS_ID in the same     Disallowed
@@ -107,8 +109,10 @@ typedef struct __PACKED __ALIGN(1)
  * MC     On the Peripheral, the Controller has not generated the                       Command
  *        HCI_LE_CIS_Established event for that CIS.                                    Disallowed
  *                                                                                      (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the Controller receives the HCI_Disconnect command, it shall send the
  * HCI_Command_Status event to the Host. The HCI_Disconnection_Complete event will
  * occur at each Host when the termination of the connection has completed, and on
@@ -143,6 +147,7 @@ uint8_t sdc_hci_cmd_lc_disconnect(const sdc_hci_cmd_lc_disconnect_t * p_params);
  * Connection_Handle for an ACL-U or LE-U logical link.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the Controller receives the HCI_Read_Remote_Version_Information command,
  * the Controller shall send the HCI_Command_Status event to the Host.
  * When the Link Manager or Link Layer has completed the sequence to

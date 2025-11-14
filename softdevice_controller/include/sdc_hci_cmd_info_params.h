@@ -572,6 +572,7 @@ typedef struct __PACKED __ALIGN(1)
  * The HCI_Subversion and LMP_Subversion are vendor-specific.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Local_Version_Information command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -595,6 +596,7 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
  * See Section 6.27 for more information.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Local_Supported_Commands command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -616,6 +618,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
  * Section 3.2.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Local_Supported_Features command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -642,6 +645,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
  * On a BR/EDR/LE Controller, the public address shall be the same as the BD_ADDR.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_BD_ADDR command has completed, an
  * HCI_Command_Complete event shall be generated.
  *

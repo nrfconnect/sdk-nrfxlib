@@ -46,6 +46,7 @@ Changes
 Bug fixes
 =========
 
+* Fixed an issue where the controller would ignore a ``CONNECT_IND`` PDU if the ``ChM`` field only contained channels 32, 33, 34, 35, or 36. (DRGN-26788)
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 * Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)

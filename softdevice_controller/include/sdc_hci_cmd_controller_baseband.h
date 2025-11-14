@@ -276,6 +276,7 @@ typedef struct __PACKED __ALIGN(1)
  * shall act as if they were set to 0.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Set_Event_Mask command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -309,6 +310,7 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
  * received.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the reset has been performed, an HCI_Command_Complete event shall be
  * generated.
  *
@@ -328,6 +330,7 @@ uint8_t sdc_hci_cmd_cb_reset(void);
  * parameter. See Section 6.7.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Connection_Timeout command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -348,6 +351,7 @@ uint8_t sdc_hci_cmd_cb_read_conn_accept_timeout(sdc_hci_cmd_cb_read_conn_accept_
  * parameter. See Section 6.7.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Write_Connection_Accept_Timeout command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -369,6 +373,7 @@ uint8_t sdc_hci_cmd_cb_write_conn_accept_timeout(const sdc_hci_cmd_cb_write_conn
  * connection.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Transmit_Power_Level command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -404,6 +409,7 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
  * The Flow_Control_Enable parameter shall only be changed if no connections exist.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Set_Controller_To_Host_Flow_Control command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -456,6 +462,7 @@ uint8_t sdc_hci_cmd_cb_set_controller_to_host_flow_control(const sdc_hci_cmd_cb_
  * respectively.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Host_Buffer_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -497,6 +504,7 @@ uint8_t sdc_hci_cmd_cb_host_buffer_size(const sdc_hci_cmd_cb_host_buffer_size_t 
  * of these cases applies, the Controller shall ignore it.
  *
  * Event(s) generated (unless masked away):
+ *
  * Normally, no event is generated after the HCI_Host_Number_Of_Completed_Packets
  * command has completed. However, if the HCI_Host_Number_Of_Completed_Packets
  * command contains one or more invalid parameters, the Controller shall return an
@@ -528,6 +536,7 @@ uint8_t sdc_hci_cmd_cb_host_number_of_completed_packets(const sdc_hci_cmd_cb_hos
  * shall act as if they were set to 0.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Set_Event_Mask_Page_2 command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -549,13 +558,17 @@ uint8_t sdc_hci_cmd_cb_set_event_mask_page_2(const sdc_hci_cmd_cb_set_event_mask
  * for LE connections) parameter in the Controller on the specified Connection_Handle.
  *
  * Errors:
+ *
  * See Section 4.5.2 for a list of error types and descriptions.
  *
+ * <pre>
  * Type   Condition                                                           Error code
  * MC     Connection_Handle identifies a BR/EDR synchronous connection or     Command Disallowed
  *        an LE BIS or CIS.                                                   (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Read_Authenticated_Payload_Timeout command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -599,13 +612,17 @@ uint8_t sdc_hci_cmd_cb_read_authenticated_payload_timeout(const sdc_hci_cmd_cb_r
  * will use this parameter to determine when to use the LE ping sequence.
  *
  * Errors:
+ *
  * See Section 4.5.2 for a list of error types and descriptions.
  *
+ * <pre>
  * Type   Condition                                                           Error code
  * MC     Connection_Handle identifies a BR/EDR synchronous connection or     Command Disallowed
  *        an LE BIS or CIS.                                                   (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_Write_Authenticated_Payload_Timeout command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
