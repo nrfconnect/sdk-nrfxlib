@@ -51,13 +51,10 @@ extern "C" {
 #endif
 
 /**
+ * @brief Maximum number of IP sockets.
  * @addtogroup nrf_modem_limits
- * @{
  */
-
- /** @brief Maximum number of IP sockets. */
 #define NRF_MODEM_MAX_SOCKET_COUNT 8
-/** @} */
 
 /**
  * @addtogroup nrf_socket_address_resolution
@@ -106,7 +103,7 @@ extern "C" {
  */
 
 /**
- * @defgroup nrf_socket_families Socket family
+ * @defgroup nrf_socket_families Socket family.
  * @{
  */
 /** Unspecified address family */
@@ -120,7 +117,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_types Socket type
+ * @defgroup nrf_socket_types Socket type.
  * @{
  */
 /** TCP socket type. */
@@ -1189,16 +1186,17 @@ int nrf_getifaddrs(struct nrf_ifaddrs **ifa);
 void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
 
 /**
- * @brief Set a fallback DNS address.
+ * @brief Set or unset a fallback DNS address.
  *
  * @details
  * The fallback DNS address is used only when the network-provided DNS addresses are
  * missing or unreachable. The fallback DNS does not override the network-provided DNS.
  *
  * @param family    Address family, either NRF_AF_INET or NRF_AF_INET6.
- * @param in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
- *                  nrf_in6_addr structure, respectively.
- * @param in_size   Size of the structure pointed to by in_addr.
+ * @param in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or nrf_in6_addr structure,
+ *                  respectively. To unset the fallback DNS address, @p in_addr must be NULL.
+ * @param in_size   Size of the structure pointed to by @p in_addr. To unset the fallback DNS
+ *                  address, @p in_size must be 0 (when @p in_addr is NULL).
  *
  * @retval 0  On success
  * @retval -1 On error, and set @c errno to indicate the reason.
