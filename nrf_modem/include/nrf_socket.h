@@ -51,13 +51,10 @@ extern "C" {
 #endif
 
 /**
+ * @brief Maximum number of IP sockets.
  * @addtogroup nrf_modem_limits
- * @{
  */
-
- /** @brief Maximum number of IP sockets. */
 #define NRF_MODEM_MAX_SOCKET_COUNT 8
-/** @} */
 
 /**
  * @addtogroup nrf_socket_address_resolution
@@ -106,7 +103,7 @@ extern "C" {
  */
 
 /**
- * @defgroup nrf_socket_families Socket family
+ * @defgroup nrf_socket_families Socket family.
  * @{
  */
 /** Unspecified address family */
@@ -120,7 +117,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_types Socket type
+ * @defgroup nrf_socket_types Socket type.
  * @{
  */
 /** TCP socket type. */

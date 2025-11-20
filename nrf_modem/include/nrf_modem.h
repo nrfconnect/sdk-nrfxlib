@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 /**
- * @defgroup nrf_modem_limits Limits of the Modem library
+ * @defgroup nrf_modem_limits Limits of the Modem library.
  * @ingroup nrf_modem
  * @{
  * @brief Modem library constants.
@@ -69,7 +69,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_modem_shmem_config Shared memory configuration
+ * @defgroup nrf_modem_shmem_config Shared memory configuration.
  *           Only the lower 128k of RAM may be shared with the modem core.
  *
  * @ingroup nrf_modem
