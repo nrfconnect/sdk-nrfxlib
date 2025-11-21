@@ -40,7 +40,17 @@ extern "C" {
 
 /** @brief    Function prototype for the assert handler.
  *
- * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
+ * The assertion handler will be called whenever MPSL detects
+ * an internal error it cannot recover from.
+ * The assertion handler may be called from any execution context,
+ * including interrupt context.
+ *
+ * The application may log the assertion information and provide the
+ * information to Nordic Semiconductor for analysis.
+ *
+ * MPSL will disable all interrupts prior to calling the
+ * assertion handler. MPSL will reset the chip if the
+ * application returns from this function.
  *
  * @param[in] file   The filename where the assertion occurred.
  * @param[in] line   The line number where the assertion occurred.
