@@ -298,7 +298,7 @@ int nrf_modem_dect_clock_sync_disable(void);
  * Completion of this operation is indicated by the
  * @ref NRF_MODEM_DECT_CLOCK_SYNC_EVT_PULSE_INFO event.
  *
- * @param pulse_direction Direction of the pulse to query information about.
+ * @param direction Direction of the pulse to query information about.
  *
  * @retval 0           Request was sent to modem.
  * @retval -NRF_EPERM  The Modem library is not initialized.
