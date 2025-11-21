@@ -16,6 +16,18 @@ Main branch
 Changes
 =======
 
+* Scheduler improvements (DRGN-24450):
+
+  * The scheduler can now manage events that are scheduled less than 100 microseconds apart.
+  * Updated MPSL Timeslot implementation:
+
+    * Signals :c:enumerator:`MPSL_TIMESLOT_SIGNAL_BLOCKED` and :c:enumerator:`MPSL_TIMESLOT_SIGNAL_CANCELED` are now sent immediately after the specified timeout or start time, instead of being sent early if the scheduler predicted the timeslot could not be scheduled.
+    * Timeslot events can now run for longer than 128 seconds.
+
+  * Reduced code size for nRF52 and nRF53 Series devices.
+  * Removed restriction on scheduling events less than 128 seconds into the future for nRF52 and nRF53 Series devices.
+  * Fixed an issue on nRF54H20 device where an assert could occur if MRAM was not forced on using the :kconfig:option:`CONFIG_MRAM_LATENCY_AUTO_REQ` Kconfig option. (DRGN-26065)
+
 * The types :c:type:`mpsl_phy_t`, :c:type:`mpsl_fem_event_type_t`, :c:type:`mpsl_fem_functionality_t`, :c:type:`mpsl_cx_req_trig_t`, :c:type:`mpsl_pm_event_state_t` and :c:type:`mpsl_pm_low_latency_state_t` are now a fixed-width ``uint8_t`` to not rely on compiler specific size of an enum type. (KRKNWK-20877)
 * The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` have been moved to the :file:`mpsl_hwres_ppi.h` file. (DRGN-26373)
 * The MPSL header files now include the :file:`nrfx.h` file, adding a dependency on `nrfx`_.

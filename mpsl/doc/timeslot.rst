@@ -56,7 +56,6 @@ The length of the timeslot is specified by the application.
 Longer continuous timeslots can be achieved by requesting to extend the current timeslot.
 A timeslot can be extended multiple times.
 However, if there are other concurrent protocol activities, the extension might fail.
-The maximum timeslot length is 128 seconds.
 
 Scheduling
 **********

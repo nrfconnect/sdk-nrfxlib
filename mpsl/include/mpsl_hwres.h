@@ -51,12 +51,6 @@
     #endif
 #endif
 
-#if defined(NRF9230_ENGB_XXAA)
-    #ifndef NRF92_SERIES
-        #define NRF92_SERIES
-    #endif
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,7 +70,7 @@ extern "C" {
     #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
     #define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
-#elif defined(NRF54H_SERIES) || defined(NRF92_SERIES)
+#elif defined(NRF54H_SERIES)
     #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
     #define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
