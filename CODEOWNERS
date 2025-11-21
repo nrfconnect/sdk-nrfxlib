@@ -42,7 +42,7 @@ doc/*                                     @b-gent
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @lmaciejonczyk @edmont @canisLupus1313
 /zephyr/                                  @carlescufi
-/nrf_rpc/                                 @doki-nordic @nrfconnect/ncs-protocols-serialization
+/nrf_rpc/                                 @nrfconnect/ncs-blenders @nrfconnect/ncs-protocols-serialization
 /nrf_dm/                                  @Tschet1 @eriksandgren
 /lc3/                                     @koffes @alexsven
 /nrf_fuel_gauge/                          @nordic-auko
