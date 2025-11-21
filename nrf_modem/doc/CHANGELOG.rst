@@ -20,6 +20,14 @@ Core library
 DECT NR+
 ========
 
+* Added the DECT clock synchronization API for precise timing with external 1 PPS signals. See the :ref:`nrf_modem_dect_clock_sync` for more information.
+
+  * The :c:func:`nrf_modem_dect_clock_sync_enable` and :c:func:`nrf_modem_dect_clock_sync_disable` functions to control external clock synchronization.
+  * The :c:func:`nrf_modem_dect_clock_sync_get_pulse_info` function to query synchronization pulse timing.
+  * The :c:func:`nrf_modem_dect_clock_sync_get_state` function to retrieve synchronization status and accuracy.
+  * The :c:func:`nrf_modem_dect_clock_sync_enable_ref_output` and :c:func:`nrf_modem_dect_clock_sync_disable_ref_output` functions to control reference signal output on the **COEX1** pin.
+  * The :c:func:`nrf_modem_dect_clock_sync_event_handler_set` function to set the event handler for asynchronous operations.
+
 * Added:
 
   * The :c:func:`nrf_modem_dect_phy_test_rf_tx_cw_control` function to control continuous wave transmission for device certification purposes.

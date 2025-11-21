@@ -172,6 +172,13 @@ DECT NR+ PHY API
 
 .. doxygengroup:: nrf_modem_dect_phy
 
+.. _nrf_modem_dect_clock_sync:
+
+DECT clock sync API
+===================
+
+.. doxygengroup:: nrf_modem_dect_clock_sync
+
 .. _nrf_modem_gnss_api:
 
 GNSS API
