@@ -562,10 +562,8 @@ static void radio_robust_disable(void)
     }
     else
     {
-#if !defined(RADIO_POWER_POWER_Msk)
         /* Disable shorts to ensure no event will be triggered after disabling. */
         nrf_radio_shorts_set(NRF_RADIO, SHORTS_IDLE);
-#endif
         /* RADIO is in a stable state and needs to be transitioned to DISABLED manually.
          * It cannot be disabled if EVENT_DISABLED is set. Clear it first. */
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
@@ -1046,7 +1044,6 @@ static void ppi_all_clear(void)
         default:
             NRF_802154_ASSERT(false);
     }
-    nrf_802154_trx_ppi_for_disable();
 }
 
 static void fem_power_down_now(void)
@@ -1061,22 +1058,15 @@ void nrf_802154_trx_disable(void)
 
     if (m_trx_state != TRX_STATE_DISABLED)
     {
-        pa_modulation_fix_apply(false);
-
-#if defined(RADIO_POWER_POWER_Msk)
-        nrf_radio_power_set(NRF_RADIO, false);
-#endif
-
         /* While the RADIO is powered off deconfigure any PPIs used directly by trx module */
         ppi_all_clear();
 
-#if !defined(RADIO_POWER_POWER_Msk)
         radio_robust_disable();
-        wait_until_radio_is_disabled();
-        nrf_radio_reset();
-#endif
 
-        nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_RADIO));
+        /*
+         * Disabling the radio may take some time.
+         * In the meantime perform other clean-up actions.
+         */
 
 #if defined(RADIO_INTENSET_SYNC_Msk)
         nrf_egu_int_disable(NRF_802154_EGU_INSTANCE, EGU_SYNC_INTMASK);
@@ -1089,9 +1079,14 @@ void nrf_802154_trx_disable(void)
                                  NRF_TIMER_SHORT_COMPARE1_STOP_MASK);
         timer_stop_and_clear();
 
-#if defined(RADIO_POWER_POWER_Msk)
-        nrf_radio_power_set(NRF_RADIO, true);
-#endif
+        /* Resume clean-up of the radio path. */
+        wait_until_radio_is_disabled();
+        pa_modulation_fix_apply(false);
+        nrf_radio_reset();
+
+        nrf_802154_trx_ppi_for_disable();
+
+        nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_RADIO));
 
         mpsl_fem_lna_configuration_clear();
         mpsl_fem_pa_configuration_clear();
