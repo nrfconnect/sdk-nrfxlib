@@ -385,11 +385,19 @@ extern "C" {
 
 /** @} end of sdc_mem_defines */
 
-/** @brief Function prototype for the fault handler.
+/** @brief Function prototype for the assertion handler.
  *
- * @note The SoftDevice Controller will disable all interrupts prior to calling the
- *       fault handler. The SoftDevice Controller will reset the chip if the
- *       application returns from this function.
+ * The assertion handler will be called whenever the SoftDevice Controller detects
+ * an internal error it cannot recover from.
+ * The assertion handler may be called from any execution context,
+ * including interrupt context.
+ *
+ * The application may log the assertion information and provide the
+ * information to Nordic Semiconductor for analysis.
+ *
+ * The SoftDevice Controller will disable all interrupts prior to calling the
+ * assertion handler. The SoftDevice Controller will reset the chip if the
+ * application returns from this function.
  *
  * @param[in] file  The filename where the assertion occurred.
  * @param[in] line  The line number where the assertion occurred.
@@ -1552,6 +1560,16 @@ void sdc_support_channel_sounding_initiator_role(void);
  *       it is called at the right time.
  */
 void sdc_support_channel_sounding_reflector_role(void);
+
+/** @brief Use global channel map during connection setup
+ *
+ * After this API is called, connections will use the global channel map
+ * instead of the full channel map during connection setup.
+ *
+ * @note This is known to not work well with some peer peripheral devices conforming to Core Specification v4.0.
+ *       The API should only be used when the peer peripheral devices are qualified to a more recent specification.
+ */
+void sdc_use_global_channel_map_on_connection(void);
 
 #ifdef __cplusplus
 }
