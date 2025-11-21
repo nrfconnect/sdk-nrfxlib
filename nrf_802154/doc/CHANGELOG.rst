@@ -49,6 +49,11 @@ Added
 
   On SoCs that do not require the fix, enabling it has no effect.
 
+Bug fixes
+=========
+
+* Fixed a bug where the radio could be shut-down improperly, which could cause unpredictable EM emissions. (KRKNWK-21003)
+
 nRF Connect SDK v3.1.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
