@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+Modified
+========
+
+* Aligned the :ref:`type_2_tag` and :ref:`type_4_tag` to the new nrfx API in version 4.0.0.
+
 nRF Connect SDK v3.0.0
 **********************
 

@@ -80,7 +80,7 @@ int nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t * p_irq_
  *                NRFX_NFCT_NFCID1_DOUBLE_SIZE, or NRFX_NFCT_NFCID1_TRIPLE_SIZE.
  */
 int nfc_platform_nfcid1_default_bytes_get(uint8_t * const p_nfcid1_buff,
-                                                 uint32_t        nfcid1_buff_len);
+                                          uint32_t        nfcid1_buff_len);
 
 
 /**
