@@ -174,7 +174,10 @@ enum MPSL_TIMESLOT_REQUEST_TYPE
                                                  in a session.
                                                  @note It is not permitted to request an earliest
                                                  timeslot from within a timeslot. */
-    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request. */
+    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request.
+                                                 This may not be used for the first request of a
+                                                 session as there is no previous timeslot to
+                                                 schedule the start time against. */
 };
 
 /** @brief Parameters for a request for a timeslot as early as possible. */
@@ -341,7 +344,7 @@ int32_t mpsl_timeslot_session_close(mpsl_timeslot_session_id_t session_id);
  * @retval 0              Success
  * @retval  -NRF_EINVAL   The parameters of p_request are not valid
  * @retval  -NRF_ENOENT   The session is not open.
- * @retval  -NRF_EAGAIN   The session is not IDLE.
+ * @retval  -NRF_EAGAIN   The session is not IDLE, or the first request in a session was a @ref MPSL_TIMESLOT_REQ_TYPE_NORMAL
  */
 int32_t mpsl_timeslot_request(mpsl_timeslot_session_id_t session_id, mpsl_timeslot_request_t const * p_request);
 
