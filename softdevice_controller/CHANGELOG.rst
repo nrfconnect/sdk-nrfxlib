@@ -21,6 +21,8 @@ Added
 * Support for the LE Frame Space Update HCI command. (DRGN-23612)
 * Support for the LE Connection Rate Request, LE Set Default Rate Parameters, and LE Read Minimum Supported Connection Interval HCI commands. (DRGN-23668)
 * Support for advertising intervals longer than 10 seconds. (DRGN-9988)
+* :c:func:`sdc_support_lowest_frame_space` to enable support for the lowest possible frame space for ACL connections.
+  This option forces ACL connections to always use the same TX and RX PHY. (DRGN-26042)
 
 Changes
 =======

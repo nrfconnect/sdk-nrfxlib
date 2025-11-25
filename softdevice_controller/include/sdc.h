@@ -1445,6 +1445,10 @@ void sdc_support_extended_feature_set(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
+ * @note The application may also call @ref sdc_support_lowest_frame_space() to enable support
+ *       for the lowest frame space possible for ACL connections, if the application does not
+ *       require asymmetric PHYs.
+ *
  * @note The application shall also call @ref sdc_support_extended_feature_set()
  *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
  *
@@ -1463,6 +1467,10 @@ void sdc_support_frame_space_update_central(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
+ * @note The application may also call @ref sdc_support_lowest_frame_space() to enable support
+ *       for the lowest frame space possible for ACL connections, if the application does not
+ *       require asymmetric PHYs.
+ *
  * @note The application shall also call @ref sdc_support_extended_feature_set()
  *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
  *
@@ -1471,6 +1479,21 @@ void sdc_support_frame_space_update_central(void);
  *       it is called at the right time.
  */
 void sdc_support_frame_space_update_peripheral(void);
+
+/** @brief Enable support for the lowest frame space possible for ACL connections
+ *
+ * After this API is called, the controller will support the lowest frame space possible for ACL connections.
+ *
+ * @note This option forces ACL connections to always use the same TX and RX PHY.
+ *
+ * @note The application shall also call sdc_support_frame_space_update_central() or
+ *       @ref sdc_support_frame_space_update_peripheral() to enable support for Frame Space Update.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+ void sdc_support_lowest_frame_space(void);
 
 /** @brief Support Shorter Connection Intervals for central role
  *
