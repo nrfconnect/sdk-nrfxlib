@@ -1,7 +1,7 @@
 .. _sqspi_limitations:
 
-Limitations
-###########
+sQSPI limitations
+#################
 
 When working with sQSPI, you should be aware of the following limitations.
 
@@ -9,7 +9,7 @@ When working with sQSPI, you should be aware of the following limitations.
    :local:
    :depth: 2
 
-v1.1.0
+v1.2.0
 ******
 
 Refer to the following detailed descriptions of current limitations:
@@ -20,13 +20,14 @@ Refer to the following detailed descriptions of current limitations:
   This has no effect on data integrity.
 * The nrfx API for sQSPI does not support configuring the use of the positive or negative edge of SCLK delayed read sampling.
 * sQSPI employs the :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc` parameter as an offset to FLPR's base clock counter , not SLCK clock cycles (see the :c:struct:`nrf_sqspi_dev_cfg_t` struct).
-* sQSPI :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc` is constrained to either a value of ``0`` if using ``GPIOHSPADCTRL`` for high-speed transfers (see :ref:`nrf54L15_porting_guide_high_speed_transfers`) or a value greater than ``0`` but lower than that of ``FLPR_counter`` if a high-speed transfer is not needed (see :ref:`sqspi_timing`).
+* sQSPI :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc` is constrained to either a value of ``0`` if using ``GPIOHSPADCTRL`` for high-speed transfers (see :ref:`nrf54L_series_porting_guide_high_speed_transfers`) or a value greater than ``0`` but lower than that of ``FLPR_counter`` if a high-speed transfer is not needed (see :ref:`sqspi_timing`).
 * Implementation of sQSPI quad or dual lane for command transmission (for example, ``2_2_2`` and ``4_4_4`` modes) is implemented but has not been tested.
 * sQSPI does not support a configurable pin for the CSN line; only **PIN 5** is supported (see :c:var:`nrf_sqspi_dev_cfg_t.csn_pin`).
 * :c:var:`nrf_sqspi_xfer_t.p_data` needs to be a pointer with a 32-bit aligned address.
 * sQSPI high-speed reading cannot happen directly when changing from SPI mode 0 to 3.
   Either do a high-speed write or a slow read (5.8 MHz) in between.
 * :c:var:`nrf_sqspi_xfer_t.addr_length` must be greater than :c:var:`nrf_sqspi_dev_cfg_t.mspi_lines`.
+* Any prepared transfer with :c:func:`nrf_sqspi_xfer_prepare` will be discarded when using :c:func:`nrf_sqspi_deactivate`.
 
 * sQSPI will present undefined behavior in the following cases:
 

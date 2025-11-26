@@ -9,6 +9,21 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.2.0
+**********************
+
+This version contains an initial release of the Soft Peripheral sEMMC.
+See the following list of changes:
+
+* Added:
+
+  * The first implementation of Soft Peripheral sEMMC for nRF54H Series and nRF54L Series SoCs.
+    For details, see the :ref:`semmc_changelog` page.
+
+  * New virtual register for sQSPI.
+    It updates sQSPI to version 1.2.0 and also supports the nRF54LM20 device.
+    For details, see the :ref:`sqspi_changelog` page.
+
 nRF Connect SDK v3.1.0
 **********************
 

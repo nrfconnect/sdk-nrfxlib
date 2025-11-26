@@ -113,6 +113,16 @@ static qspi2_control_block_t m_cb[NRF_SQSPI_ENABLED_COUNT] =
 {{.state = NRFX_DRV_STATE_UNINITIALIZED}};
 static volatile nrf_sqspi_transaction_data_t m_current_xfer;
 
+NRF_STATIC_INLINE void sp_handshake_set(void * p_reg, uint32_t val, uint8_t idx)
+{
+    nrf_qspi2_handshake_set((NRF_QSPI2_Type *)p_reg, val, idx);
+}
+
+NRF_STATIC_INLINE uint32_t sp_handshake_get(void * p_reg, uint8_t idx)
+{
+    return nrf_qspi2_handshake_get((NRF_QSPI2_Type const *)p_reg, idx);
+}
+
 nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_config)
 {
     NRFX_ASSERT(p_qspi);
@@ -402,6 +412,21 @@ nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
     {
         p_cb->conf.ctrlr0.scph  = QSPI_CORE_CORE_CTRLR0_SCPH_MIDDLEBIT;
         p_cb->conf.ctrlr0.scpol = QSPI_CORE_CORE_CTRLR0_SCPOL_INACTIVEHIGH;
+    }
+    else if (p_config->spi_cpolpha == NRF_SQSPI_SPI_CPOLPHA_1)
+    {
+        p_cb->conf.ctrlr0.scph  = QSPI_CORE_CORE_CTRLR0_SCPH_STARTBIT;
+        p_cb->conf.ctrlr0.scpol = QSPI_CORE_CORE_CTRLR0_SCPOL_INACTIVEHIGH;
+    }
+    else if (p_config->spi_cpolpha == NRF_SQSPI_SPI_CPOLPHA_2)
+    {
+        p_cb->conf.ctrlr0.scph  = QSPI_CORE_CORE_CTRLR0_SCPH_MIDDLEBIT;
+        p_cb->conf.ctrlr0.scpol = QSPI_CORE_CORE_CTRLR0_SCPOL_INACTIVELOW;
+    }
+    else if (p_config->spi_cpolpha == NRF_SQSPI_SPI_CPOLPHA_3)
+    {
+        p_cb->conf.ctrlr0.scph  = QSPI_CORE_CORE_CTRLR0_SCPH_STARTBIT;
+        p_cb->conf.ctrlr0.scpol = QSPI_CORE_CORE_CTRLR0_SCPOL_INACTIVELOW;
     }
 
     if (p_config->mspi_lines == NRF_SQSPI_SPI_LINES_SINGLE)

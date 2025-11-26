@@ -17,4 +17,5 @@ It covers setup, integration, and operational guidelines for using each soft per
 
    doc/introduction.rst
    doc/sQSPI/README.rst
+   doc/sEMMC/README.rst
    CHANGELOG.rst
