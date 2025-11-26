@@ -8,17 +8,6 @@
 #define NRF_SP_QSPI_H__
 
 #include "nrfx.h" // Resolve nrfXX_types.h for the correct target to get definitions for __IO, __IOM etc.
-#if defined (NRF_FLPR)
-extern char __soft_periph_com_start__[];
-#define NRF_SP_QSPI_BASE ((uint32_t)&__soft_periph_com_start__)
-#elif defined (NRF_APPLICATION)
-#define NRF_SP_QSPI_BASE (NRF_SQSPI_SP_FIRMWARE_ADDR + 0x3b40)
-#else
-  #pragma warning "Processor not defined."
-#endif
-
-#define NRF_SP_QSPI ((NRF_SP_QSPI_Type*)NRF_SP_QSPI_BASE)
-
 /* ===========================================================================================================================
  * ================                                           QSPI                                           ================
  * ===========================================================================================================================*/
@@ -2462,870 +2451,890 @@ typedef struct
  */
 typedef struct
 {
-    __IOM NRF_QSPI_CORE_CORE_Type CORE;              /*!<                (unspecified)                                         */
-} NRF_QSPI_CORE_Type;                                /*!<                                                                      */
+    __IOM NRF_QSPI_CORE_CORE_Type CORE; /*!<                (unspecified)                                         */
+} NRF_QSPI_CORE_Type;                   /*!<                                                                      */
+
+/* ================================================== Struct QSPI_SPSYNC ================================================== */
+/**
+ * @brief SPSYNC [QSPI_SPSYNC] Registers used to acknowledge API function calls
+ */
+typedef struct
+{
+    __IOM uint32_t AUX[4];                                                  /*!< (@ 0x00000000) Auxiliary registers for XSB macro call handshaking    */
+} NRF_QSPI_SPSYNC_Type;                                                     /*!< Size = 16 (0x010)                                                    */
+
+/* QSPI_SPSYNC_AUX: Auxiliary registers for XSB macro call handshaking */
+  #define QSPI_SPSYNC_AUX_MaxCount   (4UL)                                  /*!< Max size of AUX[4] array.                                            */
+  #define QSPI_SPSYNC_AUX_MaxIndex   (3UL)                                  /*!< Max index of AUX[4] array.                                           */
+  #define QSPI_SPSYNC_AUX_MinIndex   (0UL)                                  /*!< Min index of AUX[4] array.                                           */
+  #define QSPI_SPSYNC_AUX_ResetValue (0x00000000UL)                         /*!< Reset value of AUX[4] register.                                    */
+
+/* AUX @Bits 0..31 : Auxiliary register */
+  #define QSPI_SPSYNC_AUX_AUX_Pos (0UL)                                     /*!< Position of AUX field.                                               */
+  #define QSPI_SPSYNC_AUX_AUX_Msk (0xFFFFFFFFUL << QSPI_SPSYNC_AUX_AUX_Pos) /*!< Bit mask of AUX field.                  */
 
 /* ======================================================= Struct QSPI ======================================================= */
 /**
  * @brief Quad serial peripheral interface
  */
-typedef struct                                       /*!< QSPI Structure                                                       */
+typedef struct                                                              /*!< QSPI Structure                                                       */
 {
-    __OM uint32_t              TASKS_START;          /*!<                Start operation.                                      */
-    __OM uint32_t              TASKS_RESET;          /*!<                Reset the QSPI                                        */
-    __IOM uint32_t             EVENTS_CORE;          /*!<                Interrupt from the QSPI core                          */
+    __OM uint32_t              TASKS_START;                                 /*!<                Start operation.                                      */
+    __OM uint32_t              TASKS_RESET;                                 /*!<                Reset the QSPI                                        */
+    __IOM uint32_t             EVENTS_CORE;                                 /*!<                Interrupt from the QSPI core                          */
     __IOM NRF_QSPI_EVENTS_DMA_Type
-                               EVENTS_DMA;           /*!<                Peripheral events.                                    */
-    __IOM uint32_t             EVENTS_IDLE;          /*!<                This event signifies that the QSPI core is no longer
-                                                      *                                busy*/
-    __IOM uint32_t             SHORTS;               /*!<                Shortcuts between local events and tasks              */
-    __IOM uint32_t             INTEN;                /*!<                Enable or disable interrupt                           */
-    __IOM uint32_t             INTENSET;             /*!<                Enable interrupt                                      */
-    __IOM uint32_t             INTENCLR;             /*!<                Disable interrupt                                     */
-    __IM uint32_t              INTPEND;              /*!<                Pending interrupts                                    */
-    __IOM uint32_t             ENABLE;               /*!<                Enables the QSPI This requests clock for the IP core  */
-    __IOM NRF_QSPI_CONFIG_Type CONFIG;               /*!<                (unspecified)                                         */
-    __IOM NRF_QSPI_FORMAT_Type FORMAT;               /*!<                (unspecified)                                         */
-    __IOM NRF_QSPI_DMA_Type    DMA;                  /*!<                (unspecified)                                         */
-    __IOM NRF_QSPI_CORE_Type   CORE;                 /*!<                (unspecified)                                         */
-} NRF_SP_QSPI_Type;                                  /*!<                                                                      */
+                               EVENTS_DMA;                                  /*!<                Peripheral events.                                    */
+    __IOM uint32_t             EVENTS_IDLE;                                 /*!<                This event signifies that the QSPI core is no longer
+                                                                             *                                busy*/
+    __IOM uint32_t             SHORTS;                                      /*!<                Shortcuts between local events and tasks              */
+    __IOM uint32_t             INTEN;                                       /*!<                Enable or disable interrupt                           */
+    __IOM uint32_t             INTENSET;                                    /*!<                Enable interrupt                                      */
+    __IOM uint32_t             INTENCLR;                                    /*!<                Disable interrupt                                     */
+    __IM uint32_t              INTPEND;                                     /*!<                Pending interrupts                                    */
+    __IOM uint32_t             ENABLE;                                      /*!<                Enables the QSPI This requests clock for the IP core  */
+    __IOM NRF_QSPI_CONFIG_Type CONFIG;                                      /*!<                (unspecified)                                         */
+    __IOM NRF_QSPI_FORMAT_Type FORMAT;                                      /*!<                (unspecified)                                         */
+    __IOM NRF_QSPI_DMA_Type    DMA;                                         /*!<                (unspecified)                                         */
+    __IOM NRF_QSPI_CORE_Type   CORE;                                        /*!<                (unspecified)                                         */
+    __IOM NRF_QSPI_SPSYNC_Type SPSYNC;                                      /*!<                (unspecified)                                         */
+} NRF_SP_QSPI_Type;                                                         /*!<                                                                      */
 
 /* QSPI_TASKS_START: Start operation. */
 #define QSPI_TASKS_START_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of TASKS_START register.                                 */
+    (0x00000000UL)                                                          /*!< Reset value of TASKS_START register.                                 */
 
 /* TASKS_START @Bit 0 : Start operation. */
 #define QSPI_TASKS_START_TASKS_START_Pos \
-    (0UL)                                            /*!< Position of TASKS_START field.                                       */
+    (0UL)                                                                   /*!< Position of TASKS_START field.                                       */
 #define QSPI_TASKS_START_TASKS_START_Msk \
-    (0x1UL << QSPI_TASKS_START_TASKS_START_Pos)      /*!< Bit mask of TASKS_START field.     */
+    (0x1UL << QSPI_TASKS_START_TASKS_START_Pos)                             /*!< Bit mask of TASKS_START field.     */
 #define QSPI_TASKS_START_TASKS_START_Min \
-    (0x1UL)                                          /*!< Min enumerator value of TASKS_START field.                           */
+    (0x1UL)                                                                 /*!< Min enumerator value of TASKS_START field.                           */
 #define QSPI_TASKS_START_TASKS_START_Max \
-    (0x1UL)                                          /*!< Max enumerator value of TASKS_START field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of TASKS_START field.                           */
 #define QSPI_TASKS_START_TASKS_START_Trigger \
-    (0x1UL)                                          /*!< Trigger task                                                       */
+    (0x1UL)                                                                 /*!< Trigger task                                                       */
 
 /* QSPI_TASKS_RESET: Reset the QSPI */
 #define QSPI_TASKS_RESET_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of TASKS_RESET register.                                 */
+    (0x00000000UL)                                                          /*!< Reset value of TASKS_RESET register.                                 */
 
 /* TASKS_RESET @Bit 0 : Reset the QSPI */
 #define QSPI_TASKS_RESET_TASKS_RESET_Pos \
-    (0UL)                                            /*!< Position of TASKS_RESET field.                                       */
+    (0UL)                                                                   /*!< Position of TASKS_RESET field.                                       */
 #define QSPI_TASKS_RESET_TASKS_RESET_Msk \
-    (0x1UL << QSPI_TASKS_RESET_TASKS_RESET_Pos)      /*!< Bit mask of TASKS_RESET field.     */
+    (0x1UL << QSPI_TASKS_RESET_TASKS_RESET_Pos)                             /*!< Bit mask of TASKS_RESET field.     */
 #define QSPI_TASKS_RESET_TASKS_RESET_Min \
-    (0x1UL)                                          /*!< Min enumerator value of TASKS_RESET field.                           */
+    (0x1UL)                                                                 /*!< Min enumerator value of TASKS_RESET field.                           */
 #define QSPI_TASKS_RESET_TASKS_RESET_Max \
-    (0x1UL)                                          /*!< Max enumerator value of TASKS_RESET field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of TASKS_RESET field.                           */
 #define QSPI_TASKS_RESET_TASKS_RESET_Trigger \
-    (0x1UL)                                          /*!< Trigger task                                                       */
+    (0x1UL)                                                                 /*!< Trigger task                                                       */
 
 /* QSPI_EVENTS_CORE: Interrupt from the QSPI core */
 #define QSPI_EVENTS_CORE_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of EVENTS_CORE register.                                 */
+    (0x00000000UL)                                                          /*!< Reset value of EVENTS_CORE register.                                 */
 
 /* EVENTS_CORE @Bit 0 : Interrupt from the QSPI core */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_Pos \
-    (0UL)                                            /*!< Position of EVENTS_CORE field.                                       */
+    (0UL)                                                                   /*!< Position of EVENTS_CORE field.                                       */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_Msk \
-    (0x1UL << QSPI_EVENTS_CORE_EVENTS_CORE_Pos)      /*!< Bit mask of EVENTS_CORE field.     */
+    (0x1UL << QSPI_EVENTS_CORE_EVENTS_CORE_Pos)                             /*!< Bit mask of EVENTS_CORE field.     */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of EVENTS_CORE field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of EVENTS_CORE field.                           */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of EVENTS_CORE field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of EVENTS_CORE field.                           */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_NotGenerated \
-    (0x0UL)                                          /*!< Event not generated                                           */
+    (0x0UL)                                                                 /*!< Event not generated                                           */
 #define QSPI_EVENTS_CORE_EVENTS_CORE_Generated \
-    (0x1UL)                                          /*!< Event generated                                                  */
+    (0x1UL)                                                                 /*!< Event generated                                                  */
 
 /* QSPI_EVENTS_IDLE: This event signifies that the QSPI core is no longer busy */
 #define QSPI_EVENTS_IDLE_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of EVENTS_IDLE register.                                 */
+    (0x00000000UL)                                                          /*!< Reset value of EVENTS_IDLE register.                                 */
 
 /* EVENTS_IDLE @Bit 0 : This event signifies that the QSPI core is no longer busy */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_Pos \
-    (0UL)                                            /*!< Position of EVENTS_IDLE field.                                       */
+    (0UL)                                                                   /*!< Position of EVENTS_IDLE field.                                       */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_Msk \
-    (0x1UL << QSPI_EVENTS_IDLE_EVENTS_IDLE_Pos)      /*!< Bit mask of EVENTS_IDLE field.     */
+    (0x1UL << QSPI_EVENTS_IDLE_EVENTS_IDLE_Pos)                             /*!< Bit mask of EVENTS_IDLE field.     */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of EVENTS_IDLE field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of EVENTS_IDLE field.                           */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of EVENTS_IDLE field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of EVENTS_IDLE field.                           */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_NotGenerated \
-    (0x0UL)                                          /*!< Event not generated                                           */
+    (0x0UL)                                                                 /*!< Event not generated                                           */
 #define QSPI_EVENTS_IDLE_EVENTS_IDLE_Generated \
-    (0x1UL)                                          /*!< Event generated                                                  */
+    (0x1UL)                                                                 /*!< Event generated                                                  */
 
 /* QSPI_SHORTS: Shortcuts between local events and tasks */
 #define QSPI_SHORTS_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of SHORTS register.                                      */
+    (0x00000000UL)                                                          /*!< Reset value of SHORTS register.                                      */
 
 /* DMA_DONE_START @Bit 0 : Shortcut between event DMA.DONE and task START */
 #define QSPI_SHORTS_DMA_DONE_START_Pos \
-    (0UL)                                            /*!< Position of DMA_DONE_START field.                                    */
+    (0UL)                                                                   /*!< Position of DMA_DONE_START field.                                    */
 #define QSPI_SHORTS_DMA_DONE_START_Msk \
-    (0x1UL << QSPI_SHORTS_DMA_DONE_START_Pos)        /*!< Bit mask of DMA_DONE_START field.      */
+    (0x1UL << QSPI_SHORTS_DMA_DONE_START_Pos)                               /*!< Bit mask of DMA_DONE_START field.      */
 #define QSPI_SHORTS_DMA_DONE_START_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMA_DONE_START field.                        */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMA_DONE_START field.                        */
 #define QSPI_SHORTS_DMA_DONE_START_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMA_DONE_START field.                        */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMA_DONE_START field.                        */
 #define QSPI_SHORTS_DMA_DONE_START_Disabled \
-    (0x0UL)                                          /*!< Disable shortcut                                                    */
+    (0x0UL)                                                                 /*!< Disable shortcut                                                    */
 #define QSPI_SHORTS_DMA_DONE_START_Enabled \
-    (0x1UL)                                          /*!< Enable shortcut                                                      */
+    (0x1UL)                                                                 /*!< Enable shortcut                                                      */
 
 /* QSPI_INTEN: Enable or disable interrupt */
 #define QSPI_INTEN_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of INTEN register.                                       */
+    (0x00000000UL)                                                          /*!< Reset value of INTEN register.                                       */
 
 /* CORE @Bit 0 : Enable or disable interrupt for event CORE */
-#define QSPI_INTEN_CORE_Pos      (0UL)               /*!< Position of CORE field.                                              */
+#define QSPI_INTEN_CORE_Pos      (0UL)                                      /*!< Position of CORE field.                                              */
 #define QSPI_INTEN_CORE_Msk \
-    (0x1UL << QSPI_INTEN_CORE_Pos)                   /*!< Bit mask of CORE field.                                      */
-#define QSPI_INTEN_CORE_Min      (0x0UL)             /*!< Min enumerator value of CORE field.                                  */
-#define QSPI_INTEN_CORE_Max      (0x1UL)             /*!< Max enumerator value of CORE field.                                  */
-#define QSPI_INTEN_CORE_Disabled (0x0UL)             /*!< Disable                                                              */
-#define QSPI_INTEN_CORE_Enabled  (0x1UL)             /*!< Enable                                                               */
+    (0x1UL << QSPI_INTEN_CORE_Pos)                                          /*!< Bit mask of CORE field.                                      */
+#define QSPI_INTEN_CORE_Min      (0x0UL)                                    /*!< Min enumerator value of CORE field.                                  */
+#define QSPI_INTEN_CORE_Max      (0x1UL)                                    /*!< Max enumerator value of CORE field.                                  */
+#define QSPI_INTEN_CORE_Disabled (0x0UL)                                    /*!< Disable                                                              */
+#define QSPI_INTEN_CORE_Enabled  (0x1UL)                                    /*!< Enable                                                               */
 
 /* DMADONELIST @Bit 1 : Enable or disable interrupt for event DMADONELIST */
-#define QSPI_INTEN_DMADONELIST_Pos (1UL)             /*!< Position of DMADONELIST field.                                       */
+#define QSPI_INTEN_DMADONELIST_Pos (1UL)                                    /*!< Position of DMADONELIST field.                                       */
 #define QSPI_INTEN_DMADONELIST_Msk \
-    (0x1UL << QSPI_INTEN_DMADONELIST_Pos)            /*!< Bit mask of DMADONELIST field.                 */
-#define QSPI_INTEN_DMADONELIST_Min (0x0UL)           /*!< Min enumerator value of DMADONELIST field.                           */
-#define QSPI_INTEN_DMADONELIST_Max (0x1UL)           /*!< Max enumerator value of DMADONELIST field.                           */
+    (0x1UL << QSPI_INTEN_DMADONELIST_Pos)                                   /*!< Bit mask of DMADONELIST field.                 */
+#define QSPI_INTEN_DMADONELIST_Min (0x0UL)                                  /*!< Min enumerator value of DMADONELIST field.                           */
+#define QSPI_INTEN_DMADONELIST_Max (0x1UL)                                  /*!< Max enumerator value of DMADONELIST field.                           */
 #define QSPI_INTEN_DMADONELIST_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
+    (0x0UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTEN_DMADONELIST_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* DMADONELISTPART @Bit 2 : Enable or disable interrupt for event DMADONELISTPART */
 #define QSPI_INTEN_DMADONELISTPART_Pos \
-    (2UL)                                            /*!< Position of DMADONELISTPART field.                                   */
+    (2UL)                                                                   /*!< Position of DMADONELISTPART field.                                   */
 #define QSPI_INTEN_DMADONELISTPART_Msk \
-    (0x1UL << QSPI_INTEN_DMADONELISTPART_Pos)        /*!< Bit mask of DMADONELISTPART field.     */
+    (0x1UL << QSPI_INTEN_DMADONELISTPART_Pos)                               /*!< Bit mask of DMADONELISTPART field.     */
 #define QSPI_INTEN_DMADONELISTPART_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELISTPART field.                       */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTEN_DMADONELISTPART_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELISTPART field.                       */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTEN_DMADONELISTPART_Disabled \
-    (0x0UL)                                          /*!< Disable                                                             */
+    (0x0UL)                                                                 /*!< Disable                                                             */
 #define QSPI_INTEN_DMADONELISTPART_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* DMADONESELECTJOB @Bit 3 : Enable or disable interrupt for event DMADONESELECTJOB */
 #define QSPI_INTEN_DMADONESELECTJOB_Pos \
-    (3UL)                                            /*!< Position of DMADONESELECTJOB field.                                  */
+    (3UL)                                                                   /*!< Position of DMADONESELECTJOB field.                                  */
 #define QSPI_INTEN_DMADONESELECTJOB_Msk \
-    (0x1UL << QSPI_INTEN_DMADONESELECTJOB_Pos)       /*!< Bit mask of DMADONESELECTJOB field.  */
+    (0x1UL << QSPI_INTEN_DMADONESELECTJOB_Pos)                              /*!< Bit mask of DMADONESELECTJOB field.  */
 #define QSPI_INTEN_DMADONESELECTJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONESELECTJOB field.                      */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTEN_DMADONESELECTJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONESELECTJOB field.                      */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTEN_DMADONESELECTJOB_Disabled \
-    (0x0UL)                                          /*!< Disable                                                            */
+    (0x0UL)                                                                 /*!< Disable                                                            */
 #define QSPI_INTEN_DMADONESELECTJOB_Enabled \
-    (0x1UL)                                          /*!< Enable                                                              */
+    (0x1UL)                                                                 /*!< Enable                                                              */
 
 /* DMADONEDATA @Bit 4 : Enable or disable interrupt for event DMADONEDATA */
-#define QSPI_INTEN_DMADONEDATA_Pos (4UL)             /*!< Position of DMADONEDATA field.                                       */
+#define QSPI_INTEN_DMADONEDATA_Pos (4UL)                                    /*!< Position of DMADONEDATA field.                                       */
 #define QSPI_INTEN_DMADONEDATA_Msk \
-    (0x1UL << QSPI_INTEN_DMADONEDATA_Pos)            /*!< Bit mask of DMADONEDATA field.                 */
-#define QSPI_INTEN_DMADONEDATA_Min (0x0UL)           /*!< Min enumerator value of DMADONEDATA field.                           */
-#define QSPI_INTEN_DMADONEDATA_Max (0x1UL)           /*!< Max enumerator value of DMADONEDATA field.                           */
+    (0x1UL << QSPI_INTEN_DMADONEDATA_Pos)                                   /*!< Bit mask of DMADONEDATA field.                 */
+#define QSPI_INTEN_DMADONEDATA_Min (0x0UL)                                  /*!< Min enumerator value of DMADONEDATA field.                           */
+#define QSPI_INTEN_DMADONEDATA_Max (0x1UL)                                  /*!< Max enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTEN_DMADONEDATA_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
+    (0x0UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTEN_DMADONEDATA_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* DMADONEJOB @Bit 5 : Enable or disable interrupt for event DMADONEJOB */
-#define QSPI_INTEN_DMADONEJOB_Pos (5UL)              /*!< Position of DMADONEJOB field.                                        */
+#define QSPI_INTEN_DMADONEJOB_Pos (5UL)                                     /*!< Position of DMADONEJOB field.                                        */
 #define QSPI_INTEN_DMADONEJOB_Msk \
-    (0x1UL << QSPI_INTEN_DMADONEJOB_Pos)             /*!< Bit mask of DMADONEJOB field.                    */
-#define QSPI_INTEN_DMADONEJOB_Min (0x0UL)            /*!< Min enumerator value of DMADONEJOB field.                            */
-#define QSPI_INTEN_DMADONEJOB_Max (0x1UL)            /*!< Max enumerator value of DMADONEJOB field.                            */
+    (0x1UL << QSPI_INTEN_DMADONEJOB_Pos)                                    /*!< Bit mask of DMADONEJOB field.                    */
+#define QSPI_INTEN_DMADONEJOB_Min (0x0UL)                                   /*!< Min enumerator value of DMADONEJOB field.                            */
+#define QSPI_INTEN_DMADONEJOB_Max (0x1UL)                                   /*!< Max enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTEN_DMADONEJOB_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
+    (0x0UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTEN_DMADONEJOB_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* DMAERROR @Bit 6 : Enable or disable interrupt for event DMAERROR */
-#define QSPI_INTEN_DMAERROR_Pos     (6UL)            /*!< Position of DMAERROR field.                                          */
+#define QSPI_INTEN_DMAERROR_Pos     (6UL)                                   /*!< Position of DMAERROR field.                                          */
 #define QSPI_INTEN_DMAERROR_Msk \
-    (0x1UL << QSPI_INTEN_DMAERROR_Pos)               /*!< Bit mask of DMAERROR field.                          */
-#define QSPI_INTEN_DMAERROR_Min     (0x0UL)          /*!< Min enumerator value of DMAERROR field.                              */
-#define QSPI_INTEN_DMAERROR_Max     (0x1UL)          /*!< Max enumerator value of DMAERROR field.                              */
+    (0x1UL << QSPI_INTEN_DMAERROR_Pos)                                      /*!< Bit mask of DMAERROR field.                          */
+#define QSPI_INTEN_DMAERROR_Min     (0x0UL)                                 /*!< Min enumerator value of DMAERROR field.                              */
+#define QSPI_INTEN_DMAERROR_Max     (0x1UL)                                 /*!< Max enumerator value of DMAERROR field.                              */
 #define QSPI_INTEN_DMAERROR_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
-#define QSPI_INTEN_DMAERROR_Enabled (0x1UL)          /*!< Enable                                                               */
+    (0x0UL)                                                                 /*!< Disable                                                              */
+#define QSPI_INTEN_DMAERROR_Enabled (0x1UL)                                 /*!< Enable                                                               */
 
 /* DMAPAUSED @Bit 7 : Enable or disable interrupt for event DMAPAUSED */
-#define QSPI_INTEN_DMAPAUSED_Pos (7UL)               /*!< Position of DMAPAUSED field.                                         */
+#define QSPI_INTEN_DMAPAUSED_Pos (7UL)                                      /*!< Position of DMAPAUSED field.                                         */
 #define QSPI_INTEN_DMAPAUSED_Msk \
-    (0x1UL << QSPI_INTEN_DMAPAUSED_Pos)              /*!< Bit mask of DMAPAUSED field.                       */
-#define QSPI_INTEN_DMAPAUSED_Min (0x0UL)             /*!< Min enumerator value of DMAPAUSED field.                             */
-#define QSPI_INTEN_DMAPAUSED_Max (0x1UL)             /*!< Max enumerator value of DMAPAUSED field.                             */
+    (0x1UL << QSPI_INTEN_DMAPAUSED_Pos)                                     /*!< Bit mask of DMAPAUSED field.                       */
+#define QSPI_INTEN_DMAPAUSED_Min (0x0UL)                                    /*!< Min enumerator value of DMAPAUSED field.                             */
+#define QSPI_INTEN_DMAPAUSED_Max (0x1UL)                                    /*!< Max enumerator value of DMAPAUSED field.                             */
 #define QSPI_INTEN_DMAPAUSED_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
+    (0x0UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTEN_DMAPAUSED_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* DMARESET @Bit 8 : Enable or disable interrupt for event DMARESET */
-#define QSPI_INTEN_DMARESET_Pos     (8UL)            /*!< Position of DMARESET field.                                          */
+#define QSPI_INTEN_DMARESET_Pos     (8UL)                                   /*!< Position of DMARESET field.                                          */
 #define QSPI_INTEN_DMARESET_Msk \
-    (0x1UL << QSPI_INTEN_DMARESET_Pos)               /*!< Bit mask of DMARESET field.                          */
-#define QSPI_INTEN_DMARESET_Min     (0x0UL)          /*!< Min enumerator value of DMARESET field.                              */
-#define QSPI_INTEN_DMARESET_Max     (0x1UL)          /*!< Max enumerator value of DMARESET field.                              */
+    (0x1UL << QSPI_INTEN_DMARESET_Pos)                                      /*!< Bit mask of DMARESET field.                          */
+#define QSPI_INTEN_DMARESET_Min     (0x0UL)                                 /*!< Min enumerator value of DMARESET field.                              */
+#define QSPI_INTEN_DMARESET_Max     (0x1UL)                                 /*!< Max enumerator value of DMARESET field.                              */
 #define QSPI_INTEN_DMARESET_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
-#define QSPI_INTEN_DMARESET_Enabled (0x1UL)          /*!< Enable                                                               */
+    (0x0UL)                                                                 /*!< Disable                                                              */
+#define QSPI_INTEN_DMARESET_Enabled (0x1UL)                                 /*!< Enable                                                               */
 
 /* DMADONE @Bit 9 : Enable or disable interrupt for event DMADONE */
-#define QSPI_INTEN_DMADONE_Pos      (9UL)            /*!< Position of DMADONE field.                                           */
+#define QSPI_INTEN_DMADONE_Pos      (9UL)                                   /*!< Position of DMADONE field.                                           */
 #define QSPI_INTEN_DMADONE_Msk \
-    (0x1UL << QSPI_INTEN_DMADONE_Pos)                /*!< Bit mask of DMADONE field.                             */
-#define QSPI_INTEN_DMADONE_Min      (0x0UL)          /*!< Min enumerator value of DMADONE field.                               */
-#define QSPI_INTEN_DMADONE_Max      (0x1UL)          /*!< Max enumerator value of DMADONE field.                               */
-#define QSPI_INTEN_DMADONE_Disabled (0x0UL)          /*!< Disable                                                              */
-#define QSPI_INTEN_DMADONE_Enabled  (0x1UL)          /*!< Enable                                                               */
+    (0x1UL << QSPI_INTEN_DMADONE_Pos)                                       /*!< Bit mask of DMADONE field.                             */
+#define QSPI_INTEN_DMADONE_Min      (0x0UL)                                 /*!< Min enumerator value of DMADONE field.                               */
+#define QSPI_INTEN_DMADONE_Max      (0x1UL)                                 /*!< Max enumerator value of DMADONE field.                               */
+#define QSPI_INTEN_DMADONE_Disabled (0x0UL)                                 /*!< Disable                                                              */
+#define QSPI_INTEN_DMADONE_Enabled  (0x1UL)                                 /*!< Enable                                                               */
 
 /* DMATXUNEXPECTEDIDLE @Bit 10 : Enable or disable interrupt for event DMATXUNEXPECTEDIDLE */
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Pos \
-    (10UL)                                           /*!< Position of DMATXUNEXPECTEDIDLE field.                               */
+    (10UL)                                                                  /*!< Position of DMATXUNEXPECTEDIDLE field.                               */
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Msk \
-    (0x1UL << QSPI_INTEN_DMATXUNEXPECTEDIDLE_Pos)    /*!< Bit mask of DMATXUNEXPECTEDIDLE
-                                                      *                        field.*/
+    (0x1UL << QSPI_INTEN_DMATXUNEXPECTEDIDLE_Pos)                           /*!< Bit mask of DMATXUNEXPECTEDIDLE
+                                                                             *                        field.*/
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                   */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                   */
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                   */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                   */
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Disabled \
-    (0x0UL)                                          /*!< Disable                                                         */
+    (0x0UL)                                                                 /*!< Disable                                                         */
 #define QSPI_INTEN_DMATXUNEXPECTEDIDLE_Enabled \
-    (0x1UL)                                          /*!< Enable                                                           */
+    (0x1UL)                                                                 /*!< Enable                                                           */
 
 /* DMAINTERNALBUSERROR @Bit 11 : Enable or disable interrupt for event DMAINTERNALBUSERROR */
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Pos \
-    (11UL)                                           /*!< Position of DMAINTERNALBUSERROR field.                               */
+    (11UL)                                                                  /*!< Position of DMAINTERNALBUSERROR field.                               */
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Msk \
-    (0x1UL << QSPI_INTEN_DMAINTERNALBUSERROR_Pos)    /*!< Bit mask of DMAINTERNALBUSERROR
-                                                      *                        field.*/
+    (0x1UL << QSPI_INTEN_DMAINTERNALBUSERROR_Pos)                           /*!< Bit mask of DMAINTERNALBUSERROR
+                                                                             *                        field.*/
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAINTERNALBUSERROR field.                   */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAINTERNALBUSERROR field.                   */
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAINTERNALBUSERROR field.                   */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAINTERNALBUSERROR field.                   */
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Disabled \
-    (0x0UL)                                          /*!< Disable                                                         */
+    (0x0UL)                                                                 /*!< Disable                                                         */
 #define QSPI_INTEN_DMAINTERNALBUSERROR_Enabled \
-    (0x1UL)                                          /*!< Enable                                                           */
+    (0x1UL)                                                                 /*!< Enable                                                           */
 
 /* DMAABORTED @Bit 12 : Enable or disable interrupt for event DMAABORTED */
-#define QSPI_INTEN_DMAABORTED_Pos (12UL)             /*!< Position of DMAABORTED field.                                        */
+#define QSPI_INTEN_DMAABORTED_Pos (12UL)                                    /*!< Position of DMAABORTED field.                                        */
 #define QSPI_INTEN_DMAABORTED_Msk \
-    (0x1UL << QSPI_INTEN_DMAABORTED_Pos)             /*!< Bit mask of DMAABORTED field.                    */
-#define QSPI_INTEN_DMAABORTED_Min (0x0UL)            /*!< Min enumerator value of DMAABORTED field.                            */
-#define QSPI_INTEN_DMAABORTED_Max (0x1UL)            /*!< Max enumerator value of DMAABORTED field.                            */
+    (0x1UL << QSPI_INTEN_DMAABORTED_Pos)                                    /*!< Bit mask of DMAABORTED field.                    */
+#define QSPI_INTEN_DMAABORTED_Min (0x0UL)                                   /*!< Min enumerator value of DMAABORTED field.                            */
+#define QSPI_INTEN_DMAABORTED_Max (0x1UL)                                   /*!< Max enumerator value of DMAABORTED field.                            */
 #define QSPI_INTEN_DMAABORTED_Disabled \
-    (0x0UL)                                          /*!< Disable                                                              */
+    (0x0UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTEN_DMAABORTED_Enabled \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 
 /* IDLE @Bit 13 : Enable or disable interrupt for event IDLE */
-#define QSPI_INTEN_IDLE_Pos      (13UL)              /*!< Position of IDLE field.                                              */
+#define QSPI_INTEN_IDLE_Pos      (13UL)                                     /*!< Position of IDLE field.                                              */
 #define QSPI_INTEN_IDLE_Msk \
-    (0x1UL << QSPI_INTEN_IDLE_Pos)                   /*!< Bit mask of IDLE field.                                      */
-#define QSPI_INTEN_IDLE_Min      (0x0UL)             /*!< Min enumerator value of IDLE field.                                  */
-#define QSPI_INTEN_IDLE_Max      (0x1UL)             /*!< Max enumerator value of IDLE field.                                  */
-#define QSPI_INTEN_IDLE_Disabled (0x0UL)             /*!< Disable                                                              */
-#define QSPI_INTEN_IDLE_Enabled  (0x1UL)             /*!< Enable                                                               */
+    (0x1UL << QSPI_INTEN_IDLE_Pos)                                          /*!< Bit mask of IDLE field.                                      */
+#define QSPI_INTEN_IDLE_Min      (0x0UL)                                    /*!< Min enumerator value of IDLE field.                                  */
+#define QSPI_INTEN_IDLE_Max      (0x1UL)                                    /*!< Max enumerator value of IDLE field.                                  */
+#define QSPI_INTEN_IDLE_Disabled (0x0UL)                                    /*!< Disable                                                              */
+#define QSPI_INTEN_IDLE_Enabled  (0x1UL)                                    /*!< Enable                                                               */
 
 /* QSPI_INTENSET: Enable interrupt */
 #define QSPI_INTENSET_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of INTENSET register.                                    */
+    (0x00000000UL)                                                          /*!< Reset value of INTENSET register.                                    */
 
 /* CORE @Bit 0 : Write '1' to enable interrupt for event CORE */
-#define QSPI_INTENSET_CORE_Pos      (0UL)            /*!< Position of CORE field.                                              */
+#define QSPI_INTENSET_CORE_Pos      (0UL)                                   /*!< Position of CORE field.                                              */
 #define QSPI_INTENSET_CORE_Msk \
-    (0x1UL << QSPI_INTENSET_CORE_Pos)                /*!< Bit mask of CORE field.                                */
-#define QSPI_INTENSET_CORE_Min      (0x0UL)          /*!< Min enumerator value of CORE field.                                  */
-#define QSPI_INTENSET_CORE_Max      (0x1UL)          /*!< Max enumerator value of CORE field.                                  */
-#define QSPI_INTENSET_CORE_Set      (0x1UL)          /*!< Enable                                                               */
-#define QSPI_INTENSET_CORE_Disabled (0x0UL)          /*!< Read: Disabled                                                       */
-#define QSPI_INTENSET_CORE_Enabled  (0x1UL)          /*!< Read: Enabled                                                        */
+    (0x1UL << QSPI_INTENSET_CORE_Pos)                                       /*!< Bit mask of CORE field.                                */
+#define QSPI_INTENSET_CORE_Min      (0x0UL)                                 /*!< Min enumerator value of CORE field.                                  */
+#define QSPI_INTENSET_CORE_Max      (0x1UL)                                 /*!< Max enumerator value of CORE field.                                  */
+#define QSPI_INTENSET_CORE_Set      (0x1UL)                                 /*!< Enable                                                               */
+#define QSPI_INTENSET_CORE_Disabled (0x0UL)                                 /*!< Read: Disabled                                                       */
+#define QSPI_INTENSET_CORE_Enabled  (0x1UL)                                 /*!< Read: Enabled                                                        */
 
 /* DMADONELIST @Bit 1 : Write '1' to enable interrupt for event DMADONELIST */
-#define QSPI_INTENSET_DMADONELIST_Pos (1UL)          /*!< Position of DMADONELIST field.                                       */
+#define QSPI_INTENSET_DMADONELIST_Pos (1UL)                                 /*!< Position of DMADONELIST field.                                       */
 #define QSPI_INTENSET_DMADONELIST_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONELIST_Pos)         /*!< Bit mask of DMADONELIST field.           */
+    (0x1UL << QSPI_INTENSET_DMADONELIST_Pos)                                /*!< Bit mask of DMADONELIST field.           */
 #define QSPI_INTENSET_DMADONELIST_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELIST field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELIST field.                           */
 #define QSPI_INTENSET_DMADONELIST_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELIST field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELIST field.                           */
 #define QSPI_INTENSET_DMADONELIST_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONELIST_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMADONELIST_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONELISTPART @Bit 2 : Write '1' to enable interrupt for event DMADONELISTPART */
 #define QSPI_INTENSET_DMADONELISTPART_Pos \
-    (2UL)                                            /*!< Position of DMADONELISTPART field.                                   */
+    (2UL)                                                                   /*!< Position of DMADONELISTPART field.                                   */
 #define QSPI_INTENSET_DMADONELISTPART_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONELISTPART_Pos)     /*!< Bit mask of DMADONELISTPART
-                                                      *                         field.*/
+    (0x1UL << QSPI_INTENSET_DMADONELISTPART_Pos)                            /*!< Bit mask of DMADONELISTPART
+                                                                             *                         field.*/
 #define QSPI_INTENSET_DMADONELISTPART_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELISTPART field.                       */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTENSET_DMADONELISTPART_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELISTPART field.                       */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTENSET_DMADONELISTPART_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONELISTPART_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                   */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                   */
 #define QSPI_INTENSET_DMADONELISTPART_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                     */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                     */
 
 /* DMADONESELECTJOB @Bit 3 : Write '1' to enable interrupt for event DMADONESELECTJOB */
 #define QSPI_INTENSET_DMADONESELECTJOB_Pos \
-    (3UL)                                            /*!< Position of DMADONESELECTJOB field.                                  */
+    (3UL)                                                                   /*!< Position of DMADONESELECTJOB field.                                  */
 #define QSPI_INTENSET_DMADONESELECTJOB_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONESELECTJOB_Pos)    /*!< Bit mask of DMADONESELECTJOB
-                                                     *                        field.*/
+    (0x1UL << QSPI_INTENSET_DMADONESELECTJOB_Pos)                           /*!< Bit mask of DMADONESELECTJOB
+                                                                            *                        field.*/
 #define QSPI_INTENSET_DMADONESELECTJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONESELECTJOB field.                      */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTENSET_DMADONESELECTJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONESELECTJOB field.                      */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTENSET_DMADONESELECTJOB_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONESELECTJOB_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                  */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                  */
 #define QSPI_INTENSET_DMADONESELECTJOB_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                    */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                    */
 
 /* DMADONEDATA @Bit 4 : Write '1' to enable interrupt for event DMADONEDATA */
-#define QSPI_INTENSET_DMADONEDATA_Pos (4UL)          /*!< Position of DMADONEDATA field.                                       */
+#define QSPI_INTENSET_DMADONEDATA_Pos (4UL)                                 /*!< Position of DMADONEDATA field.                                       */
 #define QSPI_INTENSET_DMADONEDATA_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONEDATA_Pos)         /*!< Bit mask of DMADONEDATA field.           */
+    (0x1UL << QSPI_INTENSET_DMADONEDATA_Pos)                                /*!< Bit mask of DMADONEDATA field.           */
 #define QSPI_INTENSET_DMADONEDATA_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONEDATA field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTENSET_DMADONEDATA_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONEDATA field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTENSET_DMADONEDATA_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONEDATA_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMADONEDATA_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONEJOB @Bit 5 : Write '1' to enable interrupt for event DMADONEJOB */
-#define QSPI_INTENSET_DMADONEJOB_Pos (5UL)           /*!< Position of DMADONEJOB field.                                        */
+#define QSPI_INTENSET_DMADONEJOB_Pos (5UL)                                  /*!< Position of DMADONEJOB field.                                        */
 #define QSPI_INTENSET_DMADONEJOB_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONEJOB_Pos)          /*!< Bit mask of DMADONEJOB field.              */
+    (0x1UL << QSPI_INTENSET_DMADONEJOB_Pos)                                 /*!< Bit mask of DMADONEJOB field.              */
 #define QSPI_INTENSET_DMADONEJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONEJOB field.                            */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTENSET_DMADONEJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONEJOB field.                            */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTENSET_DMADONEJOB_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONEJOB_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMADONEJOB_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMAERROR @Bit 6 : Write '1' to enable interrupt for event DMAERROR */
-#define QSPI_INTENSET_DMAERROR_Pos (6UL)             /*!< Position of DMAERROR field.                                          */
+#define QSPI_INTENSET_DMAERROR_Pos (6UL)                                    /*!< Position of DMAERROR field.                                          */
 #define QSPI_INTENSET_DMAERROR_Msk \
-    (0x1UL << QSPI_INTENSET_DMAERROR_Pos)            /*!< Bit mask of DMAERROR field.                    */
-#define QSPI_INTENSET_DMAERROR_Min (0x0UL)           /*!< Min enumerator value of DMAERROR field.                              */
-#define QSPI_INTENSET_DMAERROR_Max (0x1UL)           /*!< Max enumerator value of DMAERROR field.                              */
-#define QSPI_INTENSET_DMAERROR_Set (0x1UL)           /*!< Enable                                                               */
+    (0x1UL << QSPI_INTENSET_DMAERROR_Pos)                                   /*!< Bit mask of DMAERROR field.                    */
+#define QSPI_INTENSET_DMAERROR_Min (0x0UL)                                  /*!< Min enumerator value of DMAERROR field.                              */
+#define QSPI_INTENSET_DMAERROR_Max (0x1UL)                                  /*!< Max enumerator value of DMAERROR field.                              */
+#define QSPI_INTENSET_DMAERROR_Set (0x1UL)                                  /*!< Enable                                                               */
 #define QSPI_INTENSET_DMAERROR_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMAERROR_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMAPAUSED @Bit 7 : Write '1' to enable interrupt for event DMAPAUSED */
-#define QSPI_INTENSET_DMAPAUSED_Pos (7UL)            /*!< Position of DMAPAUSED field.                                         */
+#define QSPI_INTENSET_DMAPAUSED_Pos (7UL)                                   /*!< Position of DMAPAUSED field.                                         */
 #define QSPI_INTENSET_DMAPAUSED_Msk \
-    (0x1UL << QSPI_INTENSET_DMAPAUSED_Pos)           /*!< Bit mask of DMAPAUSED field.                 */
-#define QSPI_INTENSET_DMAPAUSED_Min (0x0UL)          /*!< Min enumerator value of DMAPAUSED field.                             */
-#define QSPI_INTENSET_DMAPAUSED_Max (0x1UL)          /*!< Max enumerator value of DMAPAUSED field.                             */
-#define QSPI_INTENSET_DMAPAUSED_Set (0x1UL)          /*!< Enable                                                               */
+    (0x1UL << QSPI_INTENSET_DMAPAUSED_Pos)                                  /*!< Bit mask of DMAPAUSED field.                 */
+#define QSPI_INTENSET_DMAPAUSED_Min (0x0UL)                                 /*!< Min enumerator value of DMAPAUSED field.                             */
+#define QSPI_INTENSET_DMAPAUSED_Max (0x1UL)                                 /*!< Max enumerator value of DMAPAUSED field.                             */
+#define QSPI_INTENSET_DMAPAUSED_Set (0x1UL)                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMAPAUSED_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMAPAUSED_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMARESET @Bit 8 : Write '1' to enable interrupt for event DMARESET */
-#define QSPI_INTENSET_DMARESET_Pos (8UL)             /*!< Position of DMARESET field.                                          */
+#define QSPI_INTENSET_DMARESET_Pos (8UL)                                    /*!< Position of DMARESET field.                                          */
 #define QSPI_INTENSET_DMARESET_Msk \
-    (0x1UL << QSPI_INTENSET_DMARESET_Pos)            /*!< Bit mask of DMARESET field.                    */
-#define QSPI_INTENSET_DMARESET_Min (0x0UL)           /*!< Min enumerator value of DMARESET field.                              */
-#define QSPI_INTENSET_DMARESET_Max (0x1UL)           /*!< Max enumerator value of DMARESET field.                              */
-#define QSPI_INTENSET_DMARESET_Set (0x1UL)           /*!< Enable                                                               */
+    (0x1UL << QSPI_INTENSET_DMARESET_Pos)                                   /*!< Bit mask of DMARESET field.                    */
+#define QSPI_INTENSET_DMARESET_Min (0x0UL)                                  /*!< Min enumerator value of DMARESET field.                              */
+#define QSPI_INTENSET_DMARESET_Max (0x1UL)                                  /*!< Max enumerator value of DMARESET field.                              */
+#define QSPI_INTENSET_DMARESET_Set (0x1UL)                                  /*!< Enable                                                               */
 #define QSPI_INTENSET_DMARESET_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMARESET_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONE @Bit 9 : Write '1' to enable interrupt for event DMADONE */
-#define QSPI_INTENSET_DMADONE_Pos (9UL)              /*!< Position of DMADONE field.                                           */
+#define QSPI_INTENSET_DMADONE_Pos (9UL)                                     /*!< Position of DMADONE field.                                           */
 #define QSPI_INTENSET_DMADONE_Msk \
-    (0x1UL << QSPI_INTENSET_DMADONE_Pos)             /*!< Bit mask of DMADONE field.                       */
-#define QSPI_INTENSET_DMADONE_Min (0x0UL)            /*!< Min enumerator value of DMADONE field.                               */
-#define QSPI_INTENSET_DMADONE_Max (0x1UL)            /*!< Max enumerator value of DMADONE field.                               */
-#define QSPI_INTENSET_DMADONE_Set (0x1UL)            /*!< Enable                                                               */
+    (0x1UL << QSPI_INTENSET_DMADONE_Pos)                                    /*!< Bit mask of DMADONE field.                       */
+#define QSPI_INTENSET_DMADONE_Min (0x0UL)                                   /*!< Min enumerator value of DMADONE field.                               */
+#define QSPI_INTENSET_DMADONE_Max (0x1UL)                                   /*!< Max enumerator value of DMADONE field.                               */
+#define QSPI_INTENSET_DMADONE_Set (0x1UL)                                   /*!< Enable                                                               */
 #define QSPI_INTENSET_DMADONE_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMADONE_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMATXUNEXPECTEDIDLE @Bit 10 : Write '1' to enable interrupt for event DMATXUNEXPECTEDIDLE */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Pos \
-    (10UL)                                           /*!< Position of DMATXUNEXPECTEDIDLE field.                             */
+    (10UL)                                                                  /*!< Position of DMATXUNEXPECTEDIDLE field.                             */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Msk \
-    (0x1UL << QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Pos) /*!< Bit mask of
-                                                      *                     DMATXUNEXPECTEDIDLE field.*/
+    (0x1UL << QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Pos)                        /*!< Bit mask of
+                                                                             *                     DMATXUNEXPECTEDIDLE field.*/
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Set \
-    (0x1UL)                                          /*!< Enable                                                            */
+    (0x1UL)                                                                 /*!< Enable                                                            */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                               */
+    (0x0UL)                                                                 /*!< Read: Disabled                                               */
 #define QSPI_INTENSET_DMATXUNEXPECTEDIDLE_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                 */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                 */
 
 /* DMAINTERNALBUSERROR @Bit 11 : Write '1' to enable interrupt for event DMAINTERNALBUSERROR */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Pos \
-    (11UL)                                           /*!< Position of DMAINTERNALBUSERROR field.                             */
+    (11UL)                                                                  /*!< Position of DMAINTERNALBUSERROR field.                             */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Msk \
-    (0x1UL << QSPI_INTENSET_DMAINTERNALBUSERROR_Pos) /*!< Bit mask of
-                                                      *                     DMAINTERNALBUSERROR field.*/
+    (0x1UL << QSPI_INTENSET_DMAINTERNALBUSERROR_Pos)                        /*!< Bit mask of
+                                                                             *                     DMAINTERNALBUSERROR field.*/
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAINTERNALBUSERROR field.                */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAINTERNALBUSERROR field.                */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAINTERNALBUSERROR field.                */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAINTERNALBUSERROR field.                */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Set \
-    (0x1UL)                                          /*!< Enable                                                            */
+    (0x1UL)                                                                 /*!< Enable                                                            */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                               */
+    (0x0UL)                                                                 /*!< Read: Disabled                                               */
 #define QSPI_INTENSET_DMAINTERNALBUSERROR_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                 */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                 */
 
 /* DMAABORTED @Bit 12 : Write '1' to enable interrupt for event DMAABORTED */
-#define QSPI_INTENSET_DMAABORTED_Pos (12UL)          /*!< Position of DMAABORTED field.                                        */
+#define QSPI_INTENSET_DMAABORTED_Pos (12UL)                                 /*!< Position of DMAABORTED field.                                        */
 #define QSPI_INTENSET_DMAABORTED_Msk \
-    (0x1UL << QSPI_INTENSET_DMAABORTED_Pos)          /*!< Bit mask of DMAABORTED field.              */
+    (0x1UL << QSPI_INTENSET_DMAABORTED_Pos)                                 /*!< Bit mask of DMAABORTED field.              */
 #define QSPI_INTENSET_DMAABORTED_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAABORTED field.                            */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAABORTED field.                            */
 #define QSPI_INTENSET_DMAABORTED_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAABORTED field.                            */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAABORTED field.                            */
 #define QSPI_INTENSET_DMAABORTED_Set \
-    (0x1UL)                                          /*!< Enable                                                               */
+    (0x1UL)                                                                 /*!< Enable                                                               */
 #define QSPI_INTENSET_DMAABORTED_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENSET_DMAABORTED_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* IDLE @Bit 13 : Write '1' to enable interrupt for event IDLE */
-#define QSPI_INTENSET_IDLE_Pos      (13UL)           /*!< Position of IDLE field.                                              */
+#define QSPI_INTENSET_IDLE_Pos      (13UL)                                  /*!< Position of IDLE field.                                              */
 #define QSPI_INTENSET_IDLE_Msk \
-    (0x1UL << QSPI_INTENSET_IDLE_Pos)                /*!< Bit mask of IDLE field.                                */
-#define QSPI_INTENSET_IDLE_Min      (0x0UL)          /*!< Min enumerator value of IDLE field.                                  */
-#define QSPI_INTENSET_IDLE_Max      (0x1UL)          /*!< Max enumerator value of IDLE field.                                  */
-#define QSPI_INTENSET_IDLE_Set      (0x1UL)          /*!< Enable                                                               */
-#define QSPI_INTENSET_IDLE_Disabled (0x0UL)          /*!< Read: Disabled                                                       */
-#define QSPI_INTENSET_IDLE_Enabled  (0x1UL)          /*!< Read: Enabled                                                        */
+    (0x1UL << QSPI_INTENSET_IDLE_Pos)                                       /*!< Bit mask of IDLE field.                                */
+#define QSPI_INTENSET_IDLE_Min      (0x0UL)                                 /*!< Min enumerator value of IDLE field.                                  */
+#define QSPI_INTENSET_IDLE_Max      (0x1UL)                                 /*!< Max enumerator value of IDLE field.                                  */
+#define QSPI_INTENSET_IDLE_Set      (0x1UL)                                 /*!< Enable                                                               */
+#define QSPI_INTENSET_IDLE_Disabled (0x0UL)                                 /*!< Read: Disabled                                                       */
+#define QSPI_INTENSET_IDLE_Enabled  (0x1UL)                                 /*!< Read: Enabled                                                        */
 
 /* QSPI_INTENCLR: Disable interrupt */
 #define QSPI_INTENCLR_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of INTENCLR register.                                    */
+    (0x00000000UL)                                                          /*!< Reset value of INTENCLR register.                                    */
 
 /* CORE @Bit 0 : Write '1' to disable interrupt for event CORE */
-#define QSPI_INTENCLR_CORE_Pos      (0UL)            /*!< Position of CORE field.                                              */
+#define QSPI_INTENCLR_CORE_Pos      (0UL)                                   /*!< Position of CORE field.                                              */
 #define QSPI_INTENCLR_CORE_Msk \
-    (0x1UL << QSPI_INTENCLR_CORE_Pos)                /*!< Bit mask of CORE field.                                */
-#define QSPI_INTENCLR_CORE_Min      (0x0UL)          /*!< Min enumerator value of CORE field.                                  */
-#define QSPI_INTENCLR_CORE_Max      (0x1UL)          /*!< Max enumerator value of CORE field.                                  */
-#define QSPI_INTENCLR_CORE_Clear    (0x1UL)          /*!< Disable                                                              */
-#define QSPI_INTENCLR_CORE_Disabled (0x0UL)          /*!< Read: Disabled                                                       */
-#define QSPI_INTENCLR_CORE_Enabled  (0x1UL)          /*!< Read: Enabled                                                        */
+    (0x1UL << QSPI_INTENCLR_CORE_Pos)                                       /*!< Bit mask of CORE field.                                */
+#define QSPI_INTENCLR_CORE_Min      (0x0UL)                                 /*!< Min enumerator value of CORE field.                                  */
+#define QSPI_INTENCLR_CORE_Max      (0x1UL)                                 /*!< Max enumerator value of CORE field.                                  */
+#define QSPI_INTENCLR_CORE_Clear    (0x1UL)                                 /*!< Disable                                                              */
+#define QSPI_INTENCLR_CORE_Disabled (0x0UL)                                 /*!< Read: Disabled                                                       */
+#define QSPI_INTENCLR_CORE_Enabled  (0x1UL)                                 /*!< Read: Enabled                                                        */
 
 /* DMADONELIST @Bit 1 : Write '1' to disable interrupt for event DMADONELIST */
-#define QSPI_INTENCLR_DMADONELIST_Pos (1UL)          /*!< Position of DMADONELIST field.                                       */
+#define QSPI_INTENCLR_DMADONELIST_Pos (1UL)                                 /*!< Position of DMADONELIST field.                                       */
 #define QSPI_INTENCLR_DMADONELIST_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONELIST_Pos)         /*!< Bit mask of DMADONELIST field.           */
+    (0x1UL << QSPI_INTENCLR_DMADONELIST_Pos)                                /*!< Bit mask of DMADONELIST field.           */
 #define QSPI_INTENCLR_DMADONELIST_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELIST field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELIST field.                           */
 #define QSPI_INTENCLR_DMADONELIST_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELIST field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELIST field.                           */
 #define QSPI_INTENCLR_DMADONELIST_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMADONELIST_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMADONELIST_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONELISTPART @Bit 2 : Write '1' to disable interrupt for event DMADONELISTPART */
 #define QSPI_INTENCLR_DMADONELISTPART_Pos \
-    (2UL)                                            /*!< Position of DMADONELISTPART field.                                   */
+    (2UL)                                                                   /*!< Position of DMADONELISTPART field.                                   */
 #define QSPI_INTENCLR_DMADONELISTPART_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONELISTPART_Pos)     /*!< Bit mask of DMADONELISTPART
-                                                      *                         field.*/
+    (0x1UL << QSPI_INTENCLR_DMADONELISTPART_Pos)                            /*!< Bit mask of DMADONELISTPART
+                                                                             *                         field.*/
 #define QSPI_INTENCLR_DMADONELISTPART_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELISTPART field.                       */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTENCLR_DMADONELISTPART_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELISTPART field.                       */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTENCLR_DMADONELISTPART_Clear \
-    (0x1UL)                                          /*!< Disable                                                             */
+    (0x1UL)                                                                 /*!< Disable                                                             */
 #define QSPI_INTENCLR_DMADONELISTPART_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                   */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                   */
 #define QSPI_INTENCLR_DMADONELISTPART_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                     */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                     */
 
 /* DMADONESELECTJOB @Bit 3 : Write '1' to disable interrupt for event DMADONESELECTJOB */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Pos \
-    (3UL)                                            /*!< Position of DMADONESELECTJOB field.                                  */
+    (3UL)                                                                   /*!< Position of DMADONESELECTJOB field.                                  */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONESELECTJOB_Pos)    /*!< Bit mask of DMADONESELECTJOB
-                                                     *                        field.*/
+    (0x1UL << QSPI_INTENCLR_DMADONESELECTJOB_Pos)                           /*!< Bit mask of DMADONESELECTJOB
+                                                                            *                        field.*/
 #define QSPI_INTENCLR_DMADONESELECTJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONESELECTJOB field.                      */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONESELECTJOB field.                      */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Clear \
-    (0x1UL)                                          /*!< Disable                                                            */
+    (0x1UL)                                                                 /*!< Disable                                                            */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                  */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                  */
 #define QSPI_INTENCLR_DMADONESELECTJOB_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                    */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                    */
 
 /* DMADONEDATA @Bit 4 : Write '1' to disable interrupt for event DMADONEDATA */
-#define QSPI_INTENCLR_DMADONEDATA_Pos (4UL)          /*!< Position of DMADONEDATA field.                                       */
+#define QSPI_INTENCLR_DMADONEDATA_Pos (4UL)                                 /*!< Position of DMADONEDATA field.                                       */
 #define QSPI_INTENCLR_DMADONEDATA_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONEDATA_Pos)         /*!< Bit mask of DMADONEDATA field.           */
+    (0x1UL << QSPI_INTENCLR_DMADONEDATA_Pos)                                /*!< Bit mask of DMADONEDATA field.           */
 #define QSPI_INTENCLR_DMADONEDATA_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONEDATA field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTENCLR_DMADONEDATA_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONEDATA field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTENCLR_DMADONEDATA_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMADONEDATA_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMADONEDATA_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONEJOB @Bit 5 : Write '1' to disable interrupt for event DMADONEJOB */
-#define QSPI_INTENCLR_DMADONEJOB_Pos (5UL)           /*!< Position of DMADONEJOB field.                                        */
+#define QSPI_INTENCLR_DMADONEJOB_Pos (5UL)                                  /*!< Position of DMADONEJOB field.                                        */
 #define QSPI_INTENCLR_DMADONEJOB_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONEJOB_Pos)          /*!< Bit mask of DMADONEJOB field.              */
+    (0x1UL << QSPI_INTENCLR_DMADONEJOB_Pos)                                 /*!< Bit mask of DMADONEJOB field.              */
 #define QSPI_INTENCLR_DMADONEJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONEJOB field.                            */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTENCLR_DMADONEJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONEJOB field.                            */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTENCLR_DMADONEJOB_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMADONEJOB_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMADONEJOB_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMAERROR @Bit 6 : Write '1' to disable interrupt for event DMAERROR */
-#define QSPI_INTENCLR_DMAERROR_Pos (6UL)             /*!< Position of DMAERROR field.                                          */
+#define QSPI_INTENCLR_DMAERROR_Pos (6UL)                                    /*!< Position of DMAERROR field.                                          */
 #define QSPI_INTENCLR_DMAERROR_Msk \
-    (0x1UL << QSPI_INTENCLR_DMAERROR_Pos)            /*!< Bit mask of DMAERROR field.                    */
-#define QSPI_INTENCLR_DMAERROR_Min (0x0UL)           /*!< Min enumerator value of DMAERROR field.                              */
-#define QSPI_INTENCLR_DMAERROR_Max (0x1UL)           /*!< Max enumerator value of DMAERROR field.                              */
+    (0x1UL << QSPI_INTENCLR_DMAERROR_Pos)                                   /*!< Bit mask of DMAERROR field.                    */
+#define QSPI_INTENCLR_DMAERROR_Min (0x0UL)                                  /*!< Min enumerator value of DMAERROR field.                              */
+#define QSPI_INTENCLR_DMAERROR_Max (0x1UL)                                  /*!< Max enumerator value of DMAERROR field.                              */
 #define QSPI_INTENCLR_DMAERROR_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMAERROR_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMAERROR_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMAPAUSED @Bit 7 : Write '1' to disable interrupt for event DMAPAUSED */
-#define QSPI_INTENCLR_DMAPAUSED_Pos (7UL)            /*!< Position of DMAPAUSED field.                                         */
+#define QSPI_INTENCLR_DMAPAUSED_Pos (7UL)                                   /*!< Position of DMAPAUSED field.                                         */
 #define QSPI_INTENCLR_DMAPAUSED_Msk \
-    (0x1UL << QSPI_INTENCLR_DMAPAUSED_Pos)           /*!< Bit mask of DMAPAUSED field.                 */
-#define QSPI_INTENCLR_DMAPAUSED_Min (0x0UL)          /*!< Min enumerator value of DMAPAUSED field.                             */
-#define QSPI_INTENCLR_DMAPAUSED_Max (0x1UL)          /*!< Max enumerator value of DMAPAUSED field.                             */
+    (0x1UL << QSPI_INTENCLR_DMAPAUSED_Pos)                                  /*!< Bit mask of DMAPAUSED field.                 */
+#define QSPI_INTENCLR_DMAPAUSED_Min (0x0UL)                                 /*!< Min enumerator value of DMAPAUSED field.                             */
+#define QSPI_INTENCLR_DMAPAUSED_Max (0x1UL)                                 /*!< Max enumerator value of DMAPAUSED field.                             */
 #define QSPI_INTENCLR_DMAPAUSED_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMAPAUSED_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMAPAUSED_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMARESET @Bit 8 : Write '1' to disable interrupt for event DMARESET */
-#define QSPI_INTENCLR_DMARESET_Pos (8UL)             /*!< Position of DMARESET field.                                          */
+#define QSPI_INTENCLR_DMARESET_Pos (8UL)                                    /*!< Position of DMARESET field.                                          */
 #define QSPI_INTENCLR_DMARESET_Msk \
-    (0x1UL << QSPI_INTENCLR_DMARESET_Pos)            /*!< Bit mask of DMARESET field.                    */
-#define QSPI_INTENCLR_DMARESET_Min (0x0UL)           /*!< Min enumerator value of DMARESET field.                              */
-#define QSPI_INTENCLR_DMARESET_Max (0x1UL)           /*!< Max enumerator value of DMARESET field.                              */
+    (0x1UL << QSPI_INTENCLR_DMARESET_Pos)                                   /*!< Bit mask of DMARESET field.                    */
+#define QSPI_INTENCLR_DMARESET_Min (0x0UL)                                  /*!< Min enumerator value of DMARESET field.                              */
+#define QSPI_INTENCLR_DMARESET_Max (0x1UL)                                  /*!< Max enumerator value of DMARESET field.                              */
 #define QSPI_INTENCLR_DMARESET_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMARESET_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMARESET_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMADONE @Bit 9 : Write '1' to disable interrupt for event DMADONE */
-#define QSPI_INTENCLR_DMADONE_Pos   (9UL)            /*!< Position of DMADONE field.                                           */
+#define QSPI_INTENCLR_DMADONE_Pos   (9UL)                                   /*!< Position of DMADONE field.                                           */
 #define QSPI_INTENCLR_DMADONE_Msk \
-    (0x1UL << QSPI_INTENCLR_DMADONE_Pos)             /*!< Bit mask of DMADONE field.                       */
-#define QSPI_INTENCLR_DMADONE_Min   (0x0UL)          /*!< Min enumerator value of DMADONE field.                               */
-#define QSPI_INTENCLR_DMADONE_Max   (0x1UL)          /*!< Max enumerator value of DMADONE field.                               */
-#define QSPI_INTENCLR_DMADONE_Clear (0x1UL)          /*!< Disable                                                              */
+    (0x1UL << QSPI_INTENCLR_DMADONE_Pos)                                    /*!< Bit mask of DMADONE field.                       */
+#define QSPI_INTENCLR_DMADONE_Min   (0x0UL)                                 /*!< Min enumerator value of DMADONE field.                               */
+#define QSPI_INTENCLR_DMADONE_Max   (0x1UL)                                 /*!< Max enumerator value of DMADONE field.                               */
+#define QSPI_INTENCLR_DMADONE_Clear (0x1UL)                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMADONE_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMADONE_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* DMATXUNEXPECTEDIDLE @Bit 10 : Write '1' to disable interrupt for event DMATXUNEXPECTEDIDLE */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Pos \
-    (10UL)                                           /*!< Position of DMATXUNEXPECTEDIDLE field.                             */
+    (10UL)                                                                  /*!< Position of DMATXUNEXPECTEDIDLE field.                             */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Msk \
-    (0x1UL << QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Pos) /*!< Bit mask of
-                                                      *                     DMATXUNEXPECTEDIDLE field.*/
+    (0x1UL << QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Pos)                        /*!< Bit mask of
+                                                                             *                     DMATXUNEXPECTEDIDLE field.*/
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Clear \
-    (0x1UL)                                          /*!< Disable                                                         */
+    (0x1UL)                                                                 /*!< Disable                                                         */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                               */
+    (0x0UL)                                                                 /*!< Read: Disabled                                               */
 #define QSPI_INTENCLR_DMATXUNEXPECTEDIDLE_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                 */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                 */
 
 /* DMAINTERNALBUSERROR @Bit 11 : Write '1' to disable interrupt for event DMAINTERNALBUSERROR */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Pos \
-    (11UL)                                           /*!< Position of DMAINTERNALBUSERROR field.                             */
+    (11UL)                                                                  /*!< Position of DMAINTERNALBUSERROR field.                             */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Msk \
-    (0x1UL << QSPI_INTENCLR_DMAINTERNALBUSERROR_Pos) /*!< Bit mask of
-                                                      *                     DMAINTERNALBUSERROR field.*/
+    (0x1UL << QSPI_INTENCLR_DMAINTERNALBUSERROR_Pos)                        /*!< Bit mask of
+                                                                             *                     DMAINTERNALBUSERROR field.*/
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAINTERNALBUSERROR field.                */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAINTERNALBUSERROR field.                */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAINTERNALBUSERROR field.                */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAINTERNALBUSERROR field.                */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Clear \
-    (0x1UL)                                          /*!< Disable                                                         */
+    (0x1UL)                                                                 /*!< Disable                                                         */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                               */
+    (0x0UL)                                                                 /*!< Read: Disabled                                               */
 #define QSPI_INTENCLR_DMAINTERNALBUSERROR_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                 */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                 */
 
 /* DMAABORTED @Bit 12 : Write '1' to disable interrupt for event DMAABORTED */
-#define QSPI_INTENCLR_DMAABORTED_Pos (12UL)          /*!< Position of DMAABORTED field.                                        */
+#define QSPI_INTENCLR_DMAABORTED_Pos (12UL)                                 /*!< Position of DMAABORTED field.                                        */
 #define QSPI_INTENCLR_DMAABORTED_Msk \
-    (0x1UL << QSPI_INTENCLR_DMAABORTED_Pos)          /*!< Bit mask of DMAABORTED field.              */
+    (0x1UL << QSPI_INTENCLR_DMAABORTED_Pos)                                 /*!< Bit mask of DMAABORTED field.              */
 #define QSPI_INTENCLR_DMAABORTED_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAABORTED field.                            */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAABORTED field.                            */
 #define QSPI_INTENCLR_DMAABORTED_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAABORTED field.                            */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAABORTED field.                            */
 #define QSPI_INTENCLR_DMAABORTED_Clear \
-    (0x1UL)                                          /*!< Disable                                                              */
+    (0x1UL)                                                                 /*!< Disable                                                              */
 #define QSPI_INTENCLR_DMAABORTED_Disabled \
-    (0x0UL)                                          /*!< Read: Disabled                                                       */
+    (0x0UL)                                                                 /*!< Read: Disabled                                                       */
 #define QSPI_INTENCLR_DMAABORTED_Enabled \
-    (0x1UL)                                          /*!< Read: Enabled                                                        */
+    (0x1UL)                                                                 /*!< Read: Enabled                                                        */
 
 /* IDLE @Bit 13 : Write '1' to disable interrupt for event IDLE */
-#define QSPI_INTENCLR_IDLE_Pos      (13UL)           /*!< Position of IDLE field.                                              */
+#define QSPI_INTENCLR_IDLE_Pos      (13UL)                                  /*!< Position of IDLE field.                                              */
 #define QSPI_INTENCLR_IDLE_Msk \
-    (0x1UL << QSPI_INTENCLR_IDLE_Pos)                /*!< Bit mask of IDLE field.                                */
-#define QSPI_INTENCLR_IDLE_Min      (0x0UL)          /*!< Min enumerator value of IDLE field.                                  */
-#define QSPI_INTENCLR_IDLE_Max      (0x1UL)          /*!< Max enumerator value of IDLE field.                                  */
-#define QSPI_INTENCLR_IDLE_Clear    (0x1UL)          /*!< Disable                                                              */
-#define QSPI_INTENCLR_IDLE_Disabled (0x0UL)          /*!< Read: Disabled                                                       */
-#define QSPI_INTENCLR_IDLE_Enabled  (0x1UL)          /*!< Read: Enabled                                                        */
+    (0x1UL << QSPI_INTENCLR_IDLE_Pos)                                       /*!< Bit mask of IDLE field.                                */
+#define QSPI_INTENCLR_IDLE_Min      (0x0UL)                                 /*!< Min enumerator value of IDLE field.                                  */
+#define QSPI_INTENCLR_IDLE_Max      (0x1UL)                                 /*!< Max enumerator value of IDLE field.                                  */
+#define QSPI_INTENCLR_IDLE_Clear    (0x1UL)                                 /*!< Disable                                                              */
+#define QSPI_INTENCLR_IDLE_Disabled (0x0UL)                                 /*!< Read: Disabled                                                       */
+#define QSPI_INTENCLR_IDLE_Enabled  (0x1UL)                                 /*!< Read: Enabled                                                        */
 
 /* QSPI_INTPEND: Pending interrupts */
 #define QSPI_INTPEND_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of INTPEND register.                                     */
+    (0x00000000UL)                                                          /*!< Reset value of INTPEND register.                                     */
 
 /* CORE @Bit 0 : Read pending status of interrupt for event CORE */
-#define QSPI_INTPEND_CORE_Pos     (0UL)              /*!< Position of CORE field.                                              */
+#define QSPI_INTPEND_CORE_Pos     (0UL)                                     /*!< Position of CORE field.                                              */
 #define QSPI_INTPEND_CORE_Msk \
-    (0x1UL << QSPI_INTPEND_CORE_Pos)                 /*!< Bit mask of CORE field.                                  */
-#define QSPI_INTPEND_CORE_Min     (0x0UL)            /*!< Min enumerator value of CORE field.                                  */
-#define QSPI_INTPEND_CORE_Max     (0x1UL)            /*!< Max enumerator value of CORE field.                                  */
+    (0x1UL << QSPI_INTPEND_CORE_Pos)                                        /*!< Bit mask of CORE field.                                  */
+#define QSPI_INTPEND_CORE_Min     (0x0UL)                                   /*!< Min enumerator value of CORE field.                                  */
+#define QSPI_INTPEND_CORE_Max     (0x1UL)                                   /*!< Max enumerator value of CORE field.                                  */
 #define QSPI_INTPEND_CORE_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
-#define QSPI_INTPEND_CORE_Pending (0x1UL)            /*!< Read: Pending                                                        */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
+#define QSPI_INTPEND_CORE_Pending (0x1UL)                                   /*!< Read: Pending                                                        */
 
 /* DMADONELIST @Bit 1 : Read pending status of interrupt for event DMADONELIST */
-#define QSPI_INTPEND_DMADONELIST_Pos (1UL)           /*!< Position of DMADONELIST field.                                       */
+#define QSPI_INTPEND_DMADONELIST_Pos (1UL)                                  /*!< Position of DMADONELIST field.                                       */
 #define QSPI_INTPEND_DMADONELIST_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONELIST_Pos)          /*!< Bit mask of DMADONELIST field.             */
+    (0x1UL << QSPI_INTPEND_DMADONELIST_Pos)                                 /*!< Bit mask of DMADONELIST field.             */
 #define QSPI_INTPEND_DMADONELIST_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELIST field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELIST field.                           */
 #define QSPI_INTPEND_DMADONELIST_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELIST field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELIST field.                           */
 #define QSPI_INTPEND_DMADONELIST_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                   */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                   */
 #define QSPI_INTPEND_DMADONELIST_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMADONELISTPART @Bit 2 : Read pending status of interrupt for event DMADONELISTPART */
 #define QSPI_INTPEND_DMADONELISTPART_Pos \
-    (2UL)                                            /*!< Position of DMADONELISTPART field.                                   */
+    (2UL)                                                                   /*!< Position of DMADONELISTPART field.                                   */
 #define QSPI_INTPEND_DMADONELISTPART_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONELISTPART_Pos)      /*!< Bit mask of DMADONELISTPART field. */
+    (0x1UL << QSPI_INTPEND_DMADONELISTPART_Pos)                             /*!< Bit mask of DMADONELISTPART field. */
 #define QSPI_INTPEND_DMADONELISTPART_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONELISTPART field.                       */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTPEND_DMADONELISTPART_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONELISTPART field.                       */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONELISTPART field.                       */
 #define QSPI_INTPEND_DMADONELISTPART_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                               */
+    (0x0UL)                                                                 /*!< Read: Not pending                                               */
 #define QSPI_INTPEND_DMADONELISTPART_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                      */
+    (0x1UL)                                                                 /*!< Read: Pending                                                      */
 
 /* DMADONESELECTJOB @Bit 3 : Read pending status of interrupt for event DMADONESELECTJOB */
 #define QSPI_INTPEND_DMADONESELECTJOB_Pos \
-    (3UL)                                            /*!< Position of DMADONESELECTJOB field.                                  */
+    (3UL)                                                                   /*!< Position of DMADONESELECTJOB field.                                  */
 #define QSPI_INTPEND_DMADONESELECTJOB_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONESELECTJOB_Pos)     /*!< Bit mask of DMADONESELECTJOB
-                                                      *                         field.*/
+    (0x1UL << QSPI_INTPEND_DMADONESELECTJOB_Pos)                            /*!< Bit mask of DMADONESELECTJOB
+                                                                             *                         field.*/
 #define QSPI_INTPEND_DMADONESELECTJOB_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONESELECTJOB field.                      */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTPEND_DMADONESELECTJOB_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONESELECTJOB field.                      */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONESELECTJOB field.                      */
 #define QSPI_INTPEND_DMADONESELECTJOB_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                              */
+    (0x0UL)                                                                 /*!< Read: Not pending                                              */
 #define QSPI_INTPEND_DMADONESELECTJOB_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                     */
+    (0x1UL)                                                                 /*!< Read: Pending                                                     */
 
 /* DMADONEDATA @Bit 4 : Read pending status of interrupt for event DMADONEDATA */
-#define QSPI_INTPEND_DMADONEDATA_Pos (4UL)           /*!< Position of DMADONEDATA field.                                       */
+#define QSPI_INTPEND_DMADONEDATA_Pos (4UL)                                  /*!< Position of DMADONEDATA field.                                       */
 #define QSPI_INTPEND_DMADONEDATA_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONEDATA_Pos)          /*!< Bit mask of DMADONEDATA field.             */
+    (0x1UL << QSPI_INTPEND_DMADONEDATA_Pos)                                 /*!< Bit mask of DMADONEDATA field.             */
 #define QSPI_INTPEND_DMADONEDATA_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMADONEDATA field.                           */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTPEND_DMADONEDATA_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMADONEDATA field.                           */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMADONEDATA field.                           */
 #define QSPI_INTPEND_DMADONEDATA_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                   */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                   */
 #define QSPI_INTPEND_DMADONEDATA_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMADONEJOB @Bit 5 : Read pending status of interrupt for event DMADONEJOB */
-#define QSPI_INTPEND_DMADONEJOB_Pos (5UL)            /*!< Position of DMADONEJOB field.                                        */
+#define QSPI_INTPEND_DMADONEJOB_Pos (5UL)                                   /*!< Position of DMADONEJOB field.                                        */
 #define QSPI_INTPEND_DMADONEJOB_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONEJOB_Pos)           /*!< Bit mask of DMADONEJOB field.                */
-#define QSPI_INTPEND_DMADONEJOB_Min (0x0UL)          /*!< Min enumerator value of DMADONEJOB field.                            */
-#define QSPI_INTPEND_DMADONEJOB_Max (0x1UL)          /*!< Max enumerator value of DMADONEJOB field.                            */
+    (0x1UL << QSPI_INTPEND_DMADONEJOB_Pos)                                  /*!< Bit mask of DMADONEJOB field.                */
+#define QSPI_INTPEND_DMADONEJOB_Min (0x0UL)                                 /*!< Min enumerator value of DMADONEJOB field.                            */
+#define QSPI_INTPEND_DMADONEJOB_Max (0x1UL)                                 /*!< Max enumerator value of DMADONEJOB field.                            */
 #define QSPI_INTPEND_DMADONEJOB_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMADONEJOB_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMAERROR @Bit 6 : Read pending status of interrupt for event DMAERROR */
-#define QSPI_INTPEND_DMAERROR_Pos (6UL)              /*!< Position of DMAERROR field.                                          */
+#define QSPI_INTPEND_DMAERROR_Pos (6UL)                                     /*!< Position of DMAERROR field.                                          */
 #define QSPI_INTPEND_DMAERROR_Msk \
-    (0x1UL << QSPI_INTPEND_DMAERROR_Pos)             /*!< Bit mask of DMAERROR field.                      */
-#define QSPI_INTPEND_DMAERROR_Min (0x0UL)            /*!< Min enumerator value of DMAERROR field.                              */
-#define QSPI_INTPEND_DMAERROR_Max (0x1UL)            /*!< Max enumerator value of DMAERROR field.                              */
+    (0x1UL << QSPI_INTPEND_DMAERROR_Pos)                                    /*!< Bit mask of DMAERROR field.                      */
+#define QSPI_INTPEND_DMAERROR_Min (0x0UL)                                   /*!< Min enumerator value of DMAERROR field.                              */
+#define QSPI_INTPEND_DMAERROR_Max (0x1UL)                                   /*!< Max enumerator value of DMAERROR field.                              */
 #define QSPI_INTPEND_DMAERROR_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMAERROR_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMAPAUSED @Bit 7 : Read pending status of interrupt for event DMAPAUSED */
-#define QSPI_INTPEND_DMAPAUSED_Pos (7UL)             /*!< Position of DMAPAUSED field.                                         */
+#define QSPI_INTPEND_DMAPAUSED_Pos (7UL)                                    /*!< Position of DMAPAUSED field.                                         */
 #define QSPI_INTPEND_DMAPAUSED_Msk \
-    (0x1UL << QSPI_INTPEND_DMAPAUSED_Pos)            /*!< Bit mask of DMAPAUSED field.                   */
-#define QSPI_INTPEND_DMAPAUSED_Min (0x0UL)           /*!< Min enumerator value of DMAPAUSED field.                             */
-#define QSPI_INTPEND_DMAPAUSED_Max (0x1UL)           /*!< Max enumerator value of DMAPAUSED field.                             */
+    (0x1UL << QSPI_INTPEND_DMAPAUSED_Pos)                                   /*!< Bit mask of DMAPAUSED field.                   */
+#define QSPI_INTPEND_DMAPAUSED_Min (0x0UL)                                  /*!< Min enumerator value of DMAPAUSED field.                             */
+#define QSPI_INTPEND_DMAPAUSED_Max (0x1UL)                                  /*!< Max enumerator value of DMAPAUSED field.                             */
 #define QSPI_INTPEND_DMAPAUSED_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMAPAUSED_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMARESET @Bit 8 : Read pending status of interrupt for event DMARESET */
-#define QSPI_INTPEND_DMARESET_Pos (8UL)              /*!< Position of DMARESET field.                                          */
+#define QSPI_INTPEND_DMARESET_Pos (8UL)                                     /*!< Position of DMARESET field.                                          */
 #define QSPI_INTPEND_DMARESET_Msk \
-    (0x1UL << QSPI_INTPEND_DMARESET_Pos)             /*!< Bit mask of DMARESET field.                      */
-#define QSPI_INTPEND_DMARESET_Min (0x0UL)            /*!< Min enumerator value of DMARESET field.                              */
-#define QSPI_INTPEND_DMARESET_Max (0x1UL)            /*!< Max enumerator value of DMARESET field.                              */
+    (0x1UL << QSPI_INTPEND_DMARESET_Pos)                                    /*!< Bit mask of DMARESET field.                      */
+#define QSPI_INTPEND_DMARESET_Min (0x0UL)                                   /*!< Min enumerator value of DMARESET field.                              */
+#define QSPI_INTPEND_DMARESET_Max (0x1UL)                                   /*!< Max enumerator value of DMARESET field.                              */
 #define QSPI_INTPEND_DMARESET_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMARESET_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMADONE @Bit 9 : Read pending status of interrupt for event DMADONE */
-#define QSPI_INTPEND_DMADONE_Pos (9UL)               /*!< Position of DMADONE field.                                           */
+#define QSPI_INTPEND_DMADONE_Pos (9UL)                                      /*!< Position of DMADONE field.                                           */
 #define QSPI_INTPEND_DMADONE_Msk \
-    (0x1UL << QSPI_INTPEND_DMADONE_Pos)              /*!< Bit mask of DMADONE field.                         */
-#define QSPI_INTPEND_DMADONE_Min (0x0UL)             /*!< Min enumerator value of DMADONE field.                               */
-#define QSPI_INTPEND_DMADONE_Max (0x1UL)             /*!< Max enumerator value of DMADONE field.                               */
+    (0x1UL << QSPI_INTPEND_DMADONE_Pos)                                     /*!< Bit mask of DMADONE field.                         */
+#define QSPI_INTPEND_DMADONE_Min (0x0UL)                                    /*!< Min enumerator value of DMADONE field.                               */
+#define QSPI_INTPEND_DMADONE_Max (0x1UL)                                    /*!< Max enumerator value of DMADONE field.                               */
 #define QSPI_INTPEND_DMADONE_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMADONE_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* DMATXUNEXPECTEDIDLE @Bit 10 : Read pending status of interrupt for event DMATXUNEXPECTEDIDLE */
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Pos \
-    (10UL)                                           /*!< Position of DMATXUNEXPECTEDIDLE field.                              */
+    (10UL)                                                                  /*!< Position of DMATXUNEXPECTEDIDLE field.                              */
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Msk \
-    (0x1UL << QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Pos)  /*!< Bit mask of
-                                                      *                      DMATXUNEXPECTEDIDLE field.*/
+    (0x1UL << QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Pos)                         /*!< Bit mask of
+                                                                             *                      DMATXUNEXPECTEDIDLE field.*/
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                 */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMATXUNEXPECTEDIDLE field.                 */
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                 */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMATXUNEXPECTEDIDLE field.                 */
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                           */
+    (0x0UL)                                                                 /*!< Read: Not pending                                           */
 #define QSPI_INTPEND_DMATXUNEXPECTEDIDLE_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                  */
+    (0x1UL)                                                                 /*!< Read: Pending                                                  */
 
 /* DMAINTERNALBUSERROR @Bit 11 : Read pending status of interrupt for event DMAINTERNALBUSERROR */
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_Pos \
-    (11UL)                                           /*!< Position of DMAINTERNALBUSERROR field.                              */
+    (11UL)                                                                  /*!< Position of DMAINTERNALBUSERROR field.                              */
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_Msk \
-    (0x1UL << QSPI_INTPEND_DMAINTERNALBUSERROR_Pos)  /*!< Bit mask of
-                                                      *                      DMAINTERNALBUSERROR field.*/
+    (0x1UL << QSPI_INTPEND_DMAINTERNALBUSERROR_Pos)                         /*!< Bit mask of
+                                                                             *                      DMAINTERNALBUSERROR field.*/
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_Min \
-    (0x0UL)                                          /*!< Min enumerator value of DMAINTERNALBUSERROR field.                 */
+    (0x0UL)                                                                 /*!< Min enumerator value of DMAINTERNALBUSERROR field.                 */
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_Max \
-    (0x1UL)                                          /*!< Max enumerator value of DMAINTERNALBUSERROR field.                 */
+    (0x1UL)                                                                 /*!< Max enumerator value of DMAINTERNALBUSERROR field.                 */
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                           */
+    (0x0UL)                                                                 /*!< Read: Not pending                                           */
 #define QSPI_INTPEND_DMAINTERNALBUSERROR_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                  */
+    (0x1UL)                                                                 /*!< Read: Pending                                                  */
 
 /* DMAABORTED @Bit 12 : Read pending status of interrupt for event DMAABORTED */
-#define QSPI_INTPEND_DMAABORTED_Pos (12UL)           /*!< Position of DMAABORTED field.                                        */
+#define QSPI_INTPEND_DMAABORTED_Pos (12UL)                                  /*!< Position of DMAABORTED field.                                        */
 #define QSPI_INTPEND_DMAABORTED_Msk \
-    (0x1UL << QSPI_INTPEND_DMAABORTED_Pos)           /*!< Bit mask of DMAABORTED field.                */
-#define QSPI_INTPEND_DMAABORTED_Min (0x0UL)          /*!< Min enumerator value of DMAABORTED field.                            */
-#define QSPI_INTPEND_DMAABORTED_Max (0x1UL)          /*!< Max enumerator value of DMAABORTED field.                            */
+    (0x1UL << QSPI_INTPEND_DMAABORTED_Pos)                                  /*!< Bit mask of DMAABORTED field.                */
+#define QSPI_INTPEND_DMAABORTED_Min (0x0UL)                                 /*!< Min enumerator value of DMAABORTED field.                            */
+#define QSPI_INTPEND_DMAABORTED_Max (0x1UL)                                 /*!< Max enumerator value of DMAABORTED field.                            */
 #define QSPI_INTPEND_DMAABORTED_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
 #define QSPI_INTPEND_DMAABORTED_Pending \
-    (0x1UL)                                          /*!< Read: Pending                                                        */
+    (0x1UL)                                                                 /*!< Read: Pending                                                        */
 
 /* IDLE @Bit 13 : Read pending status of interrupt for event IDLE */
-#define QSPI_INTPEND_IDLE_Pos     (13UL)             /*!< Position of IDLE field.                                              */
+#define QSPI_INTPEND_IDLE_Pos     (13UL)                                    /*!< Position of IDLE field.                                              */
 #define QSPI_INTPEND_IDLE_Msk \
-    (0x1UL << QSPI_INTPEND_IDLE_Pos)                 /*!< Bit mask of IDLE field.                                  */
-#define QSPI_INTPEND_IDLE_Min     (0x0UL)            /*!< Min enumerator value of IDLE field.                                  */
-#define QSPI_INTPEND_IDLE_Max     (0x1UL)            /*!< Max enumerator value of IDLE field.                                  */
+    (0x1UL << QSPI_INTPEND_IDLE_Pos)                                        /*!< Bit mask of IDLE field.                                  */
+#define QSPI_INTPEND_IDLE_Min     (0x0UL)                                   /*!< Min enumerator value of IDLE field.                                  */
+#define QSPI_INTPEND_IDLE_Max     (0x1UL)                                   /*!< Max enumerator value of IDLE field.                                  */
 #define QSPI_INTPEND_IDLE_NotPending \
-    (0x0UL)                                          /*!< Read: Not pending                                                    */
-#define QSPI_INTPEND_IDLE_Pending (0x1UL)            /*!< Read: Pending                                                        */
+    (0x0UL)                                                                 /*!< Read: Not pending                                                    */
+#define QSPI_INTPEND_IDLE_Pending (0x1UL)                                   /*!< Read: Pending                                                        */
 
 /* QSPI_ENABLE: Enables the QSPI This requests clock for the IP core */
 #define QSPI_ENABLE_ResetValue \
-    (0x00000000UL)                                   /*!< Reset value of ENABLE register.                                      */
+    (0x00000000UL)                                                          /*!< Reset value of ENABLE register.                                      */
 
 /* ENABLE @Bit 0 : Enable the QSPI */
-#define QSPI_ENABLE_ENABLE_Pos (0UL)                 /*!< Position of ENABLE field.                                            */
+#define QSPI_ENABLE_ENABLE_Pos (0UL)                                        /*!< Position of ENABLE field.                                            */
 #define QSPI_ENABLE_ENABLE_Msk \
-    (0x1UL << QSPI_ENABLE_ENABLE_Pos)                /*!< Bit mask of ENABLE field.                              */
+    (0x1UL << QSPI_ENABLE_ENABLE_Pos)                                       /*!< Bit mask of ENABLE field.                              */
 
 #endif /*!< !defined(__ASSEMBLER__) && !defined(__ASSEMBLY__)                    */
 

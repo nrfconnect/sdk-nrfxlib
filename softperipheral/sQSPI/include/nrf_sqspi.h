@@ -618,10 +618,8 @@ nrfx_err_t nrf_sqspi_dev_cfg(nrf_sqspi_t const *         p_qspi,
  * @param[in] p_data_fmt Data format to set.
  *
  * @retval NRFX_SUCCESS             Data format configured successfully
- * @retval NRFX_ERROR_BUSY          The device is during a transfer. Can't
- * reconfigure
- * @retval NRFX_ERROR_NOT_SUPPORTED The data format is not supported by this
- * driver
+ * @retval NRFX_ERROR_INVALID_PARAM At least one configuration option has
+ * invalid value
  */
 nrfx_err_t nrf_sqspi_dev_data_fmt_set(nrf_sqspi_t const *    p_qspi,
                                       nrf_sqspi_data_fmt_t * p_data_fmt);
@@ -649,7 +647,7 @@ nrfx_err_t nrf_sqspi_activate(nrf_sqspi_t const * p_qspi);
  * deactivated.
  *
  * @note If a transfer is ongoing when the function is called, the transfer is
- * aborted.
+ * aborted. Any prepared transfer is discarded on deactivation.
  *
  * @param[in] p_qspi Identifier of the QSPI instance to deactivate.
  *
