@@ -8,6 +8,23 @@ sQSPI changelog
    :depth: 2
 
 All the notable changes to sQSPI are documented on this page.
+Refer to :ref:`intro_soft_peripherals_platform_support` for supported devices for each version.
+
+v1.2.0
+******
+
+See the list of changes for the current release.
+
+* Added:
+
+  * Support for the nRF54LM20 device.
+  * A new virtual register on API communication layer for both nRF54H Series and nRF54L Series devices.
+
+* Updated:
+
+  * Documentation regarding prepared transfers - they are now discarded upon deactivation.
+  * Porting guides for the nRF54H Series and nRF54L Series devices.
+  * Naming convention for the Soft Peripheral, which now uses the device series instead of specific product names.
 
 v1.1.0
 ******

@@ -1,15 +1,15 @@
-.. _nrf54L15_porting_guide:
+.. _sqspi_nrf54L_series_porting_guide:
 
-nRF54L15 porting guide
-######################
+sQSPI nRF54L Series porting guide
+#################################
 
 .. contents::
    :local:
    :depth: 2
 
-This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI application on the nRF54L15 device.
+This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sQSPI application on nRF54L Series devices.
 
-.. _nrf54l15_porting_guide_code:
+.. _nrf54l_series_porting_guide_code:
 
 sQSPI application code
 **********************
@@ -29,9 +29,9 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           ├── include
           │   ├── hal
           │   │   └── nrf_qspi2.h
-          │   ├── nrf54l15
+          │   ├── nrf54l
           │   │   ├── sqspi_firmware.h
-          │   │   └── sqspi_firmware_v1.1.0.h
+          │   │   └── sqspi_firmware_v1.2.0.h
           │   │   └── ...
           │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
@@ -44,7 +44,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
 Header files
 ============
 
-For an sQSPI application to function correctly, it requires specific header files used by the driver code (internal paths) and specific header files for nrfx (external dependencies).
+sQSPI application requires specific header files used by the driver code (internal paths) and specific header files for nrfx (external dependencies).
 You must include paths to these files in the build environment's list of include paths.
 The following list is a detailed breakdown of the necessary paths:
 
@@ -52,7 +52,7 @@ The following list is a detailed breakdown of the necessary paths:
 
   * :file:`softperipheral/include` - Soft peripherals register interface and metadata
   * :file:`softperipheral/sQSPI/include` - sQSPI register interface and driver header
-  * :file:`softperipheral/sQSPI/include/nrf54l15` - The sQSPI firmware for the Fast Lightweight Perpipheral Processor (FLPR)
+  * :file:`softperipheral/sQSPI/include/nrf54l` - The sQSPI firmware for the Fast Lightweight Perpipheral Processor (FLPR)
 
 * External dependencies:
 
@@ -63,21 +63,20 @@ The following list is a detailed breakdown of the necessary paths:
      For example, the :file:`nrfx_glue.h`, :file:`nrfx_log.h`, or a configuration header file.
      See an example configuration for the :file:`nrfx_config.h` file:
 
-   .. code-block:: c
+.. code-block:: c
 
-      #ifndef NRFX_CONFIG_H__
-      #define NRFX_CONFIG_H__
+  #ifndef NRFX_CONFIG_H__
+  #define NRFX_CONFIG_H__
 
-      #include "softperipheral_regif.h" // To Resolve correct VPR IRQn for the SoC.
-      #define nrf_sqspi_irq_handler        SP_VPR_IRQHandler
+  #include "softperipheral_regif.h" // To Resolve correct VPR IRQn for the SoC.
+  #define nrf_sqspi_irq_handler        SP_VPR_IRQHandler
 
-      #define NRF_SQSPI_ENABLED            (1)
-      #define NRF_SQSPI_MAX_NUM_DATA_LINES (4)
-      #define NRF_SQSPI_SP_FIRMWARE_ADDR 0x2003c000
-      //^ This address is user defined, the location for the sQSPI firmware
+  #define NRF_SQSPI_ENABLED            (1)
+  #define NRF_SQSPI_MAX_NUM_DATA_LINES (4)
 
 
-      #endif // NRFX_CONFIG_H__
+  #endif // NRFX_CONFIG_H__
+
 
 Compiling source files
 ======================
@@ -87,12 +86,11 @@ For an sQSPI application to function properly, you must compile the driver imple
 Application core and FLPR configuration
 ***************************************
 
-You must adjust the settings for the nRF54L15 SoC to run at highest base clock frequency.
-
+You must adjust the settings for the nRF54L Series SoC to run at highest base clock frequency.
 To work with any of the following settings, ensure you have completed the following:
 
 * You have allocated memory for the data pointers used by the sQSPI driver.
-  The memory is independent from the one outlined in the :ref:`nrf54L15_porting_guide_ram_configuration` subsection.
+  The memory is independent from the one outlined in the :ref:`nrf54L_series_porting_guide_ram_configuration` subsection.
   It is designated to function as shared memory for communication purposes, rather than containing the sQSPI executable code.
 
 * You have enabled the FLPR access to the ``MEMCONF`` peripheral.
@@ -101,12 +99,12 @@ To work with any of the following settings, ensure you have completed the follow
 Security configuration
 ======================
 
-Configure the security settings for the nRF54L15 device based on the operational requirements of your application.
+Configure the security settings for the nRF54L Series device based on the operational requirements of your application.
 
 Secure environment
 ------------------
 
-In a secure configuration, both the application core and the FLPR core of the nRF54L15 device must operate within a secure environment enabled by TrustZone Secure.
+In a secure configuration, both the application core and the FLPR core of the nRF54L Series device must operate within a secure environment enabled by TrustZone Secure.
 
 The following code snippet shows how the application code can configure permissions for the FLPR instance:
 
@@ -118,7 +116,7 @@ The following code snippet shows how the application code can configure permissi
 Non-secure environment
 ----------------------
 
-In a non-secure configuration, both the application core and the FLPR core of the nRF54L15 device must operate outside the secure environment (without TrustZone Secure).
+In a non-secure configuration, both the application core and the FLPR core of the nRF54L Series device must operate outside the secure environment (without TrustZone Secure).
 
 GPIO configuration
 ******************
@@ -228,25 +226,27 @@ The following code snippet shows how the application code can allocate the requi
        }
    }
 
-.. _nrf54L15_porting_guide_high_speed_transfers:
+.. _nrf54L_series_porting_guide_high_speed_transfers:
 
 High speed transfers
 ====================
 
-.. warning::
-   High speed transfers (above 32 MHz) on the NRF54L15 DK are only supported starting from sQSPI v1.0.0.
+.. note::
+   High speed transfers (above 32 MHz) on the nRF54L15 DK are only supported starting from sQSPI v1.0.0.
 
-A high speed transfer sQSPI application requires both extra high drive strength and access to the peripheral ``GPIOHSPADCTRL`` (GPIO High Speed Pad Control).
-The following settings must be changed for ``GPIOHSPADCTRL.BIAS`` and ``GPIOHSPADCTRL.CTRL``:
+To use high speed transfer in an sQSPI application, you must set extra high drive strength and provide access to the ``GPIOHSPADCTRL`` (GPIO High Speed Pad Control) peripheral.
+You must apply the following settings to ``GPIOHSPADCTRL.BIAS`` and ``GPIOHSPADCTRL.CTRL``:
 
-* Bias control: Highest slew setting for the high speed pad and activating replica clock.
+* Bias control - Set the highest slew rate for the high speed pad and enable the replica clock.
+* Input sampling and buffering control
 
-* Input sampling and buffering control:
-   * For a high speed **read**, you must enable sampling clock, configure its phase (matching desired SPI mode), enable delayed data sampling and configuring the delay.
-   * For a high speed **write**, you must disable sampling clock and disable delayed data sampling
+  * For a high speed read - Enable the sampling clock, set its phase to match the required SPI mode, enable delayed data sampling, and configure the appropriate delay.
+  * For a high speed write - Disable the sampling clock and turn off delayed data sampling.
 
 .. note::
-   High speed read transfers need to reset the pad configuration, this applies to **P2** as a whole, which is important if other pins are used besides the ones allocated for sQSPI. In this context reset means setting standard drive strength, then setting extra high drive strength again.
+  High speed read transfers require you to reset the pad configuration for **P2** as a whole.
+  This is important if other pins on **P2** are in use in addition to those assigned to sQSPI.
+  In this context, resetting means first setting the drive strength to standard, and then reapplying extra high drive strength again.
 
 The following code snippet shows how the application code can enable and disable delayed sampling:
 
@@ -413,26 +413,27 @@ The following code snippet shows how the application code can enable and disable
      set_serialPadE0E1(qspi_dev_config);
    }
 
-.. warning::
-   High speed transfers are closely tied to API the parameter :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc`, which needs to be set to ``0`` (see :ref:`sqspi_limitations`).
+.. note::
+   High speed transfers are closely linked to the API parameter :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc`, which must be set to ``0`` (see :ref:`sqspi_limitations`).
 
 Memory retention configuration
 ******************************
 
 The sQSPI soft peripheral requires RAM retention in order to go into the lowest power consumption mode, which can be called through the :c:func:`nrf_sqspi_deactivate` function.
 
-Assuming there is an access to the peripheral `MEMCONF`, the following code snippet illustrates how to enable FLPR RAM retention, followed by deactivation and reactivation, and finally how to disable RAM retention:
+Assuming there is an access to the peripheral ``MEMCONF``, the following code snippet illustrates how to enable FLPR RAM retention, followed by deactivation and reactivation, and finally how to disable RAM retention:
 
- .. code-block:: c
+.. code-block:: c
 
-    //Deactivate sequence
-    nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, true);
-    nrf_sqspi_deactivate(&m_qspi);
-    //activate sequence
-    nrf_qspi_activate(&m_qspi);
-    nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, false);
+  // Deactivate sequence
+  nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, true);
+  nrf_sqspi_deactivate(&m_qspi);
+  // Activate sequence
+  nrf_qspi_activate(&m_qspi);
+  nrf_memconf_ramblock_ret_enable_set(NRF_MEMCONF, 1, MEMCONF_POWER_RET_MEM0_Pos, false);
 
-.. _nrf54L15_porting_guide_ram_configuration:
+.. _nrf54l15_porting_guide_ram_configuration:
+.. _nrf54L_series_porting_guide_ram_configuration:
 
 RAM configuration
 *****************
@@ -442,28 +443,81 @@ The sQSPI Soft Peripheral operates from RAM.
 .. note::
    Starting from sQSPI 1.0.0, Position Independent Code (PIC) is supported.
    This allows an application to determine where to load the Soft Peripheral firmware.
-   The start address default value is defined in the :file:`nrf_config_sqspi.h` file but you can override it, for example, in :file:`nrfx_config.h`.
-   Start address has been verified to work as described in the provided example configuration for :file:`nrfx_config.h` and is ready for production, while other locations should be considered experimental.
 
 Your build environment must reserve the required RAM and ensure that it is readable and writable by both the application core and the FLPR core.
-This table details the memory region:
+The following table details the memory regions required for your nRF54L Series device:
 
-.. list-table:: RAM Configuration Table
-   :widths: auto
+.. tabs::
+
+  .. tab:: **nRF54L15**
+
+      .. list-table:: nRF54L15 RAM Configuration Table
+        :widths: auto
+        :header-rows: 1
+
+        * - Component
+          - Address offset
+          - Size
+        * - sQSPI firmware
+          - ``SP_FIRMWARE_ADDR``
+          - 0x3740
+        * - sQSPI execution RAM
+          - ``SP_FIRMWARE_ADDR`` + 0x3740
+          - 0x400
+        * - sQSPI virtual register interface
+          - ``SP_FIRMWARE_ADDR`` + 0x3B40
+          - 0x200
+        * - Context saving
+          - 0x2003FE00
+          - 0x200 (but the entire block should be retained)
+
+  .. tab:: **nRF54LM20**
+
+      .. list-table:: nRF54LM20 RAM Configuration Table
+        :widths: auto
+        :header-rows: 1
+
+        * - Component
+          - Address offset
+          - Size
+        * - sQSPI firmware
+          - ``SP_FIRMWARE_ADDR``
+          - 0x3740
+        * - sQSPI execution RAM
+          - ``SP_FIRMWARE_ADDR`` + 0x3740
+          - 0x400
+        * - sQSPI virtual register interface
+          - ``SP_FIRMWARE_ADDR`` + 0x3B40
+          - 0x200
+        * - Context saving
+          - 0x2007FD40
+          - 0x200 (but the entire block should be retained)
+
+The build environment described in the :ref:`nrf54l_series_porting_guide_code` section must comply with these requirements.
+This includes proper settings in linker scripts, device tree specifications (DTS), and resource allocation.
+
+To initialize the sQSPI struct on an nRF54L Series device, use the following lines:
+
+ .. code-block:: c
+
+    #define SP_REGIF_BASE (SP_FIRMWARE_ADDR + 0x3B40)
+
+    // Initialize sQSPI with the virtual register interface placed at SP_REGIF_BASE
+    static nrf_sqspi_t m_sqspi = {.p_reg = (void *)SP_REGIF_BASE, .drv_inst_idx = 0};
+
+Ensure that ``SP_FIRMWARE_ADDR`` is set so that it does not overlap with the context saving address.
+For nRF54L Series devices, the firmware is placed before the context saving address.
+This means, that ``SP_FIRMWARE_ADDR`` plus the component sizes listed in the table must be of a lower value than the context saving address.
+
+The values in the table below have been tested and are considered production-ready for ``SP_FIRMWARE_ADDR``:
+
+.. list-table:: sQSPI firmware address values
+   :widths: 20 20
    :header-rows: 1
 
-   * - Component
-     - Address offset
-     - Size
-   * - sQSPI firmware
-     - `NRF_SQSPI_SP_FIRMWARE_ADDR`
-     - 0x3740
-   * - sQSPI RAM
-     - `NRF_SQSPI_SP_FIRMWARE_ADDR` + 0x3740
-     - 0x600
-   * - Context saving
-     - 0x2003FE00
-     - 0x200 (but the entire block should be retained)
-
-The build environment described in the :ref:`nrf54l15_porting_guide_code` section must comply with these requirements.
-This includes proper settings in linker scripts, device tree specifications (DTS), and resource allocation.
+   * - Device
+     - `SP_FIRMWARE_ADDR`
+   * - nRF54L15
+     - 0x2003C000
+   * - nRF54LM20
+     - 0x2007C000
