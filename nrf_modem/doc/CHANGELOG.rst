@@ -36,9 +36,13 @@ DECT NR+
 Sockets
 =======
 
-* Added the :c:macro:`NRF_SO_SENDCB` socket option to set a send callback.
-  The callback is called when a send request is acknowledged by the network and the data has been acknowledged by the peer, if required by the network protocol.
-  This socket option is supported by the nRF9151 NTN modem firmware.
+* Added:
+
+  * The :c:macro:`NRF_SO_SENDCB` socket option to set a send callback.
+    The callback is called when a send request is acknowledged by the network and the data has been acknowledged by the peer, if required by the network protocol.
+    This socket option is supported by the nRF9151 NTN modem firmware.
+  * The :c:macro:`NRF_SO_SEC_DTLS_FRAG_EXT` socket option to enable and disable the DTLS fragmentation extension.
+    This socket option is supported by modem firmware v2.0.4 and higher.
 
 nrf_modem 3.1.0
 ***************
