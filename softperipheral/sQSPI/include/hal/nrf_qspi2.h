@@ -180,6 +180,10 @@ NRF_STATIC_INLINE void nrf_qspi2_core_ctrlr0_set(NRF_QSPI2_Type *        p_reg,
 NRF_STATIC_INLINE void nrf_qspi2_core_spictrlr0_set(NRF_QSPI2_Type *           p_reg,
                                                     nrf_qspi2_core_spictrlr0_t conf);
 
+NRF_STATIC_INLINE void nrf_qspi2_handshake_set(NRF_QSPI2_Type * p_reg, uint32_t val, uint8_t idx);
+
+NRF_STATIC_INLINE uint32_t nrf_qspi2_handshake_get(NRF_QSPI2_Type const * p_reg, uint8_t idx);
+
 #ifndef NRF_DECLARE_ONLY
 
 NRF_STATIC_INLINE void nrf_qspi2_task_trigger(NRF_QSPI2_Type * p_reg, nrf_qspi2_task_t task)
@@ -426,6 +430,16 @@ NRF_STATIC_INLINE void nrf_qspi2_core_spictrlr0_set(NRF_QSPI2_Type *           p
         | ((0
             << QSPI_CORE_CORE_SPICTRLR0_RSVDSPICTRLR0_Pos) &
            QSPI_CORE_CORE_SPICTRLR0_RSVDSPICTRLR0_Msk);
+}
+
+NRF_STATIC_INLINE void nrf_qspi2_handshake_set(NRF_QSPI2_Type * p_reg, uint32_t val, uint8_t idx)
+{
+    p_reg->SPSYNC.AUX[idx] = val;
+}
+
+NRF_STATIC_INLINE uint32_t nrf_qspi2_handshake_get(NRF_QSPI2_Type const * p_reg, uint8_t idx)
+{
+    return p_reg->SPSYNC.AUX[idx];
 }
 
 #endif // NRF_DECLARE_ONLY

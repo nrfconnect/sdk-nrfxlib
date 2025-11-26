@@ -1,13 +1,13 @@
 .. _sqspi_features:
 
-Features
-########
+sQSPI features
+##############
 
 .. contents::
    :local:
    :depth: 2
 
-This page provides an overview of the functionalities and configurations available for soft peripherals for the current state of development.
+This page provides an overview of the functionalities and configurations available for the soft peripheral sQSPI for the current state of development.
 See the following sections for more details.
 
 .. _sqspi_features_spi_modes:

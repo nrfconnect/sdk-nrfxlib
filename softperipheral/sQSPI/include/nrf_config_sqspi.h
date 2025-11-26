@@ -17,15 +17,6 @@
 #endif
 
 /**
- * @brief NRF_SQSPI_SP_INSTANCE
- *
- * Address value. 32 bits
- */
-#ifndef NRF_SQSPI_SP_FIRMWARE_ADDR
-#define NRF_SQSPI_SP_FIRMWARE_ADDR 0xDEADBEEF
-#endif
-
-/**
  * @brief NRF_SQSPI_MAX_NUM_DATA_LINES - Maximal number of data lines used by the QSPI peripheral.
  *
  * Integer value. Minimum: 1. Maximum: 8.

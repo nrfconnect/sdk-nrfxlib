@@ -61,9 +61,9 @@
 #if 1
 #define __XSBx(R, P, T)                                                                    \
     do {                                                                                   \
-        nrf_qspi2_core_dr_x(R, m_task_count, 20);                                          \
+        sp_handshake_set(R, m_task_count, 0);                                              \
         nrf_egu_task_trigger(P, (nrf_egu_task_t)offsetof(NRF_EGU_Type, TASKS_TRIGGER[T])); \
-        while (nrf_qspi2_core_dr_x_get(R, 20) != nrf_qspi2_core_dr_x_get(R, 21)) {         \
+        while (sp_handshake_get(R, 0) != sp_handshake_get(R, 1)) {                         \
            __NOP();                                                                        \
            __NOP();                                                                        \
            __NOP();                                                                        \
@@ -87,9 +87,9 @@
 #if 1
 #define __XSBx(R, P, T)                                                                    \
     do {                                                                                   \
-        nrf_qspi2_core_dr_x(R, m_task_count, 20);                                          \
+        sp_handshake_set(R, m_task_count, 0);                                              \
         nrf_vpr_task_trigger(P, (nrf_vpr_task_t)offsetof(NRF_VPR_Type, TASKS_TRIGGER[T])); \
-        while (nrf_qspi2_core_dr_x_get(R, 20) != nrf_qspi2_core_dr_x_get(R, 21)) {         \
+        while (sp_handshake_get(R, 0) != sp_handshake_get(R, 1)) {                         \
            __NOP();                                                                        \
            __NOP();                                                                        \
            __NOP();                                                                        \
