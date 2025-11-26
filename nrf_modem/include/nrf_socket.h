@@ -269,6 +269,14 @@ extern "C" {
  * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
  */
 #define NRF_SO_SEC_HANDSHAKE_STATUS 19
+
+/** @brief
+ * Socket option to enable/disable the DTLS fragmentation extension.
+ * See @ref nrf_so_sec_dtls_frag_ext_options for allowed values.
+ *
+ * @note This socket option is only supported with Modem firmware v2.0.4 and newer.
+ */
+#define NRF_SO_SEC_DTLS_FRAG_EXT 20
 /** @} */
 
 /**
@@ -355,7 +363,12 @@ extern "C" {
 struct nrf_modem_sendcb_params {
 	/** Socket handle */
 	int fd;
-	/** Status. Can be 0 on successful send or NRF_EAGAIN on timeout. */
+	/** Status. Can be one of the following values:
+	 *  - 0 Data sent successfully.
+	 *  - [NRF_EAGAIN] The socket's @ref NRF_SO_SNDTIMEO timeout was exceeded.
+	 *  - [NRF_EBADF] The socket argument is not a valid file descriptor.
+	 *  - [NRF_ECONNRESET] A connection was forcibly closed by a peer.
+	 */
 	int status;
 	/** Number of bytes that was sent. */
 	size_t bytes_sent;
@@ -560,17 +573,17 @@ struct nrf_modem_sendcb {
  */
 
 /**
- * Disabled - The connection ID extension is not included in the client hello, so the
+ * Disabled - The connection ID extension is not included in the Client Hello, so the
  * DTLS connection ID is not used.
  */
 #define NRF_SO_SEC_DTLS_CID_DISABLED 0
 /**
- * Supported - The connection ID extension with a zero-length CID is included in the client hello,
+ * Supported - The connection ID extension with a zero-length CID is included in the Client Hello,
  * so the modem will accept a DTLS connection ID from the server.
  */
 #define NRF_SO_SEC_DTLS_CID_SUPPORTED 1
 /**
- * Enabled - The connection ID extension with a valid CID is included in the client hello, so the
+ * Enabled - The connection ID extension with a valid CID is included in the Client Hello, so the
  * modem will request DTLS connection ID support.
  */
 #define NRF_SO_SEC_DTLS_CID_ENABLED 2
@@ -604,7 +617,7 @@ struct nrf_modem_sendcb {
 
 /**
  * @defgroup nrf_so_sec_handshake_statuses TLS/DTLS Handshake statuses
- * @brief Allowed values for DTLS connection ID status socket option.
+ * @brief Allowed values for TLS/DTLS Handshake status socket option.
  * @ingroup nrf_socket_tls
  * @{
  */
@@ -613,6 +626,32 @@ struct nrf_modem_sendcb {
 /** cached */
 #define NRF_SO_SEC_HANDSHAKE_STATUS_CACHED 1
 /** @} */
+
+/**
+ * @defgroup nrf_so_sec_dtls_frag_ext_options DTLS Fragmentation extension options.
+ * @brief Allowed values for DTLS Fragmentation extension socket option.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/**
+ * Disabled - The DTLS fragmentation extension is not included in the Client Hello.
+ */
+#define NRF_SO_SEC_DTLS_FRAG_EXT_DISABLED 0
+/**
+ * Enabled - The DTLS fragmentation extension is included in the Client Hello with the fragment
+ * size of 512 bytes.
+ *
+ * @note The user data size in send requests also becomes limited to a maximum of 512 bytes.
+ */
+#define NRF_SO_SEC_DTLS_FRAG_EXT_512_ENABLED 1
+/**
+ * Enabled - The DTLS fragmentation extension is included in the Client Hello with the fragment
+ * size of 1024 bytes.
+ *
+ * @note The user data size in send requests also becomes limited to a maximum of 1024 bytes.
+ */
+#define NRF_SO_SEC_DTLS_FRAG_EXT_1024_ENABLED 2
+ /** @} */
 
 /**
  * @defgroup nrf_so_sec_tag_tls_decrypt Security tags for decrypting TLS traffic
