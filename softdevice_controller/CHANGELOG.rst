@@ -56,6 +56,10 @@ Bug fixes
 * Fixed an issue where an incorrect TX power value was set when using ‐7 dBm on the nRF54L Series devices. (DRGN-26470)
 * Fixed an issue where the controller would be unable to connect to a peer device when configured with scan window equal to scan interval. (DRGN-26625)
   This would only occur when the time between two periodic activities was less than a millisecond.
+* Fixed an issue where the controller would not correctly handle incoming HCI ISO data when the data path was not enabled.
+  In this case the controller would generate a Number of Completed Packets event with connection handle set to 0. (DRGN-26621)
+* Fixed a rare issue where the controller could assert when the central device replied to an ``LL_LENGTH_REQ``, ``LL_PERIPHERAL_FEATURE_REQ`` or ``LL_POWER_CONTROL_REQ``.
+  This issue would only occur with a peer that violates the specification by initiating a new control procedure before receiving the completion of the previous one. (DRGN-26205)
 
 nRF Connect SDK v3.1.0
 **********************
