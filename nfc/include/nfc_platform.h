@@ -61,10 +61,10 @@ typedef void (* nfc_lib_cb_resolve_t)(const void * p_ctx, const uint8_t * p_data
  * @param[in, out] p_irq_priority     Pointer to the interrupt priority configuration. You must
  *                                    set its value inside this function.
  *
- * @retval NRFX_SUCCESS If the NFC module is initialized successfully. If one
- *                      of the arguments is invalid, an error code is returned.
+ * @retval 0 If the NFC module is initialized successfully. If one
+ *           of the arguments is invalid, an error code is returned.
  */
-nrfx_err_t nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t * p_irq_priority);
+int nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t * p_irq_priority);
 
 
 /**
@@ -75,14 +75,12 @@ nrfx_err_t nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t *
  *                                      can be used to fill the Type 2 Tag Internal Bytes.
  * @param[in]     nfcid1_buff_len  Length of the NFCID1 buffer.
  *
- * @retval NRFX_SUCCESS              The operation was successful.
- * @retval NRFX_ERROR_INVALID_LENGTH Length of the NFCID buffer is different than
- *                                   NRFX_NFCT_NFCID1_SINGLE_SIZE,
- *                                   NRFX_NFCT_NFCID1_DOUBLE_SIZE, or
- *                                   NRFX_NFCT_NFCID1_TRIPLE_SIZE.
+ * @retval 0      The operation was successful.
+ * @retval -E2BIG Length of the NFCID buffer is different than NRFX_NFCT_NFCID1_SINGLE_SIZE,
+ *                NRFX_NFCT_NFCID1_DOUBLE_SIZE, or NRFX_NFCT_NFCID1_TRIPLE_SIZE.
  */
-nrfx_err_t nfc_platform_nfcid1_default_bytes_get(uint8_t * const p_nfcid1_buff,
-                                                 uint32_t        nfcid1_buff_len);
+int nfc_platform_nfcid1_default_bytes_get(uint8_t * const p_nfcid1_buff,
+                                          uint32_t        nfcid1_buff_len);
 
 
 /**

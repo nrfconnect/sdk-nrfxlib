@@ -43,6 +43,7 @@
 
 #include <stdbool.h>
 
+#include "nrfx.h"
 #include "nrf_802154_config.h"
 #if !NRF_802154_INTERNAL_SWI_IRQ_HANDLING
 #include "nrf_802154_irq_handlers.h"
