@@ -54,6 +54,10 @@
 .. _`Zigbee CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_zigbee_cids.html
 .. _`Zigbee CIDs for nRF52833`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52833/page/COMP/nrf52833/nrf52833_zigbee_cids.html
 
+.. _`Modem library socket options API`: https://docs.nordicsemi.com/bundle/nrfxlib-apis-latest/page/group_nrf_socket_options_sockets.html
+.. _`Modem library socket TLS API`: https://docs.nordicsemi.com/bundle/nrfxlib-apis-latest/page/group_nrf_socket_tls.html
+.. _`Modem library socket flags API`: https://docs.nordicsemi.com/bundle/nrfxlib-apis-latest/page/group_nrf_socket_send_recv_flags.html
+
 .. ### Source: wikipedia
 
 .. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
