@@ -19,8 +19,8 @@ It covers setup, integration, and operational guidelines for using sEMMC through
    :caption: Subpages:
 
    features.rst
-   semmc_nrf54L_series_porting_v0_1_0.rst
-   semmc_nrf54H_series_porting_v0_1_0.rst
+   semmc_nrf54L_series_porting_v0_1_1.rst
+   semmc_nrf54H_series_porting_v0_1_1.rst
    timing.rst
    CHANGELOG.rst
    limitations.rst

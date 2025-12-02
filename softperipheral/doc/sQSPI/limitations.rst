@@ -9,7 +9,7 @@ When working with sQSPI, you should be aware of the following limitations.
    :local:
    :depth: 2
 
-v1.2.0
+v1.2.1
 ******
 
 Refer to the following detailed descriptions of current limitations:

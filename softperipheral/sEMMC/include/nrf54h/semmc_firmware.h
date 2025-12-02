@@ -6,6 +6,6 @@
 
 #ifndef SEMMC_FIRMWARE_H__
 #define SEMMC_FIRMWARE_H__
-#include "semmc_firmware_v0.1.0.h"
+#include "semmc_firmware_v0.1.1.h"
 #define SOFTPERIPHERAL_META_HEADER_VERSION 2
 #endif

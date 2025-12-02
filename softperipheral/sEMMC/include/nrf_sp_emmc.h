@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include "nrf.h"                                      // Resolve nrfXX_types.h for the correct target to get definitions for __IO, __IOM etc.
+#include "nrfx.h" // Resolve nrfXX_types.h for the correct target to get definitions for __IO, __IOM etc.
 /* ===========================================================================================================================
  * ================                                          SP_EMMC                                          ================
  * ===========================================================================================================================*/
