@@ -13,11 +13,6 @@
 #include <hal/nrf_vpr.h>
 #include <nrf_sqspi.h>
 
-#if defined (NRF54L20_ENGA_XXAA) || defined (NRF54LM20A_ENGA_XXAA)
-
-#include <hal/nrf_egu.h>
-#endif
-
 #ifndef EXCLUDE_SP_FW
 #define EXCLUDE_SP_FW 0
 #endif

@@ -61,8 +61,8 @@ To better understand the capabilities and limitations of sQSPI, see its comparis
    :caption: Subpages:
 
    features.rst
-   sqspi_nrf54L_series_porting_v1_2_0.rst
-   sqspi_nrf54H_series_porting_v1_2_0.rst
+   sqspi_nrf54L_series_porting_v1_2_1.rst
+   sqspi_nrf54H_series_porting_v1_2_1.rst
    display.rst
    timing.rst
    CHANGELOG.rst

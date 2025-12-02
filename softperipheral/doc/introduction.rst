@@ -49,19 +49,19 @@ The following table shows which soft peripherals and their versions are supporte
           - v0.1.0 with the NCS v3.0.0
           - v1.0.0 with the NCS v3.1.0
           - v1.1.0 with the NCS v3.1.0
-          - v1.2.0 with the NCS v3.2.0
+          - v1.2.1 with the NCS v3.2.0
        - nRF54LM20 SoC:
-          - v1.2.0 with the NCS v3.2.0
+          - v1.2.1 with the NCS v3.2.0
        - nRF54H20 SoC:
           - v0.1.0 with the NCS v3.0.0
           - v1.1.0 with the NCS v3.1.0
-          - v1.2.0 with the NCS v3.2.0
+          - v1.2.1 with the NCS v3.2.0
    * - sEMMC
      - - nRF54L Series SoCs
        - nRF54H Series SoCs
      - - nRF54L15 SoC:
-          - v0.1.0 with the NCS v3.2.0
+          - v0.1.1 with the NCS v3.2.0
        - nRF54LM20 SoC:
-          - v0.1.0 with the NCS v3.2.0
+          - v0.1.1 with the NCS v3.2.0
        - nRF54H20 SoC:
-          - v0.1.0 with the NCS v3.2.0
+          - v0.1.1 with the NCS v3.2.0

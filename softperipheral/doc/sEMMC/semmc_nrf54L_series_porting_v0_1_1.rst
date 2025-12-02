@@ -31,7 +31,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_emmc.h
           │   ├── nrf54l
           │   │   ├── semmc_firmware.h
-          │   │   └── semmc_firmware_v0.1.0.h
+          │   │   └── semmc_firmware_v0.1.1.h
           │   │   └── ...
           │   ├── nrf_config_semmc.h
           │   ├── nrf_sp_emmc.h

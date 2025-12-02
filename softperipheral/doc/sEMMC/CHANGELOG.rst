@@ -10,6 +10,11 @@ sEMMC changelog
 All the notable changes to sEMMC are documented on this page.
 Refer to :ref:`intro_soft_peripherals_platform_support` for supported Nordic devices for each version.
 
+v0.1.1
+******
+
+* Fixed firmware bug for the nRF54L Series devices. 
+
 v0.1.0
 ******
 

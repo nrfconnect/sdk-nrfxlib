@@ -31,7 +31,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_qspi2.h
           │   ├── nrf54l
           │   │   ├── sqspi_firmware.h
-          │   │   └── sqspi_firmware_v1.2.0.h
+          │   │   └── sqspi_firmware_v1.2.1.h
           │   │   └── ...
           │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
@@ -234,187 +234,60 @@ High speed transfers
 .. note::
    High speed transfers (above 32 MHz) on the nRF54L15 DK are only supported starting from sQSPI v1.0.0.
 
-To use high speed transfer in an sQSPI application, you must set extra high drive strength and provide access to the ``GPIOHSPADCTRL`` (GPIO High Speed Pad Control) peripheral.
-You must apply the following settings to ``GPIOHSPADCTRL.BIAS`` and ``GPIOHSPADCTRL.CTRL``:
+High speed read transfers use hardware-enabled delay sampling and require resetting the pad configuration between reads.
+This applies to the entire port **P2**, which is important if you use other pins on this port in addition to those allocated for sQSPI.
+In this context, *reset* means first setting the drive strength to standard, then setting it back to extra high.
+When using sQSPI on the nRF54L Series devices, the Soft Peripheral must have exclusive access to extra-high-drive strength.
 
-* Bias control - Set the highest slew rate for the high speed pad and enable the replica clock.
-* Input sampling and buffering control
+When sQSPI performs read transfers at frequencies greater than or equal to 32 MHz, no other peripheral or ETM trace on the **P2** port can use the extra-high-drive GPIO configuration.
+They are limited to using high-drive strength.
+You can enable high-speed transfers by setting the ``nrf_sqspi_dev_cfg_t.sample_delay_cyc`` option and not setting ``nrf_sqspi_dev_cfg_t.sck_freq_khz``.
+This means that if the frequency is greater than or equal to 32 MHz, then ``nrf_sqspi_dev_cfg_t.sample_delay_cyc`` must be set to 0.
 
-  * For a high speed read - Enable the sampling clock, set its phase to match the required SPI mode, enable delayed data sampling, and configure the appropriate delay.
-  * For a high speed write - Disable the sampling clock and turn off delayed data sampling.
+A high-speed sQSPI transfer requires access to the peripheral ``GPIOHSPADCTRL`` (GPIO High Speed Pad Control).
+You must set the ``GPIOHSPADCTRL.BIAS`` register for higher slew setting and replica bias. 
 
-.. note::
-  High speed read transfers require you to reset the pad configuration for **P2** as a whole.
-  This is important if other pins on **P2** are in use in addition to those assigned to sQSPI.
-  In this context, resetting means first setting the drive strength to standard, and then reapplying extra high drive strength again.
+The following table shows the limitations of each operation mode:
 
-The following code snippet shows how the application code can enable and disable delayed sampling:
+.. list-table:: Drive strengths and high speed transfers
+   :widths: auto
+   :header-rows: 1
 
-.. code-block:: c
-
-   bool enable_delayed_sampling(uint8_t rxdelay) {
-     bool result = true;
-     uint32_t gpiohs_bias_val;
-     uint32_t gpiohs_ctrl_val;
-
-     gpiohs_bias_val = 0x7;
-     NRF_GPIOHSPADCTRL->BIAS = gpiohs_bias_val;
-
-     gpiohs_ctrl_val =
-         (0xF << GPIOHSPADCTRL_CTRL_DATAENABLE_Pos) |
-         (0x1 << GPIOHSPADCTRL_CTRL_CSNEN_Pos) |
-         (0x1 << GPIOHSPADCTRL_CTRL_SCKPHASE_Pos) |
-         (0x1 << GPIOHSPADCTRL_CTRL_SCKEN_Pos) |
-         ((uint32_t)(rxdelay & 0x7) << GPIOHSPADCTRL_CTRL_RXDELAY_Pos);
-     NRF_GPIOHSPADCTRL->CTRL = gpiohs_ctrl_val;
-     if (NRF_GPIOHSPADCTRL->CTRL != gpiohs_ctrl_val) {
-       result = false;
-     }
-     if (NRF_GPIOHSPADCTRL->BIAS != gpiohs_bias_val) {
-       result = false;
-     }
-     return result;
-   }
-
-   bool disable_delayed_sampling(void) {
-     bool result = true;
-     uint32_t gpiohs_bias_val;
-     uint32_t gpiohs_ctrl_val;
-
-     gpiohs_bias_val = 0x7;
-     NRF_GPIOHSPADCTRL->BIAS = gpiohs_bias_val;
-
-     gpiohs_ctrl_val = (0x0 << GPIOHSPADCTRL_CTRL_DATAENABLE_Pos) |
-                       (0x0 << GPIOHSPADCTRL_CTRL_CSNEN_Pos) |
-                       (0x0 << GPIOHSPADCTRL_CTRL_SCKPHASE_Pos) |
-                       (0x0 << GPIOHSPADCTRL_CTRL_SCKEN_Pos) |
-                       (0x0 << GPIOHSPADCTRL_CTRL_RXDELAY_Pos);
-     NRF_GPIOHSPADCTRL->CTRL = gpiohs_ctrl_val;
-     if (NRF_GPIOHSPADCTRL->CTRL != gpiohs_ctrl_val) {
-       result = false;
-     }
-     if (NRF_GPIOHSPADCTRL->BIAS != gpiohs_bias_val) {
-       result = false;
-     }
-     return result;
-   }
-
-The following code snippet shows how the application code can reset **P2** pins:
-
-.. code-block:: c
-
-   //NOTE: Providing alternative implementation
-   // void set_serialPadS0S1(nrf_sqspi_dev_cfg_t qspi_dev_config){
-   void set_serialPadS0S1(void){
-     nrf_gpio_cfg(m_qspi_config.pins.sck, NRF_GPIO_PIN_DIR_OUTPUT, NRF_GPIO_PIN_INPUT_DISCONNECT,
-                  NRF_GPIO_PIN_NOPULL,
-                  NRF_GPIO_PIN_S0S1, NRF_GPIO_PIN_NOSENSE);
-     for (int i = 0; i < NRF_SQSPI_MAX_NUM_DATA_LINES; i++)
-     {
-         if (m_qspi_config.pins.io[i] != NRF_SQSPI_PINS_UNUSED)
-         {
-             nrf_gpio_cfg(m_qspi_config.pins.io[i], NRF_GPIO_PIN_DIR_OUTPUT,
-                          NRF_GPIO_PIN_INPUT_DISCONNECT,
-                          NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_S0S1, NRF_GPIO_PIN_NOSENSE);
-         }
-     }
-     //NOTE: This is optional, in this example nrf_sqspi_dev_cfg already does it and this function is called after device config
-     // nrf_gpio_cfg(qspi_dev_config.csn_pin, NRF_GPIO_PIN_DIR_OUTPUT,
-     //              NRF_GPIO_PIN_INPUT_DISCONNECT, NRF_GPIO_PIN_NOPULL,
-     //              NRF_GPIO_PIN_E0E1, NRF_GPIO_PIN_NOSENSE);
-   }
-
-   void set_serialPadE0E1(nrf_sqspi_dev_cfg_t qspi_dev_config){
-     nrf_gpio_cfg(m_qspi_config.pins.sck, NRF_GPIO_PIN_DIR_OUTPUT,
-                  NRF_GPIO_PIN_INPUT_DISCONNECT, NRF_GPIO_PIN_NOPULL,
-                  NRF_GPIO_PIN_E0E1, NRF_GPIO_PIN_NOSENSE);
-     for (int i = 0; i < NRF_SQSPI_MAX_NUM_DATA_LINES; i++)
-     {
-         if (m_qspi_config.pins.io[i] != NRF_SQSPI_PINS_UNUSED)
-         {
-             nrf_gpio_cfg(m_qspi_config.pins.io[i], NRF_GPIO_PIN_DIR_OUTPUT,
-                          NRF_GPIO_PIN_INPUT_DISCONNECT,
-                          NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_E0E1, NRF_GPIO_PIN_NOSENSE);
-         }
-     }
-     nrf_gpio_cfg(qspi_dev_config.csn_pin, NRF_GPIO_PIN_DIR_OUTPUT,
-                  NRF_GPIO_PIN_INPUT_DISCONNECT, NRF_GPIO_PIN_NOPULL,
-                  NRF_GPIO_PIN_E0E1, NRF_GPIO_PIN_NOSENSE);
-   }
-
-The following code snippet shows how the application code can enable and disable delayed sampling:
-
-.. code-block:: c
-
-   void configure_hs_w(nrf_sqspi_t *p_qspi, uint32_t sck_freq_khz,
-                         nrf_sqspi_spi_lines_t mspi_lines) {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wmissing-braces"
-
-     nrf_sqspi_dev_cfg_t qspi_dev_config = {
-         .csn_pin = NRF_PIN_PORT_TO_PIN_NUMBER(5, 2),
-         .sck_freq_khz = sck_freq_khz,
-         .protocol = NRF_SQSPI_PROTO_SPI_C,
-         .sample_sync = NRF_SQSPI_SAMPLE_SYNC_DELAY,
-         .sample_delay_cyc = 0,
-         // Protocol specific (MSPI)
-         {{.spi_cpolpha = NRF_SQSPI_SPI_CPOLPHA_0,
-           .mspi_lines = mspi_lines,
-           .mspi_ddr = NRF_SQSPI_SPI_DDR_SINGLE,
-           .spi_clk_stretch = false,
-           .xip_cfg = NRF_SQSPI_SPI_XIP_MODE_DISABLED}}};
-
-     if (!enable_delayed_sampling(2)) {
-       error_exit();
-     }
-
-   #pragma GCC diagnostic pop
-
-     static uint16_t context = 0x45b1;
-     if (nrf_sqspi_dev_cfg(p_qspi, &qspi_dev_config, done_callback, &context) !=
-         NRFX_SUCCESS) {
-       error_exit();
-     }
-
-     set_serialPadE0E1(qspi_dev_config);
-   }
-
-   void configure_hs_r(nrf_sqspi_t *p_qspi, uint32_t sck_freq_khz,
-                         nrf_sqspi_spi_lines_t mspi_lines) {
-   #pragma GCC diagnostic push
-   #pragma GCC diagnostic ignored "-Wmissing-braces"
-
-     nrf_sqspi_dev_cfg_t qspi_dev_config = {
-         .csn_pin = NRF_PIN_PORT_TO_PIN_NUMBER(5, 2),
-         .sck_freq_khz = sck_freq_khz,
-         .protocol = NRF_SQSPI_PROTO_SPI_C,
-         .sample_sync = NRF_SQSPI_SAMPLE_SYNC_DELAY,
-         .sample_delay_cyc = 0,
-         // Protocol specific (MSPI)
-         {{.spi_cpolpha = NRF_SQSPI_SPI_CPOLPHA_0,
-           .mspi_lines = mspi_lines,
-           .mspi_ddr = NRF_SQSPI_SPI_DDR_SINGLE,
-           .spi_clk_stretch = false,
-           .xip_cfg = NRF_SQSPI_SPI_XIP_MODE_DISABLED}}};
-
-     if (!enable_delayed_sampling(2)) {
-       error_exit();
-     }
-
-   #pragma GCC diagnostic pop
-
-     static uint16_t context = 0x45b1;
-     if (nrf_sqspi_dev_cfg(p_qspi, &qspi_dev_config, done_callback, &context) !=
-         NRFX_SUCCESS) {
-       error_exit();
-     }
-
-     set_serialPadS0S1();
-     set_serialPadE0E1(qspi_dev_config);
-   }
+   * - sQSPI drive strength
+     - BIAS
+     - Max. sQSPI frequency
+     - ``sample_delay_cyc``
+     - Max. peripheral drive strength
+     - Max. peripheral frequency
+   * - Extra-high-drive
+     - ``0x6``
+     - ``64 MHz``
+     - ``0``
+     - High-drive
+     - ``16 MHz``
+   * - Extra-high-drive
+     - ``0x1``
+     - ``32 MHz``
+     - ``1``
+     - Extra high-drive
+     - ``32 MHz``
+   * - Extra-high-drive
+     - ``0x0``
+     - ``16 MHz``
+     - ``>= 1``
+     - Extra-high-drive
+     - ``32 MHz``
+   * - High-drive
+     - ``0x0``
+     - ``16 MHz``
+     - ``>= 1``
+     - Extra-high-drive
+     - ``32 MHz``
 
 .. note::
-   High speed transfers are closely linked to the API parameter :c:var:`nrf_sqspi_dev_cfg_t.sample_delay_cyc`, which must be set to ``0`` (see :ref:`sqspi_limitations`).
+   At 32 MHz, extra-high-drive strength may allow sQSPI to work without hardware-enabled delayed sampling.
+   Depending on the external circuitry you might need to set ``sample_delay_cyc`` to 0 to enable the hardware-enabled delay sampling. 
+
 
 Memory retention configuration
 ******************************
