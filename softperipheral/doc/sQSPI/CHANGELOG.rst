@@ -10,6 +10,20 @@ sQSPI changelog
 All the notable changes to sQSPI are documented on this page.
 Refer to :ref:`intro_soft_peripherals_platform_support` for supported devices for each version.
 
+v1.2.1
+******
+
+See the list of changes for the current release.
+
+* Updated:
+
+  * For the nRF54L Series devices:
+  
+    * Firmware with a bug fix for high speed transfers.
+    * The :ref:`sqspi_nrf54L_series_porting_guide` to reflect the high speed transfer bug fix.
+   
+  * Version number on the nRF54H20 devices (no functional changes).
+
 v1.2.0
 ******
 

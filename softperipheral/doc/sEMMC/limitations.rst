@@ -9,7 +9,7 @@ When working with sEMMC, you should be aware of the following limitations.
    :local:
    :depth: 2
 
-v0.1.0
+v0.1.1
 ******
 
 Refer to the following detailed descriptions of current limitations:
