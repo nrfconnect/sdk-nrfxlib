@@ -31,7 +31,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_qspi2.h
           │   ├── nrf54h
           │   │   ├── sqspi_firmware.h
-          │   │   ├── sqspi_firmware_v1.2.0.h
+          │   │   ├── sqspi_firmware_v1.2.1.h
           │   │   └── ...
           │   ├── nrf_config_sqspi.h
           │   ├── nrf_sp_qspi.h
