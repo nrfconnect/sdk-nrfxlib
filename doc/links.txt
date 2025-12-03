@@ -74,8 +74,6 @@
 
 .. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
 
-.. _`Mbed TLS backend`: https://tls.mbed.org/
-
 .. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
