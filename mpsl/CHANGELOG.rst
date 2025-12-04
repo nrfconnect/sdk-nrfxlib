@@ -10,8 +10,8 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v3.2.0
+**********************
 
 Changes
 =======
@@ -22,6 +22,7 @@ Changes
   * Updated MPSL Timeslot implementation:
 
     * Signals :c:enumerator:`MPSL_TIMESLOT_SIGNAL_BLOCKED` and :c:enumerator:`MPSL_TIMESLOT_SIGNAL_CANCELED` are now sent immediately after the specified timeout or start time, instead of being sent early if the scheduler predicted the timeslot could not be scheduled.
+    * Timeslots with :c:enumerator:`MPSL_TIMESLOT_HFCLK_CFG_NO_GUARANTEE` now request the HFXO, increasing the lowest schedulable timeout for :c:enumerator:`MPSL_TIMESLOT_REQ_TYPE_EARLIEST` to 1700us if the HFXO is not running.
     * Timeslot events can now run for longer than 128 seconds.
 
   * Reduced code size for nRF52 and nRF53 Series devices.
