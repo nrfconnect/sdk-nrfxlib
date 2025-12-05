@@ -9,8 +9,8 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v3.1.99
-***********************
+nRF Connect SDK v3.2.0
+**********************
 
 Added
 =====
