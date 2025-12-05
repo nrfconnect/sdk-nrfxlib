@@ -13,7 +13,7 @@ See the following notes:
 * The libraries require the NFCT driver that is a part of the `nrfx`_ repository.
 
   The NFCT driver uses one Timer peripheral to work correctly.
-  By default, it uses TIMER4 on nRF52 devices and TIMER2 on nRF5340.
+  By default, it uses TIMER4 on nRF52 Series devices, TIMER2 on nRF5340 devices, and TIMER24 on nRF54LX Series devices.
   You can override the default configuration by changing ``NRFX_NFCT_CONFIG_TIMER_INSTANCE_ID`` in the :file:`nrfx_config.h` header.
   You cannot use this timer instance in other parts of your application.
 
