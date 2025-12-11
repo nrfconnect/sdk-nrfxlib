@@ -13,34 +13,10 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
-Changes
-=======
-
-* Scheduler improvements (DRGN-24450):
-
-  * The scheduler can now manage events that are scheduled less than 100 microseconds apart.
-  * Updated MPSL Timeslot implementation:
-
-    * Signals :c:enumerator:`MPSL_TIMESLOT_SIGNAL_BLOCKED` and :c:enumerator:`MPSL_TIMESLOT_SIGNAL_CANCELED` are now sent immediately after the specified timeout or start time, instead of being sent early if the scheduler predicted the timeslot could not be scheduled.
-    * Timeslots with :c:enumerator:`MPSL_TIMESLOT_HFCLK_CFG_NO_GUARANTEE` now request the HFXO, increasing the lowest schedulable timeout for :c:enumerator:`MPSL_TIMESLOT_REQ_TYPE_EARLIEST` to 1700us if the HFXO is not running.
-    * Timeslot events can now run for longer than 128 seconds.
-
-  * Reduced code size for nRF52 and nRF53 Series devices.
-  * Removed restriction on scheduling events less than 128 seconds into the future for nRF52 and nRF53 Series devices.
-  * Fixed an issue on nRF54H20 device where an assert could occur if MRAM was not forced on using the :kconfig:option:`CONFIG_MRAM_LATENCY_AUTO_REQ` Kconfig option. (DRGN-26065)
-
-* The types :c:type:`mpsl_phy_t`, :c:type:`mpsl_fem_event_type_t`, :c:type:`mpsl_fem_functionality_t`, :c:type:`mpsl_cx_req_trig_t`, :c:type:`mpsl_pm_event_state_t` and :c:type:`mpsl_pm_low_latency_state_t` are now a fixed-width ``uint8_t`` to not rely on compiler specific size of an enum type. (KRKNWK-20877)
-* The functions :c:func:`mpsl_hwres_dppi_channel_alloc` and :c:func:`mpsl_hwres_ppib_channel_alloc` have been moved to the :file:`mpsl_hwres_ppi.h` file. (DRGN-26373)
-* The MPSL header files now include the :file:`nrfx.h` file, adding a dependency on `nrfx`_.
-  The MPSL has been tested for compatibility with the `nrfx`_ revision used by the corresponding ``sdk-nrf`` revision. (DRGN-26373)
-
 Bug fixes
 =========
 
 * Fixed unintended clearing of POWER interrupts caused by clearing CLOCK interrupts in :c:func:`mpsl_init()` and :c:func:`mpsl_uninit()`. (DRGN-26338)
-* Fixed an assert that could occur on the nRF54H20 SoC if MRAM was not forced on all the time, for example, if the CONFIG_MRAM_LATENCY_AUTO_REQ Kconfig option is set to ``n``. (DRGN-26065)
-* Fixed an issue where ‐7 dBm was used instead of ‐5 dBm when calling the :c:func:`mpsl_tx_power_radio_supported_power_adjust`  or :c:func:`mpsl_tx_power_dbm_to_radio_register_convert` functions.
-  This issue applies only to the nRF54L Series devices. (DRGN-26470)
 
 nRF Connect SDK v3.1.0
 **********************

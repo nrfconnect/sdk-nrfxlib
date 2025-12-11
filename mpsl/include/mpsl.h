@@ -22,11 +22,11 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrfx.h"
+#include "nrf.h"
+#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 #include "mpsl_clock.h"
 #include "mpsl_hwres.h"
-#include "mpsl_hwres_ppi.h"
 
 /** @brief High IRQ priority
  *
@@ -40,17 +40,7 @@ extern "C" {
 
 /** @brief    Function prototype for the assert handler.
  *
- * The assertion handler will be called whenever MPSL detects
- * an internal error it cannot recover from.
- * The assertion handler may be called from any execution context,
- * including interrupt context.
- *
- * The application may log the assertion information and provide the
- * information to Nordic Semiconductor for analysis.
- *
- * MPSL will disable all interrupts prior to calling the
- * assertion handler. MPSL will reset the chip if the
- * application returns from this function.
+ * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
  *
  * @param[in] file   The filename where the assertion occurred.
  * @param[in] line   The line number where the assertion occurred.

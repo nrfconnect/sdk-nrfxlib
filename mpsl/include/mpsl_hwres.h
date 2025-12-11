@@ -11,45 +11,19 @@
  * @ingroup  mpsl
  *
  * This file defines fixed hardware resources used by the MPSL.
+ * It also defines an API to dynamically allocate some of hardware
+ * resources. The allocation functions are expected to be implemented
+ * outside of the MPSL.
  * @{
  */
 
 #ifndef MPSL_HWRES_H__
 #define MPSL_HWRES_H__
 
-/*  The xx_SERIES macros are defined here to keep this file independent
-    of the MDK. This allows the header file to be used in nrfx without
-    creating circular dependencies. */
-#if defined(NRF52805_XXAA) || defined(NRF52810_XXAA) || \
-    defined(NRF52811_XXAA) || defined(NRF52820_XXAA) || \
-    defined(NRF52832_XXAA) || defined(NRF52832_XXAB) || \
-    defined(NRF52833_XXAA) || defined(NRF52840_XXAA)
-    #ifndef NRF52_SERIES
-        #define NRF52_SERIES
-    #endif
-#endif
-
-#if defined(NRF5340_XXAA) || defined(NRF5340_XXAA_APPLICATION) || defined(NRF5340_XXAA_NETWORK)
-    #ifndef NRF53_SERIES
-        #define NRF53_SERIES
-    #endif
-#endif
-
-#if defined(NRF54L05_XXAA) || defined(NRF54LV10A_ENGA_XXAA) || \
-    defined(NRF54L10_XXAA) || defined(NRF54L15_XXAA) || \
-    defined(NRF54LM20A_ENGA_XXAA) || \
-    defined(NRF54LS05B_ENGA_XXAA) || \
-    defined(NRF7120_ENGA_XXAA)
-    #ifndef LUMOS_XXAA
-        #define LUMOS_XXAA
-    #endif
-#endif
-
-#if defined(NRF54H20_XXAA)
-    #ifndef NRF54H_SERIES
-        #define NRF54H_SERIES
-    #endif
-#endif
+#include <stdbool.h>
+#include <stdint.h>
+#include "nrf.h"
+#include "nrf_peripherals.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,7 +44,7 @@ extern "C" {
     #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
     #define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
-#elif defined(NRF54H_SERIES)
+#elif defined(NRF54H_SERIES) || defined(GRTC_PRESENT)
     #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
     #define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
@@ -88,6 +62,40 @@ extern "C" {
 #else
     #define MPSL_TIMER0 NRF_TIMER020
 #endif
+
+#if defined(DPPI_PRESENT) || defined(DOXYGEN)
+
+/** @brief Allocate a DPPI channel of a DPPIC controller instance.
+ *
+ *  @param[in]  p_dppic    Pointer to a DPPIC controller instance.
+ *  @param[out] p_dppi_ch  Allocated DPPI channel number on the given DPPIC instance.
+ *                         Value written at this pointer is valid only on successful
+ *                         allocation.
+ *
+ *  @retval true   Allocation successful.
+ *  @retval false  Allocation failed.
+ */
+bool mpsl_hwres_dppi_channel_alloc(NRF_DPPIC_Type * p_dppic, uint8_t * p_dppi_ch);
+
+#endif /* DPPI_PRESENT */
+
+#if defined(PPIB_PRESENT) || defined(DOXYGEN)
+
+/** @brief Allocate a PPIB channel of a PPIB-to-PPIB interconnection.
+ *
+ * @param[in]  p_ppib    Pointer to a PPIB instance.
+ * @param[out] p_ppib_ch Allocated PPIB channel number the for PPIB-to-PPIB
+ *                       interconnection identified by the @p p_ppib being one
+ *                       of the sides of the interconnection.
+ *                       Value written at this pointer valid only on successful
+ *                       allocation.
+ *
+ *  @retval true   Allocation successful.
+ *  @retval false  Allocation failed.
+ */
+bool mpsl_hwres_ppib_channel_alloc(NRF_PPIB_Type * p_ppib, uint8_t * p_ppib_ch);
+
+#endif /* PPIB_PRESENT */
 
 #ifdef __cplusplus
 }

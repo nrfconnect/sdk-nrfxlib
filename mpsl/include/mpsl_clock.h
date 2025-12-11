@@ -23,11 +23,11 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrfx.h"
+#include "nrf.h"
 #include "nrf_errno.h"
-#if !defined (NRF54H_SERIES)
+#if !defined (NRF54H_SERIES) && !defined (NRF92_SERIES)
 #include "hal/nrf_clock.h"
-#endif /* !NRF54H20_XXAA */
+#endif /* !NRF54H20_XXAA && !NRF92H20_XXAA */
 
 /** @brief Low frequency clock source. */
 enum MPSL_CLOCK_LF_SRC

@@ -25,7 +25,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "nrfx.h"
+#include "nrf.h"
+#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 
 /** @brief The shortest allowed timeslot event in microseconds. */
@@ -174,10 +175,7 @@ enum MPSL_TIMESLOT_REQUEST_TYPE
                                                  in a session.
                                                  @note It is not permitted to request an earliest
                                                  timeslot from within a timeslot. */
-    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request.
-                                                 This may not be used for the first request of a
-                                                 session as there is no previous timeslot to
-                                                 schedule the start time against. */
+    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request. */
 };
 
 /** @brief Parameters for a request for a timeslot as early as possible. */
@@ -344,7 +342,7 @@ int32_t mpsl_timeslot_session_close(mpsl_timeslot_session_id_t session_id);
  * @retval 0              Success
  * @retval  -NRF_EINVAL   The parameters of p_request are not valid
  * @retval  -NRF_ENOENT   The session is not open.
- * @retval  -NRF_EAGAIN   The session is not IDLE, or the first request in a session was a @ref MPSL_TIMESLOT_REQ_TYPE_NORMAL
+ * @retval  -NRF_EAGAIN   The session is not IDLE.
  */
 int32_t mpsl_timeslot_request(mpsl_timeslot_session_id_t session_id, mpsl_timeslot_request_t const * p_request);
 
