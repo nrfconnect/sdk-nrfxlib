@@ -26,6 +26,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "nrf.h"
 #include "nrf_errno.h"
 
 /** @brief Default resource configuration tag. */
@@ -224,20 +225,13 @@ extern "C" {
  * @param[in] num_links Total number of peripheral and central links supported.
  * @param[in] num_pages Total number of extended feature pages supported.
  */
-#define SDC_MEM_EXTENDED_FEATURE_SET(num_links, num_pages) \
-     ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
+#define SDC_MEM_EXTENDED_FEATURE_SET(num_links, num_pages) ((num_links) > 0 ? (11 + (num_links) * (19 + (num_pages) * __MEM_PER_EXTENDED_FEATURE_PAGE)) : 0)
 
 /** @brief Maximum memory required when supporting frame space update.
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
 #define SDC_MEM_FRAME_SPACE_UPDATE(num_links) ((num_links) > 0 ? (12 + (num_links) * 68) : 0)
-
-/** @brief Maximum memory required when supporting shorter connection intervals.
- *
- * @param[in] num_links Total number of peripheral and central links supported.
- */
-#define SDC_MEM_SHORTER_CONNECTION_INTERVALS(num_links) ((num_links) > 0 ? (12 + (num_links) * 52) : 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
@@ -373,9 +367,7 @@ extern "C" {
  * @param[in] max_antenna_paths_supported Maximum number of antenna paths supported in CS.
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
-#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) \
-     ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
-      + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
+#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
@@ -385,19 +377,11 @@ extern "C" {
 
 /** @} end of sdc_mem_defines */
 
-/** @brief Function prototype for the assertion handler.
+/** @brief Function prototype for the fault handler.
  *
- * The assertion handler will be called whenever the SoftDevice Controller detects
- * an internal error it cannot recover from.
- * The assertion handler may be called from any execution context,
- * including interrupt context.
- *
- * The application may log the assertion information and provide the
- * information to Nordic Semiconductor for analysis.
- *
- * The SoftDevice Controller will disable all interrupts prior to calling the
- * assertion handler. The SoftDevice Controller will reset the chip if the
- * application returns from this function.
+ * @note The SoftDevice Controller will disable all interrupts prior to calling the
+ *       fault handler. The SoftDevice Controller will reset the chip if the
+ *       application returns from this function.
  *
  * @param[in] file  The filename where the assertion occurred.
  * @param[in] line  The line number where the assertion occurred.
@@ -414,7 +398,7 @@ typedef void (*sdc_callback_t)(void);
 
 /** @brief Function prototype for antenna switching callback in Channel Sounding.
  *
- *  See also @ref sdc_cs_antenna_switch_callback_set
+ *  See also @ref sdc_support_channel_sounding
  *
  *  @param[in] antenna_index The index of the antenna being switched to.
  *                           Valid range [0, @ref sdc_cfg_cs_cfg_t::num_antennas_supported - 1]
@@ -1445,13 +1429,6 @@ void sdc_support_extended_feature_set(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @note The application may also call @ref sdc_support_lowest_frame_space() to enable support
- *       for the lowest frame space possible for ACL connections, if the application does not
- *       require asymmetric PHYs.
- *
- * @note The application shall also call @ref sdc_support_extended_feature_set()
- *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
- *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
@@ -1467,73 +1444,11 @@ void sdc_support_frame_space_update_central(void);
  *       and @ref sdc_support_frame_space_update_peripheral()
  *       if both central and peripheral roles are supported.
  *
- * @note The application may also call @ref sdc_support_lowest_frame_space() to enable support
- *       for the lowest frame space possible for ACL connections, if the application does not
- *       require asymmetric PHYs.
- *
- * @note The application shall also call @ref sdc_support_extended_feature_set()
- *       to enable support for Extended Feature Set before enabling support for Frame Space Update.
- *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
 void sdc_support_frame_space_update_peripheral(void);
-
-/** @brief Enable support for the lowest frame space possible for ACL connections
- *
- * After this API is called, the controller will support the lowest frame space possible for ACL connections.
- *
- * @note This option forces ACL connections to always use the same TX and RX PHY.
- *
- * @note The application shall also call sdc_support_frame_space_update_central() or
- *       @ref sdc_support_frame_space_update_peripheral() to enable support for Frame Space Update.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
- void sdc_support_lowest_frame_space(void);
-
-/** @brief Support Shorter Connection Intervals for central role
- *
- * After this API is called, the controller will support the HCI commands
- * related to Shorter Connection Intervals.
- *
- * @note The application is required to call both @ref sdc_support_shorter_connection_intervals_central()
- *       and @ref sdc_support_shorter_connection_intervals_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @note The application shall also call @ref sdc_support_extended_feature_set() and
- *       @ref sdc_support_connection_subrating_central
- *       to enable support for Extended Feature Set and Connection Subrating
- *       before enabling support for Shorter Connection Intervals.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_shorter_connection_intervals_central(void);
-
-/** @brief Support Shorter Connection Intervals for peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * related to Shorter Connection Intervals.
- *
- * @note The application is required to call both @ref sdc_support_shorter_connection_intervals_central()
- *       and @ref sdc_support_shorter_connection_intervals_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @note The application shall also call @ref sdc_support_extended_feature_set() and
- *       @ref sdc_support_connection_subrating_peripheral
- *       to enable support for Extended Feature Set and Connection Subrating
- *       before enabling support for Shorter Connection Intervals.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_shorter_connection_intervals_peripheral(void);
 
 /** @brief Support Channel Sounding test command
  *
@@ -1558,11 +1473,7 @@ void sdc_support_channel_sounding_mode3(void);
 
 /** @brief  Support Channel Sounding Initiator role
  *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Initiator role
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
+ * After this API is called, the controller will support Channel Sounding Initiator role
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
@@ -1572,8 +1483,18 @@ void sdc_support_channel_sounding_initiator_role(void);
 
 /** @brief  Support Channel Sounding Reflector role
  *
+ * After this API is called, the controller will support Channel Sounding Reflector role
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_sounding_reflector_role(void);
+
+/** @brief Support LE Channel Sounding
+ *
  * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Reflector role
+ * related to Channel Sounding.
  *
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
@@ -1582,17 +1503,7 @@ void sdc_support_channel_sounding_initiator_role(void);
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-void sdc_support_channel_sounding_reflector_role(void);
-
-/** @brief Use global channel map during connection setup
- *
- * After this API is called, connections will use the global channel map
- * instead of the full channel map during connection setup.
- *
- * @note This is known to not work well with some peer peripheral devices conforming to Core Specification v4.0.
- *       The API should only be used when the peer peripheral devices are qualified to a more recent specification.
- */
-void sdc_use_global_channel_map_on_connection(void);
+void sdc_support_channel_sounding(void);
 
 #ifdef __cplusplus
 }

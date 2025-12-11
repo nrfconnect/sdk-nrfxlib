@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <nrfx.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -253,7 +253,6 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief QoS Connection Event Report.
  *
  * A QoS Connection Event report gives information about the connection event.
- * See also @ref sdc_hci_cmd_vs_qos_conn_event_report_enable().
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -292,7 +291,7 @@ typedef struct __PACKED __ALIGN(1)
  * The HCI_VS_conn_anchor_point_update_report event indicates that the device
  * updated the anchor point for an ACL connection.
  * The anchor point represents the start of the first packet of a connection event.
- * See Core Specification, Vol 6, Part B, Section 4.5.1.
+ * See Core_v5.4, Vol 6, Part B, Section 4.5.1.
  *
  * The controller only generates HCI_VS_conn_anchor_point_update_report events
  * if instructed to do so using the
@@ -567,8 +566,8 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t apr_enable;
     /** @brief The valid range is [0, 4095]. Default value is 2048. */
     uint16_t beta;
-    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in Core
-     *         Specification, Vol 6, Part B, Section 5.1.17.1. Default value is -70 dBm.
+    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in
+     *         Core_v5.4, Vol 6, Part B, Section 5.1.17.1. Default value is -70 dBm.
      */
     int8_t lower_limit;
     /** @brief The upper limit of the RSSI golden range. Default value is -30 dBm. */
@@ -780,7 +779,6 @@ typedef struct __PACKED __ALIGN(1)
  * additional counter for incremental builds.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
@@ -800,7 +798,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_version_info(sdc_hci_cmd_vs_zephyr_read_versi
  * command is also supported.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
@@ -822,7 +819,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_supported_commands(sdc_hci_cmd_vs_zephyr_read
  * be generated.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -856,7 +852,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_bd_addr(const sdc_hci_cmd_vs_zephyr_write_bd
  * one is available).
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
@@ -887,7 +882,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_static_addresses(sdc_hci_cmd_vs_zephyr_read_s
  * static random).
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
@@ -903,7 +897,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_key_hierarchy_roots(sdc_hci_cmd_vs_zephyr_rea
  * This commands reads the controller chip temperature.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
@@ -946,7 +939,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_tem
  * Tx powers given each individual controller capabilities.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -969,7 +961,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
  * It gets the BLE Tx power level for any given handle type and handle.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -991,7 +982,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_
  * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1009,7 +999,6 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
  * See @ref sdc_hci_cmd_le_conn_update for description of behavior.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the command, the Controller sends the
  * HCI_Command_Status event to the Host. The HCI_VS_Connection_Update_Complete
  * event shall be generated after the connection parameters have been applied
@@ -1038,7 +1027,6 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1053,17 +1041,14 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  *
  * This vendor specific command is used to enable or disable generation of QoS Connection event
  * reports.
- * See @ref sdc_hci_subevent_vs_qos_conn_event_report_t.
- * When enabled, one report is generated every scheduled connection event.
- * That is, QoS Connection Connection event reports are not generated for skipped connection events.
- * Connection events may be skipped due to scheduling conflicts, peripheral latency, or subrating.
+ * See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. When enabled, one report will be generated
+ * every connection event.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
  *
  * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1095,7 +1080,6 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  * See also @ref sdc_hci_cmd_vs_central_acl_event_spacing_set().
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1125,7 +1109,6 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1155,7 +1138,6 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * @note Shall only be called on peripheral links.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1176,7 +1158,6 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  * the change to the host with an event.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Status event shall be generated.
  * When the controller has completed the power control request and if the request has resulted
  * in a change in the peer's transmit power level, an HCI_LE_Transmit_Power_Reporting event shall
@@ -1199,7 +1180,6 @@ uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_t
  * Reset command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the command, the Controller sends the HCI_Command_Complete
  * event to the Host.
  *
@@ -1226,7 +1206,6 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  * By default this mode is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1256,7 +1235,6 @@ uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat
  * must be called.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1302,7 +1280,6 @@ uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channe
  * After HCI Reset, all parameters are set to the default values.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1322,7 +1299,6 @@ uint8_t sdc_hci_cmd_vs_set_power_control_request_params(const sdc_hci_cmd_vs_set
  * the formula given in @ref sdc_hci_cmd_vs_set_power_control_request_params().
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1351,7 +1327,6 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
  * See also @ref sdc_hci_cmd_vs_conn_event_extend().
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1371,7 +1346,6 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * error code will be returned.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1397,7 +1371,6 @@ uint8_t sdc_hci_cmd_vs_get_next_conn_event_counter(const sdc_hci_cmd_vs_get_next
  * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1438,7 +1411,6 @@ uint8_t sdc_hci_cmd_vs_allow_parallel_connection_establishments(const sdc_hci_cm
  * See also @ref sdc_hci_cmd_vs_event_length_set().
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1475,7 +1447,7 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * the transmitter and receiver:
  * CIS_reference_anchor_point = tx_time_stamp + CIG_Sync_Delay - CIS_Sync_Delay
  * BIG_reference_anchor_point = tx_time_stamp + PTO * ISO_Interval
- * See also Core Specification, Vol 6, Part G, Section 3.
+ * See also Core_v6.0, Vol 6, Part G, Section 3.
  *
  * If the Host issues this command with a connection handle that does not exist,
  * or the connection handle is not associated with a CIS or BIS, the Controller
@@ -1486,7 +1458,6 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_ISO_TX_Sync command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -1512,7 +1483,6 @@ uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_ti
  * creation will fail with error code UNSUPPORTED_FEATURE_OR_PARAMETER_VALUE (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1541,7 +1511,6 @@ uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_t
  * reserved time may be smaller than the requested value.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1569,7 +1538,6 @@ uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_t
  * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1591,7 +1559,6 @@ uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent
  * The default behavior is restored when issuing the HCI Reset command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1615,7 +1582,6 @@ uint8_t sdc_hci_cmd_vs_scan_channel_map_set(const sdc_hci_cmd_vs_scan_channel_ma
  * After HCI Reset, reception of extended advertising packets is enabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1649,7 +1615,6 @@ uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan
  * the error code Invalid HCI Command Parameters (0x12) is returned.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1683,7 +1648,6 @@ uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_
  * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1701,7 +1665,7 @@ uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start
  * sdc_hci_subevent_vs_conn_anchor_point_update_report_t.
  *
  * When enabled, the controller will start producing reports for all ACL connections whenever
- * a connection anchor point is updated. See Core Specification, Vol 6, Part B, Section 4.5.1.
+ * a connection anchor point is updated. See Core_v5.4, Vol 6, Part B, Section 4.5.1.
  *
  * This event is generated every connection interval.
  * For peripheral connections, the generation of this event is skipped if no packet from the
@@ -1712,7 +1676,6 @@ uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start
  * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1734,7 +1697,6 @@ uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hc
  * If the application does not pull a report in time, it will be overwritten.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1783,7 +1745,6 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *   peer devices when the LE CS Create Config command is issued.
  *
  * Event(s) generated (unless masked away):
- *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.

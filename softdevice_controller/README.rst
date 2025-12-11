@@ -68,12 +68,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Channel Sounding               |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| LL Extended Feature Set        |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Frame Space Update             |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Shorter Connection Intervals   |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -83,15 +77,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
    * For the nRF54L Series devices, the SoftDevice Controller in non-secure mode is experimental.
-   * Channel Sounding is not supported on the nRF52 and nRF53 Series devices.
-   * For the Shorter Connection Intervals feature, the minimum connection interval can be achieved using the lowest supported ACL frame space, 2 Mbps PHY, and 27-byte data length.
-
-     The minimum supported connection intervals for each device family are as follows:
-
-     * nRF52 Series: 875 μs
-     * nRF53 Series: 875 μs
-     * nRF54L Series: 750 μs
-     * nRF54H Series: 875 μs
+   * Support for the Channel Sounding feature is only available on the nRF54L15 device.
 
 .. _sdc_proprietary_feature_support:
 

@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <nrfx.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -67,7 +67,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read RSSI.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.5.4
  *
  * This command reads the Received Signal Strength Indication (RSSI) value from a
@@ -91,7 +91,6 @@ typedef struct __PACKED __ALIGN(1)
  * be set to 127.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_Read_RSSI command has completed, an HCI_Command_Complete
  * event shall be generated.
  *

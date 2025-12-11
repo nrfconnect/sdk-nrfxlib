@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <nrfx.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -117,7 +117,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Supported HCI commands.
  *
- * See Core Specification, Vol 4, Part E, Section 6.27
+ * See Core_v5.4, Vol 4, Part E, Section 6.27
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -507,12 +507,6 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_clear_monitored_advertisers_list : 1;
     uint8_t hci_le_read_monitored_advertisers_list_size : 1;
     uint8_t hci_le_frame_space_update : 1;
-    uint8_t hci_le_set_resolvable_private_address_timeout_v2 : 1;
-    uint8_t hci_le_enable_ota_utp_mode : 1;
-    uint8_t hci_le_utp_send : 1;
-    uint8_t hci_le_connection_rate_request : 1;
-    uint8_t hci_le_set_default_rate_parameters : 1;
-    uint8_t hci_le_read_minimum_supported_connection_interval : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -560,7 +554,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.4.1
  *
  * This command reads the values for the version information for the local Controller.
@@ -572,7 +566,6 @@ typedef struct __PACKED __ALIGN(1)
  * The HCI_Subversion and LMP_Subversion are vendor-specific.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_Read_Local_Version_Information command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -586,7 +579,7 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.4.2
  *
  * This command reads the list of HCI commands supported for the local Controller.
@@ -596,7 +589,6 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
  * See Section 6.27 for more information.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_Read_Local_Supported_Commands command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -610,7 +602,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.4.3
  *
  * This command requests a list of the supported features for the local BR/EDR Controller.
@@ -618,7 +610,6 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
  * Section 3.2.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_Read_Local_Supported_Features command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -632,7 +623,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address
@@ -645,7 +636,6 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
  * On a BR/EDR/LE Controller, the public address shall be the same as the BD_ADDR.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_Read_BD_ADDR command has completed, an
  * HCI_Command_Complete event shall be generated.
  *

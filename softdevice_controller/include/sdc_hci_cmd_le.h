@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <nrfx.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -295,12 +295,6 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE_V2 = 0x2097,
     /** @brief See @ref sdc_hci_cmd_le_frame_space_update(). */
     SDC_HCI_OPCODE_CMD_LE_FRAME_SPACE_UPDATE = 0x209d,
-    /** @brief See @ref sdc_hci_cmd_le_conn_rate_request(). */
-    SDC_HCI_OPCODE_CMD_LE_CONN_RATE_REQUEST = 0x20a1,
-    /** @brief See @ref sdc_hci_cmd_le_set_default_rate_params(). */
-    SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_RATE_PARAMS = 0x20a2,
-    /** @brief See @ref sdc_hci_cmd_le_read_min_supported_conn_interval(). */
-    SDC_HCI_OPCODE_CMD_LE_READ_MIN_SUPPORTED_CONN_INTERVAL = 0x20a3,
 };
 
 /** @brief LE subevent Code values. */
@@ -338,8 +332,6 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_CS_TEST_END_COMPLETE = 0x33,
     /** @brief See @ref sdc_hci_subevent_le_frame_space_update_complete_t. */
     SDC_HCI_SUBEVENT_LE_FRAME_SPACE_UPDATE_COMPLETE = 0x35,
-    /** @brief See @ref sdc_hci_subevent_le_conn_rate_change_t. */
-    SDC_HCI_SUBEVENT_LE_CONN_RATE_CHANGE = 0x37,
 };
 
 /** @brief Advertising Event Properties parameters. */
@@ -524,7 +516,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE features.
  *
- * See Core Specification, Vol 6, Part B, Section 4.6
+ * See Core_v6.0, Vol 6, Part B, Section 4.6
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -595,14 +587,6 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t duplicate_filter_initially_enabled : 1;
     uint8_t rfu : 5;
 } sdc_hci_le_periodic_adv_create_sync_options_params_t;
-
-/** @brief LE Read Minimum Supported Connection Interval groups. */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint16_t group_min;
-    uint16_t group_max;
-    uint16_t group_stride;
-} sdc_hci_le_read_min_supported_conn_interval_group_t;
 
 /** @brief LE Set CIG Parameters array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -714,13 +698,13 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.2
  *
- * This event indicates that one or more Bluetooth devices have responded to an active
- * scan or have broadcast advertisements that were received during a passive scan. The
- * Controller may queue these advertising reports and send information from multiple
- * devices in one HCI_LE_Advertising_Report event.
+ * The HCI_LE_Advertising_Report event indicates that one or more Bluetooth devices
+ * have responded to an active scan or have broadcast advertisements that were received
+ * during a passive scan. The Controller may queue these advertising reports and send
+ * information from multiple devices in one HCI_LE_Advertising_Report event.
  *
  * This event shall only be generated if scanning was enabled using the
  * HCI_LE_Set_Scan_Enable command. It only reports advertising events that used
@@ -736,17 +720,18 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Directed Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.11
  *
- * This event indicates that directed advertisements have been received where the
- * advertiser is using a resolvable private address for the TargetA field of the advertising
- * PDU which the Controller is unable to resolve and the Scanning_Filter_Policy is equal
- * to 0x02 or 0x03, see Section 7.8.10. Direct_Address_Type and Direct_Address specify
- * the address the directed advertisements are being directed to. Address_Type and
- * Address specify the address of the advertiser sending the directed advertisements.
- * The Controller may queue these advertising reports and send information from multiple
- * advertisers in one HCI_LE_Directed_Advertising_Report event.
+ * The HCI_LE_Directed_Advertising_Report event indicates that directed advertisements
+ * have been received where the advertiser is using a resolvable private address
+ * for the TargetA field of the advertising PDU which the Controller is unable
+ * to resolve and the Scanning_Filter_Policy is equal to 0x02 or 0x03, see
+ * Section 7.8.10. Direct_Address_Type and Direct_Address specify the address the
+ * directed advertisements are being directed to. Address_Type and Address specify the
+ * address of the advertiser sending the directed advertisements. The Controller may
+ * queue these advertising reports and send information from multiple advertisers in one
+ * HCI_LE_Directed_Advertising_Report event.
  *
  * This event shall only be generated if scanning was enabled using the
  * HCI_LE_Set_Scan_Enable command. It only reports advertising events that used
@@ -760,14 +745,15 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Extended Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.13
  *
- * This event indicates that one or more Bluetooth devices have responded to an active
- * scan or have broadcast advertisements that were received during a passive scan.
- * The Controller may coalesce multiple advertising reports from the same or different
- * advertisers into a single HCI_LE_Extended_Advertising_Report event, provided all the
- * parameters from all the advertising reports fit in a single HCI event.
+ * The HCI_LE_Extended_Advertising_Report event indicates that one or more Bluetooth
+ * devices have responded to an active scan or have broadcast advertisements
+ * that were received during a passive scan. The Controller may coalesce
+ * multiple advertising reports from the same or different advertisers into a single
+ * HCI_LE_Extended_Advertising_Report event, provided all the parameters from all the
+ * advertising reports fit in a single HCI event.
  *
  * This event shall only be generated if scanning was enabled using the HCI_LE_Set_-
  * Extended_Scan_Enable command. It reports advertising events using either legacy or
@@ -780,10 +766,10 @@ typedef struct __PACKED __ALIGN(1)
  * Advertising_SID, Primary_PHY, and Secondary_PHY fields shall be the same in all the
  * reports. No further reports shall be sent for a given advertisement or scan response
  * after one with a Data_Status other than "incomplete, more data to come".
- *
  * When a scan response is received, bits 0 to 2 and 4 of the event type shall indicate the
  * properties of the original advertising event and the Advertising_SID field should be set
  * to the value in the original scannable advertisement.
+ *
  * An Event_Type with a data status field of "incomplete, data truncated" shall indicate that
  * the Controller attempted to receive an AUX_CHAIN_IND PDU but was not successful or
  * received it but was unable to store the data.
@@ -798,6 +784,7 @@ typedef struct __PACKED __ALIGN(1)
  *  ADV_NONCONN_IND                                                 0b0010000
  *  SCAN_RSP to an ADV_IND                                          0b0011011
  *  SCAN_RSP to an ADV_SCAN_IND                                     0b0011010
+ *
  * Table 7.1: Event_Type values for legacy PDUs
  *
  * If the Event_Type indicates a legacy PDU (bit 4 = 1), the Primary_PHY parameter
@@ -854,14 +841,15 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CIS Established.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.25
  *
- * This event indicates that a CIS has been established, was considered lost before being
- * established, or—on the Central—was rejected by the Peripheral. It is generated by the
- * Controller in the Central and Peripheral. The Connection_Handle parameter shall be set
- * to the value provided in the HCI_LE_Create_CIS command on the Central and in the
- * HCI_LE_CIS_Request event on the Peripheral.
+ * The HCI_LE_CIS_Established event indicates that a CIS has been established,
+ * was considered lost before being established, or—on the Central—was rejected
+ * by the Peripheral. It is generated by the Controller in the Central and Peripheral.
+ * The Connection_Handle parameter shall be set to the value provided in the
+ * HCI_LE_Create_CIS command on the Central and in the HCI_LE_CIS_Request event
+ * on the Peripheral.
  *
  * The CIG_Sync_Delay parameter is the maximum time, in microseconds, for
  * transmission of PDUs of all CISes in a CIG event (see [Vol 6] Part B, Section 4.5.14.1).
@@ -907,17 +895,18 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Subrate Change.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.35
  *
- * This event is used to indicate that a Connection Subrate Update procedure has
- * completed and some parameters of the specified connection have changed.
+ * The HCI_LE_Subrate_Change event is used to indicate that a Connection Subrate
+ * Update procedure has completed and some parameters of the specified connection
+ * have changed.
  *
  * This event shall be issued if the HCI_LE_Subrate_Request command was issued by
  * the Host or the parameters are updated successfully following a request from the peer
  * device. If no parameters are updated following a request from the peer device or the
- * parameters were changed using the Connection Update procedure or the Connection
- * Rate Update procedure, then this event shall not be issued.
+ * parameters were changed using the Connection Update procedure, then this event shall
+ * not be issued.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -929,16 +918,17 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t supervision_timeout;
 } sdc_hci_subevent_le_subrate_change_t;
 
-/** @brief LE CIS Established [v2].
+/** @brief LE CIS Established v2.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.25
  *
- * This event indicates that a CIS has been established, was considered lost before being
- * established, or—on the Central—was rejected by the Peripheral. It is generated by the
- * Controller in the Central and Peripheral. The Connection_Handle parameter shall be set
- * to the value provided in the HCI_LE_Create_CIS command on the Central and in the
- * HCI_LE_CIS_Request event on the Peripheral.
+ * The HCI_LE_CIS_Established event indicates that a CIS has been established,
+ * was considered lost before being established, or—on the Central—was rejected
+ * by the Peripheral. It is generated by the Controller in the Central and Peripheral.
+ * The Connection_Handle parameter shall be set to the value provided in the
+ * HCI_LE_Create_CIS command on the Central and in the HCI_LE_CIS_Request event
+ * on the Peripheral.
  *
  * The CIG_Sync_Delay parameter is the maximum time, in microseconds, for
  * transmission of PDUs of all CISes in a CIG event (see [Vol 6] Part B, Section 4.5.14.1).
@@ -990,12 +980,12 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Read All Remote Features Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.38
  *
- * This event is used to indicate the completion of the process of the Controller
- * obtaining the features supported by the remote Bluetooth device specified by the
- * Connection_Handle event parameter.
+ * The HCI_LE_Read_All_Remote_Features_Complete event is used to indicate the
+ * completion of the process of the Controller obtaining the features supported by the
+ * remote Bluetooth device specified by the Connection_Handle event parameter.
  *
  * The Max_Remote_Page parameter specifies the highest-numbered page of the remote
  * device’s supported LE features that contains at least one bit set to 1; all higher-number
@@ -1026,21 +1016,22 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Read Remote Supported Capabilities Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.39
  *
- * This event shall be generated when a locally initiated CS Capabilities Exchange
- * procedure has completed or when the local Controller has received an
- * LL_CS_CAPABILITIES_REQ from the remote Controller.
+ * The HCI_LE_CS_Read_Remote_Supported_Capabilities_Complete event shall be
+ * generated when a locally initiated CS Capabilities Exchange procedure has completed
+ * or when the local Controller has received an LL_CS_CAPABILITIES_REQ from the
+ * remote Controller.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
  * are supported by the remote Controller.
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the remote Controller.
- *
- * The Num_Antennae_Supported parameter indicates the number of antenna elements
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
+ *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the remote Controller for CS tone exchanges.
  *
@@ -1076,9 +1067,8 @@ typedef struct __PACKED __ALIGN(1)
  * supported optional time durations used in CS steps as described in [Vol 6] Part H,
  * Section 4.3.
  *
- * The TX_SNR_Capability parameter indicated the supported SNR levels used for the
- * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
- * Section 3.1.3.
+ * The TX_SNR_Capability parameter indicated the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1108,11 +1098,12 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Read Remote FAE Table Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.40
  *
- * This event shall be generated when a locally initiated CS Mode-0 Frequency Actuation
- * Table Update procedure has completed.
+ * The HCI_LE_CS_Read_Remote_FAE_Table_Complete event shall be generated when
+ * a locally initiated CS Mode-0 Frequency Actuation Error Table Update procedure has
+ * completed.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1123,12 +1114,12 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Security Enable Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.41
  *
- * This event shall be generated when a locally initiated CS Security Start procedure has
- * completed or when the local Controller has responded to a CS security request from the
- * remote Controller.
+ * The HCI_LE_CS_Security_Enable_Complete event shall be generated when a locally
+ * initiated CS Security Start procedure has completed or when the local Controller has
+ * responded to a CS security request from the remote Controller.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1138,16 +1129,16 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Config Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.42
  *
- * This event shall be generated when a locally initiated Channel Sounding Configuration
- * procedure has completed or when the local Controller has responded to a CS
- * configuration request from the remote Controller for the CS configuration identified by
- * Config_ID or when a CS configuration is created only with local context. The Action
- * parameter indicates if a CS configuration was requested to be created or removed. The
- * Status parameter indicates whether the request indicated by the Action parameter was
- * successful.
+ * The HCI_LE_CS_Config_Complete event shall be generated when a locally initiated
+ * Channel Sounding Configuration procedure has completed or when the local Controller
+ * has responded to a CS configuration request from the remote Controller for the CS
+ * configuration identified by Config_ID or when a CS configuration is created only with
+ * local context. The Action parameter indicates if a CS configuration was requested to be
+ * created or removed. The Status parameter indicates whether the request indicated by
+ * the Action parameter was successful.
  *
  * When the Action parameter is set to 0x00, all the remaining event parameters are
  * ignored.
@@ -1209,12 +1200,13 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Procedure Enable Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.43
  *
- * This event shall be generated when the local or remote Controller has scheduled a
- * new CS procedure or disabled an ongoing CS procedure as a result of an HCI_LE_-
- * CS_Procedure_Enable command. When a new CS procedure is enabled, the HCI_LE_-
+ * The HCI_LE_CS_Procedure_Enable_Complete event shall be generated when the
+ * local or remote Controller has scheduled a new CS procedure measurement or disabled
+ * an ongoing CS procedure measurement as a result of an HCI_LE_CS_Procedure_-
+ * Enable command. When a new CS procedure measurement is enabled, the HCI_LE_-
  * CS_Procedure_Enable_Complete event shall be sent to the Host after the LL_CS_IND
  * is transmitted or received and before any CS subevent results are available.
  *
@@ -1264,15 +1256,15 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Subevent Result.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.44
  *
- * This event shall be generated when the local Controller has results to report for a CS
- * subevent during the CS procedure. Depending on the number of CS steps in the CS
- * subevent, the Controller may choose to report complete or partial results. When the
- * number of CS steps exceeds the maximum HCI event size, the Controller may report
- * further results for the CS subevent using the HCI_LE_CS_Subevent_Result_Continue
- * event.
+ * The HCI_LE_CS_Subevent_Result event shall be generated when the local Controller
+ * has results to report for a CS subevent during the CS procedure. Depending on
+ * the number of CS steps in the CS subevent, the Controller may choose to report
+ * complete or partial results. When the number of CS steps exceeds the maximum HCI
+ * event size, the Controller may report further results for the CS subevent using the
+ * HCI_LE_CS_Subevent_Result_Continue event.
  *
  * When Connection_Handle is set to 0x0FFF, the Config_ID and Start_ACL_Conn_-
  * Event_Counter parameters shall be ignored.
@@ -1302,7 +1294,7 @@ typedef struct __PACKED __ALIGN(1)
  * current or subsequent CS procedure. Otherwise, the Controller sends no further events
  * for the current CS procedure. When bits 0 to 3 of Procedure_Done_Status are set to
  * 0xF or when results of all CS procedures are sent to the Host, the Controller sends no
- * further events until a new CS procedure is enabled by the Host.
+ * further events until a new CS procedure measurement is enabled by the Host.
  *
  * The allowed combinations of Procedure_Done_Status and Subevent_Done_Status are
  * shown in Table 7.2.
@@ -1338,7 +1330,7 @@ typedef struct __PACKED __ALIGN(1)
  * CS procedures by setting the Procedure_Done_Status parameter to 0xF in the
  * HCI_LE_CS_Subevent_Result or the HCI_LE_CS_Subevent_Result_Continue event
  * and shall not report any additional HCI_LE_CS_Subevent_Result_Continue events for
- * that CS procedure.
+ * that CS measurement.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1360,12 +1352,12 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Subevent Result Continue.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.45
  *
- * This event shall be generated after the local Controller has completed a new CS
- * subevent measurement and has already sent an HCI_LE_CS_Subevent_Result event
- * for the specified CS subevent.
+ * The HCI_LE_CS_Subevent_Result_Continue event shall be generated after the local
+ * Controller has completed a new CS subevent measurement and has already sent an
+ * HCI_LE_CS_Subevent_Result event for the specified CS subevent.
  *
  * When Connection_Handle is set to 0x0FFF, the Config_ID parameter shall be ignored.
  */
@@ -1385,13 +1377,14 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Test End Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.46
  *
- * This event shall be generated when the local Controller has stopped an ongoing CS test
- * as a result of the HCI_LE_CS_Test_End command. When the HCI_LE_CS_Test_End
- * command is issued by the Host, the HCI_LE_CS_Test_End_Complete event shall be
- * sent to the Host after any pending CS test result events are sent to the Host.
+ * The HCI_LE_CS_Test_End_Complete event shall be generated when the local
+ * Controller has stopped an ongoing CS test as a result of the HCI_LE_CS_Test_End
+ * command. When the HCI_LE_CS_Test_End command is issued by the Host, the
+ * HCI_LE_CS_Test_End_Complete event shall be sent to the Host after any pending CS
+ * test result events are sent to the Host.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1400,12 +1393,13 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Frame Space Update Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.7.65.48
  *
- * This event is used to indicate that the Frame Space Update procedure has completed
- * (see [Vol 6] Part B, Section 5.1.30) and, if initiated autonomously by the local Controller
- * or the peer device, that at least one frame space value has changed.
+ * The HCI_LE_Frame_Space_Update_Complete event is used to indicate that the Frame
+ * Space Update procedure has completed (see [Vol 6] Part B, Section 5.1.30) and, if
+ * initiated autonomously by the local Controller or the peer device, that at least one frame
+ * space value has changed.
  *
  * The Initiator parameter indicates who initiated the Frame Space Update procedure.
  *
@@ -1424,35 +1418,6 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t phys;
     uint16_t spacing_types;
 } sdc_hci_subevent_le_frame_space_update_complete_t;
-
-/** @brief LE Connection Rate Change.
- *
- * The description below is extracted from Core_v6.2,
- * Vol 4, Part E, Section 7.7.65.50
- *
- * The HCI_LE_Connection_Rate_Change event is used to indicate that the Connection
- * Rate Update procedure has completed.
- *
- * The event shall be issued if the HCI_LE_Connection_Rate_Request command was
- * issued by the Host or if the connection parameters are updated following a request
- * from the peer device. If no parameters are updated following a request from the peer
- * device or the parameters were changed using the Connection Update procedure or the
- * Connection Subrate Update procedure, then this event shall not be issued.
- *
- * Note: The parameter values returned in this event can be different from the parameter
- * values provided by the Host through the HCI_LE_Connection_Rate_Request command
- * (Section 7.8.154).
- */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t status;
-    uint16_t conn_handle;
-    uint16_t conn_interval;
-    uint16_t subrate_factor;
-    uint16_t peripheral_latency;
-    uint16_t continuation_number;
-    uint16_t supervision_timeout;
-} sdc_hci_subevent_le_conn_rate_change_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -1612,7 +1577,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t channel_map[5];
 } sdc_hci_cmd_le_read_channel_map_return_t;
 
-/** @brief LE Read Remote Features Page 0 command parameter(s). */
+/** @brief LE Read Remote Features command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
@@ -1674,7 +1639,7 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief LE Read Supported States return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
-    /** @brief See the table in Core Specification, Vol 4, Part E, Section 7.8.27. */
+    /** @brief See the table in Core v6.0, Vol 4, Part E, Section 7.8.27. */
     uint8_t le_states[8];
 } sdc_hci_cmd_le_read_supported_states_return_t;
 
@@ -1734,7 +1699,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t address_resolution_enable;
 } sdc_hci_cmd_le_set_address_resolution_enable_t;
 
-/** @brief LE Set Resolvable Private Address Timeout [v1] command parameter(s). */
+/** @brief LE Set Resolvable Private Address Timeout command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t rpa_timeout;
@@ -2382,7 +2347,7 @@ typedef struct __PACKED __ALIGN(1)
     uint32_t failed_sdu_count;
 } sdc_hci_cmd_le_iso_test_end_return_t;
 
-/** @brief LE Set Host Feature [v1] command parameter(s). */
+/** @brief LE Set Host Feature command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bit_number;
@@ -2853,43 +2818,6 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t spacing_types;
 } sdc_hci_cmd_le_frame_space_update_t;
 
-/** @brief LE Connection Rate Request command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint16_t conn_handle;
-    uint16_t conn_interval_min;
-    uint16_t conn_interval_max;
-    uint16_t subrate_min;
-    uint16_t subrate_max;
-    uint16_t max_latency;
-    uint16_t continuation_number;
-    uint16_t supervision_timeout;
-    uint16_t min_ce_length;
-    uint16_t max_ce_length;
-} sdc_hci_cmd_le_conn_rate_request_t;
-
-/** @brief LE Set Default Rate Parameters command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint16_t conn_interval_min;
-    uint16_t conn_interval_max;
-    uint16_t subrate_min;
-    uint16_t subrate_max;
-    uint16_t max_latency;
-    uint16_t continuation_number;
-    uint16_t supervision_timeout;
-    uint16_t min_ce_length;
-    uint16_t max_ce_length;
-} sdc_hci_cmd_le_set_default_rate_params_t;
-
-/** @brief LE Read Minimum Supported Connection Interval return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t min_supported_conn_interval;
-    uint8_t num_groups;
-    sdc_hci_le_read_min_supported_conn_interval_group_t groups[];
-} sdc_hci_cmd_le_read_min_supported_conn_interval_return_t;
-
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -2898,13 +2826,13 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief LE Set Event Mask.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.1
  *
- * This command is used to control which LE events are generated by the HCI for the
- * Host. If the bit in the LE_Event_Mask is set to a one, then the event associated with that
- * bit will be enabled. The event mask allows the Host to control which events will interrupt
- * it.
+ * The HCI_LE_Set_Event_Mask command is used to control which LE events are
+ * generated by the HCI for the Host. If the bit in the LE_Event_Mask is set to a one,
+ * then the event associated with that bit will be enabled. The event mask allows the Host
+ * to control which events will interrupt it.
  *
  * The Controller shall ignore those bits which are reserved for future use or represent
  * events which it does not support. If the Host sets any of these bits to 1, the Controller
@@ -2915,7 +2843,6 @@ typedef struct __PACKED __ALIGN(1)
  * LE_Event_Mask is set.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Event_Mask command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -2929,7 +2856,7 @@ uint8_t sdc_hci_cmd_le_set_event_mask(const sdc_hci_cmd_le_set_event_mask_t * p_
 
 /** @brief LE Read Buffer Size [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.2
  *
  * This command is used to read the maximum size of the data portion of ACL data
@@ -2959,6 +2886,7 @@ uint8_t sdc_hci_cmd_le_set_event_mask(const sdc_hci_cmd_le_set_event_mask_t * p_
  * Layer. The Total_Num_LE_ACL_Data_Packets parameter contains the total number of
  * HCI ACL Data packets that can be stored in the data buffers of the Controller. The Host
  * determines how to divide the buffers between different connection handles.
+ *
  * The ISO_Data_Packet_Length parameter shall be used to determine the maximum
  * size of the SDU fragments that are contained in isochronous data packets, and which
  * are transferred from the Host to the Controller. The Total_Num_ISO_Data_Packets
@@ -2971,7 +2899,6 @@ uint8_t sdc_hci_cmd_le_set_event_mask(const sdc_hci_cmd_le_set_event_mask_t * p_
  * ISO Data packet header respectively.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Buffer_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -2985,18 +2912,17 @@ uint8_t sdc_hci_cmd_le_read_buffer_size(sdc_hci_cmd_le_read_buffer_size_return_t
 
 /** @brief LE Read Local Supported Features Page 0.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.3
  *
  * This command requests page 0 of the list of the supported LE features for the
  * Controller.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Local_Supported_Features_Page_0 command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
- * This command was formerly called "LE Read Local Supported Features".
+ * This command was formerly called “LE Read Local Supported Features”.
  *
  * @param[out] p_return Extra return parameters.
  *
@@ -3008,37 +2934,28 @@ uint8_t sdc_hci_cmd_le_read_local_supported_features(sdc_hci_cmd_le_read_local_s
 
 /** @brief LE Set Random Address.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.4
  *
- * This command is used by the Host to set the LE Random Device Address in the
- * Controller (see [Vol 6] Part B, Section 1.3).
+ * The HCI_LE_Set_Random_Address command is used by the Host to set the LE
+ * Random Device Address in the Controller (see [Vol 6] Part B, Section 1.3).
  *
  * If this command is used to change the address, the new random address shall take
  * effect for advertising no later than the next successful HCI_LE_Set_Advertising_Enable
  * command, for scanning no later than the next successful HCI_LE_Set_Scan_Enable
- * command or HCI_LE_Set_Extended_Scan_Enable command, and for initiating or
- * creating a connection from a PAwR train no later than the next successful
- * HCI_LE_Create_Connection command or HCI_LE_Extended_Create_Connection
- * command.
+ * command or HCI_LE_Set_Extended_Scan_Enable command, and for initiating
+ * no later than the next successful HCI_LE_Create_Connection command or
+ * HCI_LE_Extended_Create_Connection command.
  *
  * Note: If the extended advertising commands are in use, this command only affects the
  * address used for scanning and initiating. The addresses used for advertising are set by
  * the HCI_LE_Set_Advertising_Set_Random_Address command (see Section 7.8.52).
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                                 Error code
- * MC     Any of advertising (created using legacy advertising commands),           Command
- *        scanning, or creating a connection are enabled in the Controller.         Disallowed
- *                                                                                  (0x0C)
- * </pre>
+ * If the Host issues this command when any of advertising (created using legacy
+ * advertising commands), scanning, or initiating are enabled, the Controller shall return
+ * the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Random_Address command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3052,10 +2969,11 @@ uint8_t sdc_hci_cmd_le_set_random_address(const sdc_hci_cmd_le_set_random_addres
 
 /** @brief LE Set Advertising Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.5
  *
- * This command is used by the Host to set the advertising parameters.
+ * The HCI_LE_Set_Advertising_Parameters command is used by the Host to set the
+ * advertising parameters.
  *
  * The Advertising_Interval_Min shall be less than or equal to the
  * Advertising_Interval_Max. The Advertising_Interval_Min and Advertising_Interval_Max
@@ -3094,22 +3012,15 @@ uint8_t sdc_hci_cmd_le_set_random_address(const sdc_hci_cmd_le_set_random_addres
  * The Advertising_Filter_Policy parameter shall be ignored when directed advertising is
  * enabled.
  *
- * Errors:
+ * The Host shall not issue this command when advertising is enabled in the Controller; if it
+ * is the Command Disallowed error code shall be used.
  *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                             Error code
- * MC     Advertising is enabled in the Controller.                             Command Disallowed
- *                                                                              (0x0C)
- * MC     The advertising interval range (Advertising_Interval_Min,             Unsupported
- *        Advertising_Interval_Max) does not overlap with the advertising       Feature or
- *        interval range supported by the Controller.                           Parameter Value
- *                                                                              (0x11)
- * </pre>
+ * If the advertising interval range provided by the Host (Advertising_Interval_Min,
+ * Advertising_Interval_Max) does not overlap with the advertising interval range
+ * supported by the Controller, then the Controller shall return the Unsupported Feature
+ * or Parameter Value (0x11) error code.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Advertising_Parameters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3123,14 +3034,13 @@ uint8_t sdc_hci_cmd_le_set_adv_params(const sdc_hci_cmd_le_set_adv_params_t * p_
 
 /** @brief LE Read Advertising Physical Channel Tx Power.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.6
  *
- * This command is used by the Host to read the transmit power level used for LE
- * advertising physical channel packets.
+ * The HCI_LE_Read_Advertising_Physical_Channel_Tx_Power command is used by the
+ * Host to read the transmit power level used for LE advertising physical channel packets.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Advertising_Physical_Channel_Tx_Power command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -3144,10 +3054,11 @@ uint8_t sdc_hci_cmd_le_read_adv_physical_channel_tx_power(sdc_hci_cmd_le_read_ad
 
 /** @brief LE Set Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.7
  *
- * This command is used to set the data used in advertising packets that have a data field.
+ * The HCI_LE_Set_Advertising_Data command is used to set the data used in
+ * advertising packets that have a data field.
  *
  * Only the significant part of the Advertising_Data should be transmitted in the advertising
  * packets, as defined in [Vol 3] Part C, Section 11.
@@ -3161,7 +3072,6 @@ uint8_t sdc_hci_cmd_le_read_adv_physical_channel_tx_power(sdc_hci_cmd_le_read_ad
  * shall be 31 all-zero octets.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Advertising_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3175,7 +3085,7 @@ uint8_t sdc_hci_cmd_le_set_adv_data(const sdc_hci_cmd_le_set_adv_data_t * p_para
 
 /** @brief LE Set Scan Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.8
  *
  * This command is used to provide data used in Scanning Packets that have a data field.
@@ -3192,7 +3102,6 @@ uint8_t sdc_hci_cmd_le_set_adv_data(const sdc_hci_cmd_le_set_adv_data_t * p_para
  * Scan_Response_Data shall be 31 all-zero octets.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Scan_Response_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3206,12 +3115,13 @@ uint8_t sdc_hci_cmd_le_set_scan_response_data(const sdc_hci_cmd_le_set_scan_resp
 
 /** @brief LE Set Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.9
  *
- * This command is used to request the Controller to start or stop advertising. The
- * Controller manages the timing of advertisements as per the advertising parameters
- * given in the HCI_LE_Set_Advertising_Parameters command.
+ * The HCI_LE_Set_Advertising_Enable command is used to request the Controller
+ * to start or stop advertising. The Controller manages the timing of advertisements
+ * as per the advertising parameters given in the HCI_LE_Set_Advertising_Parameters
+ * command.
  *
  * The Controller shall continue advertising until the Host issues an
  * HCI_LE_Set_Advertising_Enable command with Advertising_Enable set to 0x00
@@ -3219,39 +3129,33 @@ uint8_t sdc_hci_cmd_le_set_scan_response_data(const sdc_hci_cmd_le_set_scan_resp
  * Advertising is timed out due to high duty cycle Directed Advertising. In these cases,
  * advertising is then disabled.
  *
+ * If Advertising_Enable is set to 0x01, the advertising parameters' Own_Address_Type
+ * parameter is set to 0x00, and the device does not have a public address, the Controller
+ * should return an error code which should be Invalid HCI Command Parameters (0x12).
+ *
+ * If Advertising_Enable is set to 0x01, the advertising parameters' Own_Address_Type
+ * parameter is set to 0x01, and the random address for the device has not been initialized
+ * using the HCI_LE_Set_Random_Address command, the Controller shall return the error
+ * code Invalid HCI Command Parameters (0x12).
+ *
+ * If Advertising_Enable is set to 0x01, the advertising parameters' Own_Address_Type
+ * parameter is set to 0x02, the Controller's resolving list did not contain a matching entry,
+ * and the device does not have a public address, the Controller should return an error
+ * code which should be Invalid HCI Command Parameters (0x12).
+ *
+ * If Advertising_Enable is set to 0x01, the advertising parameters' Own_Address_Type
+ * parameter is set to 0x03, the Controller's resolving list did not contain a matching
+ * entry, and the random address for the device has not been initialized using the
+ * HCI_LE_Set_Random_Address command, the Controller shall return the error code
+ * Invalid HCI Command Parameters.(0x12).
+ *
  * Enabling advertising when it is already enabled can cause the random address to
  * change. Disabling advertising when it is already disabled has no effect.
  *
- * Errors:
  *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                                     Error code
- * R      Advertising_Enable is set to 0x01, the advertising parameters'                Invalid
- *        Own_Address_Type parameter is set to 0x00, and the device does not have a     HCI
- *        public address.                                                               Command
- *                                                                                      Parameters
- *                                                                                      (0x12)
- * MC     Advertising_Enable is set to 0x01, the advertising parameters'                Invalid
- *        Own_Address_Type parameter is set to 0x01, and the random address for the     HCI
- *        device has not been initialized using the HCI_LE_Set_Random_Address           Command
- *        command.                                                                      Parameters
- *                                                                                      (0x12)
- * R      Advertising_Enable is set to 0x01, the advertising parameters'                Invalid
- *        Own_Address_Type parameter is set to 0x02, the Controller's resolving list    HCI
- *        does not contain a matching entry, and the device does not have a public      Command
- *        address.                                                                      Parameters
- *                                                                                      (0x12)
- * MC     Advertising_Enable is set to 0x01, the advertising parameters'                Invalid
- *        Own_Address_Type parameter is set to 0x03, the Controller's resolving list    HCI
- *        does not contain a matching entry, and the random address for the device      Command
- *        has not been initialized using the HCI_LE_Set_Random_Address command.         Parameters
- *                                                                                      (0x12)
- * </pre>
+ * 1This command was formerly called “LE Set Advertise Enable”.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Advertising_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3283,10 +3187,10 @@ uint8_t sdc_hci_cmd_le_set_adv_enable(const sdc_hci_cmd_le_set_adv_enable_t * p_
 
 /** @brief LE Set Scan Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.10
  *
- * This command is used to set the scan parameters.
+ * The HCI_LE_Set_Scan_Parameters command is used to set the scan parameters.
  *
  * The LE_Scan_Type parameter controls the type of scan to perform.
  *
@@ -3300,17 +3204,10 @@ uint8_t sdc_hci_cmd_le_set_adv_enable(const sdc_hci_cmd_le_set_adv_enable_t * p_
  * Own_Address_Type parameter indicates the type of address being used in the scan
  * request packets.
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                Error code
- * MC     Scanning is enabled in the Controller.   Command Disallowed (0x0C)
- * </pre>
+ * The Host shall not issue this command when scanning is enabled in the Controller; if it
+ * is the Command Disallowed error code shall be used.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Scan_Parameters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3324,12 +3221,12 @@ uint8_t sdc_hci_cmd_le_set_scan_params(const sdc_hci_cmd_le_set_scan_params_t * 
 
 /** @brief LE Set Scan Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.11
  *
- * This command is used to start and stop scanning for legacy PDUs (but not extended
- * PDUs, even if the device supports extended advertising). Scanning is used to discover
- * advertising devices nearby.
+ * The HCI_LE_Set_Scan_Enable command is used to start and stop scanning for legacy
+ * PDUs (but not extended PDUs, even if the device supports extended advertising).
+ * Scanning is used to discover advertising devices nearby.
  *
  * The Filter_Duplicates parameter controls whether the Link Layer should filter out
  * duplicate advertising reports (Filtering_Enabled) to the Host, or if the Link Layer should
@@ -3337,29 +3234,22 @@ uint8_t sdc_hci_cmd_le_set_scan_params(const sdc_hci_cmd_le_set_scan_params_t * 
  * Part B, Section 4.4.3.5. If LE_Scan_Enable is set to 0x00 then Filter_Duplicates shall be
  * ignored.
  *
+ * If LE_Scan_Enable is set to 0x01, the scanning parameters' Own_Address_Type
+ * parameter is set to 0x00 or 0x02, and the device does not have a public address,
+ * the Controller should return an error code which should be Invalid HCI Command
+ * Parameters (0x12).
+ *
+ * If LE_Scan_Enable is set to 0x01, the scanning parameters' Own_Address_Type
+ * parameter is set to 0x01 or 0x03, and the random address for the device has not
+ * been initialized using the HCI_LE_Set_Random_Address command, the Controller shall
+ * return the error code Invalid HCI Command Parameters (0x12).
+ *
  * If the LE_Scan_Enable parameter is set to 0x01 and scanning is already enabled, any
  * change to the Filter_Duplicates setting shall take effect.
  *
  * Disabling scanning when it is disabled has no effect.
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                                   Error code
- * R      LE_Scan_Enable is set to 0x01, the scanning parameters' Own_Address_Type    Invalid HCI
- *        parameter is set to 0x00 or 0x02, and the device does not have a public     Command
- *        address.                                                                    Parameters
- *                                                                                    (0x12)
- * MC     LE_Scan_Enable is set to 0x01, the scanning parameters' Own_Address_Type    Invalid HCI
- *        parameter is set to 0x01 or 0x03, and the random address for the device     Command
- *        has not been initialized using the HCI_LE_Set_Random_Address command.       Parameters
- *                                                                                    (0x12)
- * </pre>
- *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Scan_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3384,11 +3274,11 @@ uint8_t sdc_hci_cmd_le_set_scan_enable(const sdc_hci_cmd_le_set_scan_enable_t * 
 
 /** @brief LE Create Connection.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.12
  *
- * This command is used to create a single ACL connection, with the local device in the
- * Central role, to a connectable advertiser.
+ * The HCI_LE_Create_Connection command is used to create an ACL connection, with
+ * the local device in the Central role, to a connectable advertiser.
  *
  * If a connection is created with the local device in the Peripheral role while this command
  * is pending, then this command remains pending.
@@ -3399,10 +3289,8 @@ uint8_t sdc_hci_cmd_le_set_scan_enable(const sdc_hci_cmd_le_set_scan_enable_t * 
  * or equal to the value set for the LE_Scan_Interval parameter. If both are set to the same
  * value, scanning should run continuously.
  *
- * The Initiator_Filter_Policy is used to determine whether the Filter Accept List is used. If
- * the Filter Accept List is used, then the device to connect to is the first one that sends
- * an advertisement received successfully by the local device and that is on the list. If
- * the Filter Accept List is not used, then the Peer_Address_Type and the Peer_Address
+ * The Initiator_Filter_Policy is used to determine whether the Filter Accept List is used.
+ * If the Filter Accept List is not used, the Peer_Address_Type and the Peer_Address
  * parameters specify the address type and address of the advertising device to connect
  * to.
  *
@@ -3413,7 +3301,6 @@ uint8_t sdc_hci_cmd_le_set_scan_enable(const sdc_hci_cmd_le_set_scan_enable_t * 
  * HCI_LE_Set_Privacy_Mode command receives the HCI_LE_Create_Connection
  * command with Peer_Address_Type set to either 0x02 or 0x03, it may use either device
  * privacy mode or network privacy mode for that peer device.
- *
  * Peer_Address parameter indicates the Peer’s Public Device Address, Random (static)
  * Device Address, Non-Resolvable Private Address or Resolvable Private Address
  * depending on the Peer_Address_Type parameter.
@@ -3434,54 +3321,47 @@ uint8_t sdc_hci_cmd_le_set_scan_enable(const sdc_hci_cmd_le_set_scan_enable_t * 
  * given in milliseconds. (See [Vol 6] Part B, Section 4.5.2).
  *
  * The Min_CE_Length and Max_CE_Length parameters provide the Controller with the
- * expected minimum and maximum length of the connection events. The Controller is not
- * required to use these values.
+ * expected minimum and maximum length of the connection events. The Min_CE_Length
+ * parameter shall be less than or equal to the Max_CE_Length parameter. The Controller
+ * is not required to use these values.
  *
- * Errors:
+ * If the Host issues this command when another HCI_LE_Create_Connection command
+ * is pending in the Controller, the Controller shall return the error code Command
+ * Disallowed (0x0C).
  *
- * See Section 4.5.2 for a list of error types and descriptions.
+ * If the local device is already connected to the same device address as the advertiser
+ * (including two different Resolvable Private Addresses that resolve to the same IRK),
+ * then the Controller shall return an error which should use the error code Connection
+ * Already Exists (0x0B).
  *
- * <pre>
- * Type   Condition                                                                    Error code
- * MC     Another HCI_LE_Create_Connection command is pending in the Controller.       Command
- *                                                                                     Disallowed
- *                                                                                     (0x0C)
- * M      The local device is already connected to the same device address as the      Connection
- *        advertiser (including two different Resolvable Private Addresses that        Already
- *        resolve to the same IRK).                                                    Exists
- *                                                                                     (0x0B)
- * R      Own_Address_Type is set to 0x00 and the device does not have a public        Invalid HCI
- *        address.                                                                     Command
- *                                                                                     Parameters
- *                                                                                     (0x12)
- * MC     Own_Address_Type is set to 0x01 and the random address for the device has    Invalid HCI
- *        not been initialized using the HCI_LE_Set_Random_Address command.            Command
- *                                                                                     Parameters
- *                                                                                     (0x12)
- * R      Own_Address_Type is set to 0x02, Initiator_Filter_Policy is set to 0x00,     Invalid HCI
- *        the Controller's resolving list does not contain a matching entry, and the   Command
- *        device does not have a public address.                                       Parameters
- *                                                                                     (0x12)
- * R      Own_Address_Type is set to 0x02, Initiator_Filter_Policy is set to 0x01,     Invalid HCI
- *        and the device does not have a public address.                               Command
- *                                                                                     Parameters
- *                                                                                     (0x12)
- * MC     Own_Address_Type is set to 0x03, Initiator_Filter_Policy is set to 0x00,     Invalid HCI
- *        the Controller's resolving list does not contain a matching entry, and the   Command
- *        random address for the device has not been initialized using the             Parameters
- *        HCI_LE_Set_Random_Address command.                                           (0x12)
- * MC     Own_Address_Type is set to 0x03, Initiator_Filter_Policy is set to 0x01,     Invalid HCI
- *        and the random address for the device has not been initialized using the     Command
- *        HCI_LE_Set_Random_Address command.                                           Parameters
- *                                                                                     (0x12)
- * R      Max_CE_Length is less than Min_CE_Length                                     Invalid HCI
- *                                                                                     Command
- *                                                                                     Parameters
- *                                                                                     (0x12)
- * </pre>
+ * If the Own_Address_Type parameter is set to 0x00 and the device does not have a
+ * public address, the Controller should return an error code which should be Invalid HCI
+ * Command Parameters (0x12).
+ *
+ * If the Own_Address_Type parameter is set to 0x01 and the random address for the
+ * device has not been initialized using the HCI_LE_Set_Random_Address command, the
+ * Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
+ * is set to 0x00, the Controller's resolving list did not contain a matching entry, and the
+ * device does not have a public address, the Controller should return an error code which
+ * should be Invalid HCI Command Parameters (0x12).
+ * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
+ * is set to 0x01, and the device does not have a public address, the Controller should
+ * return an error code which should be Invalid HCI Command Parameters (0x12).
+ *
+ * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy
+ * parameter is set to 0x00, the Controller's resolving list did not contain a matching
+ * entry, and the random address for the device has not been initialized using the
+ * HCI_LE_Set_Random_Address command, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy parameter
+ * is set to 0x01, and the random address for the device has not been initialized using
+ * the HCI_LE_Set_Random_Address command, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Create_Connection command, the Controller
  * sends the HCI_Command_Status event to the Host. An HCI_LE_Connection_Complete
  * or HCI_LE_Enhanced_Connection_Complete event shall be generated when a
@@ -3501,24 +3381,16 @@ uint8_t sdc_hci_cmd_le_create_conn(const sdc_hci_cmd_le_create_conn_t * p_params
 
 /** @brief LE Create Connection Cancel.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.13
  *
- * This command is used to cancel the HCI_LE_Create_Connection or
- * HCI_LE_Extended_Create_Connection commands.
+ * The HCI_LE_Create_Connection_Cancel command is used to cancel the
+ * HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection commands.
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                            Error code
- * MC     No HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection     Command Disallowed
- *        command is pending.                                                  (0x0C)
- * </pre>
+ * If no HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection command
+ * is pending, then the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Create_Connection_Cancel command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3537,18 +3409,17 @@ uint8_t sdc_hci_cmd_le_create_conn_cancel(void);
 
 /** @brief LE Read Filter Accept List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.14
  *
- * This command is used to read the number of Filter Accept List entries (including those
- * already stored there) that the Controller can store at the present time.
+ * The HCI_LE_Read_Filter_Accept_List_Size command is used to read the total number
+ * of Filter Accept List entries that can be stored in the Controller.
  *
  * Note: The number of entries that can be stored is not fixed and the Controller can
- * change it at any time (e.g., because the memory used to store the list can also be used
- * for other purposes).
+ * change it at any time (e.g. because the memory used to store the Filter Accept List can
+ * also be used for other purposes).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Filter_Accept_List_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3562,10 +3433,11 @@ uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_a
 
 /** @brief LE Clear Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.15
  *
- * This command is used to clear the Filter Accept List stored in the Controller.
+ * The HCI_LE_Clear_Filter_Accept_List command is used to clear the Filter Accept List
+ * stored in the Controller.
  *
  * This command shall not be used when:
  *
@@ -3575,7 +3447,6 @@ uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_a
  *   or HCI_LE_Extended_Create_Connection command is pending.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Clear_Filter_Accept_List command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3588,11 +3459,11 @@ uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
 
 /** @brief LE Add Device To Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.16
  *
- * This command is used to add a single device to the Filter Accept List stored in the
- * Controller.
+ * The HCI_LE_Add_Device_To_Filter_Accept_List command is used to add a single
+ * device to the Filter Accept List stored in the Controller.
  *
  * This command shall not be used when:
  *
@@ -3601,23 +3472,15 @@ uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
  * • the initiator filter policy uses the Filter Accept List and an HCI_LE_Create_Connection
  *   or HCI_LE_Extended_Create_Connection command is pending.
  *
+ * When a Controller cannot add a device to the Filter Accept List because there is no
+ * space available, it shall return the error code Memory Capacity Exceeded (0x07).
+ *
  * If the device is already in the Filter Accept List, the Controller should not add the device
  * to the Filter Accept List again and should return success.
  *
  * Address shall be ignored when Address_Type is set to 0xFF.
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                           Error code
- * MC     The Controller cannot add a device to the Filter Accept List        Memory Capacity
- *        because there is no space available.                                Exceeded (0x07)
- * </pre>
- *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Add_Device_To_Filter_Accept_List command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3631,11 +3494,11 @@ uint8_t sdc_hci_cmd_le_add_device_to_filter_accept_list(const sdc_hci_cmd_le_add
 
 /** @brief LE Remove Device From Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.17
  *
- * This command is used to remove a single device from the Filter Accept List stored in
- * the Controller.
+ * The HCI_LE_Remove_Device_From_Filter_Accept_List command is used to remove a
+ * single device from the Filter Accept List stored in the Controller.
  *
  * This command shall not be used when:
  *
@@ -3647,7 +3510,6 @@ uint8_t sdc_hci_cmd_le_add_device_to_filter_accept_list(const sdc_hci_cmd_le_add
  * Address shall be ignored when Address_Type is set to 0xFF.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_Device_From_Filter_Accept_List command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -3661,11 +3523,11 @@ uint8_t sdc_hci_cmd_le_remove_device_from_filter_accept_list(const sdc_hci_cmd_l
 
 /** @brief LE Connection Update.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.18
  *
- * This command is used to change the ACL connection parameters. This command may
- * be issued on both the Central and Peripheral.
+ * The HCI_LE_Connection_Update command is used to change the ACL connection
+ * parameters. This command may be issued on both the Central and Peripheral.
  *
  * The Connection_Interval_Min and Connection_Interval_Max parameters are
  * used to define the minimum and maximum allowed connection interval.
@@ -3679,9 +3541,10 @@ uint8_t sdc_hci_cmd_le_remove_device_from_filter_accept_list(const sdc_hci_cmd_l
  * × Subrate_Factor × Connection_Interval_Max × 2, where Connection_Interval_Max is
  * given in milliseconds and Subrate_Factor is the current subrate factor of the connection.
  *
- * The Min_CE_Length and Max_CE_Length are information parameters providing the
- * Controller with a hint about the expected minimum and maximum length of the
- * connection events.
+ * The Min_CE_Length and Max_CE_Length are information parameters providing
+ * the Controller with a hint about the expected minimum and maximum length of
+ * the connection events. The Min_CE_Length shall be less than or equal to the
+ * Max_CE_Length.
  *
  * The actual parameter values selected by the Link Layer may be different from the
  * parameter values provided by the Host through this command.
@@ -3691,28 +3554,19 @@ uint8_t sdc_hci_cmd_le_remove_device_from_filter_accept_list(const sdc_hci_cmd_l
  * case, Max_Latency must be interpreted in underlying connection events. Otherwise the
  * subrating factor and continuation number shall be unchanged and Max_Latency must
  * be interpreted in subrated events.
+ * If the Host issues this command when one or more CS procedures have been enabled
+ * using the HCI_LE_CS_Procedure_Enable command, then the Controller shall return the
+ * error code Command Disallowed (0x0C).
  *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- * <pre>
- * Type   Condition                                                            Error code
- * MC     One or more CS procedures are enabled.                               Command Disallowed
- *                                                                             (0x0C)
- * M      The Controller is the Peripheral and the local Controller does not   Unsupported Feature
- *        support the Connection Parameters Request procedure (see [Vol 6]     or Parameter Value
- *        Part B, Section 5.1.7).                                              (0x11)
- * M      The Controller is the Peripheral and the local Controller supports   Unsupported Remote
- *        the Connection Parameters Request procedure but the peer             Feature (0x1A)
- *        Controller does not.
- * R      Max_CE_Length is less than Min_CE_Length                             Invalid HCI Command
- *                                                                             Parameters (0x12)
- * MC     A Connection Rate Request procedure or a Connection Rate Update      Command Disallowed
- *        procedure is in progress.                                            (0x0C)
- * </pre>
+ * If the Host issues this command on a Connection_Handle where the Controller is the
+ * Peripheral and either the local or peer Controller does not support the Connection
+ * Parameters Request procedure (see [Vol 6] Part B, Section 5.1.7), then the Controller
+ * shall return an error which should use the error code Unsupported Feature or
+ * Parameter Value (0x11) if the local Controller does not support that procedure and
+ * Unsupported Remote Feature (0x1A) if the local Controller supports that procedure but
+ * the peer Controller does not.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Connection_Update command,
  * the Controller sends the HCI_Command_Status event to the Host. The
  * HCI_LE_Connection_Update_Complete event shall be generated after the connection
@@ -3728,21 +3582,21 @@ uint8_t sdc_hci_cmd_le_conn_update(const sdc_hci_cmd_le_conn_update_t * p_params
 
 /** @brief LE Set Host Channel Classification.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.19
  *
- * This command allows the Host to specify a channel classification for the data,
- * secondary advertising, periodic, and isochronous physical channels based on its
- * “local information”. This classification persists until overwritten with a subsequent
- * HCI_LE_Set_Host_Channel_Classification command or until the Controller is reset
- * using the HCI_Reset command (see [Vol 6] Part B, Section 4.5.8.1).
+ * The HCI_LE_Set_Host_Channel_Classification command allows the Host to specify a
+ * channel classification for the data, secondary advertising, periodic, and isochronous
+ * physical channels based on its “local information”. This classification persists until
+ * overwritten with a subsequent HCI_LE_Set_Host_Channel_Classification command
+ * or until the Controller is reset using the HCI_Reset command (see [Vol 6] Part B,
+ * Section 4.5.8.1).
  *
  * If this command is used, the Host should send it within 10 seconds of knowing that the
  * channel classification has changed. The interval between two successive commands
  * sent shall be at least one second.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Host_Channel_Classification command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3756,19 +3610,19 @@ uint8_t sdc_hci_cmd_le_set_host_channel_classification(const sdc_hci_cmd_le_set_
 
 /** @brief LE Read Channel Map.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.20
  *
- * This command returns the current Channel_Map for the specified Connection_Handle.
- * The returned value indicates the state of the Channel_Map specified by
- * the last transmitted or received Channel_Map (in a CONNECT_IND or
- * LL_CHANNEL_MAP_IND message) for the specified Connection_Handle, regardless
- * of whether the Central has received an acknowledgment. If the connection handle does
- * not identify an ACL connection, the Controller shall reject the command and should
- * return the error code Unknown Connection Identifier (0x02).
+ * The HCI_LE_Read_Channel_Map command returns the current Channel_Map for
+ * the specified Connection_Handle. The returned value indicates the state of
+ * the Channel_Map specified by the last transmitted or received Channel_Map
+ * (in a CONNECT_IND or LL_CHANNEL_MAP_IND message) for the specified
+ * Connection_Handle, regardless of whether the Central has received an
+ * acknowledgment. If the connection handle does not identify an ACL connection,
+ * the Controller shall reject the command and should return the error code Unknown
+ * Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Channel_Map command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3782,9 +3636,9 @@ uint8_t sdc_hci_cmd_le_set_host_channel_classification(const sdc_hci_cmd_le_set_
 uint8_t sdc_hci_cmd_le_read_channel_map(const sdc_hci_cmd_le_read_channel_map_t * p_params,
                                         sdc_hci_cmd_le_read_channel_map_return_t * p_return);
 
-/** @brief LE Read Remote Features Page 0.
+/** @brief LE Read Remote Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.21
  *
  * This command requests, from the remote device identified by the Connection_Handle,
@@ -3798,7 +3652,6 @@ uint8_t sdc_hci_cmd_le_read_channel_map(const sdc_hci_cmd_le_read_channel_map_t 
  * 0 of the features.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Read_Remote_Features_Page_0 command,
  * the Controller shall send the HCI_Command_Status event to the Host. When the
  * Controller has completed the procedure to determine the remote features or has
@@ -3808,8 +3661,6 @@ uint8_t sdc_hci_cmd_le_read_channel_map(const sdc_hci_cmd_le_read_channel_map_t 
  * The HCI_LE_Read_Remote_Features_Page_0_Complete event contains the status of
  * this command and the parameter describing page 0 of the features used on the
  * connection and the features supported by the remote device.
- *
- * This command was formerly called "LE Read Remote Features".
  *
  * @param[in]  p_params Input parameters.
  *
@@ -3821,16 +3672,15 @@ uint8_t sdc_hci_cmd_le_read_remote_features(const sdc_hci_cmd_le_read_remote_fea
 
 /** @brief LE Encrypt.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.22
  *
- * This command is used to request the Controller to encrypt the Plaintext_Data in the
- * command using the Key given in the command and returns the Encrypted_Data to
- * the Host. The AES-128 bit block cypher is defined in NIST Publication FIPS-197 (http://
- * csrc.nist.gov/publications/fips/fips197/fips-197.pdf).
+ * The HCI_LE_Encrypt command is used to request the Controller to encrypt the
+ * Plaintext_Data in the command using the Key given in the command and returns
+ * the Encrypted_Data to the Host. The AES-128 bit block cypher is defined in NIST
+ * Publication FIPS-197 (http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Encrypt command has completed, an HCI_Command_Complete
  * event shall be generated.
  *
@@ -3846,15 +3696,14 @@ uint8_t sdc_hci_cmd_le_encrypt(const sdc_hci_cmd_le_encrypt_t * p_params,
 
 /** @brief LE Rand.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.23
  *
- * This command is used to request the Controller to generate 8 octets of random data to
- * be sent to the Host. The Random_Number shall be generated according to [Vol 2] Part
- * H, Section 2.
+ * The HCI_LE_Rand command is used to request the Controller to generate 8 octets of
+ * random data to be sent to the Host. The Random_Number shall be generated according
+ * to [Vol 2] Part H, Section 2.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Rand command has completed, an HCI_Command_Complete event
  * shall be generated.
  *
@@ -3868,12 +3717,13 @@ uint8_t sdc_hci_cmd_le_rand(sdc_hci_cmd_le_rand_return_t * p_return);
 
 /** @brief LE Enable Encryption.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.24
  *
- * This command is used to authenticate the given encryption key associated with the
- * remote device specified by the Connection_Handle, and once authenticated will encrypt
- * the connection. The parameters are as defined in [Vol 3] Part H, Section 2.4.4.
+ * The HCI_LE_Enable_Encryption command is used to authenticate the given encryption
+ * key associated with the remote device specified by the Connection_Handle, and once
+ * authenticated will encrypt the connection. The parameters are as defined in [Vol 3] Part
+ * H, Section 2.4.4.
  *
  * If the connection is already encrypted then the Controller shall pause connection
  * encryption before attempting to authenticate the given encryption key, and then re-
@@ -3888,7 +3738,6 @@ uint8_t sdc_hci_cmd_le_rand(sdc_hci_cmd_le_rand_return_t * p_return);
  * This command shall only be used when the local device’s role is Central.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Enable_Encryption command it shall send
  * the HCI_Command_Status event to the Host. If the connection is not encrypted
  * when this command is issued, an HCI_Encryption_Change event shall occur when
@@ -3906,18 +3755,17 @@ uint8_t sdc_hci_cmd_le_enable_encryption(const sdc_hci_cmd_le_enable_encryption_
 
 /** @brief LE Long Term Key Request Reply.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.25
  *
- * This command is used to reply to an HCI_LE_Long_Term_Key_Request event from
- * the Controller, and specifies the Long_Term_Key parameter that shall be used for
- * this Connection_Handle. The Long_Term_Key is used as defined in [Vol 6] Part B,
- * Section 5.1.3.
+ * The HCI_LE_Long_Term_Key_Request_Reply command is used to reply to an
+ * HCI_LE_Long_Term_Key_Request event from the Controller, and specifies the
+ * Long_Term_Key parameter that shall be used for this Connection_Handle. The
+ * Long_Term_Key is used as defined in [Vol 6] Part B, Section 5.1.3.
  *
  * This command shall only be used when the local device’s role is Peripheral.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Long_Term_Key_Request_Reply command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -3933,16 +3781,16 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_reply(const sdc_hci_cmd_le_long_ter
 
 /** @brief LE Long Term Key Request Negative Reply.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.26
  *
- * This command is used to reply to an HCI_LE_Long_Term_Key_Request event from the
- * Controller if the Host cannot provide a Long Term Key for this Connection_Handle.
+ * The HCI_LE_Long_Term_Key_Request_Negative_Reply command is used to reply to
+ * an HCI_LE_Long_Term_Key_Request event from the Controller if the Host cannot
+ * provide a Long Term Key for this Connection_Handle.
  *
  * This command shall only be used when the local device’s role is Peripheral.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Long_Term_Key_Request_Negative_Reply command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -3958,24 +3806,24 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_negative_reply(const sdc_hci_cmd_le
 
 /** @brief LE Read Supported States.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.27
  *
- * This command reads the states, roles, and combinations of states and roles that the
- * Link Layer supports. See [Vol 6] Part B, Section 1.1.1.
+ * The HCI_LE_Read_Supported_States command reads the states, roles, and
+ * combinations of states and roles that the Link Layer supports. See [Vol 6] Part B,
+ * Section 1.1.1.
  *
  * The LE_States parameter is a bit field. If a bit is set to 1 then this state, role, or
  * combination is supported by the Controller; each combination consists of the states
- * indicated by 'X' in the associated row of the table and omits those states with an empty
- * cell in that row. Multiple bits in LE_States may be set to 1 to indicate support for multiple
- * combinations.
+ * indicated by 'X' in the associated row of the table and excludes those states with an
+ * empty cell in that row. Multiple bits in LE_States may be set to 1 to indicate support for
+ * multiple combinations.
  *
  * Note: This command only provides information about the supported states and roles
  * that can be used with legacy advertising. It does not provide information about those
  * that can only be used with the extended advertising commands (see Section 3.1.1).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Supported_States command has completed, an
  * HCI_Command_Complete event will be generated.
  *
@@ -3989,16 +3837,16 @@ uint8_t sdc_hci_cmd_le_read_supported_states(sdc_hci_cmd_le_read_supported_state
 
 /** @brief LE Set Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.33
  *
- * This command allows the Host to suggest the maximum transmission payload size and
- * maximum packet transmission time (connMaxTxOctets and connMaxTxTime - see [Vol
- * 6] Part B, Section 4.5.10) to be used for LL Data PDUs on a given connection. The
- * Controller may use smaller or larger values based on local information.
+ * The HCI_LE_Set_Data_Length command allows the Host to suggest the maximum
+ * transmission payload size and maximum packet transmission time (connMaxTxOctets
+ * and connMaxTxTime - see [Vol 6] Part B, Section 4.5.10) to be used for LL Data PDUs
+ * on a given connection. The Controller may use smaller or larger values based on local
+ * information.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Data_Length command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4018,17 +3866,16 @@ uint8_t sdc_hci_cmd_le_set_data_length(const sdc_hci_cmd_le_set_data_length_t * 
 
 /** @brief LE Read Suggested Default Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.34
  *
- * This command allows the Host to read the Host's suggested values
- * (Suggested_Max_TX_Octets and Suggested_Max_TX_Time) for the Controller's
- * maximum transmitted number of payload octets and maximum packet transmission time
- * for packets containing LL Data PDUs to be used for new connections (see [Vol 6] Part
- * B, Section 4.5.10).
+ * The HCI_LE_Read_Suggested_Default_Data_Length command allows the Host
+ * to read the Host's suggested values (Suggested_Max_TX_Octets and
+ * Suggested_Max_TX_Time) for the Controller's maximum transmitted number of payload
+ * octets and maximum packet transmission time for packets containing LL Data PDUs to
+ * be used for new connections (see [Vol 6] Part B, Section 4.5.10).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Suggested_Default_Data_Length command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -4042,17 +3889,17 @@ uint8_t sdc_hci_cmd_le_read_suggested_default_data_length(sdc_hci_cmd_le_read_su
 
 /** @brief LE Write Suggested Default Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.35
  *
- * This command allows the Host to specify its suggested values for the Controller's
- * maximum transmission number of payload octets and maximum packet transmission
- * time for packets containing LL Data PDUs to be used for new connections.
- * The Controller may use smaller or larger values for connInitialMaxTxOctets and
- * connInitialMaxTxTime based on local information. (See [Vol 6] Part B, Section 4.5.10).
+ * The HCI_LE_Write_Suggested_Default_Data_Length command allows the Host to
+ * specify its suggested values for the Controller's maximum transmission number of
+ * payload octets and maximum packet transmission time for packets containing LL Data
+ * PDUs to be used for new connections. The Controller may use smaller or larger values
+ * for connInitialMaxTxOctets and connInitialMaxTxTime based on local information. (See
+ * [Vol 6] Part B, Section 4.5.10).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Write_Suggested_Default_Data_Length command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -4066,11 +3913,12 @@ uint8_t sdc_hci_cmd_le_write_suggested_default_data_length(const sdc_hci_cmd_le_
 
 /** @brief LE Add Device To Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.38
  *
- * This command is used to add one device to the resolving list used to generate and
- * resolve Resolvable Private Addresses in the Controller.
+ * The HCI_LE_Add_Device_To_Resolving_List command is used to add one device to
+ * the resolving list used to generate and resolve Resolvable Private Addresses in the
+ * Controller.
  *
  * This command shall not be used when address resolution is enabled in the Controller
  * and:
@@ -4102,7 +3950,6 @@ uint8_t sdc_hci_cmd_le_write_suggested_default_data_length(const sdc_hci_cmd_le_
  * should return the error code Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Add_Device_To_Resolving_List command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4116,11 +3963,12 @@ uint8_t sdc_hci_cmd_le_add_device_to_resolving_list(const sdc_hci_cmd_le_add_dev
 
 /** @brief LE Remove Device From Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.39
  *
- * This command is used to remove one device from the resolving list used to resolve
- * Resolvable Private Addresses in the Controller.
+ * The HCI_LE_Remove_Device_From_Resolving_List command is used to remove one
+ * device from the resolving list used to resolve Resolvable Private Addresses in the
+ * Controller.
  *
  * This command shall not be used when address resolution is enabled in the Controller
  * and:
@@ -4137,7 +3985,6 @@ uint8_t sdc_hci_cmd_le_add_device_to_resolving_list(const sdc_hci_cmd_le_add_dev
  * found, it shall return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_Device_From_Resolving_List command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -4151,11 +3998,11 @@ uint8_t sdc_hci_cmd_le_remove_device_from_resolving_list(const sdc_hci_cmd_le_re
 
 /** @brief LE Clear Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.40
  *
- * This command is used to remove all devices from the resolving list used to resolve
- * Resolvable Private Addresses in the Controller.
+ * The HCI_LE_Clear_Resolving_List command is used to remove all devices from the
+ * resolving list used to resolve Resolvable Private Addresses in the Controller.
  *
  * This command shall not be used when address resolution is enabled in the Controller
  * and:
@@ -4169,7 +4016,6 @@ uint8_t sdc_hci_cmd_le_remove_device_from_resolving_list(const sdc_hci_cmd_le_re
  * Controller.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Clear_Resolving_List command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4182,18 +4028,17 @@ uint8_t sdc_hci_cmd_le_clear_resolving_list(void);
 
 /** @brief LE Read Resolving List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.41
  *
- * This command is used to read the total number of entries in the resolving list that can
- * be stored in the Controller.
+ * The HCI_LE_Read_Resolving_List_Size command is used to read the total number of
+ * entries in the resolving list that can be stored in the Controller.
  *
  * Note: The number of entries that can be stored is not fixed and the Controller can
  * change it at any time (e.g. because the memory used to store the list can also be used
  * for other purposes).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Resolving_List_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4207,12 +4052,13 @@ uint8_t sdc_hci_cmd_le_read_resolving_list_size(sdc_hci_cmd_le_read_resolving_li
 
 /** @brief LE Set Address Resolution Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.44
  *
- * This command is used to enable resolution of Resolvable Private Addresses in the
- * Controller. This causes the Controller to use the resolving list whenever the Controller
- * receives a local or peer Resolvable Private Address.
+ * The HCI_LE_Set_Address_Resolution_Enable command is used to enable resolution
+ * of Resolvable Private Addresses in the Controller. This causes the Controller to use
+ * the resolving list whenever the Controller receives a local or peer Resolvable Private
+ * Address.
  *
  * This command shall not be used when:
  *
@@ -4228,7 +4074,6 @@ uint8_t sdc_hci_cmd_le_read_resolving_list_size(sdc_hci_cmd_le_read_resolving_li
  * Private Addresses and the privacy of the device are independent of this command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Address_Resolution_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4240,41 +4085,18 @@ uint8_t sdc_hci_cmd_le_read_resolving_list_size(sdc_hci_cmd_le_read_resolving_li
  */
 uint8_t sdc_hci_cmd_le_set_address_resolution_enable(const sdc_hci_cmd_le_set_address_resolution_enable_t * p_params);
 
-/** @brief LE Set Resolvable Private Address Timeout [v1].
+/** @brief LE Set Resolvable Private Address Timeout.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.45
  *
- * Version [v1] of this command sets the length of time the Controller uses a Resolvable
- * Private Address before a new Resolvable Private Address is generated and starts being
- * used.
- *
- * Version [v2] of this command sets the range of time the Controller uses a Resolvable
- * Private Address before a new Resolvable Private Address is generated and starts being
- * used.
+ * The HCI_LE_Set_Resolvable_Private_Address_Timeout command set the length of
+ * time the Controller uses a Resolvable Private Address before a new resolvable private
+ * address is generated and starts being used.
  *
  * This timeout applies to all resolvable private addresses generated by the Controller.
  *
- * The RPA_Timeout parameter specifies the time after which a new Resolvable Private
- * Address shall start being used.
- *
- * The RPA_Timeout_Min parameter specifies the minimum time after which a new
- * Resolvable Private Address shall start being used.
- *
- * The RPA_Timeout_Max parameter specifies the maximum time after which a new
- * Resolvable Private Address shall start being used.
- *
- * When the Controller supports the HCI_LE_Set_Resolvable_Private_Address_Timeout
- * [v2] command and needs to set a new timeout (e.g., when the RPA is set for the
- * first time, or when the current timeout expires), the new timeout shall be a random
- * value between RPA_Timeout_Min and RPA_Timeout_Max generated so as to meet the
- * requirements for random number generation defined in [Vol 2] Part H, Section 2.
- *
- * If RPA_Timeout_Min is greater than RPA_Timeout_Max, then the Controller shall return
- * the error code Invalid HCI Command Parameters (0x12).
- *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Resolvable_Private_Address_Timeout command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -4288,16 +4110,16 @@ uint8_t sdc_hci_cmd_le_set_resolvable_private_address_timeout(const sdc_hci_cmd_
 
 /** @brief LE Read Maximum Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.46
  *
- * This command allows the Host to read the Controller’s maximum supported
- * payload octets and packet duration times for transmission and reception
- * (Supported_Max_TX_Octets, Supported_Max_TX_Time, Supported_Max_RX_Octets,
- * and Supported_Max_RX_Time, see [Vol 6] Part B, Section 4.5.10).
+ * The HCI_LE_Read_Maximum_Data_Length command allows the Host to read the
+ * Controller’s maximum supported payload octets and packet duration times for
+ * transmission and reception (Supported_Max_TX_Octets, Supported_Max_TX_Time,
+ * Supported_Max_RX_Octets, and Supported_Max_RX_Time, see [Vol 6] Part B,
+ * Section 4.5.10).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Maximum_Data_Length command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4311,14 +4133,13 @@ uint8_t sdc_hci_cmd_le_read_max_data_length(sdc_hci_cmd_le_read_max_data_length_
 
 /** @brief LE Read PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.47
  *
- * This command is used to read the current transmitter PHY and receiver PHY on the
- * connection identified by the Connection_Handle.
+ * The HCI_LE_Read_PHY command is used to read the current transmitter PHY and
+ * receiver PHY on the connection identified by the Connection_Handle.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_PHY command has completed, an HCI_Command_Complete
  * event shall be generated.
  *
@@ -4334,11 +4155,12 @@ uint8_t sdc_hci_cmd_le_read_phy(const sdc_hci_cmd_le_read_phy_t * p_params,
 
 /** @brief LE Set Default PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.48
  *
- * This command allows the Host to specify its preferred values for the transmitter PHY
- * and receiver PHY to be used for all subsequent connections over the LE transport.
+ * The HCI_LE_Set_Default_PHY command allows the Host to specify its preferred values
+ * for the transmitter PHY and receiver PHY to be used for all subsequent connections
+ * over the LE transport.
  *
  * The All_PHYs parameter is a bit field that allows the Host to specify, for each direction,
  * whether it has no preference among the PHYs that the Controller supports in a given
@@ -4365,7 +4187,6 @@ uint8_t sdc_hci_cmd_le_read_phy(const sdc_hci_cmd_le_read_phy_t * p_params,
  * Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Default_PHY command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4379,13 +4200,13 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
 
 /** @brief LE Set PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.49
  *
- * This command is used to set the PHY preferences for the connection identified by
- * the Connection_Handle. The Controller might not be able to make the change (e.g.
- * because the peer does not support the requested PHY) or may decide that the current
- * choice of PHY is preferable (e.g., because it could not schedule other activities if the
+ * The HCI_LE_Set_PHY command is used to set the PHY preferences for the connection
+ * identified by the Connection_Handle. The Controller might not be able to make the
+ * change (e.g. because the peer does not support the requested PHY) or may decide that
+ * the current PHY is preferable (e.g., because it could not schedule other activities if the
  * requested PHY was used or because it requires a PHY that supports Constant Tone
  * Extensions).
  *
@@ -4405,17 +4226,16 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
  * be set to 1.
  *
  * The Controller shall request a change unless it determines that this is unnecessary or
- * that the current PHY in both directions is preferable, in which case it may, but need not,
- * request a change.
+ * that the current PHY is preferable, in which case it may, but need not, request a change.
  *
  * The PHY preferences provided by the HCI_LE_Set_PHY command override those
  * provided via the HCI_LE_Set_Default_PHY command (Section 7.8.48) or any
  * preferences previously set using the HCI_LE_Set_PHY command on the same
  * connection.
+ *
  * The PHY_Options parameter is a bit field that allows the Host to specify options for
  * PHYs. The default value for a new connection shall be all zero bits. The Controller may
  * override any preferred coding for transmitting on the LE Coded PHY.
- *
  * The Host may specify a preferred coding even if it prefers not to use the LE Coded
  * transmitter PHY since the Controller may override the PHY preference.
  *
@@ -4429,7 +4249,6 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
  * Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Set_PHY command, the
  * Controller shall send the HCI_Command_Status event to the Host. The
  * HCI_LE_PHY_Update_Complete event shall be generated either when one or both
@@ -4449,13 +4268,14 @@ uint8_t sdc_hci_cmd_le_set_phy(const sdc_hci_cmd_le_set_phy_t * p_params);
 
 /** @brief LE Set Advertising Set Random Address.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.52
  *
- * This command is used by the Host to set the random device address specified by the
- * Random_Address parameter. This address is used in the Controller (see [Vol 6] Part B,
- * Section 1.3.2 ) for the advertiser's address contained in the advertising PDUs for the
- * advertising set specified by the Advertising_Handle parameter.
+ * The HCI_LE_Set_Advertising_Set_Random_Address command is used by the Host
+ * to set the random device address specified by the Random_Address parameter. This
+ * address is used in the Controller (see [Vol 6] Part B, Section 1.3.2 ) for the advertiser's
+ * address contained in the advertising PDUs for the advertising set specified by the
+ * Advertising_Handle parameter.
  *
  * This command may be issued at any time after an advertising set
  * identified by the Advertising_Handle parameter has been created using the
@@ -4470,7 +4290,6 @@ uint8_t sdc_hci_cmd_le_set_phy(const sdc_hci_cmd_le_set_phy_t * p_params);
  * later than the next successful HCI_LE_Periodic_Advertising_Enable command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Advertising_Set_Random_Address command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -4484,11 +4303,11 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
 
 /** @brief LE Set Extended Advertising Parameters [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.53
  *
- * This command is used by the Host to set the advertising parameters.
- *
+ * The HCI_LE_Set_Extended_Advertising_Parameters command is used by the Host to
+ * set the advertising parameters.
  * The Advertising_Handle parameter identifies the advertising set whose parameters are
  * being configured.
  *
@@ -4497,21 +4316,27 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  * Controller. In particular, the following restrictions apply to this parameter:
  *
  * • If legacy advertising PDU types are being used, then the parameter value shall be
- *   one of those specified in Table 7.3. If the advertising set already contains data, the
- *   type shall be one that supports advertising data and the amount of data shall not
- *   exceed 31 octets.
+ * one of those specified in Table 7.3. If the advertising set already contains data, the
+ * type shall be one that supports advertising data and the amount of data shall not
+ * exceed 31 octets.
  *
- *  Event Type                    PDU Type               Advertising Event     Advertising Data
- *                                                       Properties
- *  Connectable and scannable     ADV_IND                0b00000000_00010011   Supported
+ *                                                            Advertising
+ *                                                            Event         Advertising
+ *  Event Type                      PDU Type                  Properties    Data
+ *
+ *  Connectable and scannable       ADV_IND                   0b00010011    Supported
  *  undirected
- *  Connectable directed          ADV_DIRECT_IND         0b00000000_00010101   Not allowed
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00010101    Not allowed
  *  (low duty cycle)
- *  Connectable directed          ADV_DIRECT_IND         0b00000000_00011101   Not allowed
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00011101    Not allowed
  *  (high duty cycle)
- *  Scannable undirected          ADV_SCAN_IND           0b00000000_00010010   Supported
- *  Non-connectable and non-      ADV_NON-               0b00000000_00010000   Supported
- *  scannable undirected          CONN_IND
+ *
+ *  Scannable undirected            ADV_SCAN_IND              0b00010010    Supported
+ *
+ *  Non-connectable and non-        ADV_NONCONN_IND           0b00010000    Supported
+ *  scannable undirected
  *
  * Table 7.3: Advertising_Event_Properties values for legacy PDUs
  *
@@ -4525,11 +4350,9 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  * that does not support advertising data when the advertising set already contains some,
  * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
  *
- * The parameters beginning with “Secondary” are only valid when extended advertising
- * PDU types are being used (bit 4 = 0).
- *
  * The Own_Address_Type parameter shall be ignored for undirected anonymous
  * advertising (bit 2 = 0 and bit 5 = 1).
+ *
  * If Directed advertising is selected, the Peer_Address_Type and Peer_Address shall be
  * valid and the Advertising_Filter_Policy parameter shall be ignored.
  *
@@ -4642,17 +4465,18 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  *
  * Missing parameters:
  *
- * When a version of this command is issued that does not include all the parameters, the
- * following values shall be used for any missing parameters:
+ * When a version of this command is issued that does not include all the
+ * parameters, the following values shall be used:
  *
- *  Parameter                                                                   Value
- *  Primary_Advertising_PHY_Options                                             0x00
- *  Secondary_Advertising_PHY_Options                                           0x00
+ *  Parameter                                        Value
+ *
+ *  Primary_Advertising_PHY_Options                 0x00
+ *
+ *  Secondary_Advertising_PHY_Options               0x00
  *
  * Event(s) generated (unless masked away):
- *
- * When the HCI_LE_Set_Extended_Advertising_Parameters command has completed,
- * an HCI_Command_Complete event shall be generated.
+ * When the HCI_LE_Set_Extended_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  * @param[out] p_return Extra return parameters.
@@ -4666,14 +4490,14 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params(const sdc_hci_cmd_le_set_ext_adv_param
 
 /** @brief LE Set Extended Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.54
  *
- * This command is used to set the data used in advertising PDUs that have
- * a data field. This command may be issued at any time after an advertising
- * set identified by the Advertising_Handle parameter has been created using
- * the HCI_LE_Set_Extended_Advertising_Parameters command (see Section 7.8.53),
- * regardless of whether advertising in that set is enabled or disabled.
+ * The HCI_LE_Set_Extended_Advertising_Data command is used to set the data used
+ * in advertising PDUs that have a data field. This command may be issued at any
+ * time after an advertising set identified by the Advertising_Handle parameter has
+ * been created using the HCI_LE_Set_Extended_Advertising_Parameters command (see
+ * Section 7.8.53), regardless of whether advertising in that set is enabled or disabled.
  *
  * If advertising is currently enabled for the specified advertising set, the Controller shall
  * use the new data in subsequent extended advertising events for this advertising set.
@@ -4743,7 +4567,6 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params(const sdc_hci_cmd_le_set_ext_adv_param
  * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Extended_Advertising_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4757,14 +4580,14 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_data(const sdc_hci_cmd_le_set_ext_adv_data_t 
 
 /** @brief LE Set Extended Scan Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.55
  *
- * This command is used to provide scan response data used in scanning
- * response PDUs. This command may be issued at any time after the advertising
- * set identified by the Advertising_Handle parameter has been created using
- * the HCI_LE_Set_Extended_Advertising_Parameters command (see Section 7.8.53)
- * regardless of whether advertising in that set is enabled or disabled.
+ * The HCI_LE_Set_Extended_Scan_Response_Data command is used to provide scan
+ * response data used in scanning response PDUs. This command may be issued at
+ * any time after the advertising set identified by the Advertising_Handle parameter has
+ * been created using the HCI_LE_Set_Extended_Advertising_Parameters command (see
+ * Section 7.8.53) regardless of whether advertising in that set is enabled or disabled.
  *
  * If advertising is currently enabled for the specified advertising set, the Controller shall
  * use the new data in subsequent extended advertising events for this advertising set.
@@ -4825,7 +4648,6 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_data(const sdc_hci_cmd_le_set_ext_adv_data_t 
  * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Extended_Scan_Response_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4839,16 +4661,16 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
 
 /** @brief LE Set Extended Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.56
  *
- * This command is used to request the Controller to enable or disable one or more
- * advertising sets using the advertising sets identified by the Advertising_Handle[i]
- * parameter. The Controller manages the timing of advertisements in accordance with the
- * advertising parameters given in the HCI_LE_Set_Extended_Advertising_Parameters
- * command. The Num_Sets parameter is the number of advertising sets contained in
- * the parameter arrays. If Enable and Num_Sets are both set to 0x00, then all advertising
- * sets are disabled.
+ * The HCI_LE_Set_Extended_Advertising_Enable command is used to request the
+ * Controller to enable or disable one or more advertising sets using the advertising
+ * sets identified by the Advertising_Handle[i] parameter. The Controller manages the
+ * timing of advertisements in accordance with the advertising parameters given in the
+ * HCI_LE_Set_Extended_Advertising_Parameters command. The Num_Sets parameter
+ * is the number of advertising sets contained in the parameter arrays. If Enable and
+ * Num_Sets are both set to 0x00, then all advertising sets are disabled.
  *
  * The Controller shall only start an advertising event when the corresponding
  * advertising set is enabled. The Controller shall continue advertising until all advertising
@@ -4892,10 +4714,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
  *
  * The remainder of this section only applies if Enable is set to 0x01.
  *
- * If the Controller does not have enough resources to schedule all the advertising sets in
- * the command, the Controller should return an error code which should be Connection
- * Rejected due to Limited Resources (0x0D).
- *
  * If Num_Sets is set to 0x00, the Controller shall return the error code Invalid HCI
  * Command Parameters (0x12).
  *
@@ -4920,7 +4738,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
  * advertising on the LE Coded PHY, the S=8 coding shall be assumed unless the current
  * advertising parameters require the use of S=2 for an advertising physical channel, in
  * which case the S=2 coding shall be assumed for that advertising physical channel.
- *
  * If the advertising set's Own_Address_Type parameter is set to 0x00 and the device
  * does not have a public address, the Controller should return an error code which should
  * be Invalid HCI Command Parameters (0x12).
@@ -4942,7 +4759,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
  * the error code Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Extended_Advertising_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -4959,7 +4775,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
  * If the Max_Extended_Advertising_Events[i] parameter is set to a value other than 0x00,
  * an HCI_LE_Advertising_Set_Terminated event shall be generated when the maximum
  * number of extended advertising events has been transmitted by the Controller.
- *
  * If the advertising set is connectable and a connection gets created, an
  * HCI_LE_Connection_Complete or HCI_LE_Enhanced_Connection_Complete event
  * shall be generated followed by an HCI_LE_Advertising_Set_Terminated event with
@@ -4984,18 +4799,17 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_enable(const sdc_hci_cmd_le_set_ext_adv_enabl
 
 /** @brief LE Read Maximum Advertising Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.57
  *
- * This command is used to read the maximum length of data supported by the Controller
- * for use as advertisement data or scan response data in an advertising event or as
- * periodic advertisement data.
+ * The HCI_LE_Read_Maximum_Advertising_Data_Length command is used to read the
+ * maximum length of data supported by the Controller for use as advertisement data or
+ * scan response data in an advertising event or as periodic advertisement data.
  *
  * Note: The maximum amount may be fragmented across multiple PDUs (see [Vol 6] Part
  * B, Section 2.3.4.9).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Maximum_Advertising_Data_Length command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -5009,18 +4823,18 @@ uint8_t sdc_hci_cmd_le_read_max_adv_data_length(sdc_hci_cmd_le_read_max_adv_data
 
 /** @brief LE Read Number of Supported Advertising Sets.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.58
  *
- * This command is used to read the number of advertising sets (including those already
- * created) that the advertising Controller can support at the present time.
+ * The HCI_LE_Read_Number_of_Supported_Advertising_Sets command is used to read
+ * the maximum number of advertising sets supported by the advertising Controller at the
+ * same time.
  *
  * Note: The number of advertising sets that can be supported is not fixed and the
- * Controller can change it at any time (e.g., because the memory used to store
- * advertising sets can also be used for other purposes).
+ * Controller can change it at any time because the memory used to store advertising
+ * sets can also be used for other purposes.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Number_of_Supported_Advertising_Sets command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -5034,10 +4848,11 @@ uint8_t sdc_hci_cmd_le_read_number_of_supported_adv_sets(sdc_hci_cmd_le_read_num
 
 /** @brief LE Remove Advertising Set.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.59
  *
- * This command is used to remove an advertising set from the Controller.
+ * The HCI_LE_Remove_Advertising_Set command is used to remove an advertising set
+ * from the Controller.
  *
  * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
  * then the Controller shall return the error code Unknown Advertising Identifier (0x42). If
@@ -5045,7 +4860,6 @@ uint8_t sdc_hci_cmd_le_read_number_of_supported_adv_sets(sdc_hci_cmd_le_read_num
  * shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_Advertising_Set command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5059,10 +4873,11 @@ uint8_t sdc_hci_cmd_le_remove_adv_set(const sdc_hci_cmd_le_remove_adv_set_t * p_
 
 /** @brief LE Clear Advertising Sets.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.60
  *
- * This command is used to remove all existing advertising sets from the Controller.
+ * The HCI_LE_Clear_Advertising_Sets command is used to remove all existing
+ * advertising sets from the Controller.
  *
  * If advertising or periodic advertising is enabled on any advertising set, then the
  * Controller shall return the error code Command Disallowed (0x0C).
@@ -5070,7 +4885,6 @@ uint8_t sdc_hci_cmd_le_remove_adv_set(const sdc_hci_cmd_le_remove_adv_set_t * p_
  * Note: All advertising sets are cleared on HCI reset.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Clear_Advertising_Sets command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5083,10 +4897,11 @@ uint8_t sdc_hci_cmd_le_clear_adv_sets(void);
 
 /** @brief LE Set Periodic Advertising Parameters [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.61
  *
- * This command is used by the Host to set the parameters for periodic advertising.
+ * The HCI_LE_Set_Periodic_Advertising_Parameters command is used by the Host to
+ * set the parameters for periodic advertising.
  *
  * The Advertising_Handle parameter identifies the advertising set whose periodic
  * advertising parameters are being configured. If the corresponding advertising set does
@@ -5152,22 +4967,20 @@ uint8_t sdc_hci_cmd_le_clear_adv_sets(void);
  * shall be assumed unless the current advertising parameters require the use of S=2 for
  * an advertising physical channel, in which case the S=2 coding shall be assumed for that
  * advertising physical channel.
- * Missing parameters:
  *
+ * Missing parameters:
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
- *
- *  Parameter                                                                      Value
- *  Num_Subevents                                                                  0
- *  Subevent_Interval                                                              ignored
- *  Response_Slot_Delay                                                            ignored
- *  Response_Slot_Spacing                                                          ignored
- *  Num_Response_Slots                                                             ignored
+ * Parameter Value
+ * Num_Subevents 0
+ * Subevent_Interval ignored
+ * Response_Slot_Delay ignored
+ * Response_Slot_Spacing ignored
+ * Num_Response_Slots ignored
  *
  * Event(s) generated (unless masked away):
- *
- * When the HCI_LE_Set_Periodic_Advertising_Parameters command has completed, an
- * HCI_Command_Complete event shall be generated.
+ * When the HCI_LE_Set_Periodic_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -5179,17 +4992,17 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic
 
 /** @brief LE Set Periodic Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.62
  *
- * This command is used to set the data used in periodic advertising PDUs. This
- * command may be issued at any time after the advertising set identified by the
- * Advertising_Handle parameter has been configured for periodic advertising using
- * the HCI_LE_Set_Periodic_Advertising_Parameters command (see Section 7.8.61),
- * regardless of whether periodic advertising in that set is enabled or disabled. If the
- * advertising set has not been configured for periodic advertising or has been configured
- * for Periodic Advertising with Responses, then the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * The HCI_LE_Set_Periodic_Advertising_Data command is used to set the data used
+ * in periodic advertising PDUs. This command may be issued at any time after the
+ * advertising set identified by the Advertising_Handle parameter has been configured for
+ * periodic advertising using the HCI_LE_Set_Periodic_Advertising_Parameters command
+ * (see Section 7.8.61), regardless of whether periodic advertising in that set is enabled
+ * or disabled. If the advertising set has not been configured for periodic advertising or
+ * has been configured for Periodic Advertising with Responses, then the Controller shall
+ * return the error code Command Disallowed (0x0C).
  *
  * If periodic advertising is currently enabled for the specified advertising set, the
  * Controller shall use the new data in subsequent periodic advertising events for this
@@ -5249,7 +5062,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic
  * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Advertising_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5263,12 +5075,12 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_data(const sdc_hci_cmd_le_set_periodic_a
 
 /** @brief LE Set Periodic Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.63
  *
- * This command is used to request the Controller to enable or disable the periodic
- * advertising for the advertising set specified by the Advertising_Handle parameter
- * (ordinary advertising is not affected).
+ * The HCI_LE_Set_Periodic_Advertising_Enable command is used to request the
+ * Controller to enable or disable the periodic advertising for the advertising set specified
+ * by the Advertising_Handle parameter (ordinary advertising is not affected).
  *
  * If the advertising set is not currently enabled (see the
  * HCI_LE_Set_Extended_Advertising_Enable command), the periodic advertising is not
@@ -5314,7 +5126,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_data(const sdc_hci_cmd_le_set_periodic_a
  * to change. Disabling periodic advertising when it is already disabled has no effect.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Advertising_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5328,11 +5139,11 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_enable(const sdc_hci_cmd_le_set_periodic
 
 /** @brief LE Set Extended Scan Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.64
  *
- * This command is used to set the extended scan parameters to be used on the
- * advertising physical channels.
+ * The HCI_LE_Set_Extended_Scan_Parameters command is used to set the extended
+ * scan parameters to be used on the advertising physical channels.
  *
  * The Scanning_PHYs parameter indicates the PHY(s) on which the advertising packets
  * should be received on the primary advertising physical channel. The Host may enable
@@ -5364,7 +5175,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_enable(const sdc_hci_cmd_le_set_periodic
  * Feature or Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Extended_Scan_Parameters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5378,11 +5188,11 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
 
 /** @brief LE Set Extended Scan Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.65
  *
- * This command is used to enable or disable scanning for both legacy and extended
- * advertising PDUs.
+ * The HCI_LE_Set_Extended_Scan_Enable command is used to enable or disable
+ * scanning for both legacy and extended advertising PDUs.
  *
  * The Enable parameter determines whether scanning is enabled or disabled. If it is set to
  * 0x00, the remaining parameters shall be ignored.
@@ -5449,7 +5259,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
  * Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Extended_Scan_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  * Zero or more LE Extended Advertising Reports are generated by the Controller based
@@ -5470,12 +5279,14 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
 
 /** @brief LE Extended Create Connection [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.66
  *
- * This command is used to create a single ACL connection, with the local device in the
- * Central role, to a connectable advertiser. The command is also used to create a single
- * ACL connection between a periodic advertiser and a synchronized device.
+ * The HCI_LE_Extended_Create_Connection command is used to create an ACL
+ * connection, with the local device in the Central role, to a connectable advertiser. The
+ * command is also used to create an ACL connection between a periodic advertiser and a
+ * synchronized device.
+ *
  * If a connection is created with the local device in the Peripheral role while this command
  * is pending, then this command remains pending.
  *
@@ -5495,16 +5306,13 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * then the Initiator_Filter_Policy, Scan_Interval[i], and Scan_Window[i] parameters shall
  * be ignored.
  *
- * The Initiator_Filter_Policy parameter is used to determine whether the Filter Accept
- * List is used and whether to process decision PDUs and other advertising PDUs. If the
- * Filter Accept List is used or the policy allows decision PDUs to be processed (or both),
- * then the device to connect to is the first one that sends an advertisement received
- * successfully by the local device and that is on the list or that is accepted by the decision
- * instructions (see Section 7.8.145), as specified by the policy. If the Filter Accept List is
- * not used, then the Peer_Address_Type and the Peer_Address parameters specify the
- * address type and address of the advertising device to connect to for advertisements not
- * using decision PDUs. If Initiator_Filter_Policy is set to 0x03, then devices on the Filter
- * Accept List shall still be processed using the decision instructions.
+ * The Initiator_Filter_Policy parameter is used to determine whether the Filter Accept List
+ * is used and whether to process decision PDUs and other advertising PDUs. If the Filter
+ * Accept List is not used, the Peer_Address_Type and the Peer_Address parameters
+ * specify the address type and address of the advertising device to connect to for
+ * advertisements not using decision PDUs. If Initiator_Filter_Policy is set to 0x03, then
+ * devices on the Filter Accept List shall still be processed using the decision instructions
+ * (see Section 7.8.145).
  *
  * The Own_Address_Type parameter indicates the type of address being used in the
  * connection request packets.
@@ -5542,7 +5350,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * The Connection_Interval_Min[i] and Connection_Interval_Max[i] parameters define the
  * minimum and maximum allowed connection interval. The Connection_Interval_Min[i]
  * parameter shall not be greater than the Connection_Interval_Max[i] parameter.
- *
  * The Max_Latency[i] parameter defines the maximum allowed Peripheral latency (see
  * [Vol 6] Part B, Section 4.5.1).
  *
@@ -5565,6 +5372,7 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * If the Host issues this command when another HCI_LE_Extended_Create_Connection
  * command is pending in the Controller, the Controller shall return the error code
  * Command Disallowed (0x0C).
+ *
  * If the local device is already connected to the same device address as the advertiser
  * (including two different Resolvable Private Addresses that resolve to the same IRK),
  * then the Controller shall return an error which should use the error code Connection
@@ -5603,24 +5411,22 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * error code Invalid HCI Command Parameters (0x12).
  *
  * If the Host issues this command and the Controller has insufficient resources to handle
- * any more connections, the Controller shall return the error code Rejected due to Limited
- * Resources (0x0D).
+ * any more connections, the Controller shall return the error code Connection Rejected
+ * due to Limited Resources (0x0D).
  *
  * If the Controller does not support the Decision-Based Advertising Filtering feature and
  * the Host issues this command with Initiator_Filter_Policy set to a value other than 0x00
  * or 0x01, the Controller shall return an error code which should be Unsupported Feature
  * or Parameter Value (0x11).
- * Missing parameters:
  *
+ * Missing parameters:
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
- *
- *  Parameter                                                                   Value
- *  Advertising_Handle                                                          0xFF
- *  Subevent                                                                    0xFF
+ * Parameter Value
+ * Advertising_Handle 0xFF
+ * Subevent 0xFF
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Extended_Create_Connection command,
  * the Controller sends the HCI_Command_Status event to the Host. An
  * HCI_LE_Enhanced_Connection_Complete event shall be generated when a connection
@@ -5641,26 +5447,24 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
 
 /** @brief LE Periodic Advertising Create Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.67
  *
- * This command is used to synchronize with a single periodic advertising train from an
- * advertiser and begin receiving periodic advertising packets.
+ * The HCI_LE_Periodic_Advertising_Create_Sync command is used to synchronize with
+ * a periodic advertising train from an advertiser and begin receiving periodic advertising
+ * packets.
  *
  * This command may be issued whether or not scanning is enabled and scanning may
- * be enabled and disabled (see Section 7.8.65) while this command is pending. However,
- * synchronization can only occur when scanning is enabled. While scanning is disabled,
- * no attempt to synchronize will take place.
+ * be enabled and disabled (see the LE Set Extended Scan Enable command) while
+ * this command is pending. However, synchronization can only occur when scanning is
+ * enabled. While scanning is disabled, no attempt to synchronize will take place.
  *
  * The Options parameter is used to determine whether the Periodic Advertiser List is
  * used, whether HCI_LE_Periodic_Advertising_Report events for this periodic advertising
- * train are initially enabled or disabled, and whether duplicate reports are filtered or not.
- * If the Periodic Advertising List is used, then the periodic advertising device to listen
- * to is the first one that sends an AUX_SYNC_IND PDU received successfully by the
- * local device, that is on the list, and that does not have the wrong type of Constant
- * Tone Extension. If the Periodic Advertiser List is not used, then the Advertising_SID,
- * Advertiser Address_Type, and Advertiser Address parameters specify the periodic
- * advertising device to listen to; otherwise they shall be ignored.
+ * train are initially enabled or disabled, and whether duplicate reports are filtered or not. If
+ * the Periodic Advertiser List is not used, the Advertising_SID, Advertiser Address_Type,
+ * and Advertiser Address parameters specify the periodic advertising device to listen to;
+ * otherwise they shall be ignored.
  *
  * The Advertising_SID parameter, if used, specifies the value that shall match the
  * Advertising SID subfield in the ADI field of the received advertisement for it to be used
@@ -5678,24 +5482,14 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  * the presence or absence of a Constant Tone Extension is irrelevant). If the periodic
  * advertising has the wrong type of Constant Tone Extension then:
  *
- * • If bit 0 of Options is set, the Controller shall ignore this address and SID, as if they
- *   were not on the Periodic Advertiser List, and continue to search for other periodic
- *   advertisements.
+ * • If bit 0 of Options is set, the Controller shall ignore this address and SID and continue
+ *   to search for other periodic advertisements.
  * • Otherwise, the Controller shall cancel the synchronization with the error code
  *   Unsupported Remote Feature (0x1A).
- *
- * If the Controller does not support the Connectionless CTE Receiver feature, then the
- * Host should set Sync_CTE_Type to 0.
  *
  * If the periodic advertiser changes the type of Constant Tone Extension after the scanner
  * has synchronized with the periodic advertising, the scanner's Link Layer shall remain
  * synchronized.
- *
- * If the Host issues this command with the Sync_CTE_Type parameter set to any value
- * other than zero but the Controller does not support the Connectionless CTE Receiver
- * feature, then the Controller should return an error which should use the error code
- * Unsupported Feature or Parameter Value (0x11). If the Controller does not return an
- * error, then it should behave as if Sync_CTE_Type is set to zero.
  *
  * If the Host sets all the non-reserved bits of the Sync_CTE_Type parameter to 1, the
  * Controller shall return the error code Command Disallowed (0x0C).
@@ -5718,6 +5512,7 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  *
  * If bit 1 of Options is set to 1 and the Controller supports the Periodic Advertising ADI
  * Support feature, then the Controller shall ignore bit 2.
+ *
  * If bit 1 of Options is set to 0, bit 2 is set to 1, and the Controller does not support the
  * Periodic Advertising ADI Support feature, then the Controller shall return an error which
  * should use the error code Unsupported Feature or Parameter Value (0x11).
@@ -5728,7 +5523,6 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  * (0x3E).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Create_Sync command has been received,
  * the Controller sends the HCI_Command_Status event to the Host. An
  * HCI_LE_Periodic_Advertising_Sync_Established event shall be generated when the
@@ -5756,18 +5550,17 @@ uint8_t sdc_hci_cmd_le_periodic_adv_create_sync(const sdc_hci_cmd_le_periodic_ad
 
 /** @brief LE Periodic Advertising Create Sync Cancel.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.68
  *
- * This command is used to cancel the HCI_LE_Periodic_Advertising_Create_Sync
- * command while it is pending.
+ * The HCI_LE_Periodic_Advertising_Create_Sync_Cancel command is used to cancel
+ * the HCI_LE_Periodic_Advertising_Create_Sync command while it is pending.
  *
  * If the Host issues this command while no HCI_LE_Periodic_Advertising_Create_Sync
  * command is pending, the Controller shall return the error code Command Disallowed
  * (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Create_Sync_Cancel command has
  * completed, the Controller sends an HCI_Command_Complete event to the Host.
  *
@@ -5784,11 +5577,11 @@ uint8_t sdc_hci_cmd_le_periodic_adv_create_sync_cancel(void);
 
 /** @brief LE Periodic Advertising Terminate Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.69
  *
- * This command is used to stop reception of the periodic advertising train identified by the
- * Sync_Handle parameter.
+ * The HCI_LE_Periodic_Advertising_Terminate_Sync command is used to stop reception
+ * of the periodic advertising train identified by the Sync_Handle parameter.
  *
  * If the periodic advertising train corresponding to the Sync_Handle parameter does not
  * exist, then the Controller shall return the error code Unknown Advertising Identifier
@@ -5797,7 +5590,6 @@ uint8_t sdc_hci_cmd_le_periodic_adv_create_sync_cancel(void);
  * Following successful completion of this command the Sync_Handle is destroyed.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Terminate_Sync command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5811,13 +5603,14 @@ uint8_t sdc_hci_cmd_le_periodic_adv_terminate_sync(const sdc_hci_cmd_le_periodic
 
 /** @brief LE Add Device To Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.70
  *
- * This command is used to add an entry, consisting of a single device address and SID,
- * to the Periodic Advertiser list stored in the Controller. Any additions to the Periodic
- * Advertiser list take effect immediately. If the entry is already on the list, the Controller
- * shall return the error code Invalid HCI Command Parameters (0x12).
+ * The HCI_LE_Add_Device_To_Periodic_Advertiser_List command is used to add an
+ * entry, consisting of a single device address and SID, to the Periodic Advertiser
+ * list stored in the Controller. Any additions to the Periodic Advertiser list take effect
+ * immediately. If the entry is already on the list, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
  *
  * If the Host issues this command when an HCI_LE_Periodic_Advertising_Create_Sync
  * command is pending, the Controller shall return the error code Command Disallowed
@@ -5827,7 +5620,6 @@ uint8_t sdc_hci_cmd_le_periodic_adv_terminate_sync(const sdc_hci_cmd_le_periodic
  * full, the Controller shall return the error code Memory Capacity Exceeded (0x07).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Add_Device_To_Periodic_Advertiser_List command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -5841,11 +5633,12 @@ uint8_t sdc_hci_cmd_le_add_device_to_periodic_adv_list(const sdc_hci_cmd_le_add_
 
 /** @brief LE Remove Device From Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.71
  *
- * This command is used to remove one entry from the list of Periodic Advertisers stored
- * in the Controller. Removals from the Periodic Advertisers List take effect immediately.
+ * The HCI_LE_Remove_Device_From_Periodic_Advertiser_List command is used to
+ * remove one entry from the list of Periodic Advertisers stored in the Controller. Removals
+ * from the Periodic Advertisers List take effect immediately.
  *
  * If the Host issues this command when an HCI_LE_Periodic_Advertising_Create_Sync
  * command is pending, the Controller shall return the error code Command Disallowed
@@ -5856,7 +5649,6 @@ uint8_t sdc_hci_cmd_le_add_device_to_periodic_adv_list(const sdc_hci_cmd_le_add_
  * (0x42).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_Device_From_Periodic_Advertiser_List command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -5870,18 +5662,17 @@ uint8_t sdc_hci_cmd_le_remove_device_from_periodic_adv_list(const sdc_hci_cmd_le
 
 /** @brief LE Clear Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.72
  *
- * This command is used to remove all entries from the list of Periodic Advertisers in the
- * Controller.
+ * The HCI_LE_Clear_Periodic_Advertiser_List command is used to remove all entries
+ * from the list of Periodic Advertisers in the Controller.
  *
  * If this command is used when an HCI_LE_Periodic_Advertising_Create_Sync
  * command is pending, the Controller shall return the error code Command Disallowed
  * (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Clear_Periodic_Advertiser_List command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5894,18 +5685,17 @@ uint8_t sdc_hci_cmd_le_clear_periodic_adv_list(void);
 
 /** @brief LE Read Periodic Advertiser List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.73
  *
- * This command is used to read the number of Periodic Advertiser list entries (including
- * those already stored there) that the Controller can store at the present time.
+ * The HCI_LE_Read_Periodic_Advertiser_List_Size command is used to read the total
+ * number of Periodic Advertiser list entries that can be stored in the Controller.
  *
  * Note: The number of entries that can be stored is not fixed and the Controller can
  * change it at any time (e.g., because the memory used to store the list can also be used
  * for other purposes).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Periodic_Advertiser_List_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5919,14 +5709,13 @@ uint8_t sdc_hci_cmd_le_read_periodic_adv_list_size(sdc_hci_cmd_le_read_periodic_
 
 /** @brief LE Read Transmit Power.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.74
  *
- * This command is used to read the minimum and maximum transmit powers supported
- * by the Controller across all supported PHYs.
+ * The HCI_LE_Read_Transmit_Power command is used to read the minimum and
+ * maximum transmit powers supported by the Controller across all supported PHYs.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read _Transmit_Power command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5940,14 +5729,13 @@ uint8_t sdc_hci_cmd_le_read_transmit_power(sdc_hci_cmd_le_read_transmit_power_re
 
 /** @brief LE Read RF Path Compensation.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.75
  *
- * This command is used to read the RF path compensation value parameters used in the
- * Tx power level and RSSI calculation.
+ * The HCI_LE_Read_RF_Path_Compensation command is used to read the RF path
+ * compensation value parameters used in the Tx power level and RSSI calculation.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_RF_Path_Compensation command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -5961,15 +5749,16 @@ uint8_t sdc_hci_cmd_le_read_rf_path_compensation(sdc_hci_cmd_le_read_rf_path_com
 
 /** @brief LE Write RF Path Compensation.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.76
  *
- * This command is used to indicate the RF path gain or loss between the RF
- * transceiver and the antenna contributed by intermediate components. A positive
- * value means a net RF path gain and a negative value means a net RF path loss.
- * The RF_TX_Path_Compensation_Value parameter shall be used by the Controller to
- * calculate the radiative Tx power level used in HCI commands, HCI events, Advertising
- * physical channel PDUs, and Link Layer Control PDUs using the following equation:
+ * The HCI_LE_Write_RF_Path_Compensation command is used to indicate the RF path
+ * gain or loss between the RF transceiver and the antenna contributed by intermediate
+ * components. A positive value means a net RF path gain and a negative value means
+ * a net RF path loss. The RF_TX_Path_Compensation_Value parameter shall be used
+ * by the Controller to calculate the radiative Tx power level used in HCI commands, HCI
+ * events, Advertising physical channel PDUs, and Link Layer Control PDUs using the
+ * following equation:
  *
  * Radiative Tx power level = Tx power level at RF transceiver output +
  * RF_TX_Path_Compensation_Value
@@ -6005,7 +5794,6 @@ uint8_t sdc_hci_cmd_le_read_rf_path_compensation(sdc_hci_cmd_le_read_rf_path_com
  * that set and then re-enable it.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Write_RF_Path_Compensation command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6025,12 +5813,12 @@ uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_
 
 /** @brief LE Set Privacy Mode.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.77
  *
- * This command is used to allow the Host to specify the privacy mode to be used for a
- * given entry on the resolving list. The effect of this setting is specified in [Vol 6] Part B,
- * Section 4.7.
+ * The HCI_LE_Set_Privacy_Mode command is used to allow the Host to specify the
+ * privacy mode to be used for a given entry on the resolving list. The effect of this setting
+ * is specified in [Vol 6] Part B, Section 4.7.
  *
  * When an entry on the resolving list is removed, the mode associated with that entry
  * shall also be removed.
@@ -6050,7 +5838,6 @@ uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Privacy_Mode command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6064,12 +5851,13 @@ uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t 
 
 /** @brief LE Set Connectionless CTE Transmit Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.80
  *
- * This command is used to set the type, length, and antenna switching pattern for the
- * transmission of Constant Tone Extensions in any periodic advertising on the advertising
- * set identified by the Advertising_Handle parameter.
+ * The HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command is used to set
+ * the type, length, and antenna switching pattern for the transmission of Constant
+ * Tone Extensions in any periodic advertising on the advertising set identified by the
+ * Advertising_Handle parameter.
  *
  * The CTE_Count parameter specifies how many packets with a Constant Tone
  * Extension are to be transmitted in each periodic advertising event. If the number of
@@ -6112,7 +5900,6 @@ uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t 
  * an antenna.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6126,12 +5913,12 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Connectionless CTE Transmit Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.81
  *
- * This command is used to request that the Controller enables or disables the use of
- * Constant Tone Extensions in any periodic advertising on the advertising set identified by
- * Advertising_Handle.
+ * The HCI_LE_Set_Connectionless_CTE_Transmit_Enable command is used to request
+ * that the Controller enables or disables the use of Constant Tone Extensions in any
+ * periodic advertising on the advertising set identified by Advertising_Handle.
  *
  * In order to start sending periodic advertisements containing a Constant
  * Tone Extension, the Host must also enable periodic advertising using the
@@ -6168,7 +5955,6 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  * in the advertising set.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Connectionless_CTE_Transmit_Enable command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6182,12 +5968,13 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Connection CTE Transmit Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.84
  *
- * This command is used to set the antenna switching pattern and permitted Constant
- * Tone Extension types used for transmitting Constant Tone Extensions requested by the
- * peer device on the connection identified by the Connection_Handle parameter.
+ * The HCI_LE_Set_Connection_CTE_Transmit_Parameters command is used to set the
+ * antenna switching pattern and permitted Constant Tone Extension types used for
+ * transmitting Constant Tone Extensions requested by the peer device on the connection
+ * identified by the Connection_Handle parameter.
  *
  * If the Host issues this command when Constant Tone Extension responses have
  * been enabled on the connection, the Controller shall return the error code Command
@@ -6214,7 +6001,6 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set
  * an antenna.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Connection_CTE_Transmit_Parameters command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6230,11 +6016,12 @@ uint8_t sdc_hci_cmd_le_set_conn_cte_transmit_params(const sdc_hci_cmd_le_set_con
 
 /** @brief LE Connection CTE Response Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.86
  *
- * This command is used to request the Controller to respond to LL_CTE_REQ PDUs with
- * LL_CTE_RSP PDUs on the specified connection.
+ * The HCI_LE_Connection_CTE_Response_Enable command is used to request the
+ * Controller to respond to LL_CTE_REQ PDUs with LL_CTE_RSP PDUs on the specified
+ * connection.
  *
  * If the Host issues this command before issuing the
  * HCI_LE_Set_Connection_CTE_Transmit_Parameters command at least once on the
@@ -6252,7 +6039,6 @@ uint8_t sdc_hci_cmd_le_set_conn_cte_transmit_params(const sdc_hci_cmd_le_set_con
  * the Controller will not automatically re-enable Constant Tone Extension responses.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Connection_CTE_Response_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6268,18 +6054,17 @@ uint8_t sdc_hci_cmd_le_conn_cte_response_enable(const sdc_hci_cmd_le_conn_cte_re
 
 /** @brief LE Read Antenna Information.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.87
  *
- * This command allows the Host to read the switching rates, the sampling rates,
- * the number of antennae, and the maximum length of a transmitted Constant Tone
- * Extension supported by the Controller.
+ * The HCI_LE_Read_Antenna_Information command allows the Host to read the
+ * switching rates, the sampling rates, the number of antennae, and the maximum length
+ * of a transmitted Constant Tone Extension supported by the Controller.
  *
  * If the Controller does not support antenna switching, the value of
  * Max_Switching_Pattern_Length shall still be valid but will not be used by the Host.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Antenna_Information command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6293,11 +6078,12 @@ uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_info
 
 /** @brief LE Set Periodic Advertising Receive Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.88
  *
- * This command will enable or disable reports for the periodic advertising train identified
- * by the Sync_Handle parameter.
+ * The HCI_LE_Set_Periodic_Advertising_Receive_Enable command will enable or
+ * disable reports for the periodic advertising train identified by the Sync_Handle
+ * parameter.
  *
  * The Enable parameter determines whether reporting and duplicate filtering are enabled
  * or disabled. If the value is the same as the current state, the command has no effect.
@@ -6310,7 +6096,6 @@ uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_info
  * should use the error code Unsupported Feature or Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Advertising_Receive_Enable command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6324,12 +6109,12 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_
 
 /** @brief LE Periodic Advertising Sync Transfer.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.89
  *
- * This command is used to instruct the Controller to send synchronization information
- * about the periodic advertising train identified by the Sync_Handle parameter to a
- * connected device.
+ * The HCI_LE_Periodic_Advertising_Sync_Transfer command is used to instruct the
+ * Controller to send synchronization information about the periodic advertising train
+ * identified by the Sync_Handle parameter to a connected device.
  *
  * The Service_Data parameter is a value provided by the Host for use by the Host of the
  * peer device. It is not used by the Controller.
@@ -6351,7 +6136,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_
  * No indication is given as to how the recipient handled the information.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Sync_Transfer command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6367,11 +6151,12 @@ uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_
 
 /** @brief LE Periodic Advertising Set Info Transfer.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.90
  *
- * This command is used to instruct the Controller to send synchronization information
- * about the periodic advertising in an advertising set to a connected device.
+ * The HCI_LE_Periodic_Advertising_Set_Info_Transfer command is used to instruct the
+ * Controller to send synchronization information about the periodic advertising in an
+ * advertising set to a connected device.
  *
  * The Advertising_Handle parameter identifies the advertising set. If the parameters in
  * the advertising set have changed since the periodic advertising was first enabled, the
@@ -6400,7 +6185,6 @@ uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_
  * No indication is given as to how the recipient handled the information.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Set_Info_Transfer command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -6416,12 +6200,13 @@ uint8_t sdc_hci_cmd_le_periodic_adv_set_info_transfer(const sdc_hci_cmd_le_perio
 
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.91
  *
- * This command is used to specify how the Controller will process periodic
- * advertising synchronization information received from the device identified by the
- * Connection_Handle parameter (the "transfer mode").
+ * The HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command is used
+ * to specify how the Controller will process periodic advertising synchronization
+ * information received from the device identified by the Connection_Handle parameter
+ * (the "transfer mode").
  *
  * The Mode parameter specifies the action to be taken when periodic advertising
  * synchronization information is received. If Mode is 0x00, the Controller will ignore the
@@ -6467,7 +6252,6 @@ uint8_t sdc_hci_cmd_le_periodic_adv_set_info_transfer(const sdc_hci_cmd_le_perio
  * return an error using the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command
  * has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6483,12 +6267,13 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
 
 /** @brief LE Set Default Periodic Advertising Sync Transfer Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.92
  *
- * This command is used to specify the initial value for the
- * mode, skip, timeout, and Constant Tone Extension type (set by
- * the HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command; see
+ * The HCI_LE_Set_Default_Periodic_Advertising_Sync_Transfer_Parameters command
+ * is used to specify the initial value for the mode, skip,
+ * timeout, and Constant Tone Extension type (set by the
+ * HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command; see
  * Section 7.8.91) to be used for all subsequent connections over the LE transport.
  *
  * The Mode parameter specifies the initial action to be taken. If Mode is 0x00, the
@@ -6520,7 +6305,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
  * return an error using the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Default_Periodic_Advertising_Sync_Transfer_Parameters
  * command has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -6534,7 +6318,7 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
 
 /** @brief LE Read Buffer Size [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.2
  *
  * This command is used to read the maximum size of the data portion of ACL data
@@ -6564,6 +6348,7 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
  * Layer. The Total_Num_LE_ACL_Data_Packets parameter contains the total number of
  * HCI ACL Data packets that can be stored in the data buffers of the Controller. The Host
  * determines how to divide the buffers between different connection handles.
+ *
  * The ISO_Data_Packet_Length parameter shall be used to determine the maximum
  * size of the SDU fragments that are contained in isochronous data packets, and which
  * are transferred from the Host to the Controller. The Total_Num_ISO_Data_Packets
@@ -6576,7 +6361,6 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
  * ISO Data packet header respectively.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_Buffer_Size command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6590,7 +6374,7 @@ uint8_t sdc_hci_cmd_le_read_buffer_size_v2(sdc_hci_cmd_le_read_buffer_size_v2_re
 
 /** @brief LE Read ISO TX Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.96
  *
  * This command is used to read the TX_Time_Stamp and Time_Offset of a transmitted
@@ -6617,7 +6401,6 @@ uint8_t sdc_hci_cmd_le_read_buffer_size_v2(sdc_hci_cmd_le_read_buffer_size_v2_re
  * the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_ISO_TX_Sync command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6633,11 +6416,12 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
 
 /** @brief LE Set CIG Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.97
  *
- * This command is used by a Central’s Host to create a CIG and to set the parameters of
- * one or more CISes that are associated with a CIG in the Controller.
+ * The HCI_LE_Set_CIG_Parameters command is used by a Central’s Host to create a
+ * CIG and to set the parameters of one or more CISes that are associated with a CIG in
+ * the Controller.
  *
  * The CIG_ID parameter identifies a CIG. This parameter is allocated by the Central’s
  * Host and passed to the Peripheral’s Host through the Link Layers during the process
@@ -6776,7 +6560,6 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
  * HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_CIG_Parameters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6792,10 +6575,11 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
 
 /** @brief LE Set CIG Parameters Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.98
  *
- * This command should only be used for testing purposes.
+ * The HCI_LE_Set_CIG_Parameters_Test command should only be used for testing
+ * purposes.
  *
  * The command is used by a Central’s Host to create a CIG and to set the parameters of
  * one or more CISes that are associated with a CIG in the Controller.
@@ -6845,16 +6629,19 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
  * Sub_Interval. This prevents the Peripheral from synchronizing its timing to the wrong
  * subevent (adjacent subevents cannot be on the same channel).
  *
- * The Packing parameter is used to indicate the method of arranging subevents
+ * The Packing parameter is used to indicate the preferred method of arranging subevents
  * of multiple CISes. The subevents can be arranged in Sequential or Interleaved
- * arrangement. This parameter shall be ignored when there is only one CIS in the CIG.
+ * arrangement. This is a recommendation to the Controller which it may ignore. This
+ * parameter shall be ignored when there is only one CIS in the CIG.
  *
  * The Framing parameter specifies the framing mode (see [Vol 6] Part G, Section 2) that
  * the Controller shall use for all the CISes in the CIG. This overrides any framing mode
  * previously set for the CIG.
  *
+ * The CIS_ID[i] parameter is used to identify a CIS.
  * The NSE[i] parameter identifies the maximum number of subevents for each CIS in a
  * CIG event.
+ *
  * The Max_SDU_C_To_P[i] parameter identifies the maximum size of SDU from the
  * Central’s Host. If the CIS is unidirectional from Peripheral to Central, this parameter
  * shall be set to 0. If a CIS configuration that is being modified has a data path set in
@@ -6896,10 +6683,10 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
  * If the Status parameter is non-zero, then the state of the CIG and its CIS configurations
  * shall not be changed by the command. If the CIG did not already exist, it shall not be
  * created.
- *
  * If Status is zero, then the Controller shall set Connection_Handle[i] to the connection
  * handle corresponding to the CIS configuration specified in CIS_ID[i]. If the same CIS_ID
  * is being reconfigured, the same connection handle shall be returned.
+ *
  * If the Host issues this command when the CIG is not in the configurable state, the
  * Controller shall return the error code Command Disallowed (0x0C).
  *
@@ -6925,7 +6712,6 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
  * Unsupported Feature or Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_CIG_Parameters_Test command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -6941,11 +6727,12 @@ uint8_t sdc_hci_cmd_le_set_cig_params_test(const sdc_hci_cmd_le_set_cig_params_t
 
 /** @brief LE Create CIS.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.99
  *
- * This command is used by the Central’s Host to create one or more CISes using the
- * connections identified by the ACL_Connection_Handle arrayed parameter.
+ * The HCI_LE_Create_CIS command is used by the Central’s Host to create one or
+ * more CISes using the connections identified by the ACL_Connection_Handle arrayed
+ * parameter.
  *
  * The CIS_Count parameter is the total number of CISes created by this command.
  *
@@ -7004,7 +6791,6 @@ uint8_t sdc_hci_cmd_le_set_cig_params_test(const sdc_hci_cmd_le_set_cig_params_t
  * created and the Host can determine which CIS had the error.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Create_CIS command, the Controller sends
  * the HCI_Command_Status event to the Host. An HCI_LE_CIS_Established event will
  * be generated for each CIS when it is established or if it is disconnected or considered
@@ -7021,10 +6807,11 @@ uint8_t sdc_hci_cmd_le_create_cis(const sdc_hci_cmd_le_create_cis_t * p_params);
 
 /** @brief LE Remove CIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.100
  *
- * This command is used by the Central’s Host to remove the CIG identified by CIG_ID.
+ * The HCI_LE_Remove_CIG command is used by the Central’s Host to remove the CIG
+ * identified by CIG_ID.
  *
  * The CIG_ID parameter contains the identifier of the CIG.
  *
@@ -7042,7 +6829,6 @@ uint8_t sdc_hci_cmd_le_create_cis(const sdc_hci_cmd_le_create_cis_t * p_params);
  * return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_CIG command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7058,11 +6844,12 @@ uint8_t sdc_hci_cmd_le_remove_cig(const sdc_hci_cmd_le_remove_cig_t * p_params,
 
 /** @brief LE Accept CIS Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.101
  *
- * This command is used by the Peripheral’s Host to inform the Controller to accept the
- * request for the CIS that is identified by the Connection_Handle.
+ * The HCI_LE_Accept_CIS_Request command is used by the Peripheral’s Host to
+ * inform the Controller to accept the request for the CIS that is identified by the
+ * Connection_Handle.
  *
  * The command shall only be issued after an HCI_LE_CIS_Request event has occurred.
  * The event contains the Connection_Handle of the CIS.
@@ -7080,7 +6867,6 @@ uint8_t sdc_hci_cmd_le_remove_cig(const sdc_hci_cmd_le_remove_cig_t * p_params,
  * Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Accept_CIS_Request command,
  * the Controller sends the HCI_Command_Status event to the Host. An
  * HCI_LE_CIS_Established event will be generated when the CIS is established or is
@@ -7096,11 +6882,12 @@ uint8_t sdc_hci_cmd_le_accept_cis_request(const sdc_hci_cmd_le_accept_cis_reques
 
 /** @brief LE Reject CIS Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.102
  *
- * This command is used by the Peripheral’s Host to inform the Controller to reject the
- * request for the CIS that is identified by the Connection_Handle.
+ * The HCI_LE_Reject_CIS_Request command is used by the Peripheral’s Host to
+ * inform the Controller to reject the request for the CIS that is identified by the
+ * Connection_Handle.
  *
  * The command shall only be issued after an HCI_LE_CIS_Request event has occurred.
  * The event contains the Connection_Handle of the CIS.
@@ -7122,7 +6909,6 @@ uint8_t sdc_hci_cmd_le_accept_cis_request(const sdc_hci_cmd_le_accept_cis_reques
  * Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Reject_CIS_Request command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7138,11 +6924,12 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
 
 /** @brief LE Create BIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.103
  *
- * This command is used to create a BIG with one or more BISes (see [Vol 6] Part B,
- * Section 4.4.6). All BISes in a BIG have the same value for all parameters.
+ * The HCI_LE_Create_BIG command is used to create a BIG with one or more BISes
+ * (see [Vol 6] Part B, Section 4.4.6). All BISes in a BIG have the same value for all
+ * parameters.
  *
  * The BIG_Handle contains the identifier of the BIG. This parameter is allocated by the
  * Host and used by the Controller and the Host to identify a BIG.
@@ -7191,14 +6978,13 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
  * Controller.
  *
  * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the maximum
- * value supported by the Controller, then it shall return the error code Rejected due to
- * Limited Resources (0x0D).
+ * value supported by the Controller, then it shall return the error code Connection
+ * Rejected due to Limited Resources (0x0D).
  *
  * If the Advertising_Handle does not identify a periodic advertising train, the periodic
  * advertising train is associated with another BIG, or the periodic advertising train has
- * responses and the Controller does not support PAwR trains associated with BIGs (see
- * [Vol 6] Part B, Section 4.4.6.9), then the Controller shall return the error code Unknown
- * Advertising Identifier (0x42).
+ * responses and the Controller does not support that, then the Controller shall return the
+ * error code Unknown Advertising Identifier (0x42).
  *
  * If the Host issues this command with a BIG_Handle for a BIG that is already created,
  * then the Controller shall return the error code Command Disallowed (0x0C).
@@ -7218,7 +7004,6 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
  * channel.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Create_BIG command, the Controller sends
  * the HCI_Command_Status event to the Host. When the HCI_LE_Create_BIG command
  * has completed, the HCI_LE_Create_BIG_Complete event is generated.
@@ -7233,10 +7018,10 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
 
 /** @brief LE Create BIG Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.104
  *
- * This command should only be used for testing purposes.
+ * The HCI_LE_Create_BIG_Test command should only be used for testing purposes.
  *
  * The command is used to create one or more BISes of a BIG (see [Vol 6] Part B,
  * Section 4.4.6). All BISes in the BIG have the same values for all parameters.
@@ -7270,8 +7055,9 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
  * use, the Controller shall return the error code Unsupported Feature or Parameter Value
  * (0x11).
  *
- * The Packing parameter indicates the method of arranging subevents of multiple
- * BISes. The subevents can be arranged in Sequential or Interleaved arrangement. This
+ * The Packing parameter indicates the preferred method of arranging subevents
+ * of multiple BISes. The subevents can be arranged in Sequential or Interleaved
+ * arrangement. This is a recommendation to the Controller which it may ignore. This
  * parameter shall be ignored when there is only one BIS in the BIG.
  *
  * The Framing parameter indicates the format of the BIS Data PDUs and the mode
@@ -7298,13 +7084,12 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
  * the Host and ignored by the Controller.
  *
  * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the maximum
- * value supported by the Controller, it shall return the error code Rejected due to Limited
- * Resources (0x0D).
+ * value supported by the Controller, it shall return the error code Connection Rejected due
+ * to Limited Resources (0x0D).
  * If the Advertising_Handle does not identify a periodic advertising train, the periodic
  * advertising train is associated with another BIG, or the periodic advertising train has
- * responses and the Controller does not support PAwR trains associated with BIGs (see
- * [Vol 6] Part B, Section 4.4.6.9), the Controller shall return the error code Unknown
- * Advertising Identifier (0x42).
+ * responses and the Controller does not support that, the Controller shall return the error
+ * code Unknown Advertising Identifier (0x42).
  *
  * If the Host issues this command with a BIG_Handle for a BIG that is already created,
  * the Controller shall return the error code Command Disallowed (0x0C).
@@ -7329,7 +7114,6 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
  * advertising physical channel.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Create_BIG_Test command,
  * the Controller sends the HCI_Command_Status event to the Host.
  * When the HCI_LE_Create_BIG_Test command has completed, the
@@ -7345,13 +7129,13 @@ uint8_t sdc_hci_cmd_le_create_big_test(const sdc_hci_cmd_le_create_big_test_t * 
 
 /** @brief LE Terminate BIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.105
  *
- * This command is used to terminate a BIG identified by the BIG_Handle parameter.
- * The command also terminates the transmission of all BISes of the BIG, destroys the
- * associated connection handles of the BISes in the BIG and removes the data paths for
- * all BISes in the BIG.
+ * The HCI_LE_Terminate_BIG command is used to terminate a BIG identified by the
+ * BIG_Handle parameter. The command also terminates the transmission of all BISes
+ * of the BIG, destroys the associated connection handles of the BISes in the BIG and
+ * removes the data paths for all BISes in the BIG.
  *
  * The Reason parameter is used to indicate the reason why the BIG is to be terminated.
  *
@@ -7362,7 +7146,6 @@ uint8_t sdc_hci_cmd_le_create_big_test(const sdc_hci_cmd_le_create_big_test_t * 
  * BIG_Handle, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Terminate_BIG command, the Controller
  * sends the HCI_Command_Status event to the Host.
  * When the HCI_LE_Terminate_BIG command has completed, the
@@ -7384,11 +7167,11 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
 
 /** @brief LE BIG Create Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.106
  *
- * This command is used to synchronize to a BIG described in the periodic advertising
- * train specified by the Sync_Handle parameter.
+ * The HCI_LE_BIG_Create_Sync command is used to synchronize to a BIG described in
+ * the periodic advertising train specified by the Sync_Handle parameter.
  *
  * The BIG_Handle parameter is assigned by the Host to identify the synchronized BIG.
  *
@@ -7411,12 +7194,14 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
  * the Host is less than 6 × ISO_Interval, the Controller shall set the timeout to 6 ×
  * ISO_Interval.
  *
- * The Num_BIS parameter contains the number of BISes specified in the BIS arrayed
- * parameter. The number of BISes requested may be less than the number of BISes in
- * the BIG.
- * The BIS arrayed parameter is a list of BIS_Numbers corresponding to BIS(es) in the
- * synchronized BIG. The list of BIS_Numbers shall be in ascending order and shall not
- * contain any duplicates.
+ * The Num_BIS parameter contains the number of BIS indices specified in the BIS
+ * arrayed parameter. The number of BISes requested may be a subset of the BISes
+ * available in the BIG.
+ *
+ * The BIS arrayed parameter is a list of indices corresponding to BIS(es) in the
+ * synchronized BIG. The list of BIS indices shall be in ascending order and shall not
+ * contain any duplicates. This list of specified BIS(es) may be all or a subset of BISes
+ * available in the BIG.
  *
  * If the Sync_Handle does not exist, the Controller shall return the error code Unknown
  * Advertising Identifier (0x42).
@@ -7431,22 +7216,21 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
  * If the Num_BIS parameter is greater than the total number of BISes in the BIG, the
  * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
  *
- * If MSE is greater than zero and less than the BN value for the BIS, then the Controller
- * should return the error code Invalid HCI Command Parameters (0x12).
+ * If MSE is less than the BN value for the BIS, then the Controller should return the error
+ * code Invalid HCI Command Parameters (0x12).
  *
  * If the Host sends this command when the Controller is in the process of synchronizing
  * to any BIG, i.e. the HCI_LE_BIG_Sync_Established event has not been generated, the
  * Controller shall return the error code Command Disallowed (0x0C).
  *
  * If the Controller is unable to receive PDUs from the specified number of BISes in the
- * synchronized BIG, it shall return the error code Rejected Due To Limited Resources
- * (0x0D).
+ * synchronized BIG, it shall return the error code Connection Rejected Due To Limited
+ * Resources (0x0D).
  *
  * If the Controller is already synchronized to the BIG specified by Sync_Handle, it shall
  * return an error which should use the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_BIG_Create_Sync command,
  * the Controller sends the HCI_Command_Status event to the Host.
  * When the HCI_LE_BIG_Create_Sync command has completed, the
@@ -7466,14 +7250,14 @@ uint8_t sdc_hci_cmd_le_big_create_sync(const sdc_hci_cmd_le_big_create_sync_t * 
 
 /** @brief LE BIG Terminate Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.107
  *
- * This command is used to stop synchronizing or cancel the process of synchronizing
- * to the BIG identified by the BIG_Handle parameter. The command also terminates the
- * reception of BISes in the BIG specified in the HCI_LE_BIG_Create_Sync command,
- * destroys the associated connection handles of the BISes in the BIG and removes the
- * data paths for all BISes in the BIG.
+ * The HCI_LE_BIG_Terminate_Sync command is used to stop synchronizing or cancel
+ * the process of synchronizing to the BIG identified by the BIG_Handle parameter.
+ * The command also terminates the reception of BISes in the BIG specified in the
+ * HCI_LE_BIG_Create_Sync command, destroys the associated connection handles of
+ * the BISes in the BIG and removes the data paths for all BISes in the BIG.
  *
  * If the Host issues this command with a BIG_Handle that does not exist, the Controller
  * shall return the error code Unknown Advertising Identifier (0x42).
@@ -7483,7 +7267,6 @@ uint8_t sdc_hci_cmd_le_big_create_sync(const sdc_hci_cmd_le_big_create_sync_t * 
  * Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_BIG_Terminate_Sync command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7505,7 +7288,7 @@ uint8_t sdc_hci_cmd_le_big_terminate_sync(const sdc_hci_cmd_le_big_terminate_syn
 
 /** @brief LE Request Peer SCA.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.108
  *
  * This command is used to read the Sleep Clock Accuracy (SCA) of the peer device.
@@ -7527,7 +7310,6 @@ uint8_t sdc_hci_cmd_le_big_terminate_sync(const sdc_hci_cmd_le_big_terminate_syn
  * Remote Feature (0x1A).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Request_Peer_SCA command,
  * the Controller sends the HCI_Command_Status event to the Host.
  * When the HCI_LE_Request_Peer_SCA command has completed, the
@@ -7543,16 +7325,16 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
 
 /** @brief LE Setup ISO Data Path.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.109
  *
- * This command is used to identify and create the isochronous data path between
- * the Host and the Controller for a CIS, CIS configuration, or BIS identified by the
- * Connection_Handle parameter. This command can also be used to configure a codec
- * for each data path. When a connection is created no data paths are set up for that
- * connection. When the command has completed successfully, data shall be allowed to
- * flow over the specified path in the specified direction irrespective of the state of the
- * other direction or any other path.
+ * The HCI_LE_Setup_ISO_Data_Path command is used to identify and create the
+ * isochronous data path between the Host and the Controller for a CIS, CIS configuration,
+ * or BIS identified by the Connection_Handle parameter. This command can also be used
+ * to configure a codec for each data path. When a connection is created no data paths
+ * are set up for that connection. When the command has completed successfully, data
+ * shall be allowed to flow over the specified path in the specified direction irrespective of
+ * the state of the other direction or any other path.
  *
  * The input and output directions are defined from the perspective of the Controller, so
  * "input" refers to data flowing from the Host to the Controller.
@@ -7622,7 +7404,6 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
  * Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Setup_ISO_Data_Path command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7638,11 +7419,12 @@ uint8_t sdc_hci_cmd_le_setup_iso_data_path(const sdc_hci_cmd_le_setup_iso_data_p
 
 /** @brief LE Remove ISO Data Path.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.110
  *
- * This command is used to remove the input and/or output data path(s) associated with a
- * CIS, CIS configuration, or BIS identified by the Connection_Handle parameter.
+ * The HCI_LE_Remove_ISO_Data_Path command is used to remove the input and/or
+ * output data path(s) associated with a CIS, CIS configuration, or BIS identified by the
+ * Connection_Handle parameter.
  *
  * The Data_Path_Direction parameter specifies which directions are to have the data
  * path removed.
@@ -7656,7 +7438,6 @@ uint8_t sdc_hci_cmd_le_setup_iso_data_path(const sdc_hci_cmd_le_setup_iso_data_p
  * Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Remove_ISO_Data_Path command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7672,10 +7453,11 @@ uint8_t sdc_hci_cmd_le_remove_iso_data_path(const sdc_hci_cmd_le_remove_iso_data
 
 /** @brief LE ISO Transmit Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.111
  *
- * This command should only be used in the ISO Test mode and only for testing purposes.
+ * The HCI_LE_ISO_Transmit_Test command should only be used in the ISO Test mode
+ * and only for testing purposes.
  *
  * The command is used to configure an established CIS or BIS specified by the
  * Connection_Handle parameter, and transmit test payloads which are generated by the
@@ -7695,7 +7477,6 @@ uint8_t sdc_hci_cmd_le_remove_iso_data_path(const sdc_hci_cmd_le_remove_iso_data
  * handle, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_ISO_Transmit_Test command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7711,10 +7492,11 @@ uint8_t sdc_hci_cmd_le_iso_transmit_test(const sdc_hci_cmd_le_iso_transmit_test_
 
 /** @brief LE ISO Receive Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.112
  *
- * This command should only be used in the ISO Test mode and only for testing purposes.
+ * The HCI_LE_ISO_Receive_Test command should only be used in the ISO Test mode
+ * and only for testing purposes.
  *
  * The command is used to configure an established CIS or a synchronized BIG specified
  * by the Connection_Handle parameter to receive payloads.
@@ -7737,7 +7519,6 @@ uint8_t sdc_hci_cmd_le_iso_transmit_test(const sdc_hci_cmd_le_iso_transmit_test_
  * Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_ISO_Receive_Test command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7753,10 +7534,11 @@ uint8_t sdc_hci_cmd_le_iso_receive_test(const sdc_hci_cmd_le_iso_receive_test_t 
 
 /** @brief LE ISO Read Test Counters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.113
  *
- * This command should only be used in the ISO Test mode and only for testing purposes.
+ * The HCI_LE_ISO_Read_Test_Counters command should only be used in the ISO Test
+ * mode and only for testing purposes.
  *
  * The command is used to read the test counters (see [Vol 6] Part B, Section 7) in the
  * Controller which is configured in ISO Receive Test mode for a CIS or BIS specified by
@@ -7774,7 +7556,6 @@ uint8_t sdc_hci_cmd_le_iso_receive_test(const sdc_hci_cmd_le_iso_receive_test_t 
  * Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_ISO_Read_Test_Counters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7790,10 +7571,11 @@ uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test
 
 /** @brief LE ISO Test End.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.114
  *
- * This command should only be used in the ISO Test mode and only for testing purposes.
+ * The HCI_LE_ISO_Test_End command should only be used in the ISO Test mode and
+ * only for testing purposes.
  *
  * The command is used to terminate the ISO Transmit and/or Receive Test mode for a
  * CIS or BIS specified by the Connection_Handle parameter but does not terminate the
@@ -7815,7 +7597,6 @@ uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test
  * Feature or Parameter Value (0x11).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_ISO_Test_End command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7829,13 +7610,14 @@ uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test
 uint8_t sdc_hci_cmd_le_iso_test_end(const sdc_hci_cmd_le_iso_test_end_t * p_params,
                                     sdc_hci_cmd_le_iso_test_end_return_t * p_return);
 
-/** @brief LE Set Host Feature [v1].
+/** @brief LE Set Host Feature.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.115
  *
- * This command is used by the Host to set or clear a bit controlled by the Host in the Link
- * Layer FeatureSet stored in the Controller (see [Vol 6] Part B, Section 4.6).
+ * The HCI_LE_Set_Host_Feature command is used by the Host to set or clear a bit
+ * controlled by the Host in the Link Layer FeatureSet stored in the Controller (see [Vol 6]
+ * Part B, Section 4.6).
  *
  * The Bit_Number parameter specifies the bit position in the FeatureSet.
  *
@@ -7852,7 +7634,6 @@ uint8_t sdc_hci_cmd_le_iso_test_end(const sdc_hci_cmd_le_iso_test_end_t * p_para
  * device, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Host_Feature command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7866,7 +7647,7 @@ uint8_t sdc_hci_cmd_le_set_host_feature(const sdc_hci_cmd_le_set_host_feature_t 
 
 /** @brief LE Read ISO Link Quality.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.116
  *
  * This command returns the values of various counters related to link quality that are
@@ -7916,7 +7697,6 @@ uint8_t sdc_hci_cmd_le_set_host_feature(const sdc_hci_cmd_le_set_host_feature_t 
  * Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_ISO_Link_Quality command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -7932,12 +7712,13 @@ uint8_t sdc_hci_cmd_le_read_iso_link_quality(const sdc_hci_cmd_le_read_iso_link_
 
 /** @brief LE Enhanced Read Transmit Power Level.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.117
  *
- * This command is used to read the current and maximum transmit power levels of the
- * local Controller on the ACL connection identified by the Connection_Handle parameter
- * and the PHY indicated by the PHY parameter.
+ * The HCI_LE_Enhanced_Read_Transmit_Power_Level command is used to read the
+ * current and maximum transmit power levels of the local Controller on the ACL
+ * connection identified by the Connection_Handle parameter and the PHY indicated by
+ * the PHY parameter.
  *
  * If the Host sets PHY to a value that the Controller does not support, including a value
  * that is reserved for future use, the Controller shall return the error code Unsupported
@@ -7947,7 +7728,6 @@ uint8_t sdc_hci_cmd_le_read_iso_link_quality(const sdc_hci_cmd_le_read_iso_link_
  * Controller shall return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Enhanced_Read_Transmit_Power_Level command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -7963,12 +7743,13 @@ uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_e
 
 /** @brief LE Read Remote Transmit Power Level.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.118
  *
- * This command is used to read the transmit power level used by the remote Controller
- * on the ACL connection that is identified by the Connection_Handle parameter and the
- * PHY indicated by the PHY parameter.
+ * The HCI_LE_Read_Remote_Transmit_Power_Level command is used to read the
+ * transmit power level used by the remote Controller on the ACL connection that is
+ * identified by the Connection_Handle parameter and the PHY indicated by the PHY
+ * parameter.
  *
  * The local Controller may use the remote transmit power level value obtained from a
  * prior Power Change Indication or Power Control Request procedure (see [Vol 6] Part B,
@@ -7986,7 +7767,6 @@ uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_e
  * Controller shall return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Read_Remote_Transmit_Power_Level
  * command, the Controller shall send the HCI_Command_Status event to the Host.
  * When the Controller has determined the remote transmit power, it shall generate an
@@ -8002,11 +7782,12 @@ uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_rea
 
 /** @brief LE Set Path Loss Reporting Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.119
  *
- * This command is used to set the path loss threshold reporting parameters for the ACL
- * connection identified by the Connection_Handle parameter.
+ * The HCI_LE_Set_Path_Loss_Reporting_Parameters command is used to set the
+ * path loss threshold reporting parameters for the ACL connection identified by the
+ * Connection_Handle parameter.
  *
  * The path loss threshold-based mechanism is described in [Vol 6] Part B, Section 4.5.16.
  * For each zone boundary, the upwards boundary shall equal the threshold plus the
@@ -8037,7 +7818,6 @@ uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_rea
  * Controller shall return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Path_Loss_Reporting_Parameters command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -8062,11 +7842,12 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_params(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Path Loss Reporting Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.120
  *
- * This command is used to enable or disable path loss reporting for the ACL connection
- * identified by the Connection_Handle parameter.
+ * The HCI_LE_Set_Path_Loss_Reporting_Enable command is used to enable or disable
+ * path loss reporting for the ACL connection identified by the Connection_Handle
+ * parameter.
  *
  * If the Enable parameter is set to 0x01 and no prior LE Power Control Request
  * procedure has been initiated on the ACL connection, then the Controller may need
@@ -8085,7 +7866,6 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_params(const sdc_hci_cmd_le_set_p
  * monitoring when it is already disabled has no effect.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Path_Loss_Reporting_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -8116,12 +7896,13 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Transmit Power Reporting Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.121
  *
- * This command is used to enable or disable the reporting to the local Host of transmit
- * power level changes in the local and remote Controllers for the ACL connection
- * identified by the Connection_Handle parameter.
+ * The HCI_LE_Set_Transmit_Power_Reporting_Enable command is used to enable or
+ * disable the reporting to the local Host of transmit power level changes in the local
+ * and remote Controllers for the ACL connection identified by the Connection_Handle
+ * parameter.
  *
  * If the Remote_Enable parameter is set to 0x01 and no prior LE Power Control Request
  * procedure has been initiated on the ACL connection, then the Controller shall initiate a
@@ -8133,7 +7914,6 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
  * Controller shall return the error code Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Transmit_Power_Reporting_Enable command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -8157,13 +7937,14 @@ uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_
 
 /** @brief LE Set Data Related Address Changes.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.122
  *
- * This command specifies circumstances when the Controller shall refresh any
- * Resolvable Private Address used by the advertising set identified by the
- * Advertising_Handle parameter, whether or not the address timeout period has been
- * reached. This command may be used while advertising is enabled.
+ * The HCI_LE_Set_Data_Related_Address_Changes command specifies circumstances
+ * when the Controller shall refresh any Resolvable Private Address used by the
+ * advertising set identified by the Advertising_Handle parameter, whether or not the
+ * address timeout period has been reached. This command may be used while
+ * advertising is enabled.
  *
  * The Change_Reasons parameter specifies the reason(s) for refreshing addresses. The
  * default when an advertising set is created, or if legacy advertising commands (see
@@ -8178,7 +7959,6 @@ uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_
  * Advertising_Handle parameter.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Data_Related_Address_Changes command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -8192,13 +7972,13 @@ uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Default Subrate.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.123
  *
- * This command is used by the Host to set the initial values for the acceptable
- * parameters for subrating requests, as defined by the HCI_LE Subrate_Request
- * command (see Section 7.8.124), for all future ACL connections where the Controller
- * is the Central. This command does not affect any existing connection.
+ * The HCI_LE_Set_Default_Subrate command is used by the Host to set the initial
+ * values for the acceptable parameters for subrating requests, as defined by the HCI_LE
+ * Subrate_Request command (see Section 7.8.124), for all future ACL connections where
+ * the Controller is the Central. This command does not affect any existing connection.
  *
  * The parameters have the same meanings as those in the HCI_LE_Subrate_Request
  * command.
@@ -8215,7 +7995,6 @@ uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set
  * Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Set_Default_Subrate command, the
  * Controller sends the HCI_Command_Complete event to the Host.
  *
@@ -8229,12 +8008,13 @@ uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subr
 
 /** @brief LE Subrate Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.124
  *
- * This command is used by a Central or a Peripheral to request a change to the subrating
- * factor and/or other parameters (see [Vol 6] Part B, Section 4.5.1) applied to an existing
- * connection using the Connection Subrate Update procedure.
+ * The HCI_LE_Subrate_Request command is used by a Central or a Peripheral to
+ * request a change to the subrating factor and/or other parameters (see [Vol 6] Part B,
+ * Section 4.5.1) applied to an existing connection using the Connection Subrate Update
+ * procedure.
  *
  * The Subrate_Min and Subrate_Max parameters specify the range of acceptable
  * subrating factors being requested.
@@ -8301,11 +8081,7 @@ uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subr
  * Support) bit is not set in the Peripheral's FeatureSet, the Controller shall return the
  * error code Unsupported Remote Feature (0x1A).
  *
- * If a Connection Rate Request procedure or a Connection Rate Update procedure is in
- * progress, then the Controller shall return the error code Command Disallowed (0x0C).
- *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Subrate_Request command, the Controller
  * sends the HCI_Command_Status event to the Host. An HCI_LE_Subrate_Change
  * event shall be generated when the Connection Subrate Update procedure has
@@ -8321,11 +8097,11 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
 
 /** @brief LE Set Extended Advertising Parameters [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.53
  *
- * This command is used by the Host to set the advertising parameters.
- *
+ * The HCI_LE_Set_Extended_Advertising_Parameters command is used by the Host to
+ * set the advertising parameters.
  * The Advertising_Handle parameter identifies the advertising set whose parameters are
  * being configured.
  *
@@ -8334,21 +8110,27 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  * Controller. In particular, the following restrictions apply to this parameter:
  *
  * • If legacy advertising PDU types are being used, then the parameter value shall be
- *   one of those specified in Table 7.3. If the advertising set already contains data, the
- *   type shall be one that supports advertising data and the amount of data shall not
- *   exceed 31 octets.
+ * one of those specified in Table 7.3. If the advertising set already contains data, the
+ * type shall be one that supports advertising data and the amount of data shall not
+ * exceed 31 octets.
  *
- *  Event Type                    PDU Type               Advertising Event     Advertising Data
- *                                                       Properties
- *  Connectable and scannable     ADV_IND                0b00000000_00010011   Supported
+ *                                                            Advertising
+ *                                                            Event         Advertising
+ *  Event Type                      PDU Type                  Properties    Data
+ *
+ *  Connectable and scannable       ADV_IND                   0b00010011    Supported
  *  undirected
- *  Connectable directed          ADV_DIRECT_IND         0b00000000_00010101   Not allowed
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00010101    Not allowed
  *  (low duty cycle)
- *  Connectable directed          ADV_DIRECT_IND         0b00000000_00011101   Not allowed
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00011101    Not allowed
  *  (high duty cycle)
- *  Scannable undirected          ADV_SCAN_IND           0b00000000_00010010   Supported
- *  Non-connectable and non-      ADV_NON-               0b00000000_00010000   Supported
- *  scannable undirected          CONN_IND
+ *
+ *  Scannable undirected            ADV_SCAN_IND              0b00010010    Supported
+ *
+ *  Non-connectable and non-        ADV_NONCONN_IND           0b00010000    Supported
+ *  scannable undirected
  *
  * Table 7.3: Advertising_Event_Properties values for legacy PDUs
  *
@@ -8362,11 +8144,9 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  * that does not support advertising data when the advertising set already contains some,
  * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
  *
- * The parameters beginning with “Secondary” are only valid when extended advertising
- * PDU types are being used (bit 4 = 0).
- *
  * The Own_Address_Type parameter shall be ignored for undirected anonymous
  * advertising (bit 2 = 0 and bit 5 = 1).
+ *
  * If Directed advertising is selected, the Peer_Address_Type and Peer_Address shall be
  * valid and the Advertising_Filter_Policy parameter shall be ignored.
  *
@@ -8479,17 +8259,18 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  *
  * Missing parameters:
  *
- * When a version of this command is issued that does not include all the parameters, the
- * following values shall be used for any missing parameters:
+ * When a version of this command is issued that does not include all the
+ * parameters, the following values shall be used:
  *
- *  Parameter                                                                   Value
- *  Primary_Advertising_PHY_Options                                             0x00
- *  Secondary_Advertising_PHY_Options                                           0x00
+ *  Parameter                                        Value
+ *
+ *  Primary_Advertising_PHY_Options                 0x00
+ *
+ *  Secondary_Advertising_PHY_Options               0x00
  *
  * Event(s) generated (unless masked away):
- *
- * When the HCI_LE_Set_Extended_Advertising_Parameters command has completed,
- * an HCI_Command_Complete event shall be generated.
+ * When the HCI_LE_Set_Extended_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  * @param[out] p_return Extra return parameters.
@@ -8503,12 +8284,13 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_pa
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.125
  *
- * This command is used by the Host to set the data for one or more subevents of PAwR
- * in reply to an HCI_LE_Periodic_Advertising_Subevent_Data_Request event. The data
- * for a subevent shall be transmitted only once.
+ * The HCI_LE_Set_Periodic_Advertising_Subevent_Data command is used by the
+ * Host to set the data for one or more subevents of PAwR in reply to an
+ * HCI_LE_Periodic_Advertising_Subevent_Data_Request event. The data for a subevent
+ * shall be transmitted only once.
  *
  * When using more than one instance of this command to provide data, the Host may
  * provide the data in any order. For example, if providing data for subevents 0 and 1 in
@@ -8562,7 +8344,6 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_pa
  * an error which should use the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Advertising_Subevent_Data command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -8578,12 +8359,12 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_subevent_data(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Periodic Advertising Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.126
  *
- * This command is used by the Host to set the data for a response slot in a specific
- * subevent of the PAwR identified by the Sync_Handle. The data for a response slot shall
- * be transmitted only once.
+ * The HCI_LE_Set_Periodic_Advertising_Response_Data command is used by the Host
+ * to set the data for a response slot in a specific subevent of the PAwR identified by the
+ * Sync_Handle. The data for a response slot shall be transmitted only once.
  *
  * The Request_Event parameter identifies the periodic advertising event in which the
  * periodic advertising packet that the Host is responding to was received.
@@ -8614,7 +8395,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_subevent_data(const sdc_hci_cmd_le_set_p
  * error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Periodic_Advertising_Response_Data command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -8630,14 +8410,15 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_response_data(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Periodic Sync Subevent.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.127
  *
- * This command is used to instruct the Controller to synchronize with a subset of the
- * subevents within a PAwR train identified by the Sync_Handle parameter, listen for
- * packets sent by the peer device and pass any received data up to the Host. If the
- * Controller is synchronized with any subevents that are not in the subset of subevents in
- * this command, then the Controller shall no longer synchronize with those subevents.
+ * The HCI_LE_Set_Periodic_Sync_Subevent command is used to instruct the Controller
+ * to synchronize with a subset of the subevents within a PAwR train identified by the
+ * Sync_Handle parameter, listen for packets sent by the peer device and pass any
+ * received data up to the Host. If the Controller is synchronized with any subevents that
+ * are not in the subset of subevents in this command, then the Controller shall no longer
+ * synchronize with those subevents.
  *
  * The Periodic_Advertising_Properties parameter indicates which fields should be
  * included in the AUX_SYNC_SUBEVENT_RSP PDUs.
@@ -8649,7 +8430,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_response_data(const sdc_hci_cmd_le_set_p
  * synchronize with.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Periodic_Sync_Subevent command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -8665,12 +8445,14 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
 
 /** @brief LE Extended Create Connection [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.66
  *
- * This command is used to create a single ACL connection, with the local device in the
- * Central role, to a connectable advertiser. The command is also used to create a single
- * ACL connection between a periodic advertiser and a synchronized device.
+ * The HCI_LE_Extended_Create_Connection command is used to create an ACL
+ * connection, with the local device in the Central role, to a connectable advertiser. The
+ * command is also used to create an ACL connection between a periodic advertiser and a
+ * synchronized device.
+ *
  * If a connection is created with the local device in the Peripheral role while this command
  * is pending, then this command remains pending.
  *
@@ -8690,16 +8472,13 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * then the Initiator_Filter_Policy, Scan_Interval[i], and Scan_Window[i] parameters shall
  * be ignored.
  *
- * The Initiator_Filter_Policy parameter is used to determine whether the Filter Accept
- * List is used and whether to process decision PDUs and other advertising PDUs. If the
- * Filter Accept List is used or the policy allows decision PDUs to be processed (or both),
- * then the device to connect to is the first one that sends an advertisement received
- * successfully by the local device and that is on the list or that is accepted by the decision
- * instructions (see Section 7.8.145), as specified by the policy. If the Filter Accept List is
- * not used, then the Peer_Address_Type and the Peer_Address parameters specify the
- * address type and address of the advertising device to connect to for advertisements not
- * using decision PDUs. If Initiator_Filter_Policy is set to 0x03, then devices on the Filter
- * Accept List shall still be processed using the decision instructions.
+ * The Initiator_Filter_Policy parameter is used to determine whether the Filter Accept List
+ * is used and whether to process decision PDUs and other advertising PDUs. If the Filter
+ * Accept List is not used, the Peer_Address_Type and the Peer_Address parameters
+ * specify the address type and address of the advertising device to connect to for
+ * advertisements not using decision PDUs. If Initiator_Filter_Policy is set to 0x03, then
+ * devices on the Filter Accept List shall still be processed using the decision instructions
+ * (see Section 7.8.145).
  *
  * The Own_Address_Type parameter indicates the type of address being used in the
  * connection request packets.
@@ -8737,7 +8516,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * The Connection_Interval_Min[i] and Connection_Interval_Max[i] parameters define the
  * minimum and maximum allowed connection interval. The Connection_Interval_Min[i]
  * parameter shall not be greater than the Connection_Interval_Max[i] parameter.
- *
  * The Max_Latency[i] parameter defines the maximum allowed Peripheral latency (see
  * [Vol 6] Part B, Section 4.5.1).
  *
@@ -8760,6 +8538,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * If the Host issues this command when another HCI_LE_Extended_Create_Connection
  * command is pending in the Controller, the Controller shall return the error code
  * Command Disallowed (0x0C).
+ *
  * If the local device is already connected to the same device address as the advertiser
  * (including two different Resolvable Private Addresses that resolve to the same IRK),
  * then the Controller shall return an error which should use the error code Connection
@@ -8798,24 +8577,22 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * error code Invalid HCI Command Parameters (0x12).
  *
  * If the Host issues this command and the Controller has insufficient resources to handle
- * any more connections, the Controller shall return the error code Rejected due to Limited
- * Resources (0x0D).
+ * any more connections, the Controller shall return the error code Connection Rejected
+ * due to Limited Resources (0x0D).
  *
  * If the Controller does not support the Decision-Based Advertising Filtering feature and
  * the Host issues this command with Initiator_Filter_Policy set to a value other than 0x00
  * or 0x01, the Controller shall return an error code which should be Unsupported Feature
  * or Parameter Value (0x11).
- * Missing parameters:
  *
+ * Missing parameters:
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
- *
- *  Parameter                                                                   Value
- *  Advertising_Handle                                                          0xFF
- *  Subevent                                                                    0xFF
+ * Parameter Value
+ * Advertising_Handle 0xFF
+ * Subevent 0xFF
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Extended_Create_Connection command,
  * the Controller sends the HCI_Command_Status event to the Host. An
  * HCI_LE_Enhanced_Connection_Complete event shall be generated when a connection
@@ -8836,10 +8613,11 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
 
 /** @brief LE Set Periodic Advertising Parameters [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.61
  *
- * This command is used by the Host to set the parameters for periodic advertising.
+ * The HCI_LE_Set_Periodic_Advertising_Parameters command is used by the Host to
+ * set the parameters for periodic advertising.
  *
  * The Advertising_Handle parameter identifies the advertising set whose periodic
  * advertising parameters are being configured. If the corresponding advertising set does
@@ -8905,22 +8683,10 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
  * shall be assumed unless the current advertising parameters require the use of S=2 for
  * an advertising physical channel, in which case the S=2 coding shall be assumed for that
  * advertising physical channel.
- * Missing parameters:
- *
- * When a version of this command is issued that does not include all the parameters, the
- * following values shall be used for any missing parameters:
- *
- *  Parameter                                                                      Value
- *  Num_Subevents                                                                  0
- *  Subevent_Interval                                                              ignored
- *  Response_Slot_Delay                                                            ignored
- *  Response_Slot_Spacing                                                          ignored
- *  Num_Response_Slots                                                             ignored
  *
  * Event(s) generated (unless masked away):
- *
- * When the HCI_LE_Set_Periodic_Advertising_Parameters command has completed, an
- * HCI_Command_Complete event shall be generated.
+ * When the HCI_LE_Set_Periodic_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  * @param[out] p_return Extra return parameters.
@@ -8934,13 +8700,12 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params_v2(const sdc_hci_cmd_le_set_perio
 
 /** @brief LE Read All Local Supported Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.128
  *
  * This command requests the supported LE features for the Controller.
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Read_All_Local_Supported_Features command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -8954,7 +8719,7 @@ uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all
 
 /** @brief LE Read All Remote Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.129
  *
  * This command requests, from the remote device identified by the Connection_Handle,
@@ -8977,7 +8742,6 @@ uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all
  * Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Read_All_Remote_Features command,
  * the Controller shall send the HCI_Command_Status event to the Host. When the
  * Controller has completed the procedure to determine the remote features or has
@@ -8997,12 +8761,13 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
 
 /** @brief LE CS Read Local Supported Capabilities.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.130
  *
- * This command allows a Host to read the CS capabilities that are supported by the
- * local Controller. This command may be used along with the local supported features to
- * provide additional details of the supported CS capabilities.
+ * The HCI_LE_CS_Read_Local_Supported_Capabilities command allows a Host to read
+ * the CS capabilities that are supported by the local Controller. This command may
+ * be used along with the local supported features to provide additional details of the
+ * supported CS capabilities.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
  * are supported by the Controller.
@@ -9010,7 +8775,7 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the local Controller.
  *
- * The Num_Antennae_Supported parameter indicates the number of antenna elements
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
@@ -9021,9 +8786,9 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * The Modes_Supported parameter indicates the optional CS modes that are supported
  * by the local Controller.
  *
- * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
- * RTT_Random_Sequence_N parameters indicate the time-of-flight accuracy as
- * described in [Vol 6] Part B, Section 2.4.2.44.
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the RTT_Random_-
+ * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
+ * B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
  * the support by the local Controller for reporting Normalized Attack Detector Metric
@@ -9047,16 +8812,14 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * supported optional time durations used in CS steps as described in [Vol 6] Part H,
  * Section 4.3.
  *
- * The TX_SNR_Capability parameter indicates the supported SNR levels used for the
- * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
- * Section 3.1.3.
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
  *
  * If the Host issues this command when the Channel Sounding (Host Support) feature bit
  * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
  * code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Read_Local_Supported_Capabilities command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -9070,13 +8833,14 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_re
 
 /** @brief LE CS Read Remote Supported Capabilities.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.131
  *
- * This command allows a Host to query the CS capabilities that are supported by
- * the remote Controller. If no Channel Sounding Capability Exchange procedure has
- * been initiated on the ACL connection specified by the Connection_Handle and if no
- * prior HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has been
+ * The HCI_LE_CS_Read_Remote_Supported_Capabilities command allows a Host
+ * to query the CS capabilities that are supported by the remote Controller.
+ * If no Channel Sounding Capability Exchange procedure has been initiated
+ * on the ACL connection specified by the Connection_Handle and if no prior
+ * HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has been
  * issued by the Host, then the Controller shall initiate a Channel Sounding Capabilities
  * Exchange procedure on the ACL. Otherwise, the Controller may use a cached copy of
  * the capabilities of the remote device.
@@ -9099,7 +8863,6 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_re
  * using the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command.
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Read_Remote_Supported_Capabilities
  * command, the Controller shall send the HCI_Command_Status event to the
  * Host. When the Controller has completed the Channel Sounding Capability
@@ -9117,12 +8880,12 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
 
 /** @brief LE CS Write Cached Remote Supported Capabilities.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.132
  *
- * This command allows a Host to write the cached copy of the CS capabilities
- * that are supported by the remote Controller for the connection identified by the
- * Connection_Handle parameter.
+ * The HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command allows a
+ * Host to write the cached copy of the CS capabilities that are supported by the remote
+ * Controller for the connection identified by the Connection_Handle parameter.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
  * are supported by the remote Controller.
@@ -9130,7 +8893,7 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the remote Controller.
  *
- * The Num_Antennae_Supported parameter indicates the number of antenna elements
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
@@ -9142,8 +8905,8 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * by the remote Controller.
  *
  * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
- * RTT_Random_Sequence_N parameters indicate the time-of-flight accuracy as
- * described in [Vol 6] Part B, Section 2.4.2.44.
+ * RTT_Random_Payload_N parameters indicate the time-of-flight accuracy as described
+ * in [Vol 6] Part B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
  * the support by the remote Controller for reporting Normalized Attack Detector Metric
@@ -9167,9 +8930,8 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * supported optional time durations used in CS steps as described in [Vol 6] Part H,
  * Section 4.3.
  *
- * The TX_SNR_Capability parameter indicates the supported SNR levels used for the
- * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
- * Section 3.1.3.
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
  *
  * If the Host issues this command after an LL_CS_CAPABILITIES_REQ or
  * LL_CS_CAPABILITIES_RSP PDU has been received from the remote Controller, then
@@ -9186,7 +8948,6 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
@@ -9202,12 +8963,12 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities(const sdc_h
 
 /** @brief LE CS Security Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.133
  *
- * This command is used by a Host to start or restart the Channel Sounding Security
- * Start procedure in the local Controller for the ACL connection identified by the
- * Connection_Handle parameter.
+ * The HCI_LE_CS_Security_Enable command is used by a Host to start or restart
+ * the Channel Sounding Security Start procedure in the local Controller for the ACL
+ * connection identified by the Connection_Handle parameter.
  *
  * If the Host issues this command on a Connection_Handle where the Controller is the
  * Peripheral, then the Controller shall return the error code Command Disallowed (0x0C).
@@ -9224,7 +8985,6 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities(const sdc_h
  * code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Security_Enable command, the
  * Controller shall send the HCI_Command_Status event to the Host. When the Controller
  * has completed the Channel Sounding Security Start procedure with the remote
@@ -9240,20 +9000,20 @@ uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enabl
 
 /** @brief LE CS Set Default Settings.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.134
  *
- * This command is used by a Host to set default CS settings in the local Controller for the
- * connection identified by the Connection_Handle parameter. The default settings specify
- * that all roles are disabled in a Controller and CS_SYNC_Antenna_Selection is set to
- * 0x01.
+ * The HCI_LE_CS_Set_Default_Settings command is used by a Host to set default CS
+ * settings in the local Controller for the connection identified by the Connection_Handle
+ * parameter. The default settings specify that all roles are disabled in a Controller and
+ * CS_SYNC_Antenna_Selection is set to 0x01.
  *
  * The Role_Enable parameter is used to enable or disable the CS roles in the local
  * Controller. If the Host issues this command to disable a Role for which a valid CS
  * configuration is present, then the Controller shall return the error code Invalid HCI
  * Command Parameters (0x12).
  *
- * The CS_SYNC_Antenna_Selection parameter indicates the antenna identifiers to be
+ * The CS_SYNC_Antenna_Selection parameter indicates the antenna identifier to be
  * used for transmitting and receiving CS_SYNC packets.
  *
  * If the Role_Enable parameter is used to enable an unsupported role or the
@@ -9273,7 +9033,6 @@ uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enabl
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Set_Default_Settings command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -9289,16 +9048,17 @@ uint8_t sdc_hci_cmd_le_cs_set_default_settings(const sdc_hci_cmd_le_cs_set_defau
 
 /** @brief LE CS Read Remote FAE Table.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.135
  *
- * This command is used by a Host to read the per-channel mode-0 Frequency Actuation
- * Error table of the remote Controller.
+ * The HCI_LE_CS_Read_Remote_FAE_Table command is used by a Host to read the
+ * per-channel mode-0 Frequency Actuation Error table of the remote Controller.
  *
- * If the remote Controller supports a Frequency Actuation Error of zero relative to its
- * mode-0 transmissions in the reflector role (No_FAE bit set as described in [Vol 6]
- * Part B, Section 2.4.2.44), then the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * If the remote Controller supports a Frequency Actuation Error of zero relative to
+ * its mode-0 transmissions in the reflector role (No_FAE bit set as described in
+ * [Vol 6] Part B, Section 2.4.2.44), then the Controller shall generate the LE_CS_-
+ * Read_Remote_FAE_Table_Complete event with Status set to Unsupported Feature or
+ * Parameter Value (0x11).
  *
  * The Host may store a copy of the remote device’s Frequency Actuation
  * Error table and write the remote Frequency Actuation Error table in the
@@ -9310,7 +9070,6 @@ uint8_t sdc_hci_cmd_le_cs_set_default_settings(const sdc_hci_cmd_le_cs_set_defau
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Read_Remote_FAE_Table command,
  * the Controller shall send the HCI_Command_Status event to the Host. When
  * the Controller has completed the Channel Sounding Mode-0 FAE Table
@@ -9327,11 +9086,12 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_fae_table(const sdc_hci_cmd_le_cs_read_rem
 
 /** @brief LE CS Write Cached Remote FAE Table.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.136
  *
- * This command is used by a Host to write a cached copy of the per-channel mode-0
- * Frequency Actuation Error table of the remote device in the local Controller.
+ * The HCI_LE_CS_Write_Cached_Remote_FAE_Table command is used by a Host to
+ * write a cached copy of the per-channel mode-0 Frequency Actuation Error table of the
+ * remote device in the local Controller.
  *
  * If the remote Controller supports a Frequency Actuation Error of zero relative to its
  * mode-0 transmissions in the reflector role (No_FAE bit set as described in [Vol 6]
@@ -9350,7 +9110,6 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_fae_table(const sdc_hci_cmd_le_cs_read_rem
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Write_Cached_Remote_FAE_Table command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -9366,21 +9125,21 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_
 
 /** @brief LE CS Create Config.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.137
  *
- * This command is used by a Host to create a new CS configuration or update an
- * existing CS configuration with the identifier Config_ID on the connection identified by
- * the Connection_Handle in the local and/or the remote Controller.
+ * The HCI_LE_CS_Create_Config command is used by a Host to create a new CS
+ * configuration or update an existing CS configuration with the identifier Config_ID on
+ * the connection identified by the Connection_Handle in the local and/or the remote
+ * Controller.
  *
  * When the Create_Context parameter is set to 0x00, the CS configuration is written
  * only in the local Controller. Otherwise when set to 0x01, the CS configuration is written
  * in both the local and remote Controllers using the Channel Sounding Configuration
  * procedure.
  *
- * The Main_Mode_Type and the Sub_Mode_Type parameters indicate the CS modes
- * (see [Vol 6] Part H, Table 4.11 for valid combinations) to be used during the CS
- * procedure for the specified CS configuration.
+ * The Main_Mode_Type and the Sub_Mode_Type parameters indicate the CS modes to
+ * be used during the CS procedure for the specified CS configuration.
  *
  * The Min_Main_Mode_Steps and Max_Main_Mode_Steps parameters indicate the
  * range of main mode CS steps to be executed before a submode CS step is executed
@@ -9416,9 +9175,8 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_
  *
  * If the Host issues this command with a Role not enabled by a prior
  * HCI_LE_CS_Set_Default_Settings command or with a set of parameters that are
- * considered an invalid configuration according to [Vol 6] Part H (e.g., a combination
- * of Main_Mode_Type and Sub_Mode_Type not specified in [Vol 6] Part H, Table 4.11),
- * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ * considered an invalid configuration according to [Vol 6] Part H, then the Controller shall
+ * return the error code Invalid HCI Command Parameters (0x12).
  *
  * If the Host issues this command before a Channel Sounding
  * Capability Exchange procedure has been completed or an
@@ -9436,7 +9194,6 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Create_Config command, the Controller
  * shall send the HCI_Command_Status event to the Host. When the Controller has
  * completed the Channel Sounding Configuration procedure with the remote Controller
@@ -9453,16 +9210,16 @@ uint8_t sdc_hci_cmd_le_cs_create_config(const sdc_hci_cmd_le_cs_create_config_t 
 
 /** @brief LE CS Remove Config.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.138
  *
- * This command is used to remove a CS configuration identified by Config_ID from
- * the local Controller for the connection identified by the Connection_Handle parameter.
- * When the Host issues this command, the local Controller shall initiate a Channel
- * Sounding Configuration procedure to remove the CS configuration from both the
- * local and remote device. The Controller shall delete any CS procedure related
- * parameters set using the HCI_LE_CS_Set_Procedure_Parameters command for the
- * CS configuration identified by Config_ID.
+ * The HCI_LE_CS_Remove_Config command is used to remove a CS configuration
+ * identified by Config_ID from the local Controller for the connection identified by
+ * the Connection_Handle parameter. When the Host issues this command, the local
+ * Controller shall initiate a Channel Sounding Configuration procedure to remove the CS
+ * configuration from both the local and remote device. The Controller shall delete any CS
+ * procedure related parameters set using the HCI_LE_CS_Set_Procedure_Parameters
+ * command for the CS configuration identified by Config_ID.
  *
  * If the CS configuration corresponding to Config_ID does not exist, then the Controller
  * shall return the error code Invalid HCI Command Parameters (0x12).
@@ -9476,7 +9233,6 @@ uint8_t sdc_hci_cmd_le_cs_create_config(const sdc_hci_cmd_le_cs_create_config_t 
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Remove_Config command, the
  * Controller shall send the HCI_Command_Status event to the Host. When the
  * Controller has completed the Channel Sounding Configuration procedure to disable the
@@ -9492,20 +9248,20 @@ uint8_t sdc_hci_cmd_le_cs_remove_config(const sdc_hci_cmd_le_cs_remove_config_t 
 
 /** @brief LE CS Set Channel Classification.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.139
  *
- * This command is used by a Host to update the channel classification based on its
- * local information. This channel classification persists until overwritten with a subsequent
- * HCI_LE_CS_Set_Channel_Classification command or until the Controller is reset. The
- * Controller may combine the channel classification information provided by the Host
- * along with local channel classification information to send an updated CS channel map
- * to the remote Controller.
+ * The HCI_LE_CS_Set_Channel_Classification command is used by a Host to update the
+ * channel classification based on its local information. This channel classification persists
+ * until overwritten with a subsequent HCI_LE_CS_Set_CS_Channel_Classification
+ * command or until the Controller is reset. The Controller may combine the channel
+ * classification information provided by the Host along with local channel classification
+ * information to send an updated CS channel map to the remote Controller.
  *
  * If this command is used, then the Host should send updates within 10 seconds of
  * knowing that the CS channel classification has changed.
  *
- * If the Host issues this command less than 1 second after the previous time it issued this
+ * If the host issues this command less than 1 second after the previous time it issued this
  * command, then the Controller shall return the error code Command Disallowed (0x0C).
  *
  * If the Channel_Classification parameter enables channels that are reserved for future
@@ -9513,7 +9269,6 @@ uint8_t sdc_hci_cmd_le_cs_remove_config(const sdc_hci_cmd_le_cs_remove_config_t 
  * Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Set_Channel_Classification command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -9527,13 +9282,13 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
 
 /** @brief LE CS Set Procedure Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.140
  *
- * This command is used by a Host to set the parameters for the scheduling of
- * one or more CS procedures by the local Controller, with the remote device for
- * the CS configuration identified by Config_ID and the connection identified by the
- * Connection_Handle parameter.
+ * The HCI_LE_CS_Set_Procedure_Parameters command is used by a Host to set the
+ * parameters for the scheduling of one or more CS procedures by the local Controller,
+ * with the remote device for the CS configuration identified by Config_ID and the
+ * connection identified by the Connection_Handle parameter.
  *
  * The Max_Procedure_Len parameter indicates the maximum duration of each CS
  * procedure. The Min_Procedure_Interval and Max_Procedure_Interval parameters
@@ -9552,10 +9307,8 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
  * The Tone_Antenna_Config_Selection parameter indicates the Antenna Configuration
  * Index to be used in the CS procedure.
  * The power delta value Tx_Power_Delta indicates the recommended difference between
- * the remote device’s power level for the CS tones and CS_SYNC packets, and the
- * power level for the PHY indicated by the PHY parameter. If the resulting power level
- * goes below the minimum or goes above the maximum supported transmit power levels
- * of the remote device, then the Controller may adjust the requested power delta value.
+ * the remote device’s power level for the CS tones and RTT packets and the power level
+ * for the PHY indicated by the PHY parameter.
  *
  * The Preferred_Peer_Antenna parameter indicates the preferred peer-ordered antenna
  * elements to be used by the remote device for the antenna configuration denoted by
@@ -9569,16 +9322,16 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
  * The SNR_Control_Reflector parameter indicates the SNR control adjustment for the
  * CS_SYNC transmissions of the reflector.
  *
- * If the Host issues this command with parameters that exceed the CS capabilities or any
- * coexistence constraints, then the Controller shall return the error code Rejected Due to
- * Limited Resources (0x0D).
+ * If the Host issues this command with parameters that exceed the CS capabilities or
+ * any coexistence constraints, then the Controller shall return the error code Connection
+ * Rejected Due to Limited Resources (0x0D).
  *
  * If the CS configuration corresponding to Config_ID does not exist or is removed using
  * the HCI_LE_CS_Remove_Config command, then the Controller shall return the error
  * code Invalid HCI Command Parameters (0x12).
  *
- * If the Host issues this command when a CS procedure is already enabled for
- * the specified Config_ID in the Controller using the HCI_LE_CS_Procedure_Enable
+ * If the Host issues this command when a CS procedure measurement is already enabled
+ * for the specified Config_ID in the Controller using the HCI_LE_CS_Procedure_Enable
  * command, then the Controller shall return the error code Command Disallowed (0x0C).
  *
  * The parameters specified by this command for the CS configuration identified
@@ -9594,7 +9347,6 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Set_Procedure_Parameters command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -9610,12 +9362,12 @@ uint8_t sdc_hci_cmd_le_cs_set_procedure_params(const sdc_hci_cmd_le_cs_set_proce
 
 /** @brief LE CS Procedure Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.141
  *
- * This command is used by a Host to enable or disable the scheduling of CS procedures
- * by the local Controller, with the remote device for the connection identified by the
- * Connection_Handle parameter.
+ * The HCI_LE_CS_Procedure_Enable command is used by a Host to enable or disable
+ * the scheduling of CS procedures by the local Controller, with the remote device for the
+ * connection identified by the Connection_Handle parameter.
  *
  * If the Host issues this command to enable a CS configuration identified by the
  * Config_ID parameter before a corresponding HCI_LE_CS_Set_Procedure_Parameters
@@ -9636,15 +9388,14 @@ uint8_t sdc_hci_cmd_le_cs_set_procedure_params(const sdc_hci_cmd_le_cs_set_proce
  * command, then the Controller shall return the error code Command Disallowed (0x0C).
  *
  * If the number of channels available for Channel Sounding before the start of a new CS
- * procedure is less than 15, then the Controller shall return the error code Insufficient
- * Channels (0x48).
+ * procedure measurement is less than 15, then the Controller shall return the error code
+ * Insufficient Channels (0x48).
  *
  * If the Host sends this command with a Connection_Handle that does not exist, or the
  * Connection_Handle is not for an ACL, then the Controller shall return the error code
  * Unknown Connection Identifier (0x02).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Procedure_Enable command, the
  * Controller shall send the HCI_Command_Status event to the Host. When
  * the locally initiated Channel Sounding Start procedure has completed or
@@ -9665,7 +9416,7 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
 
 /** @brief LE CS Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.142
  *
  * This command is used to start a CS test where the Implementation Under Test (IUT)
@@ -9682,9 +9433,8 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  * case of an override have been used the number of times indicated by Channel_Map_-
  * Repetition to schedule CS steps, or the maximum number of allowed steps in a CS
  * procedure has been reached, or the maximum number of subevents indicated by
- * the Max_Num_Subevents parameter (if non-zero) has been reached, or the maximum
- * number of allowed subevents in a CS procedure has been reached, the CS procedure
- * will end.
+ * the Max_Num_Subevents parameter has been reached, or the maximum number of
+ * allowed subevents in a CS procedure has been reached, the CS procedure will end.
  *
  * The Main_Mode_Type and the Sub_Mode_Type parameters indicate the CS modes to
  * be used during the CS procedure for the specified CS configuration.
@@ -9709,12 +9459,12 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  * The Subevent_Len parameter indicates the maximum length of a CS subevent.
  *
  * The Subevent_Interval parameter indicates the gap between the start of consecutive
- * CS subevents. If Subevent_Interval is set to zero, then only one CS subevent is
- * executed in the CS test.
+ * CS subevents. When Subevent_Interval is set to zero, the Subevent_Len parameter is
+ * ignored, and only one CS subevent is executed in the CS test.
  *
- * The Max_Num_Subevents parameter indicates the maximum number of subevents that
- * are in the procedure (0x00 indicates no limit). If Max_Num_Subevents is set to 0x00,
- * then the Subevent_Interval parameter shall be ignored.
+ * The Max_Num_Subevents parameter indicates the maximum number of subevents
+ * that are in the procedure. If Max_Num_Subevents is set to 0x00, then the
+ * Max_Num_Subevents parameter is ignored.
  *
  * The Transmit_Power_Level parameter indicates the transmit power level used for the
  * CS procedure.
@@ -9775,7 +9525,6 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  * the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_CS_Test command has completed, an HCI_Command_Complete
  * event shall be generated. The Controller shall either generate the LE_CS_Subevent_-
  * Result event once or generate the LE_CS_Subevent_Result_Continue event multiple
@@ -9791,17 +9540,16 @@ uint8_t sdc_hci_cmd_le_cs_test(const sdc_hci_cmd_le_cs_test_t * p_params);
 
 /** @brief LE CS Test End.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.143
  *
- * This command is used to stop any CS test that is in progress.
+ * The HCI_LE_CS_Test_End command is used to stop any CS test that is in progress.
  *
  * If the Host issues this command when there is no prior CS test initiated using the
  * HCI_LE_CS_Test command or when a prior CS test has already been completed, then
  * the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_CS_Test_End command, the Controller
  * shall send the HCI_Command_Status event to the Host. When the Controller has
  * successfully sent all the pending CS subevent results to the Host, the Controller shall
@@ -9816,11 +9564,12 @@ uint8_t sdc_hci_cmd_le_cs_test_end(void);
 
 /** @brief LE Set Host Feature [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.115
  *
- * This command is used by the Host to set or clear a bit controlled by the Host in the Link
- * Layer FeatureSet stored in the Controller (see [Vol 6] Part B, Section 4.6).
+ * The HCI_LE_Set_Host_Feature command is used by the Host to set or clear a bit
+ * controlled by the Host in the Link Layer FeatureSet stored in the Controller (see [Vol 6]
+ * Part B, Section 4.6).
  *
  * The Bit_Number parameter specifies the bit position in the FeatureSet.
  *
@@ -9837,7 +9586,6 @@ uint8_t sdc_hci_cmd_le_cs_test_end(void);
  * device, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * Event(s) generated (unless masked away):
- *
  * When the HCI_LE_Set_Host_Feature command has completed, an
  * HCI_Command_Complete event shall be generated.
  *
@@ -9851,11 +9599,12 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
 
 /** @brief LE Frame Space Update.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.151
  *
- * This command allows the Host to request a change to one or more frame space values.
- * This command may be issued on both the Central and the Peripheral.
+ * The HCI_LE_Frame_Space_Update command allows the Host to request a change to
+ * one or more frame space values. This command may be issued on both the Central and
+ * the Peripheral.
  *
  * The Frame_Space_Min and Frame_Space_Max parameters indicate the minimum and
  * maximum allowed frame space values that the Controller should use, respectively.
@@ -9885,16 +9634,9 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
  *
  * If the Host issues this command with a bit set in the PHYS or the Spacing_Types
  * parameter that the Controller does not support, then the Controller shall reject the
- * command and return the error code Unsupported Feature or Parameter Value (0x11).
- * If the Host issues this command with a bit set in the PHYS or the Spacing_Types
- * parameter that the remote device does not support, then the Controller shall reject
- * the command and return the error code Unsupported Remote Feature (0x1A). The
- * Controller can determine this either because it receives a corresponding error response
- * from the remote device or because it has checked the features supported by the remote
- * device.
+ * command and return the error code Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
- *
  * When the Controller receives the HCI_LE_Frame_Space_Update command,
  * the Controller shall send the HCI_Command_Status event to the Host.
  * When the HCI_LE_Frame_Space_Update command has completed, an
@@ -9907,183 +9649,6 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_frame_space_update(const sdc_hci_cmd_le_frame_space_update_t * p_params);
-
-/** @brief LE Connection Rate Request.
- *
- * The description below is extracted from Core_v6.2,
- * Vol 4, Part E, Section 7.8.154
- *
- * This command is used by a Central or a Peripheral to request a change to
- * existing connection parameters (see Section 4.5.1) using the Connection Rate Update
- * procedure (see [Vol 6] Part B, Section 5.1.32) or the Connection Rate Request
- * procedure (see [Vol 6] Part B, Section 5.1.33).
- *
- * The Connection_Interval_Min and Connection_Interval_Max parameters are used to
- * define the minimum and maximum allowed connection interval.
- *
- * The Subrate_Min and Subrate_Max parameters specify the range of acceptable
- * subrating factors being requested.
- *
- * The Max_Latency parameter specifies the maximum allowed Peripheral latency in units
- * of subrated connection events. The same maximum shall apply irrespective of the
- * subrating factor actually chosen.
- *
- * The Continuation_Number parameter specifies the number of underlying connection
- * intervals to remain active after a packet other than an empty packet is transmitted or
- * received.
- *
- * The Supervision_Timeout parameter specifies the link supervision timeout for the
- * connection.
- *
- * If this command is issued on the Central, then it also sets the acceptable
- * parameters for requests from the Peripheral (see [Vol 6] Part B, Section 5.1.33).
- * The acceptable parameters set by this command override those provided via the
- * HCI_LE_Set_Default_Rate_Parameters command or any values set by previous uses
- * of this command on the same connection.
- * The Min_CE_Length and Max_CE_Length parameters provide the Controller with the
- * expected minimum and maximum length of the connection events. The Controller is not
- * required to use these values.
- *
- * If this command is issued on the Central before the devices have performed the Feature
- * Exchange procedure, then the Controller shall complete that procedure before initiating
- * the Connection Rate Request procedure.
- *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                         Error Code
- * MC     One or more CS procedures are enabled.                            Command Disallowed
- *                                                                          (0x0C)
- * MC     A Connection Parameters Request procedure or a Connection         Command Disallowed
- *        Subrate Request procedure is in progress.                         (0x0C)
- * MC     The Connection_Handle parameter does not identify an              Unknown Connection
- *        established ACL connection.                                       Identifier (0x02)
- * MC     Subrate_Max × (Max_Latency + 1) is greater than 500.              Invalid HCI Command
- *                                                                          Parameters (0x12)
- * MC     Connection_Interval_Max × Subrate_Max × (Max_Latency + 1) is      Invalid HCI Command
- *        greater than or equal to Supervision_Timeout × 40.                Parameters (0x12)
- * MC     Connection_Interval_Max is less than Connection_Interval_Min.     Invalid HCI Command
- *                                                                          Parameters (0x12)
- * MC     Connection_Interval_Min and Connection_Interval_Max specify a     Unsupported LL
- *        range of connection intervals which is not supported by the       Parameter Value (0x20)
- *        Controller.
- * MC     Connection_Interval_Max is less than connIntervalRequired (see    Unsupported Feature or
- *        [Vol 6] Part B, Section 4.5.10).                                  Parameter Value (0x11)
- * MC     Subrate_Max is less than Subrate_Min.                             Invalid HCI Command
- *                                                                          Parameters (0x12)
- * MC     Continuation_Number is greater than or equal to Subrate_Max.      Invalid HCI Command
- *                                                                          Parameters (0x12)
- * MC     The Connection Rate (Host Support) bit is not set in the local    Unsupported Remote
- *        or remote device’s FeatureSet.                                    Feature (0x1A)
- * MC     Max_CE_Length is less than Min_CE_Length                          Invalid HCI Command
- *                                                                          Parameters (0x12)
- * </pre>
- *
- * Event(s) generated (unless masked away):
- *
- * When the Controller receives the HCI_LE_Connection_Rate_Request command,
- * the Controller shall send the HCI_Command_Status event to the Host. An
- * HCI_LE_Connection_Rate_Change event shall be generated when the Connection
- * Rate Update procedure or the Connection Rate Request procedure has completed.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_conn_rate_request(const sdc_hci_cmd_le_conn_rate_request_t * p_params);
-
-/** @brief LE Set Default Rate Parameters.
- *
- * The description below is extracted from Core_v6.2,
- * Vol 4, Part E, Section 7.8.155
- *
- * This command is used by the Host to set the initial values of the acceptable parameters
- * for the Connection Rate Request procedure for all future ACL connections where the
- * Controller is Central. The command does not affect any existing connection.
- *
- * The parameters have the same meanings as those in the
- * HCI_LE_Connection_Rate_Request command (see Section 7.8.154).
- *
- * Errors:
- *
- * See Section 4.5.2 for a list of error types and descriptions.
- *
- * <pre>
- * Type   Condition                                                          Error Code
- * MC     Subrate_Max × (Max_Latency + 1) is greater than 500.               Invalid HCI Command
- *                                                                           Parameters (0x12)
- * MC     Connection_Interval_Max × Subrate_Max × (Max_Latency + 1) is       Invalid HCI Command
- *        greater than or equal to Supervision_Timeout × 40.                 Parameters (0x12)
- * MC     Connection_Interval_Max is less than Connection_Interval_Min.      Invalid HCI Command
- *                                                                           Parameters (0x12)
- * MC     Subrate_Max is less than Subrate_Min.                              Invalid HCI Command
- *                                                                           Parameters (0x12)
- * MC     Continuation_Number is greater than or equal to Subrate_Max.       Invalid HCI Command
- *                                                                           Parameters (0x12)
- * MC     Max_CE_Length is less than Min_CE_Length                           Invalid HCI Command
- *                                                                           Parameters (0x12)
- * </pre>
- *
- * Event(s) generated (unless masked away):
- *
- * When the Controller receives the HCI_LE_Set_Default_Rate_Parameters command,
- * the Controller shall send the HCI_Command_Complete event to the Host.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_set_default_rate_params(const sdc_hci_cmd_le_set_default_rate_params_t * p_params);
-
-/** @brief LE Read Minimum Supported Connection Interval.
- *
- * The description below is extracted from Core_v6.2,
- * Vol 4, Part E, Section 7.8.156
- *
- * This command is used by the Host to determine the minimum supported connection
- * interval and which other connection intervals (see [Vol 6] Part B, Section 4.5.1) the
- * Controller supports.
- *
- * Each group shall represent a set of supported connection intervals forming an
- * arithmetic sequence starting at Group_Min[i], ending at Group_Max[i], and in steps of
- * Group_Stride[i]. For example, if Group_Min[i] = 0x0005, Group_Max[i] = 0x003C, and
- * Group_Strides[i] = 0x000B, then this group indicates that the Controller supports the
- * intervals 0.625 ms, 2.000 ms, 3.375 ms, 4.750 ms, 6.125 ms, and 7.500 ms.
- *
- * The returned groups should include between them every supported value that is in ECV
- * and not in RCV but may include values in RCV. A supported value may be in more
- * than one group. The Controller shall not include any group that only contains values
- * from RCV or the minimum supported. If it would require too many groups to represent
- * all supported values, then the Controller should represent as many supported values as
- * possible.
- *
- * For example, if the Controller returns Num_Groups = 2, Group_Min[0] = 0x0005,
- * Group_Max[0] = 0x0050, Group_Strides[0] = 0x0005, Group_Min[1] = 0x0050,
- * Group_Max[1] = 0x0320, and Group_Strides[1] = 0x0008, then the Controller supports
- * all connection interval values in RCV, all values up to 10 ms that are multiples of 625 μs,
- * and all values between 10 ms and 100 ms that are multiples of 1 ms. If the Controller
- * supports any other values, it should have included more groups.
- *
- * If the Controller only supports values from RCV, then it shall set Num_Groups to zero.
- *
- * Event(s) generated (unless masked away):
- *
- * When the HCI_LE_Read_Minimum_Supported_Connection_Interval command has
- * completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_supported_conn_interval_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 

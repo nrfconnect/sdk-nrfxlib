@@ -16,18 +16,10 @@ Added
 =====
 
 * :c:func:`sdc_hci_cmd_vs_cs_params_set` to set preferred internal CS parameters for the controller to use.
-* Central-only and Peripheral-only library variants for the nRF54H Series devices. (DRGN-25197)
-* Support for the LE Read All Local Supported Features and LE Read All Remote Features HCI commands. (DRGN-25216)
-* Support for the LE Frame Space Update HCI command. (DRGN-23612)
-* Support for the LE Connection Rate Request, LE Set Default Rate Parameters, and LE Read Minimum Supported Connection Interval HCI commands. (DRGN-23668)
-* Support for advertising intervals longer than 10 seconds. (DRGN-9988)
-* :c:func:`sdc_support_lowest_frame_space` to enable support for the lowest possible frame space for ACL connections.
-  This option forces ACL connections to always use the same TX and RX PHY. (DRGN-26042)
 
 Changes
 =======
 
-* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x10`` to indicate compatibility with Bluetooth Core Specification v6.2 (DRGN-26598).
 * :c:func:`sdc_hci_cmd_vs_set_cs_event_length` has been removed, the same functionality is now provided with :c:func:`sdc_hci_cmd_vs_cs_params_set`.
 * The sdc_support_* functions now return void.
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
@@ -35,31 +27,13 @@ Changes
   This change does not affect applications developed in the |NCS| context. (DRGN-26248)
 * The Quality of Service (QoS) channel survey feature now supports incremental channel surveying, allowing it to be used even if there is insufficient time for a full survey.
   The minimum interval has been reduced from 7.5 ms to 3 ms. (DRGN-26108)
-* The function :c:func:`sdc_support_channel_sounding` has been removed.
-  The :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` functions should be used instead.
-  This change does not affect applications developed in the |NCS| context. (DRGN-26504)
-* The controller will now attempt to maintain the same ACL event spacing between two connections using the ``WinOffset`` and ``Instant`` fields of the ``LL_CONNECTION_UPDATE_IND`` packet.
-  This will improve scheduling performance when performing the Connection Parameter Update control procedure and the controller is acting as a central on multiple links.
-  For more details, see :ref:`Connection update scheduling and timing <connection_update_scheduling_and_timing>`. (DRGN-25782)
-* The controller will now attempt to maintain the same offset between two connections using the ``SubrateBaseEvent`` field of the ``LL_SUBRATE_IND`` packet.
-  This will improve scheduling performance when performing the Connection Subrate Update control procedure and the controller is acting as a central on multiple links. (DRGN-25975)
-* The SoftDevice Controller header files now include the :file:`nrfx.h` file, adding a dependency on `nrfx`_.
-  The SoftDevice Controller has been tested for compatibility with the `nrfx`_ revision used by the corresponding ``sdk-nrf`` revision. (DRGN-26373)
 
 Bug fixes
 =========
 
-* Fixed an issue where the controller would ignore a ``CONNECT_IND`` PDU if the ``ChM`` field only contained channels 32, 33, 34, 35, or 36. (DRGN-26788)
 * Fixed an issue where the controller could report a Selected_TX_Power parameter that was much higher than what the radio supports in the ``LE CS Procedure Enable Complete`` HCI event. (DRGN-25941)
 * Fixed an issue where the controller could show reduced performance when EVENT registers were left uncleared in timeslots. (DRGN-26138)
 * Fixed a rare issue where the controller could assert or disconnect when connected to multiple devices as a Bluetooth peripheral. (DRGN-26255)
-* Fixed an issue where an incorrect TX power value was set when using ‐7 dBm on the nRF54L Series devices. (DRGN-26470)
-* Fixed an issue where the controller would be unable to connect to a peer device when configured with scan window equal to scan interval. (DRGN-26625)
-  This would only occur when the time between two periodic activities was less than a millisecond.
-* Fixed an issue where the controller would not correctly handle incoming HCI ISO data when the data path was not enabled.
-  In this case the controller would generate a Number of Completed Packets event with connection handle set to 0. (DRGN-26621)
-* Fixed a rare issue where the controller could assert when the central device replied to an ``LL_LENGTH_REQ``, ``LL_PERIPHERAL_FEATURE_REQ`` or ``LL_POWER_CONTROL_REQ``.
-  This issue would only occur with a peer that violates the specification by initiating a new control procedure before receiving the completion of the previous one. (DRGN-26205)
 
 nRF Connect SDK v3.1.0
 **********************
