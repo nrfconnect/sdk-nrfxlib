@@ -81,9 +81,14 @@ extern "C" {
  */
 #define NRF_MODEM_CELLULAR_SHMEM_CTRL_SIZE 0x4e8
 /**
- * @brief Shared memory control region size for DECT PHY flavour.
+ * @brief Shared memory control region size for DECT NR+ flavour.
  */
-#define NRF_MODEM_DECT_PHY_SHMEM_CTRL_SIZE 0x728
+#define NRF_MODEM_DECT_NRP_SHMEM_CTRL_SIZE 0x728
+/**
+ * @brief Shared memory control region size for DECT PHY flavour.
+ * @deprecated
+ */
+#define NRF_MODEM_DECT_PHY_SHMEM_CTRL_SIZE NRF_MODEM_DECT_NRP_SHMEM_CTRL_SIZE
 
 /** @brief Shared memory configuration in normal operation mode. */
 struct nrf_modem_shmem_cfg {

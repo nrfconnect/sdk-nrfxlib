@@ -12,8 +12,8 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
   # Library variant
   if(CONFIG_NRF_MODEM_LINK_BINARY_CELLULAR)
     cmake_path(APPEND lib_path cellular)
-  elseif(CONFIG_NRF_MODEM_LINK_BINARY_DECT_PHY)
-    cmake_path(APPEND lib_path dect_phy)
+  elseif(CONFIG_NRF_MODEM_LINK_BINARY_DECT)
+    cmake_path(APPEND lib_path dect)
   endif()
 
   # SOC

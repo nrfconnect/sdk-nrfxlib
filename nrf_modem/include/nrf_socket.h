@@ -195,7 +195,9 @@ extern "C" {
 /** @brief
  * Read-only socket option to retrieve the cipher suite used during the TLS/DTLS handshake.
  *
- * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_CIPHERSUITE_USED 4
 
@@ -233,7 +235,10 @@ extern "C" {
  * Socket option to enable/disable the connection ID.
  * See @ref nrf_so_sec_dtls_cid_settings for allowed values.
  *
- * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160 v1.3.5 or later
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_CID 15
 
@@ -241,7 +246,10 @@ extern "C" {
  * Read-only socket option to get the connection ID status.
  * See @ref nrf_so_sec_dtls_cid_statuses for allowed values.
  *
- * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160 v1.3.5 or later
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS 16
 
@@ -251,14 +259,20 @@ extern "C" {
  * Serializes the socket and compresses it. After the socket option is successfully called, you must
  * call @c NRF_SO_SEC_DTLS_CONN_LOAD before continuing to communicate on the socket.
  *
- * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160 v1.3.5 or later
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_CONN_SAVE 17
 
 /** @brief
  * Write-only socket option to load DTLS connection.
  *
- * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160 v1.3.5 or later
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_CONN_LOAD 18
 
@@ -266,7 +280,9 @@ extern "C" {
  * Read-only socket option to get end status of last completed TLS/DTLS handshake procedure.
  * See @ref nrf_so_sec_handshake_statuses for allowed values.
  *
- * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_HANDSHAKE_STATUS 19
 
@@ -274,7 +290,8 @@ extern "C" {
  * Socket option to enable/disable the DTLS fragmentation extension.
  * See @ref nrf_so_sec_dtls_frag_ext_options for allowed values.
  *
- * @note This socket option is only supported with Modem firmware v2.0.4 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1 v2.0.4 or later
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT 20
 /** @} */
@@ -303,7 +320,12 @@ extern "C" {
 #define NRF_SO_IPV6_ECHO_REPLY 32
 /** Send data related to an exceptional event. */
 #define NRF_SO_EXCEPTIONAL_DATA 33
-/** Keep socket open when its PDN connection is lost. */
+/** Keep socket open when its PDN connection is lost.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1 v2.0.1 or later
+ *       - mfw_nrf9151-ntn
+ */
 #define NRF_SO_KEEPOPEN 34
 /** Bind a socket to a Packet Data Network ID (write-only). */
 #define NRF_SO_BINDTOPDN 40
@@ -330,8 +352,10 @@ extern "C" {
  *
  * Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
  *
- * @note This socket option is only supported by modem firmware version 1.3.7 and newer, and
- *       modem firmware version 2.0.2 and newer.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160 v1.3.7 or later
+ *       - mfw_nrf91x1 v2.0.2 or later
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_IPV6_DELAYED_ADDR_REFRESH 62
 /**
@@ -555,11 +579,6 @@ struct nrf_modem_sendcb {
 #define NRF_TLS_PSK_WITH_AES_128_CBC_SHA 0x008C
 #define NRF_TLS_PSK_WITH_AES_128_CCM_8 0xC0A8 /**< TLS 1.2 */
 #define NRF_TLS_EMPTY_RENEGOTIATIONINFO_SCSV 0x00FF
-/** The following cipher suites are only supported with
- * Modem firmware v1.3.x >= 1,
- * Modem firmware v1.2.x >= 7 and
- * Modem firmware v1.1.x >= 5.
- */
 #define NRF_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 0xC02B /**< TLS 1.2 */
 #define NRF_TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 0xC030 /**< TLS 1.2 */
 #define NRF_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 0xC02F /**< TLS 1.2 */
@@ -663,7 +682,9 @@ struct nrf_modem_sendcb {
  * @ref NRF_SEC_TAG_TLS_DECRYPT_19.
  * These security tags must be used only for test and development purposes.
  *
- * @note Supported by modem firmware v2.0.0 or later.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  * @{
  */
 #define NRF_SEC_TAG_TLS_DECRYPT_BASE 2147483648
