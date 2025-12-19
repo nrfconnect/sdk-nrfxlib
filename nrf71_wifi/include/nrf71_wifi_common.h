@@ -1193,6 +1193,15 @@ struct rpu_conf_params {
 	unsigned char country_code[NRF_WIFI_COUNTRY_CODE_LEN];
 	/** Contention window value to be configured */
 	unsigned int tx_pkt_cw;
+
+	unsigned int rx_bss_color;
+	unsigned int rx_station_id;
+	unsigned int tx_dcm;
+	unsigned int tx_doppler;
+	unsigned int tx_midample_periodicity;
+	unsigned int tx_106_tone;
+	unsigned int tx_legacy_length;
+	unsigned int tx_fec_padd_factor;
 } __NRF_WIFI_PKD;
 
 /**
