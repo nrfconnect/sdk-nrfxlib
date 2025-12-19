@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nRF Connect SDK v3.2.0
-**********************
+Main branch
+***********
 
 Modified
 ========
@@ -23,7 +23,7 @@ nRF Connect SDK v3.0.0
 Bug fixes
 =========
 
-* The allocated data buffer for Type 4 Tag is divided into separate areas for TX (transmit) data and RX (receive) data.
+* The allocated data buffer for Type 4 Tag is divided into two areas: a separate area for TX (transmit) data and a separate area for RX (receive) data.
   This allows for data retransmission in response to R(NAK).
 
 nRF Connect SDK v2.7.0
