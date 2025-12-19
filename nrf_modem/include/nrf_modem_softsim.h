@@ -10,6 +10,10 @@
  * @defgroup nrf_modem_softsim SoftSIM API
  * @{
  * @brief API to mediate SoftSIM exchanges between Modem and application.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #ifndef NRF_MODEM_SOFTSIM_H__
 #define NRF_MODEM_SOFTSIM_H__
