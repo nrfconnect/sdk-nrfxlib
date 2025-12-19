@@ -11,16 +11,8 @@
  * @{
  * @brief DECT PHY API.
  *
- * @anchor DECT-SPEC
- * Links to pertaining specification and regulations.
- * - [DECT-2020 NR Part 2: Radio reception and transmission requirements]
- * (https://www.etsi.org/deliver/etsi_ts/103600_103699/10363602/01.05.01_60/ts_10363602v010501p.pdf)
- * - [DECT-2020 NR Part 4: MAC specification]
- * (https://www.etsi.org/deliver/etsi_ts/103600_103699/10363604/01.05.01_60/ts_10363604v010501p.pdf)
- * - [DECT Harmonised Standard for access to radio spectrum; Part 2: DECT-2020 NR ]
- * (https://etsi.org/deliver/etsi_en/301400_301499/30140602/03.01.01_60/en_30140602v030101p.pdf)
- * - [47 CFR Part 15.323]
- * (https://www.ecfr.gov/current/title-47/section-15.323)
+ * @note This is only supported by the following modem firmware:
+ *       - mfw-nr+_nrf91x1
  */
 #ifndef NRF_MODEM_DECT_PHY_H__
 #define NRF_MODEM_DECT_PHY_H__
