@@ -59,10 +59,15 @@ Socket option levels
 
 .. doxygengroup:: nrf_socket_options_levels
 
+
+.. _nrf_socket_generic_options_api:
+
 Generic socket options
 ======================
 
 .. doxygengroup:: nrf_socket_options_sockets
+
+.. _nrf_socket_send_recv_flags_api:
 
 Socket send and recv flags
 ==========================
@@ -80,6 +85,8 @@ Socket API
 **********
 
 .. doxygengroup:: nrf_socket_api
+
+.. _nrf_socket_tls_api:
 
 TLS socket
 **********
