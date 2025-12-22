@@ -20,6 +20,7 @@ For more information about porting, see :ref:`nrf_modem_ug_porting`.
    doc/bootloader
    doc/delta_dfu
    doc/dectphy
+   doc/dect_clock_sync
    doc/softsim_interface
    doc/fault_handling
    doc/modem_trace
