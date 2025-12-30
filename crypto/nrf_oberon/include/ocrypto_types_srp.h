@@ -34,20 +34,23 @@ extern "C" {
 #endif
 
 
-typedef struct {
 /**@cond */
+typedef struct {
     uint32_t w[96];
-/**@endcond */
 } ocrypto_srp_mg;
+/**@endcond */
 
-typedef struct {
 /**@cond */
+typedef struct {
     uint32_t mem[96];
     uint32_t m[192], x[96];
     ocrypto_srp_mg a2, a3, ax;
-/**@endcond */
 } ocrypto_srp_math_ctx;
+/**@endcond */
 
+/**
+ * Context for stack-optimized SRP 
+ */
 typedef struct {
 /**@cond */
     union {

@@ -7,18 +7,8 @@
 
 
 /**
- * @defgroup ocrypto_kem Key Encapsulation Mechanisms (KEM)
- * @ingroup ocrypto
- * @{
- * @brief Key encapsulation algorithms.
- * 
- * Key encapsulation mechanisms allow a sender to generate a secret key and
- * transmit it to a receiver securely.
- * @}
- * 
- * 
  * @defgroup ocrypto_ml_kem1024 ML-KEM-1024
- * @ingroup ocrypto_kem
+ * @ingroup ocrypto_key_agreement
  * @{
  * @brief ML-KEM-1024 key encapsulation algorithm based on NIST PQC standard.
  *

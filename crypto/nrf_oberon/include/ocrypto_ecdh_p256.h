@@ -7,20 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_key_agreement Key Agreement
- * @ingroup ocrypto
- * @{
- * @brief Key agreement algorithms based on elliptic curves.
- * 
- * A key agreement algorithm generates a shared secret key, in a way that both
- * parties contribute to its creation, and that make it hard for an outside
- * observer to determine the key.
- * 
- * There are mainly two groups of algorithms: those based on the NIST standard
- * secpXXX curves (P-256 etc.), and those based on Montgomery curves.
- * @}
- *
- * 
  * @defgroup ocrypto_ecdh_p256 ECDH P-256
  * @ingroup ocrypto_key_agreement
  * @{

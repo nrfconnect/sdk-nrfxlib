@@ -33,53 +33,56 @@
 extern "C" {
 #endif
 
-typedef struct {
 /**@cond */
+typedef struct {
   uint32_t w[8];
-/**@endcond */
 } ocrypto_mod25519;
-
-typedef struct {
-/**@cond */
-    uint32_t w[8];
 /**@endcond */
-} ocrypto_sc25519;
 
-typedef struct {
 /**@cond */
+typedef struct {
+    uint32_t w[8];
+} ocrypto_sc25519;
+/**@endcond */
+
+/**@cond */
+typedef struct {
     ocrypto_mod25519 x;
     ocrypto_mod25519 y;
     ocrypto_mod25519 z;
-/**@endcond */
 } ocrypto_ge25519;
+/**@endcond */
 
-typedef struct {
 /**@cond */
+typedef struct {
     ocrypto_mod25519 x;
     ocrypto_mod25519 y;
     ocrypto_mod25519 z;
     ocrypto_mod25519 t;
-/**@endcond */
 } ocrypto_ge25519_ext;
+/**@endcond */
 
-typedef struct {
 /**@cond */
+typedef struct {
     ocrypto_mod25519 e;
     ocrypto_mod25519 f;
     ocrypto_mod25519 g;
     ocrypto_mod25519 h;
-/**@endcond */
 } ocrypto_ge25519_comp;
+/**@endcond */
 
 
-typedef struct {
 /**@cond */
+typedef struct {
     ocrypto_ge25519_comp comp;
     ocrypto_ge25519_ext ext;
     ocrypto_ge25519_ext pre[3];
-/**@endcond */
 } ocrypto_ge25519_ctx;
+/**@endcond */
 
+/**
+ * Context for stack-optimized Ed25519 
+ */
 typedef struct {
 /**@cond */
     union {
@@ -91,10 +94,13 @@ typedef struct {
     uint8_t ext[64];
 /**@endcond */
 } ocrypto_ed25519_ctx;
-    
+
+/**
+ * Context for stack-optimized Curve25519 scalar multiplication 
+ */
 typedef struct {
 /**@cond */
-    ocrypto_mod25519 x0, xn, zn, xm, zm, a, c;
+ocrypto_mod25519 x0, xn, zn, xm, zm, a, c;
 /**@endcond */
 } ocrypto_curve25519_ctx;
 
