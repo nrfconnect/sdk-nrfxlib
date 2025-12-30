@@ -7,17 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_rsa Asymmetric Signature and Encryption (RSA)
- * @ingroup ocrypto
- * @{
- * @brief RSA public-key encryption and signature algorithm, API that supports flexible key sizes.
- *
- * RSA (Rivest-Shamir-Adleman) is a number theoretic public-key encryption and signature algorithm.
- * 
- * @see [RFC - PKCS #1: RSA Cryptography Specifications Version 2.2](https://datatracker.ietf.org/doc/html/rfc8017)
- * @}
- *
- * 
  * @defgroup ocrypto_rsa_primitives RSA Primitives
  * @ingroup ocrypto_rsa
  * @{
@@ -30,6 +19,8 @@
  * 
  * @remark 1024 bit keys are no longer considered secure;
  *         use of at least 2048 bit keys is recommended.
+ *
+ * @see [RFC - PKCS #1: RSA Cryptography Specifications Version 2.2](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
  */
 
 /**

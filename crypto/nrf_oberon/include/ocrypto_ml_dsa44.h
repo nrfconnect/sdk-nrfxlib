@@ -38,6 +38,11 @@ extern "C" {
 #endif
 
 
+#if defined(OCRYPTO_ML_DSA_SMALL) && defined(OCRYPTO_ML_DSA_FAST)
+#error  "OCRYPTO_ML_DSA_SMALL & OCRYPTO_ML_DSA_FAST must not be defined simultaneously"
+#endif
+
+
 /**
  * Public key size in bytes.
  */
@@ -58,20 +63,121 @@ extern "C" {
 typedef struct {
     ocrypto_sha3_ctx sha3;
     int32_t t[256];
-#ifdef OCRYPTO_ML_DSA_SMALL
     int32_t c[256];
     int32_t s[256];
-#else
+} ocrypto_ml_dsa44_ctx_s;
+
+typedef struct {
+    ocrypto_sha3_ctx sha3;
+    int32_t t[256];
     int32_t u[5][256];
-#ifdef OCRYPTO_ML_DSA_FAST
+} ocrypto_ml_dsa44_ctx_m;
+
+typedef struct {
+    ocrypto_sha3_ctx sha3;
+    int32_t t[256];
+    int32_t u[5][256];
     int32_t a[4][4][256];
     int32_t s1[4][256];
     int32_t s2[4][256];
     int32_t y[4][256];
     int32_t t0[4][256];
+} ocrypto_ml_dsa44_ctx_f;
+
+#if defined(OCRYPTO_ML_DSA_SMALL)
+typedef ocrypto_ml_dsa44_ctx_s ocrypto_ml_dsa44_ctx;
+#elif defined(OCRYPTO_ML_DSA_FAST)
+typedef ocrypto_ml_dsa44_ctx_f ocrypto_ml_dsa44_ctx;
+#else
+typedef ocrypto_ml_dsa44_ctx_m ocrypto_ml_dsa44_ctx;
 #endif
-#endif
-} ocrypto_ml_dsa44_ctx;
+
+
+int ocrypto_ml_dsa44_key_pair_s(
+    ocrypto_ml_dsa44_ctx_s *ctx,
+    uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    uint8_t pk[ocrypto_ml_dsa44_PK_SIZE],
+    const uint8_t zeta[32]);
+int ocrypto_ml_dsa44_key_pair_m(
+    ocrypto_ml_dsa44_ctx_m *ctx,
+    uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    uint8_t pk[ocrypto_ml_dsa44_PK_SIZE],
+    const uint8_t zeta[32]);
+
+int ocrypto_ml_dsa44_sign_s(
+    ocrypto_ml_dsa44_ctx_s *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *m, size_t mlen,
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+int ocrypto_ml_dsa44_sign_m(
+    ocrypto_ml_dsa44_ctx_m *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *m, size_t mlen,
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+int ocrypto_ml_dsa44_sign_f(
+    ocrypto_ml_dsa44_ctx_f *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *m, size_t mlen,
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+
+int ocrypto_ml_dsa44_sign_hash_s(
+    ocrypto_ml_dsa44_ctx_s *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *hash, size_t hash_len,
+    const uint8_t oid[11],
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+int ocrypto_ml_dsa44_sign_hash_m(
+    ocrypto_ml_dsa44_ctx_m *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *hash, size_t hash_len,
+    const uint8_t oid[11],
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+int ocrypto_ml_dsa44_sign_hash_f(
+    ocrypto_ml_dsa44_ctx_f *ctx,
+    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *hash, size_t hash_len,
+    const uint8_t oid[11],
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
+    const uint8_t rnd[32]);
+
+int ocrypto_ml_dsa44_verify_s(
+    ocrypto_ml_dsa44_ctx_s *ctx,
+    const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *m, size_t mlen,
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
+int ocrypto_ml_dsa44_verify_m(
+    ocrypto_ml_dsa44_ctx_m *ctx,
+    const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *m, size_t mlen,
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
+
+int ocrypto_ml_dsa44_verify_hash_s(
+    ocrypto_ml_dsa44_ctx_s *ctx,
+    const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *hash, size_t hash_len,
+    const uint8_t oid[11],
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
+int ocrypto_ml_dsa44_verify_hash_m(
+    ocrypto_ml_dsa44_ctx_m *ctx,
+    const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
+    const uint8_t *hash, size_t hash_len,
+    const uint8_t oid[11],
+    const uint8_t *ctx_str, size_t ctx_len,
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
 /**@endcond */
 
 
@@ -80,34 +186,22 @@ typedef struct {
  *
  * @param[out] ctx  Context.
  * @param[out] sk   Secret key (can be NULL).
- * @param[out] pk   Public key.
+ * @param[out] pk   Public key (can be NULL).
  * @param[in]  zeta Random seed (32 bytes).
  * @return 0 on success, non-zero on failure.
  */
-int ocrypto_ml_dsa44_key_pair(
+static inline int ocrypto_ml_dsa44_key_pair(
     ocrypto_ml_dsa44_ctx *ctx,
     uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
     uint8_t pk[ocrypto_ml_dsa44_PK_SIZE],
-    const uint8_t zeta[32]);
-
-/**@cond */
-/**
- * Internal sign.
- *
- * @param[in]  ctx Context.
- * @param[out] sig Generated signature.
- * @param[in]  mu  Message representative (64 bytes).
- * @param[in]  sk  Secret key.
- * @param[in]  rnd Random seed (32 bytes, NULL for deterministic signing).
- * @return 0 on success, non-zero on failure.
- */
-int ocrypto_ml_dsa44_sign_internal(
-    ocrypto_ml_dsa44_ctx *ctx,
-    uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
-    const uint8_t mu[64],
-    const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
-    const uint8_t rnd[32]);
-/**@endcond */
+    const uint8_t zeta[32])
+{
+#if defined(OCRYPTO_ML_DSA_SMALL)
+    return ocrypto_ml_dsa44_key_pair_s(ctx, sk, pk, zeta);
+#else
+    return ocrypto_ml_dsa44_key_pair_m((ocrypto_ml_dsa44_ctx_m*)ctx, sk, pk, zeta);
+#endif
+}
 
 /**
  * Signs a message.
@@ -122,13 +216,22 @@ int ocrypto_ml_dsa44_sign_internal(
  * @param[in]  rnd     Random seed (32 bytes, NULL for deterministic signing).
  * @return 0 on success, non-zero on failure.
  */
-int ocrypto_ml_dsa44_sign(
+static inline int ocrypto_ml_dsa44_sign(
     ocrypto_ml_dsa44_ctx *ctx,
     uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
     const uint8_t *m, size_t mlen,
     const uint8_t *ctx_str, size_t ctx_len,
     const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
-    const uint8_t rnd[32]);
+    const uint8_t rnd[32])
+{
+#if defined(OCRYPTO_ML_DSA_SMALL)
+    return ocrypto_ml_dsa44_sign_s(ctx, sig, m, mlen, ctx_str, ctx_len, sk, rnd);
+#elif defined(OCRYPTO_ML_DSA_FAST)
+    return ocrypto_ml_dsa44_sign_f(ctx, sig, m, mlen, ctx_str, ctx_len, sk, rnd);
+#else
+    return ocrypto_ml_dsa44_sign_m(ctx, sig, m, mlen, ctx_str, ctx_len, sk, rnd);
+#endif
+}
 
 /**
  * Signs a hash.
@@ -144,31 +247,23 @@ int ocrypto_ml_dsa44_sign(
  * @param[in]  rnd      Random seed (32 bytes, NULL for deterministic signing).
  * @return 0 on success, non-zero on failure.
  */
-int ocrypto_ml_dsa44_sign_hash(
+static inline int ocrypto_ml_dsa44_sign_hash(
     ocrypto_ml_dsa44_ctx *ctx,
     uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
     const uint8_t *hash, size_t hash_len,
     const uint8_t oid[11],
     const uint8_t *ctx_str, size_t ctx_len,
     const uint8_t sk[ocrypto_ml_dsa44_SK_SIZE],
-    const uint8_t rnd[32]);
-
-/**@cond */
-/**
- * Internal signature verify.
- *
- * @param[in] ctx Context.
- * @param[in] sig Signature to verify.
- * @param[in] mu  Message representative (64 bytes).
- * @param[in] pk  Public key.
- * @return 0 on success, non-zero on failure.
- */
-int ocrypto_ml_dsa44_verify_internal(
-    ocrypto_ml_dsa44_ctx *ctx,
-    const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
-    const uint8_t mu[64],
-    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
-/**@endcond */
+    const uint8_t rnd[32])
+{
+#if defined(OCRYPTO_ML_DSA_SMALL)
+    return ocrypto_ml_dsa44_sign_hash_s(ctx, sig, hash, hash_len, oid, ctx_str, ctx_len, sk, rnd);
+#elif defined(OCRYPTO_ML_DSA_FAST)
+    return ocrypto_ml_dsa44_sign_hash_f(ctx, sig, hash, hash_len, oid, ctx_str, ctx_len, sk, rnd);
+#else
+    return ocrypto_ml_dsa44_sign_hash_m(ctx, sig, hash, hash_len, oid, ctx_str, ctx_len, sk, rnd);
+#endif
+}
 
 /**
  * Verifies a signature against a message.
@@ -182,12 +277,19 @@ int ocrypto_ml_dsa44_verify_internal(
  * @param[in] pk      Public key.
  * @return 0 on success, non-zero on failure.
  */
-int ocrypto_ml_dsa44_verify(
+static inline int ocrypto_ml_dsa44_verify(
     ocrypto_ml_dsa44_ctx *ctx,
     const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
     const uint8_t *m, size_t mlen,
     const uint8_t *ctx_str, size_t ctx_len,
-    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE])
+{
+#if defined(OCRYPTO_ML_DSA_SMALL)
+    return ocrypto_ml_dsa44_verify_s(ctx, sig, m, mlen, ctx_str, ctx_len, pk);
+#else
+    return ocrypto_ml_dsa44_verify_m((ocrypto_ml_dsa44_ctx_m*)ctx, sig, m, mlen, ctx_str, ctx_len, pk);
+#endif
+}
 
 /**
  * Verifies a signature against a hash.
@@ -202,13 +304,20 @@ int ocrypto_ml_dsa44_verify(
  * @param[in] pk       Public key.
  * @return 0 on success, non-zero on failure.
  */
-int ocrypto_ml_dsa44_verify_hash(
+static inline int ocrypto_ml_dsa44_verify_hash(
     ocrypto_ml_dsa44_ctx *ctx,
     const uint8_t sig[ocrypto_ml_dsa44_SIG_SIZE],
     const uint8_t *hash, size_t hash_len,
     const uint8_t oid[11],
     const uint8_t *ctx_str, size_t ctx_len,
-    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE]);
+    const uint8_t pk[ocrypto_ml_dsa44_PK_SIZE])
+{
+#if defined(OCRYPTO_ML_DSA_SMALL)
+    return ocrypto_ml_dsa44_verify_hash_s(ctx, sig, hash, hash_len, oid, ctx_str, ctx_len, pk);
+#else
+    return ocrypto_ml_dsa44_verify_hash_m((ocrypto_ml_dsa44_ctx_m*)ctx, sig, hash, hash_len, oid, ctx_str, ctx_len, pk);
+#endif
+}
 
 
 #ifdef __cplusplus

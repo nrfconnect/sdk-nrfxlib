@@ -7,25 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_unauth_enc Unauthenticated Ciphers
- * @ingroup ocrypto
- * @{
- * @brief Encryption algorithms without authentication.
- * 
- * Ciphers provide encryption/decryption, without authentication or integrity-checking.
- * @}
- *
- * 
- * @defgroup ocrypto_auth_enc Authenticated Encryption with Associated Data (AEAD)
- * @ingroup ocrypto
- * @{
- * @brief Encryption algorithms with authentication and support for additional data.
- * 
- * AEAD algorithms provide encryption with authentication, and support
- * integrity-checking of additional unencrypted data.
- * @}
- * 
- *
  * @defgroup ocrypto_aes_key AES Key Sizes
  * @ingroup ocrypto_unauth_enc
  * @{

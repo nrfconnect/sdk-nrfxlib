@@ -7,15 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_kdf Key Derivation
- * @ingroup ocrypto
- * @{
- * @brief Key derivation algorithms.
- * 
- * Key derivation functions generate secret keys from secret values.
- * @}
- *
- * 
  * @defgroup ocrypto_hkdf_sha256 HKDF-SHA256
  * @ingroup ocrypto_kdf
  * @{

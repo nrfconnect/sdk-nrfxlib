@@ -20,6 +20,8 @@
  * 
  * @remark This is the original ocrypto API for RSA. See the newer API that
  *         supports additional key sizes.
+ *
+ * @see [RFC - PKCS #1: RSA Cryptography Specifications Version 2.2](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
  */
 
 /**

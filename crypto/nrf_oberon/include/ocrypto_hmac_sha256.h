@@ -7,15 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_mac Message Authentication Code (MAC)
- * @ingroup ocrypto
- * @{
- * @brief MAC algorithms.
- *
- * Message authentication codes are tags used for checking the authenticity and integrity of messages.
- * @}
- *
- * 
  * @defgroup ocrypto_hmac_sha256 HMAC-SHA256
  * @ingroup ocrypto_mac
  * @{
