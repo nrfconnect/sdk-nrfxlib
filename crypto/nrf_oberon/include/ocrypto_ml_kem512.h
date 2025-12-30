@@ -8,7 +8,7 @@
 
 /**
  * @defgroup ocrypto_ml_kem512 ML-KEM-512
- * @ingroup ocrypto_kem
+ * @ingroup ocrypto_key_agreement
  * @{
  * @brief ML-KEM-512 key encapsulation algorithm based on NIST PQC standard.
  *

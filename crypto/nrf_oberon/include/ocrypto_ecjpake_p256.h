@@ -7,16 +7,6 @@
 
 
 /**
- * @defgroup ocrypto_pake Password-Authenticated Key Exchange (PAKE)
- * @ingroup ocrypto
- * @{
- * @brief Key exchange algorithms based on password authentication.
- * 
- * A PAKE agreement algorithm generates a shared secret key based on a password,
- * in a way that makes it hard for an outside observer to determine the key.
- * @}
- *
- * 
  * @defgroup ocrypto_ecjpake EC-JPAKE
  * @ingroup ocrypto_pake
  * @{

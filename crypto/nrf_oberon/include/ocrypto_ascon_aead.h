@@ -12,7 +12,7 @@
  * @{
  * @brief Ascon-AEAD is an authenticated encription algorithm designed for small devices.
  * 
- * @see [NIST - SP 800-232](https://csrc.nist.gov/pubs/sp/800/232/ipd)
+ * @see [NIST SP 800-232](https://csrc.nist.gov/pubs/sp/800/232/final)
  */
 
 /**

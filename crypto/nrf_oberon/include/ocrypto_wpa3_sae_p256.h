@@ -26,7 +26,7 @@ extern "C" {
  * @brief SAE/SAE-H2E password based WPA3 authentication algorithm based on the
  *        NIST P-256 curve (aka secp256r1).
  *
- * @see [IEEE - Std 802.11 2020](https://standards.ieee.org/ieee/802.11/7028/)
+ * @see [IEEE - Std 802.11 2024](https://ieeexplore.ieee.org/document/10979691)
  */
 
 /**
@@ -146,7 +146,7 @@ int ocrypto_wpa3_sae_p256_pwe(
  * @retval -1  Otherwise.
  */
 int ocrypto_wpa3_sae_p256_get_commit(
-    uint8_t commit[98],
+    uint8_t commit[96],
     const uint8_t rand[32],
     const uint8_t mask[32],
     const uint8_t pwe[64]);
@@ -160,7 +160,7 @@ int ocrypto_wpa3_sae_p256_get_commit(
  * @retval -1  Otherwise.
  */
 int ocrypto_wpa3_sae_p256_check_commit(
-    const uint8_t commit[98]);
+    const uint8_t commit[96]);
 
 /**
  * Get SAE shared secret value and context.
@@ -207,8 +207,8 @@ int ocrypto_wpa3_sae_p256_keys(
     uint8_t pmkid[16],
     const uint8_t pwe[64],
     const uint8_t rand[32],
-    const uint8_t commit[98],
-    const uint8_t peer_commit[98],
+    const uint8_t commit[96],
+    const uint8_t peer_commit[96],
     const uint8_t *rej_list, size_t rej_len);
 
 /**
@@ -223,8 +223,8 @@ int ocrypto_wpa3_sae_p256_keys(
 void ocrypto_wpa3_sae_p256_get_confirm(
     uint8_t confirm[34],
     const uint8_t kck[32],
-    const uint8_t commit[98],
-    const uint8_t peer_commit[98],
+    const uint8_t commit[96],
+    const uint8_t peer_commit[96],
     uint16_t send_confirm);
 
 /**
@@ -241,8 +241,8 @@ void ocrypto_wpa3_sae_p256_get_confirm(
 int ocrypto_wpa3_sae_p256_check_confirm(
     const uint8_t confirm[34],
     const uint8_t kck[32],
-    const uint8_t commit[98],
-    const uint8_t peer_commit[98]);
+    const uint8_t commit[96],
+    const uint8_t peer_commit[96]);
 
 
 #ifdef __cplusplus

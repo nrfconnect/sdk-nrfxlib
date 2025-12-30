@@ -17,7 +17,7 @@
  * and small changes in the input message lead to major changes in the message
  * digest.
  * 
- * @see [NIST - SP 800-232](https://csrc.nist.gov/pubs/sp/800/232/ipd)
+ * @see [NIST SP 800-232](https://csrc.nist.gov/pubs/sp/800/232/final)
  */
 
 /**

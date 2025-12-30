@@ -141,8 +141,14 @@ void ocrypto_aes_cbc_pkcs_final_enc(ocrypto_aes_cbc_pkcs_ctx *ctx, uint8_t ct[16
  * @retval -1 Otherwise.
  *
  * @remark The total length of the ciphertext added before a call to this function
-           must be non-zero and a multiple of 16.
+ *         must be non-zero and a multiple of 16.
  * @remark The maximum length of @p pt is 15.
+ * @remark All clients, on all software layers, must ensure that the time for the
+ *         operation is identical whether or not a padding error occurs.
+ *         This is to prevent padding oracle attacks, a form of timing side-
+ *         channel attacks.
+ *         The provided implementation of this function does not leak timing
+ *         information.
  */
 int ocrypto_aes_cbc_pkcs_final_dec(ocrypto_aes_cbc_pkcs_ctx *ctx, uint8_t *pt, size_t *pt_len);
 /** @} */
