@@ -159,8 +159,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    755
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 871
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 899
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -208,7 +208,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 63) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 60) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -243,24 +243,24 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (320 + (buffer_count) * 104)
+#define SDC_MEM_SCAN(buffer_count) (408 + (buffer_count) * 104)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (320 + (buffer_count) * 320)
+#define SDC_MEM_SCAN_EXT(buffer_count) (408 + (buffer_count) * 320)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
  */
-#define SDC_MEM_INITIATOR (296)
+#define SDC_MEM_INITIATOR (384)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4864+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (674+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2704+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (458+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((5184+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (706+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((3104+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (498+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
@@ -284,7 +284,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (220 + (buffer_count) * 279)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (261 + (buffer_count) * 279)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -292,7 +292,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (644 + (tx_buffer_count - 1) * 254 + (rx_buffer_count) * 278)
+    (686 + (tx_buffer_count - 1) * 254 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *
@@ -325,13 +325,13 @@ extern "C" {
      + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
 
 /** @brief Maximum memory required per CIG. */
-#define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
+#define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 163) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
 #define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 547) : 0)
 
 /** @brief Maximum memory required per BIG. */
-#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
+#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 331) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
 #define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 259) : 0)
@@ -374,14 +374,14 @@ extern "C" {
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
 #define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) \
-     ((count) > 0 ? (13 + (count) * (4211 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
+     ((count) > 0 ? (13 + (count) * (4283 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
       + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 363) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 371) : 0)
 
 /** @} end of sdc_mem_defines */
 
