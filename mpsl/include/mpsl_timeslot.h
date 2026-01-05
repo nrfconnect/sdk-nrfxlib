@@ -58,7 +58,7 @@ extern "C" {
 #define MPSL_TIMESLOT_EXTENSION_MARGIN_MIN_US          (87UL)
 
 /** @brief Size of a single timeslot context. */
-#define MPSL_TIMESLOT_CONTEXT_SIZE                     (48)
+#define MPSL_TIMESLOT_CONTEXT_SIZE                     (96U)
 
 /** @brief Maximum number of timeslot sessions. */
 #define MPSL_TIMESLOT_CONTEXT_COUNT_MAX                (8)
