@@ -9,6 +9,24 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Added
+=====
+
+* Support for the nRF54LS device. (DRGN-26915)
+
+Changes
+=======
+
+* Optimized RAM consumption for simple configurations of the SoftDevice Controller. (DRGN-26915)
+
+Bug fixes
+=========
+
+* Fixed a issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+
 nRF Connect SDK v3.2.0
 **********************
 
