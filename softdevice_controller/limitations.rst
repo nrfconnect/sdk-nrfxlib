@@ -82,3 +82,8 @@ DRGN-21246: Unsupported BIG parameters
   * An ``SDU_Interval`` shorter than 5000 µs when using framed PDUs.
 
   Note that framed PDUs will be enforced if ``SDU_Interval`` is not an integer multiple of 1250 µs.
+
+DRGN-26820: On nRF54H20 SDC memory pool may not be located in global RAM
+  Accessing memory in global RAM is costly from performance and power perspective.
+  Except that the radio and CCM DMA cannot access global RAM.
+  The SDC memory pool may not reside in global RAM.
