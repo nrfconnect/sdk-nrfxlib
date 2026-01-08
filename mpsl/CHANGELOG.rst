@@ -10,6 +10,19 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Added
+=====
+
+* Support for the nRF54LS device. (DRGN-26915)
+
+Changes
+=======
+
+* Reduced static RAM usage. (DRGN-26915)
+
 nRF Connect SDK v3.2.0
 **********************
 
