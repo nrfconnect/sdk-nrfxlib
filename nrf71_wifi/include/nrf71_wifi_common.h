@@ -22,7 +22,7 @@
 #define NRF_WIFI_RF_PARAMS_CONF_SIZE 42
 
 #define MAX_NUM_OF_RX_QUEUES 3
-#define NRF_WIFI_MAX_SAP_CLIENTS 4
+#define NRF_WIFI_MAX_SAP_CLIENTS 8
 #define RPU_DATA_CMD_SIZE_MAX_RX 8
 
 #define NRF_WIFI_RPU_PWR_DATA_TYPE_LFC_ERR 0
@@ -242,6 +242,10 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_GI_CONFIG,
 	/** Enable BCC OR LDPC */
 	NRF_WIFI_CMD_CODING_TYPE_CONFIG,
+	/** Command to program sqi */
+	NRF_WIFI_UMAC_CMD_SQI_CONFIG,
+	/** Update XO value */
+	NRF_WIFI_CMD_UPDATE_XO,
 };
 
 /**
@@ -722,9 +726,11 @@ struct rpu_lmac_stats {
 	unsigned int rpu_hw_lockup_count;
 	/** RPU hardware lockup recovery completed count */
 	unsigned int rpu_hw_lockup_recovery_done;
-	/** Number of Signal quality indication commands from host */
-	unsigned int  SQICmdsCnt;
-	/** Signal Qualidy Idication event from lmac .*/
+	/** Number of Signal quality threshold set commands from host  */
+	unsigned int  SQIThresholdCmdsCnt;
+	/** Number of Signal quality configuration commands from host  */
+	unsigned int  SQIConfigCmdsCnt;
+	/** Signal Quality Indication event from lmac   */
 	unsigned int  SQIEventsCnt;
 	/** Configured sleep type. */
 	unsigned int SleepType;
@@ -1193,7 +1199,6 @@ struct rpu_conf_params {
 	unsigned char country_code[NRF_WIFI_COUNTRY_CODE_LEN];
 	/** Contention window value to be configured */
 	unsigned int tx_pkt_cw;
-
 	unsigned int rx_bss_color;
 	unsigned int rx_station_id;
 	unsigned int tx_dcm;
@@ -1944,7 +1949,8 @@ struct lmac_prod_stats {
 	unsigned int  internalBufPoolNull;
 	unsigned int  rpuLockupCnt;
 	unsigned int  rpuLockupRecoveryDone;
-	unsigned int  SQICmdsCnt;
+	unsigned int  SQIThresholdCmdsCnt;
+	unsigned int  SQIConfigCmdsCnt;
 	unsigned int  SQIEventsCnt;
 	unsigned int  SleepType;
 	unsigned int  warmBootCnt;
@@ -2074,14 +2080,22 @@ enum nrf_wifi_rf_test {
 	NRF_WIFI_RF_TEST_XO_CALIB,
 	NRF_WIFI_RF_TEST_XO_TUNE,
 	NRF_WIFI_RF_TEST_GET_BAT_VOLT,
-	NRF_WIFI_RF_TEST_TX_PATTERN,
-	NRF_WIFI_RF_TEST_GET_STATS,
+	NRF_WIFI_SET_TEMP_VOLT_RECAL_PARAMS,
+	NRF_WIFI_SET_CALIB_CTRL_PARAMS,
+	NRF_WIFI_SET_TX_POWER_CEILINGS,
+	NRF_WIFI_SET_TX_POWER_OFFSETS,
+	NRF_WIFI_SET_PHY_PARAMS,
+	NRF_WIFI_SET_TEMP_VOLT_BUF_ADDR,	
+	NRF_WIFI_SET_RX_GAINS_OFFSETS,
+	NRF_WIFI_SET_EDGE_CHANNEL_PARAMS,	
+	NRF_WIFI_SET_EVM_AFFECTED_CHANNELS,
+	NRF_WIFI_SET_ANTENNA_GAIN_PARAMS,		
+	NRF_WIFI_RF_TEST_GET_STATS = 64,
 	NRF_WIFI_RF_TEST_SET_REGS,
 	NRF_WIFI_RF_TEST_READ_REGS,
 	NRF_WIFI_RF_TEST_SET_MEM,
 	NRF_WIFI_RF_TEST_READ_MEM,
-	NRF_WIFI_SET_TEMP_VOLT_RECAL_PARAMS = 64,
-	NRF_WIFI_SET_CALIB_CTRL_PARAMS,
+
 	NRF_WIFI_RF_TEST_MAX,
 };
 
@@ -2097,14 +2111,21 @@ enum nrf_wifi_rf_test_event {
 	NRF_WIFI_RF_TEST_EVENT_XO_CALIB,
 	NRF_WIFI_RF_TEST_EVENT_XO_TUNE,
 	NRF_WIFI_RF_TEST_EVENT_GET_BAT_VOLT,
-	NRF_WIFI_RF_TEST_EVENT_TX_PATTERN,
-	NRF_WIFI_RF_TEST_EVENT_GET_STATS,
+	NRF_WIFI_EVENT_SET_TEMP_VOLT_RECAL_PARAMS,
+	NRF_WIFI_EVENT_SET_CALIB_CTRL_PARAMS,
+	NRF_WIFI_EVENT_SET_TX_POWER_CEILINGS,
+	NRF_WIFI_EVENT_SET_TX_POWER_OFFSETS,
+	NRF_WIFI_EVENT_SET_PHY_PARAMS,
+	NRF_WIFI_EVENT_SET_TEMP_VOLT_BUF_ADDR,
+	NRF_WIFI_EVENT_SET_RX_GAINS_OFFSETS,
+	NRF_WIFI_EVENT_SET_EDGE_CHANNEL_PARAMS,	
+	NRF_WIFI_EVENT_SET_EVM_AFFECTED_CHANNELS,
+	NRF_WIFI_EVENT_SET_ANTENNA_GAIN_PARAMS,		
+	NRF_WIFI_RF_TEST_EVENT_GET_STATS = 64,
 	NRF_WIFI_RF_TEST_EVENT_SET_REGS,
 	NRF_WIFI_RF_TEST_EVENT_READ_REGS,
 	NRF_WIFI_RF_TEST_EVENT_SET_MEM,
 	NRF_WIFI_RF_TEST_EVENT_READ_MEM,
-	NRF_WIFI_EVENT_SET_TEMP_VOLT_RECAL_PARAMS = 64,
-	NRF_WIFI_EVENT_SET_CALIB_CTRL_PARAMS,
 	NRF_WIFI_RF_TEST_EVENT_MAX,
 };
 
@@ -2695,6 +2716,46 @@ struct nrf_wifi_cmd_coding_type_config {
 	struct nrf_wifi_sys_head sys_head;
 	/** 0 = BCC 1= LDPC */
 	unsigned char coding_type;
+} __NRF_WIFI_PKD;
+
+struct nrf_wifi_cmd_xo_tune {
+	/** umac header, see &nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+	/** xo value */
+	int xo_val;
+} __NRF_WIFI_PKD;
+
+/**
+ * Below NRF_WIFI_SQI_* Macros are used for SQI feature
+ */
+#define NRF_WIFI_SQI_RSSI_MIN -90
+#define NRF_WIFI_SQI_RSSI_MAX -60
+#define NRF_WIFI_SQI_RSSI_HYST_MIN 4
+#define NRF_WIFI_SQI_RSSI_HYST_MAX 6
+#define NRF_WIFI_SQI_RSSI_HYST_DEF 4
+
+enum nrf_wifi_sqi {
+        NRF_WIFI_SQI_RX_INVALID = 0,
+
+        NRF_WIFI_SQI_RX_BCN = (1 << 0),
+        NRF_WIFI_SQI_RX_UCAST_BCAST = (1 << 1),
+        NRF_WIFI_SQI_RX_BSS_TP_UCAST = (1 << 2),
+
+        /* @NRF_WIFI_SQI_RX_ALL sets all the above flags */
+        NRF_WIFI_SQI_RX_ALL = (1 << 3) - 1,
+} __NRF_WIFI_PKD;
+
+enum nrf_wifi_sqi_sample_count {
+        NRF_WIFI_SQI_SAMPLE_COUNT_4 = 4,
+        NRF_WIFI_SQI_SAMPLE_COUNT_8 = 8,
+        NRF_WIFI_SQI_SAMPLE_COUNT_16 = 16,
+} __NRF_WIFI_PKD;
+
+struct nrf_wifi_cmd_sqi {
+        /** umac header, see &nrf_wifi_sys_head */
+        struct nrf_wifi_sys_head sys_head;
+        unsigned int nrf_wifi_signal_src;
+        unsigned int nrf_wifi_avg_cnt;
 } __NRF_WIFI_PKD;
 
 /**
