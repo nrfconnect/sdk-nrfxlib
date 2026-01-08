@@ -11,6 +11,9 @@
  * @{
  * @brief DECT PHY API.
  *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw-nr+_nrf91x1
+ *
  * @anchor DECT-SPEC
  * Links to pertaining specification and regulations.
  * - [DECT-2020 NR Part 2: Radio reception and transmission requirements]

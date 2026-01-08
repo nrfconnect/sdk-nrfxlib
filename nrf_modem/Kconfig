@@ -24,14 +24,18 @@ endchoice # NRF_MODEM_BUILD_STRATEGY
 choice
 	prompt "Variant"
 	help
-	  Choose which binary variant to link with: cellular or DECT PHY.
+	  Choose which binary variant to link with: cellular, DECT PHY or DECT.
 
 config NRF_MODEM_LINK_BINARY_CELLULAR
 	bool "Cellular"
 
 config NRF_MODEM_LINK_BINARY_DECT_PHY
+	bool "DECT PHY [EXPERIMENTAL]"
 	select EXPERIMENTAL
-	bool "DECT PHY"
+
+config NRF_MODEM_LINK_BINARY_DECT
+	bool "DECT NR+ [EXPERIMENTAL]"
+	select EXPERIMENTAL
 
 endchoice
 
@@ -46,7 +50,8 @@ endif # NRF_MODEM
 config NRF_MODEM_SHMEM_CTRL_SIZE
 	hex
 	default 0x1000 if (SOC_SERIES_NRF92X && NRF_MODEM_LINK_BINARY_CELLULAR)
-	default 0x728 if (SOC_SERIES_NRF91X && NRF_MODEM_LINK_BINARY_DECT_PHY)
+	default 0x728 if (SOC_SERIES_NRF91X && \
+			  (NRF_MODEM_LINK_BINARY_DECT_PHY || NRF_MODEM_LINK_BINARY_DECT))
 	default 0x4e8
 
 endmenu # nrf_modem

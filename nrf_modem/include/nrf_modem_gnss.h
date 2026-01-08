@@ -10,6 +10,11 @@
  * @defgroup nrf_modem_gnss GNSS API
  * @{
  * @brief API for accessing the GNSS module on the modem.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf9160
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #ifndef NRF_MODEM_GNSS_H__
 #define NRF_MODEM_GNSS_H__
@@ -193,7 +198,9 @@ extern "C" {
  * @details Indicates that GNSS is running because of a scheduled download. This flag is only used
  *          in the periodic navigation mode.
  *
- * @note This flag is only supported by modem firmware v2.0.0 or later.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_MODEM_GNSS_PVT_FLAG_SCHED_DOWNLOAD         0x40
 /** @} */
@@ -259,7 +266,9 @@ extern "C" {
  *
  * @details Data model #nrf_modem_gnss_agnss_data_integrity.
  *
- * @note This type is only supported by modem firmware v2.0.0 or later.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_MODEM_GNSS_AGNSS_INTEGRITY                        9
 /** @} */
@@ -281,8 +290,10 @@ extern "C" {
  *
  * @details Payload is of type @ref nrf_modem_gnss_pvt_data_frame.
  *
- * @note In periodic navigation mode with modem firmware v2.0.0 or later, this event is not sent
- *       when GNSS is running because of a scheduled download.
+ * @note The following differences exist between modem firmware:
+ *       - mfw_nrf9160: This event is sent when GNSS is running because of a scheduled download.
+ *       - mfw_nrf91x1, mfw_nrf9151-ntn: This event is not sent when GNSS is running because of a
+ *         scheduled download.
  */
 #define NRF_MODEM_GNSS_EVT_FIX                 2
 /** @brief NMEA event.
@@ -916,7 +927,9 @@ struct nrf_modem_gnss_agnss_data_integrity {
 #define NRF_MODEM_GNSS_DELETE_GPS_TOW_PRECISION	   0x100
 /** @brief Extended Kalman Filter (EKF) state (last position/velocity/time solution).
  *
- * @note This value is only supported by modem firmware v2.0.1 or later.
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1 v2.0.1 or later
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_MODEM_GNSS_DELETE_EKF		   0x400
 /** @} */
@@ -926,8 +939,10 @@ struct nrf_modem_gnss_agnss_data_integrity {
  * @brief Dynamics mode values to be used as an argument for function
  *        #nrf_modem_gnss_dyn_mode_change.
  *
- * The maximum speeds listed below are for modem firmware v2.0.0 or later. For older modem
- * firmware versions, the assumed maximum speed for all modes is 100 km/h.
+ * @note The following differences exist between modem firmware:
+ *       - mfw_nrf9160: The assumed maximum speed for all modes is 100 km/h.
+ *       - mfw_nrf91x1, mfw_nrf9151-ntn: The assumed maximum speed matches the description of the
+ *         following defines.
  *
  * The maximum speed is not a hard limit, but if the receiver speed is higher than the assumed
  * maximum speed for the selected mode, GNSS will operate with suboptimal predictions.
