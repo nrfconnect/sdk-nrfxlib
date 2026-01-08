@@ -9,6 +9,20 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+The library is now released in three variants, with different feature sets and support for different variants of the nRF91 Series firmware.
+
+* The cellular variant, with support for cellular firmware.
+* The DECT PHY variant, with support for DECT NR+ PHY firmware.
+* The DECT variant, with support for DECT NR+ firmware.
+
+DECT NR+
+========
+
+* Added new interface for the DECT NR+ firmware.
+
 nrf_modem 3.2.0
 ***************
 
