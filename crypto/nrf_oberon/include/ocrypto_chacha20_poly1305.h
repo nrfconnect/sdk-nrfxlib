@@ -18,8 +18,8 @@
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
  * The XChaCha20 variant uses a 192-bit nonce instead of ChaCha20's 96-bit nonce.
  * 
- * @see [XChaCha](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03)
  * @see [RFC - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc8439)
+ * @see [XChaCha](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03)
  */
 
 /**

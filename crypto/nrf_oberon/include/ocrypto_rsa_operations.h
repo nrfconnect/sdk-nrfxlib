@@ -18,6 +18,8 @@
  * 
  * @remark 1024 bit keys are no longer considered secure;
  *         use of at least 2048 bit keys is recommended.
+ *
+ * @see [RFC - PKCS #1: RSA Cryptography Specifications Version 2.2](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)
  */
 
 /**

@@ -7,18 +7,6 @@
 
 
 /**
- * @defgroup ocrypto ocrypto
- *
- * 
- * @defgroup ocrypto_sha Message Digests (Hashes)
- * @ingroup ocrypto
- * @{
- * @brief Hash algorithms.
- * 
- * Hash functions are one-way functions that map long inputs into usually shorter and fixed-sized outputs.
- * @}
- * 
- * 
  * @defgroup ocrypto_sha_256 SHA256
  * @ingroup ocrypto_sha
  * @{
