@@ -19,6 +19,7 @@ For more information about porting, see :ref:`nrf_modem_ug_porting`.
    doc/gnss_interface
    doc/bootloader
    doc/delta_dfu
+   doc/dect
    doc/dectphy
    doc/softsim_interface
    doc/fault_handling
