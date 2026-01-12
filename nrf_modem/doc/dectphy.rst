@@ -12,7 +12,7 @@ The DECT physical layer (PHY) interface in the Modem library is used to control 
 The DECT NR+ PHY firmware is a variant of the nRF91x1 firmware with a different radio technology than the cellular firmware.
 In particular, the DECT NR+ PHY firmware does not support cellular operation or the Global Navigation Satellite System (GNSS).
 
-For details about the key hardware capabilities of the nRF91x1 DKs and their DECT NR+ PHY firmware implementation with regards to the DECT NR+ standard, refer to the `nRF9151 DECT NR+ product specification`_ or the `nRF9161 DECT NR+ product specification`_, depending on the SiP you are using.
+For details about the key hardware capabilities of the nRF91x1 DKs and their DECT NR+ PHY firmware implementation with regard to the DECT NR+ standard, refer to the `nRF9151 DECT NR+ product specification`_ or the `nRF9161 DECT NR+ product specification`_, depending on the SiP you are using.
 
 .. note::
    To obtain the DECT NR+ PHY firmware, you must contact the Nordic Semiconductor sales department.
@@ -237,7 +237,7 @@ Let ``start_time_op1`` and ``duration_op1`` be the start time and duration of op
 
 The operation startup latency ``startup`` is indicated by the following parameters:
 
-* :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active` for RX operations (RX, RSSI or RX with RSSI). 
+* :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active` for RX operations (RX, RSSI or RX with RSSI).
 * :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active` for TX operations.
 
 Since the operation is scheduled, we must include the additional startup delay associated with scheduled operations for the current radio mode.

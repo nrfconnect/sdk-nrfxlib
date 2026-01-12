@@ -165,10 +165,20 @@ Delta DFU API
 
 .. doxygengroup:: nrf_modem_delta_dfu_errors
 
+DECT NR+
+********
+
+.. _nrf_modem_dect_api:
+
+DECT NR+ API
+============
+
+.. doxygengroup:: nrf_modem_dect
+
 .. _nrf_modem_dect_phy_api:
 
 DECT NR+ PHY API
-****************
+================
 
 .. doxygengroup:: nrf_modem_dect_phy
 
