@@ -228,6 +228,9 @@
 #define IE_DATA_OFFSET                  0x02                                         ///< Information element data offset
 #define IE_HEADER_ELEMENT_ID_OFFSET     0x07                                         ///< Bit offset of Element ID field in a Header IE header.
 
+#define ENH_ACK_MAX_SIZE                MAX_PACKET_SIZE                              ///< Maximum length of the Enh-ACK frame.
+#define ACK_MAX_SIZE                    ENH_ACK_MAX_SIZE                             ///< Maximum length of the ACK frame.
+
 typedef enum
 {
     REQ_ORIG_HIGHER_LAYER,

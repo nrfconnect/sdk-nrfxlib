@@ -58,9 +58,11 @@
 #include "nrf_802154_buffer_mgr_src.h"
 
 #include "nrf_802154.h"
+#include "nrf_802154_const.h"
 
 /**@brief A pointer to the last transmitted ACK frame. */
 static const uint8_t * volatile mp_last_tx_ack;
+static uint8_t                  m_ack[ACK_MAX_SIZE + PHR_SIZE];
 
 static void local_transmitted_frame_ptr_free(void * p_frame)
 {
@@ -172,10 +174,12 @@ bail:
 void nrf_802154_tx_ack_started(const uint8_t * p_data)
 {
     /* Due to timing restrictions this function cannot be serialized directly.
-     * Instead parameter is memorized and serialization is triggered by
+     * Instead parameter is copied and serialization is triggered by
      * later call to last_tx_ack_started_send
      */
-    mp_last_tx_ack = p_data;
+
+    memcpy(m_ack, p_data, PHR_SIZE + p_data[PHR_OFFSET]);
+    mp_last_tx_ack = m_ack;
 }
 
 static nrf_802154_ser_err_t last_tx_ack_started_send(void)

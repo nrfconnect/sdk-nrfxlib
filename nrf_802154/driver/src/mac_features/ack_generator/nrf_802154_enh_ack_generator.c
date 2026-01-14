@@ -53,8 +53,6 @@
 #include "nrf_802154_pib.h"
 #include "nrf_802154_utils_byteorder.h"
 
-#define ENH_ACK_MAX_SIZE MAX_PACKET_SIZE
-
 typedef enum
 {
     ACK_STATE_RESET,
@@ -424,8 +422,6 @@ static void ie_header_set(const uint8_t      * p_ie_data,
 static bool encryption_prepare(const nrf_802154_frame_t * p_ack_data)
 {
 #if NRF_802154_ENCRYPTION_ENABLED
-    nrf_802154_encrypt_ack_reset();
-
     if (nrf_802154_frame_security_enabled_bit_is_set(p_ack_data) == false)
     {
         return true;
@@ -601,6 +597,20 @@ void nrf_802154_enh_ack_generator_init(void)
 
 void nrf_802154_enh_ack_generator_reset(void)
 {
+#if NRF_802154_IE_WRITER_ENABLED
+    // The IE writer module can be in the IE_WRITER_PREPARE state if
+    // the previous transmission failed at an early stage.
+    // Reset it, to avoid data corruption in case this ACK
+    // does not contain information elements. Otherwise, the
+    // IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
+    // regardless if writing of IE elements is needed or not.
+    nrf_802154_ie_writer_reset();
+#endif
+
+#if NRF_802154_ENCRYPTION_ENABLED
+    nrf_802154_encrypt_ack_reset();
+#endif
+
     memset(m_ack, 0U, sizeof(m_ack));
     (void)nrf_802154_frame_parser_data_init(m_ack, 0U, PARSE_LEVEL_NONE, &m_ack_data);
     mp_ie_data    = 0U;
@@ -614,16 +624,6 @@ uint8_t * nrf_802154_enh_ack_generator_create(
     switch (ack_state_get())
     {
         case ACK_STATE_RESET:
-        #if NRF_802154_IE_WRITER_ENABLED
-            // The IE writer module can be in the IE_WRITER_PREPARE state if
-            // the previous transmission failed at an early stage.
-            // Reset it, to avoid data corruption in case this ACK
-            // does not contain information elements. Otherwise, the
-            // IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
-            // regardless if writing of IE elements is needed or not.
-            nrf_802154_ie_writer_reset();
-        #endif
-
             ack_state_set(ACK_STATE_PROCESSING);
             SWITCH_CASE_FALLTHROUGH;
 

@@ -10,6 +10,14 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Minor changes
+=============
+
+* Removed ``min`` and ``max`` macros from the :file:`nrf_802154_sl_utils.h`. (KRKNWK-21347)
+
 nRF Connect SDK v3.2.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

@@ -207,6 +207,9 @@ static void rx_data_clear(void)
                                             0U,
                                             PARSE_LEVEL_NONE,
                                             &m_current_rx_frame_data);
+    nrf_802154_ack_generator_reset();
+
+    mp_ack = NULL;
 }
 
 /** Clear flags describing frame being received. */
@@ -1039,11 +1042,13 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
         return;
     }
 
-    // Clear filtering flag
-    rx_flags_clear();
-
     // Find available RX buffer
     free_buffer = rx_buffer_is_available();
+    rx_init_free_buffer_find_and_update(free_buffer);
+
+    // Clear receive flags and data
+    rx_flags_clear();
+    rx_data_clear();
 
     nrf_802154_trx_receive_buffer_set(rx_buffer_get());
 
@@ -1077,12 +1082,6 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
     // Configure the timer coordinator to get a timestamp of the CRCOK event.
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
 #endif
-
-    rx_init_free_buffer_find_and_update(free_buffer);
-
-    rx_data_clear();
-
-    mp_ack = NULL;
 }
 
 /** Initialize TX operation. */
@@ -1893,7 +1892,6 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             m_flags.frame_filtered = true;
 
             nrf_802154_rsch_crit_sect_prio_request(RSCH_PRIO_RX);
-            nrf_802154_ack_generator_reset();
         }
     }
 
@@ -2071,7 +2069,6 @@ void nrf_802154_trx_receive_frame_received(void)
                 m_flags.frame_filtered        = true;
                 m_flags.rx_timeslot_requested = true;
 
-                nrf_802154_ack_generator_reset();
                 receive_started_notify();
             }
             else
