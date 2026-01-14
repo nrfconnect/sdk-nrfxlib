@@ -827,14 +827,14 @@ static void pa_modulation_fix_apply(bool enable)
 
         if ((fem_caps.flags & MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED) != 0)
         {
-            m_pa_mod_filter_latched    = *(p_radio_reg);
+            m_pa_mod_filter_latched    = *p_radio_reg;
             m_pa_mod_filter_is_latched = true;
-            *(p_radio_reg)             = PA_MOD_FILTER_VALUE;
+            *p_radio_reg               = PA_MOD_FILTER_VALUE;
         }
     }
     else if (m_pa_mod_filter_is_latched)
     {
-        *(p_radio_reg)             = m_pa_mod_filter_latched;
+        *p_radio_reg               = m_pa_mod_filter_latched;
         m_pa_mod_filter_is_latched = false;
     }
 #endif /* (defined(NRF5340_XXAA) || NRF54L_CONFIGURATION_56_ENABLE) */
