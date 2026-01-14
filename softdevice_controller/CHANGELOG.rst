@@ -25,7 +25,9 @@ Changes
 Bug fixes
 =========
 
-* Fixed a issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+* Fixed an issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+* Fixed an issue where the controller acting as a central would send a packet on the wrong channel.
+  This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 
 nRF Connect SDK v3.2.0
 **********************
