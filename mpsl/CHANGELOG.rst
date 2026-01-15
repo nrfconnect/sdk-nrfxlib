@@ -10,6 +10,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.2.2
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where MPSL was clearing IRQ number 75 instead of IRQ number 71 when running calling ECB APIs on nRF54L15, nRF54L10, or nRF54L05.
+
 nRF Connect SDK v3.2.0
 **********************
 
