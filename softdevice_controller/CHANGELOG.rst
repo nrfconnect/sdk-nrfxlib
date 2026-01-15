@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+v3.2.0 branch
+*************
+
+Bug fixes
+=========
+
+* Fixed a issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+
 nRF Connect SDK v3.2.0
 **********************
 
