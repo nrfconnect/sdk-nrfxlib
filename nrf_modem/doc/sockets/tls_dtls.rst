@@ -77,7 +77,15 @@ In this case, either security tag 4 or security tag 5 can be used for operations
 TLS traffic decryption
 **********************
 
-Starting from modem firmware v2.0.0, Transport Layer Security (TLS) traffic can be decrypted with Nordic tools if the TLS session is created using certificates stored to security tags ranging between the values specified in :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_0` and :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_19`.
+You can decrypt the Transport Layer Security (TLS) traffic with Nordic tools if the TLS session is created using certificates stored to security tags ranging between the values specified in :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_0` and :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_19`.
+
+.. note::
+   This feature is only supported by the following modem firmware:
+
+     * ``mfw_nrf91x1``
+     * ``mfw_nrf9151-ntn``
+
+   For information on how to find the modem firmware revision, see the `Revision Identification +CGMR`_ documentation.
 
 .. important::
    These security tags must be used only for test and development purposes.
@@ -87,12 +95,11 @@ Testing TLS traffic decryption
 
 Before you start testing TLS traffic decryption, make sure that the following prerequisites are satisfied:
 
+#. The device is programmed with a modem firmware which supports TLS traffic decryption (see the previous note).
 #. The device runs an application that supports TLS.
    The TLS session is created using certificates stored to tags ranging between the values specified in ``NRF_SEC_TAG_TLS_DECRYPT_0`` and ``NRF_SEC_TAG_TLS_DECRYPT_19``.
 #. The device has modem traces enabled.
    For information on modem traces and how to enable them, see the :ref:`nrf_modem_trace` documentation.
-#. Modem firmware v2.0.0 or higher is programmed on your device.
-   For information on how to find the modem firmware version, see the `Revision Identification +CGMR`_ documentation.
 #. Wireshark is installed on your machine.
    For information on Wireshark and how to install it, see `Wireshark`_.
 
@@ -108,6 +115,9 @@ Complete the following steps to test TLS traffic decryption:
 #. In Wireshark, observe the incoming traffic.
    Successfully decrypted TLS traffic will be indicated by an additional layer named :guilabel:`Decrypted TLS` in the packet details pane.
    Expand this layer to inspect the decrypted content.
+
+.. note::
+   If you use a TLS/DTLS protocol, there must be at least one root CA in the modem credential storage, regardless if the :c:macro:`NRF_SO_SEC_PEER_VERIFY` value is :c:macro:`NRF_SO_SEC_PEER_VERIFY_NONE` or :c:macro:`NRF_SO_SEC_PEER_VERIFY_OPTIONAL`.
 
 Supported cipher suites
 -----------------------
