@@ -368,6 +368,7 @@ struct nrf_modem_sendcb_params {
 	 *  - [NRF_EAGAIN] The socket's @ref NRF_SO_SNDTIMEO timeout was exceeded.
 	 *  - [NRF_EBADF] The socket argument is not a valid file descriptor.
 	 *  - [NRF_ECONNRESET] A connection was forcibly closed by a peer.
+	 *  - [NRF_ECOMM] Data transmission failed. Sending may be retried.
 	 */
 	int status;
 	/** Number of bytes that was sent. */
@@ -956,6 +957,8 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
  *               ongoing.
+ * - [NRF_ECOMM] Data transmission with the @ref NRF_MSG_WAITACK flag failed. Sending may be
+ *               retried.
  */
 ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
 
@@ -973,6 +976,8 @@ ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
  *               ongoing.
+ * - [NRF_ECOMM] Data transmission with the @ref NRF_MSG_WAITACK flag failed. Sending may be
+ *               retried.
  */
 ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
 		   const struct nrf_sockaddr *dest_addr, nrf_socklen_t dest_len);

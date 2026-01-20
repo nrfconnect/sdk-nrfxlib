@@ -9,6 +9,22 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 3.2.2
+***************
+
+Core library
+============
+
+* Added the ``-NRF_ECONN`` error code to indicate communication error on send.
+
+Sockets
+=======
+
+* Updated:
+
+  * The :c:func:`nrf_send` and :c:func:`nrf_sendto` functions to set ``errno`` to ``-NRF_ECONN`` when data transmission with the :c:macro:`NRF_MSG_WAITACK` flag fails.
+  * The :c:macro:`NRF_SO_SENDCB` callback to report ``-NRF_ECONN`` as the status when data transmission fails.
+
 nrf_modem 3.2.0
 ***************
 
