@@ -65,6 +65,7 @@ extern "C" {
 #define NRF_ENODATA 61          /**< No message is available on the STREAM head read queue */
 #define NRF_ETIME 62            /**< Stream ioctl() timeout */
 #define NRF_ENOSR 63            /**< No STREAM resources */
+#define	NRF_ECOMM 70            /**< Communication error on send */
 #define NRF_EPROTO 71           /**< Protocol error */
 #define NRF_EBADMSG 77          /**< Bad message */
 #define NRF_ENOSYS 88           /**< Functionality not supported */
