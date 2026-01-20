@@ -16,6 +16,7 @@ Added
 =====
 
 * Experimental support for the nRF54LS device. (DRGN-26915)
+* Separate library for the nRF54LM device. (DRGN-27252)
 
 Changes
 =======
@@ -28,6 +29,8 @@ Bug fixes
 * Fixed an issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
 * Fixed an issue where the controller acting as a central would send a packet on the wrong channel.
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
+* Fixed an issue where the controller, when acting as a channel sounding reflector,
+  would select the wrong antenna during the first (TX) T_PM period of a mode-2 step if it followed a mode-3 step. (DRGN-27360)
 
 nRF Connect SDK v3.2.0
 **********************
