@@ -17,6 +17,7 @@ Added
 =====
 
 * Experimental support for the nRF54LS device. (DRGN-26915)
+* Separate libraries for the nRF54LM device. (DRGN-27252)
 
 Changes
 =======
