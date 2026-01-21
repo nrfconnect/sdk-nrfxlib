@@ -25,7 +25,7 @@ function(openthread_calculate_lib_path ot_version lib_path)
   endif()
 
   # Set common soc dir for nRF54L family
-  if(CONFIG_SOC_SERIES_NRF54LX)
+  if(CONFIG_SOC_SERIES_NRF54L)
     set(soc_dir "nrf54lx")
   else()
     string(REGEX REPLACE "_[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]$" "" soc_dir ${CONFIG_SOC})
