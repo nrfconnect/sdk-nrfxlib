@@ -290,6 +290,7 @@ enum nrf_modem_dect_phy_rx_mode {
 	 * @brief Continuous reception.
 	 *
 	 * The reception is continued automatically after PDC reception.
+	 * Continuous reception does not support reception of physical header type 2 format 0 packets.
 	 */
 	NRF_MODEM_DECT_PHY_RX_MODE_CONTINUOUS,
 	/**
