@@ -8,7 +8,7 @@ menu "nrf_modem (Modem library)"
 # Selected by NRF_MODEM_LIB in sdk-nrf
 config NRF_MODEM
 	bool
-	select NRFX_IPC if SOC_SERIES_NRF91X
+	select NRFX_IPC if SOC_SERIES_NRF91
 	select REQUIRES_FULL_LIBC
 
 if NRF_MODEM
@@ -49,8 +49,8 @@ endif # NRF_MODEM
 
 config NRF_MODEM_SHMEM_CTRL_SIZE
 	hex
-	default 0x1000 if (SOC_SERIES_NRF92X && NRF_MODEM_LINK_BINARY_CELLULAR)
-	default 0x728 if (SOC_SERIES_NRF91X && \
+	default 0x1000 if (SOC_SERIES_NRF92 && NRF_MODEM_LINK_BINARY_CELLULAR)
+	default 0x728 if (SOC_SERIES_NRF91 && \
 			  (NRF_MODEM_LINK_BINARY_DECT_PHY || NRF_MODEM_LINK_BINARY_DECT))
 	default 0x4e8
 
