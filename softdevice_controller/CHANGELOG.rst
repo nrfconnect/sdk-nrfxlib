@@ -17,6 +17,7 @@ Added
 
 * Experimental support for the nRF54LS device. (DRGN-26915)
 * Separate library for the nRF54LM device. (DRGN-27252)
+* Experimental support for Direct Test Mode. (DRGN-27368)
 
 Changes
 =======

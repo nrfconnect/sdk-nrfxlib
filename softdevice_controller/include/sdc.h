@@ -881,6 +881,16 @@ int32_t sdc_default_tx_power_set(int8_t requested_power_level);
  */
 void sdc_cs_antenna_switch_callback_set(sdc_cs_antenna_switch_callback_t antenna_switch_cb);
 
+/** @brief Use global channel map during connection setup
+ *
+ * After this API is called, connections will use the global channel map
+ * instead of the full channel map during connection setup.
+ *
+ * @note This is known to not work well with some peer peripheral devices conforming to Core Specification v4.0.
+ *       The API should only be used when the peer peripheral devices are qualified to a more recent specification.
+ */
+void sdc_use_global_channel_map_on_connection(void);
+
 /** @brief Helper function that can be used for sdc_support_* APIs call
  *
  * @param[in] sdc_support_func sdc_support_* function to be called.
@@ -1584,15 +1594,16 @@ void sdc_support_channel_sounding_initiator_role(void);
  */
 void sdc_support_channel_sounding_reflector_role(void);
 
-/** @brief Use global channel map during connection setup
+/** @brief Support Direct Test Mode
  *
- * After this API is called, connections will use the global channel map
- * instead of the full channel map during connection setup.
+ * After this API is called, the controller will support the HCI commands
+ * related to Direct Test Mode.
  *
- * @note This is known to not work well with some peer peripheral devices conforming to Core Specification v4.0.
- *       The API should only be used when the peer peripheral devices are qualified to a more recent specification.
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
  */
-void sdc_use_global_channel_map_on_connection(void);
+void sdc_support_direct_test_mode(void);
 
 #ifdef __cplusplus
 }

@@ -45,12 +45,6 @@ DRGN-8569: SEVONPEND flag must not be modified
 DRGN-6362: Synthesized low frequency clock source not tested
   Synthesized low frequency clock source is not tested or intended for use with the SoftDevice Controller.
 
-DRGN-12259: HCI Receiver and Transmitter Test commands not available
-  The HCI Receiver and Transmitter Test commands are not available.
-
-  **Workaround:** To perform a radio test, use the :ref:`nrf:direct_test_mode` sample.
-  For nRF52 Series devices, you can choose to use the DTM application in the nRF5 SDK instead.
-
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.
 
