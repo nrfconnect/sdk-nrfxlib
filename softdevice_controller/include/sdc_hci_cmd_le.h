@@ -89,6 +89,12 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_LONG_TERM_KEY_REQUEST_NEGATIVE_REPLY = 0x201b,
     /** @brief See @ref sdc_hci_cmd_le_read_supported_states(). */
     SDC_HCI_OPCODE_CMD_LE_READ_SUPPORTED_STATES = 0x201c,
+    /** @brief See @ref sdc_hci_cmd_le_receiver_test_v1(). */
+    SDC_HCI_OPCODE_CMD_LE_RECEIVER_TEST_V1 = 0x201d,
+    /** @brief See @ref sdc_hci_cmd_le_transmitter_test_v1(). */
+    SDC_HCI_OPCODE_CMD_LE_TRANSMITTER_TEST_V1 = 0x201e,
+    /** @brief See @ref sdc_hci_cmd_le_test_end(). */
+    SDC_HCI_OPCODE_CMD_LE_TEST_END = 0x201f,
     /** @brief See @ref sdc_hci_cmd_le_set_data_length(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DATA_LENGTH = 0x2022,
     /** @brief See @ref sdc_hci_cmd_le_read_suggested_default_data_length(). */
@@ -115,6 +121,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_PHY = 0x2031,
     /** @brief See @ref sdc_hci_cmd_le_set_phy(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PHY = 0x2032,
+    /** @brief See @ref sdc_hci_cmd_le_receiver_test_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_RECEIVER_TEST_V2 = 0x2033,
+    /** @brief See @ref sdc_hci_cmd_le_transmitter_test_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_TRANSMITTER_TEST_V2 = 0x2034,
     /** @brief See @ref sdc_hci_cmd_le_set_adv_set_random_address(). */
     SDC_HCI_OPCODE_CMD_LE_SET_ADV_SET_RANDOM_ADDRESS = 0x2035,
     /** @brief See @ref sdc_hci_cmd_le_set_ext_adv_params(). */
@@ -167,6 +177,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_WRITE_RF_PATH_COMPENSATION = 0x204d,
     /** @brief See @ref sdc_hci_cmd_le_set_privacy_mode(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PRIVACY_MODE = 0x204e,
+    /** @brief See @ref sdc_hci_cmd_le_receiver_test_v3(). */
+    SDC_HCI_OPCODE_CMD_LE_RECEIVER_TEST_V3 = 0x204f,
+    /** @brief See @ref sdc_hci_cmd_le_transmitter_test_v3(). */
+    SDC_HCI_OPCODE_CMD_LE_TRANSMITTER_TEST_V3 = 0x2050,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_params(). */
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_PARAMS = 0x2051,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_enable(). */
@@ -241,6 +255,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PATH_LOSS_REPORTING_ENABLE = 0x2079,
     /** @brief See @ref sdc_hci_cmd_le_set_transmit_power_reporting_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_TRANSMIT_POWER_REPORTING_ENABLE = 0x207a,
+    /** @brief See @ref sdc_hci_cmd_le_transmitter_test_v4(). */
+    SDC_HCI_OPCODE_CMD_LE_TRANSMITTER_TEST_V4 = 0x207b,
     /** @brief See @ref sdc_hci_cmd_le_set_data_related_address_changes(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DATA_RELATED_ADDRESS_CHANGES = 0x207c,
     /** @brief See @ref sdc_hci_cmd_le_set_default_subrate(). */
@@ -704,6 +720,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t subevent_data_length;
     uint8_t subevent_data[];
 } sdc_hci_le_set_periodic_adv_subevent_data_array_params_t;
+
+/** @brief Remaining parameters for the transmitter test v4. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_power_level;
+} sdc_hci_le_transmitter_test_v4_tx_power_level_t;
 
 /** @} end of HCI_TYPES */
 
@@ -1678,6 +1700,26 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t le_states[8];
 } sdc_hci_cmd_le_read_supported_states_return_t;
 
+/** @brief LE Receiver Test [v1] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t rx_channel;
+} sdc_hci_cmd_le_receiver_test_v1_t;
+
+/** @brief LE Transmitter Test [v1] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_channel;
+    uint8_t test_data_length;
+    uint8_t packet_payload;
+} sdc_hci_cmd_le_transmitter_test_v1_t;
+
+/** @brief LE Test End return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t num_packets;
+} sdc_hci_cmd_le_test_end_return_t;
+
 /** @brief LE Set Data Length command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1780,6 +1822,23 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rx_phys;
     uint16_t phy_options;
 } sdc_hci_cmd_le_set_phy_t;
+
+/** @brief LE Receiver Test [v2] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t rx_channel;
+    uint8_t phy;
+    uint8_t modulation_index;
+} sdc_hci_cmd_le_receiver_test_v2_t;
+
+/** @brief LE Transmitter Test [v2] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_channel;
+    uint8_t test_data_length;
+    uint8_t packet_payload;
+    uint8_t phy;
+} sdc_hci_cmd_le_transmitter_test_v2_t;
 
 /** @brief LE Set Advertising Set Random Address command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -1991,6 +2050,32 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t peer_identity_address[6];
     uint8_t privacy_mode;
 } sdc_hci_cmd_le_set_privacy_mode_t;
+
+/** @brief LE Receiver Test [v3] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t rx_channel;
+    uint8_t phy;
+    uint8_t modulation_index;
+    uint8_t expected_cte_length;
+    uint8_t expected_cte_type;
+    uint8_t slot_durations;
+    uint8_t switching_pattern_length;
+    uint8_t antenna_ids[];
+} sdc_hci_cmd_le_receiver_test_v3_t;
+
+/** @brief LE Transmitter Test [v3] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_channel;
+    uint8_t test_data_length;
+    uint8_t packet_payload;
+    uint8_t phy;
+    uint8_t cte_length;
+    uint8_t cte_type;
+    uint8_t switching_pattern_length;
+    uint8_t antenna_ids[];
+} sdc_hci_cmd_le_transmitter_test_v3_t;
 
 /** @brief LE Set Connectionless CTE Transmit Parameters command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -2474,6 +2559,19 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t;
+
+/** @brief LE Transmitter Test [v4] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_channel;
+    uint8_t test_data_length;
+    uint8_t packet_payload;
+    uint8_t phy;
+    uint8_t cte_length;
+    uint8_t cte_type;
+    uint8_t switching_pattern_length;
+    uint8_t antenna_ids_and_remaining_parameters[];
+} sdc_hci_cmd_le_transmitter_test_v4_t;
 
 /** @brief LE Set Data Related Address Changes command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -3987,6 +4085,81 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_negative_reply(const sdc_hci_cmd_le
  */
 uint8_t sdc_hci_cmd_le_read_supported_states(sdc_hci_cmd_le_read_supported_states_return_t * p_return);
 
+/** @brief LE Receiver Test [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.28
+ *
+ * This command is used to start a test where the IUT receives test reference packets at a
+ * fixed interval. The tester generates the test reference packets.
+ *
+ * The RX_Channel parameter specifies the RF channel to be used by
+ * the receiver.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Receiver_Test command has completed, an HCI_Command_-
+ * Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_receiver_test_v1(const sdc_hci_cmd_le_receiver_test_v1_t * p_params);
+
+/** @brief LE Transmitter Test [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.29
+ *
+ * This command is used to start a test where the IUT generates test reference packets
+ * at a fixed interval. The Controller shall transmit at the power level indicated by the
+ * TX_Power_Level parameter.
+ *
+ * The TX_Channel specifies the RF channel to be used by
+ * the transmitter.
+ *
+ * The Test_Data_Length and Packet_Payload parameters specify the length and
+ * contents of the Payload of the test reference packets. An LE Controller supporting
+ * the HCI_LE_Transmitter_Test command shall support Packet_Payload values 0x00,
+ * 0x01 and 0x02. An LE Controller supporting the LE Coded PHY shall also
+ * support Packet_Payload value 0x04. An LE Controller may support other values of
+ * Packet_Payload.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Transmitter_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_transmitter_test_v1(const sdc_hci_cmd_le_transmitter_test_v1_t * p_params);
+
+/** @brief LE Test End.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.30
+ *
+ * This command is used to stop any test which is in progress. The Num_Packets for a
+ * transmitter test shall be reported as 0x0000. The Num_Packets is an unsigned number
+ * and contains the number of received packets.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Test_End command has completed, an HCI_Command_Complete
+ * event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_test_end(sdc_hci_cmd_le_test_end_return_t * p_return);
+
 /** @brief LE Set Data Length.
  *
  * The description below is extracted from Core_v6.2,
@@ -4446,6 +4619,67 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_phy(const sdc_hci_cmd_le_set_phy_t * p_params);
+
+/** @brief LE Receiver Test [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.28
+ *
+ * This command is used to start a test where the IUT receives test reference packets at a
+ * fixed interval. The tester generates the test reference packets.
+ *
+ * The RX_Channel and PHY parameters specify the RF channel and PHY to be used by
+ * the receiver. If the Host sets the PHY parameter to a PHY that the Controller does not
+ * support, including a value that is reserved for future use, the Controller shall return the
+ * error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Modulation_Index parameter specifies whether or not the Controller should assume
+ * the receiver has a stable modulation index.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Receiver_Test command has completed, an HCI_Command_-
+ * Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_receiver_test_v2(const sdc_hci_cmd_le_receiver_test_v2_t * p_params);
+
+/** @brief LE Transmitter Test [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.29
+ *
+ * This command is used to start a test where the IUT generates test reference packets
+ * at a fixed interval. The Controller shall transmit at the power level indicated by the
+ * TX_Power_Level parameter.
+ *
+ * The TX_Channel and PHY parameters specify the RF channel and PHY to be used by
+ * the transmitter. If the Host sets the PHY parameter to a PHY that the Controller does
+ * not support, including a value that is reserved for future use, the Controller shall return
+ * the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Test_Data_Length and Packet_Payload parameters specify the length and
+ * contents of the Payload of the test reference packets. An LE Controller supporting
+ * the HCI_LE_Transmitter_Test command shall support Packet_Payload values 0x00,
+ * 0x01 and 0x02. An LE Controller supporting the LE Coded PHY shall also
+ * support Packet_Payload value 0x04. An LE Controller may support other values of
+ * Packet_Payload.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Transmitter_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_transmitter_test_v2(const sdc_hci_cmd_le_transmitter_test_v2_t * p_params);
 
 /** @brief LE Set Advertising Set Random Address.
  *
@@ -6061,6 +6295,110 @@ uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t * p_params);
+
+/** @brief LE Receiver Test [v3].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.28
+ *
+ * This command is used to start a test where the IUT receives test reference packets at a
+ * fixed interval. The tester generates the test reference packets.
+ *
+ * The RX_Channel and PHY parameters specify the RF channel and PHY to be used by
+ * the receiver. If the Host sets the PHY parameter to a PHY that the Controller does not
+ * support, including a value that is reserved for future use, the Controller shall return the
+ * error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Modulation_Index parameter specifies whether or not the Controller should assume
+ * the receiver has a stable modulation index.
+ *
+ * The Expected_CTE_Length and Expected_CTE_Type parameters specify the expected
+ * length and type of the Constant Tone Extensions in received test reference packets.
+ * When receiving on a PHY that allows Constant Tone Extensions, if the Constant Tone
+ * Extension in a received test reference packet does not match both of these, the IUT
+ * shall discard that packet. If Expected_CTE_Length is not zero and PHY specifies a PHY
+ * that does not allow Constant Tone Extensions, the Controller shall return the error code
+ * Command Disallowed (0x0C).
+ *
+ * If the Slot_Durations parameter is set to 0x01 and the Controller does not support 1 µs
+ * switching and sampling, the Controller shall return the error code Unsupported Feature
+ * or Parameter Value (0x11).
+ * Slot_Durations, Switching_Pattern_Length, and Antenna_IDs[i] are only used when
+ * expecting an AoA Constant Tone Extension and shall be ignored when expecting an
+ * AoD Constant Tone Extension.
+ *
+ * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
+ * antenna in the device's antenna array, it shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * Note: Some Controllers may be unable to determine which values do or do not identify
+ * an antenna.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Receiver_Test command has completed, an HCI_Command_-
+ * Complete event shall be generated.
+ *
+ * If the Expected_CTE_Length parameter is not set to zero, then HCI_LE_-
+ * Connectionless_IQ_Report events may be generated by the Controller.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_receiver_test_v3(const sdc_hci_cmd_le_receiver_test_v3_t * p_params);
+
+/** @brief LE Transmitter Test [v3].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.29
+ *
+ * This command is used to start a test where the IUT generates test reference packets
+ * at a fixed interval. The Controller shall transmit at the power level indicated by the
+ * TX_Power_Level parameter.
+ *
+ * The TX_Channel and PHY parameters specify the RF channel and PHY to be used by
+ * the transmitter. If the Host sets the PHY parameter to a PHY that the Controller does
+ * not support, including a value that is reserved for future use, the Controller shall return
+ * the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Test_Data_Length and Packet_Payload parameters specify the length and
+ * contents of the Payload of the test reference packets. An LE Controller supporting
+ * the HCI_LE_Transmitter_Test command shall support Packet_Payload values 0x00,
+ * 0x01 and 0x02. An LE Controller supporting the LE Coded PHY shall also
+ * support Packet_Payload value 0x04. An LE Controller may support other values of
+ * Packet_Payload.
+ *
+ * The CTE_Length and CTE_Type parameters specify the length and type of the
+ * Constant Tone Extension in the test reference packets. If the CTE_Type parameter
+ * is set to 0x01 and the Controller does not support 1 µs switching, the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11). If CTE_Length is
+ * not zero and PHY specifies a PHY that does not allow Constant Tone Extensions, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * The Switching_Pattern_Length and Antenna_IDs[i] parameters specify the antenna
+ * switching pattern. They are only used when transmitting an AoD Constant Tone
+ * Extension and shall be ignored when transmitting an AoA Constant Tone Extension.
+ *
+ * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
+ * antenna in the device's antenna array, it shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * Note: Some Controllers may be unable to determine which values do or do not identify
+ * an antenna.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Transmitter_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_transmitter_test_v3(const sdc_hci_cmd_le_transmitter_test_v3_t * p_params);
 
 /** @brief LE Set Connectionless CTE Transmit Parameters.
  *
@@ -8154,6 +8492,62 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
  */
 uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_set_transmit_power_reporting_enable_t * p_params,
                                                            sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t * p_return);
+
+/** @brief LE Transmitter Test [v4].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.8.29
+ *
+ * This command is used to start a test where the IUT generates test reference packets
+ * at a fixed interval. The Controller shall transmit at the power level indicated by the
+ * TX_Power_Level parameter.
+ *
+ * The TX_Channel and PHY parameters specify the RF channel and PHY to be used by
+ * the transmitter. If the Host sets the PHY parameter to a PHY that the Controller does
+ * not support, including a value that is reserved for future use, the Controller shall return
+ * the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Test_Data_Length and Packet_Payload parameters specify the length and
+ * contents of the Payload of the test reference packets. An LE Controller supporting
+ * the HCI_LE_Transmitter_Test command shall support Packet_Payload values 0x00,
+ * 0x01 and 0x02. An LE Controller supporting the LE Coded PHY shall also
+ * support Packet_Payload value 0x04. An LE Controller may support other values of
+ * Packet_Payload.
+ *
+ * The CTE_Length and CTE_Type parameters specify the length and type of the
+ * Constant Tone Extension in the test reference packets. If the CTE_Type parameter
+ * is set to 0x01 and the Controller does not support 1 µs switching, the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11). If CTE_Length is
+ * not zero and PHY specifies a PHY that does not allow Constant Tone Extensions, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * The Switching_Pattern_Length and Antenna_IDs[i] parameters specify the antenna
+ * switching pattern. They are only used when transmitting an AoD Constant Tone
+ * Extension and shall be ignored when transmitting an AoA Constant Tone Extension.
+ *
+ * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
+ * antenna in the device's antenna array, it shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * Note: Some Controllers may be unable to determine which values do or do not identify
+ * an antenna.
+ *
+ * The TX_Power_Level parameter specifies the transmit power level to be used by
+ * the transmitter. If the parameter is set to a value other than 0x7E or 0x7F, then the
+ * Controller shall make the requested change or shall make the nearest change that it is
+ * capable of doing.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Transmitter_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_transmitter_test_v4(const sdc_hci_cmd_le_transmitter_test_v4_t * p_params);
 
 /** @brief LE Set Data Related Address Changes.
  *
