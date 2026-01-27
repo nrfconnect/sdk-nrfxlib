@@ -12,7 +12,7 @@ config MPSL
 	select MULTITHREADING_LOCK
 	select NRF_GRTC_TIMER_AUTO_KEEP_ALIVE if NRF_GRTC_TIMER
 	depends on (SOC_SERIES_BSIM_NRFXX || SOC_SERIES_NRF52 || SOC_NRF5340_CPUNET ||\
-			SOC_NRF54H20_CPURAD || SOC_SERIES_NRF54L || SOC_SERIES_NRF71X)
+			SOC_NRF54H20_CPURAD || SOC_SERIES_NRF54L || SOC_SERIES_NRF71)
 	help
 	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
 	  providing services for single and multi-protocol implementations.
@@ -39,7 +39,7 @@ config MPSL_LIB_DIR
 	default "nrf54lm" if SOC_NRF54LM20A && !TRUSTED_EXECUTION_NONSECURE
 	default "nrf54l_ns" if SOC_SERIES_NRF54L && TRUSTED_EXECUTION_NONSECURE
 	default "nrf54l" if SOC_SERIES_NRF54L && !TRUSTED_EXECUTION_NONSECURE
-	default "nrf71" if SOC_SERIES_NRF71X
+	default "nrf71" if SOC_SERIES_NRF71
 	default "nrf52_bsim" if SOC_SERIES_BSIM_NRF52X
 	default "nrf53_bsim" if SOC_SERIES_BSIM_NRF53X
 	default "nrf54l_bsim" if SOC_SERIES_BSIM_NRF54LX
