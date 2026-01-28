@@ -23,6 +23,7 @@ Changes
 =======
 
 * Optimized RAM consumption for simple configurations of the SoftDevice Controller. (DRGN-26915)
+* The controller now uses the same coding scheme as the associated periodic advertiser when using LE Coded PHY with the ``LE Create BIG`` or ``LE Create BIG Test`` HCI commands. (DRGN-27494)
 
 Bug fixes
 =========
