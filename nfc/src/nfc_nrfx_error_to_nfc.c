@@ -6,6 +6,7 @@
 
 #include "nrf_nfc_errno.h"
 #include "nrfx.h"
+#include <drivers/nrfx_errors.h>
 
 /**@brief Translate nrfx nfct driver errors to nfc standard error codes.
  *        This function is required because nrfx drivers might return different
