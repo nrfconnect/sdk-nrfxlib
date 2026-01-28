@@ -79,7 +79,8 @@
 #endif
 
 #if defined (NRF54L05_XXAA) || defined (NRF54LV10A_ENGA_XXAA) || defined (NRF54L10_XXAA) \
-    || defined (NRF54L15_XXAA) ||  defined (NRF54LM20A_ENGA_XXAA)
+    || defined (NRF54L15_XXAA) ||  defined (NRF54LM20A_ENGA_XXAA) \
+    || defined (NRF54LV10A_XXAA) ||  defined (NRF54LM20A_XXAA)
     #define NRF_802154_SOC_NRF54L_SERIES
     #define NRF_802154_SOC_SUPPORTED
 #endif
