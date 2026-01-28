@@ -8,6 +8,7 @@
 #define NRF_SQSPI_H__
 
 #include <nrfx.h>
+#include <drivers/nrfx_errors.h>
 #include <nrf_config_sqspi.h>
 
 #ifdef __cplusplus
