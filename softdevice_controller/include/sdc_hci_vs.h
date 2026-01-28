@@ -129,11 +129,9 @@ enum sdc_hci_vs_cs_param_type
 {
     /** @brief CS Event length set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_EVENT_LENGTH_SET = 0x00,
-    /** @brief CS t_pm params set. */
+    /** @brief CS t_pm length set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET = 0x01,
-    /** @brief CS board distance offset params set. */
-    SDC_HCI_VS_CS_PARAM_TYPE_CS_BOARD_DISTANCE_OFFSET_SET = 0x02,
-    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x03,
+    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x02,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -181,13 +179,6 @@ enum sdc_hci_vs_tx_power_handle_type
     /** @brief Handle of type ISO broadcaster. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_ISO_BROADCASTER = 0x04,
 };
-
-/** @brief CS board distance offset set parameters. */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Distance offset in centimeters to apply for the board. */
-    int16_t cs_board_distance_offset_cm;
-} sdc_hci_vs_cs_board_distance_offset_params_t;
 
 /** @brief CS event length set parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -765,7 +756,6 @@ typedef struct __PACKED __ALIGN(1)
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_cs_event_length_params_t cs_event_length_params;
         sdc_hci_vs_cs_t_pm_params_t cs_t_pm_params;
-        sdc_hci_vs_cs_board_distance_offset_params_t cs_board_distance_offset_params;
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
 
@@ -1791,18 +1781,6 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *   If the local or peer device does not support the suggested preferred T_PM, it cannot
  *   be used. The controller will then select a T_PM value supported by both local and
  *   peer devices when the LE CS Create Config command is issued.
- *
- * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_BOARD_DISTANCE_OFFSET_SET:
- *   Set the distance offset in cm for the board. This can be used to compensate
- *   for delays on board which are causing an offset in distance estimates.
- *
- *   The distance offset is a signed value in centimeters.
- *   The distance offset is applied as phase rotations to the PCT measurements taken on that board.
- *
- *   When applying a distance offset the distance estimates are expected to be affected as follows:
- *   distance_estimate_with_offset = distance_estimate_without_offset - distance_offset
- *
- *   Note: Currently the distance offset is not applied to RTT measurements.
  *
  * Event(s) generated (unless masked away):
  *
