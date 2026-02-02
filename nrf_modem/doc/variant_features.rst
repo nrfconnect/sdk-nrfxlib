@@ -5,19 +5,20 @@ Variants and features
 
 The Modem library comes in three variants, each with a specific feature set and support for the equivalent modem firmware.
 
-The cellular variant of the Modem library supports the following modem firmware:
+.. list-table:: Modem library variants and supported modem firmware
+   :header-rows: 1
+   :widths: auto
 
-  * mfw_nrf9160
-  * mfw_nrf91x1
-  * mfw_nrf9151-ntn
-
-The DECT NR+ PHY variant of the Modem library supports the following modem firmware:
-
-  * mfw-nr+_nrf91x1
-
-The DECT NR+ variant of the Modem library supports the following modem firmware:
-
-  * mfw-nr+_nrf91x1
+   * - Variant
+     - Supported modem firmware
+   * - Cellular
+     - * mfw_nrf9160
+       * mfw_nrf91x1
+       * mfw_nrf9151-ntn
+   * - DECT NR+ PHY
+     - * mfw_nr+-phy_nrf91x1
+   * - DECT NR+
+     - * mfw_nr+_nrf91x1
 
 .. note::
    The DECT NR+ and DECT NR+ PHY variants support different versions of the mfw-nr+_nrf91x1 modem firmware.
