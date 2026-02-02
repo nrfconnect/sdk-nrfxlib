@@ -188,6 +188,7 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  *                                   @ref mpsl_low_priority_process.
  * @retval 0  Success
  */
+__attribute__((deprecated))
 int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callback);
 
 /** @brief Releases the high frequency crystal oscillator.
@@ -210,6 +211,7 @@ int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callb
  *
  * @retval 0  Success
  */
+__attribute__((deprecated))
 int32_t mpsl_clock_hfclk_release(void);
 
 /** @brief Checks if the high frequency crystal oscillator is running.
@@ -226,6 +228,7 @@ int32_t mpsl_clock_hfclk_release(void);
  *
  * @retval 0  Success
  */
+__attribute__((deprecated))
 int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
 
 /** @brief Informs MPSL about the actual ramp-up time of the high-frequency crystal oscillator.
