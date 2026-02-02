@@ -43,6 +43,8 @@
  * circular include dependencies.
  */
 
+#include <mdk/nrf.h>
+
 #ifdef NRF_802154_SOC_SUPPORTED
     #error "Do not define NRF_802154_SOC_SUPPORTED externally"
 #endif
