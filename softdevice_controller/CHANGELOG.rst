@@ -20,6 +20,11 @@ Bug fixes
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
   would select the wrong antenna during the first (TX) T_PM period of a mode-2 step if it followed a mode-3 step. (DRGN-27360)
+* Fixed an issue where the controller could generate one too many HCI LE CS Subevent Result events for a CS procedure. (DRGN-27538)
+
+  The issue would only happen if all the following conditions are met:
+    * The CS procedure terminates due to running out of channels, based on the configured channel map and channel map repetition.
+    * The configured duration of the last CS subevent in the CS procedure is just enough to fit all the remaining CS steps.
 
 nRF Connect SDK v3.2.0
 **********************
