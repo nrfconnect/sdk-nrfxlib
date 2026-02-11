@@ -10,24 +10,6 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v3.2.3
-**********************
-
-Changes
-=======
-
-* The old high-frequency clock API (:c:func:`mpsl_clock_hfclk_request`, :c:func:`mpsl_clock_hfclk_release`, and :c:func:`mpsl_clock_hfclk_is_running`) is deprecated.
-  It will be removed in a future release.
-  It is superseded by a new API to manage the high-frequency clock for a given source (:c:func:`mpsl_clock_hfclk_src_request`, :c:func:`mpsl_clock_hfclk_src_release`, and :c:func:`mpsl_clock_hfclk_src_is_running`) which was added in v3.1.0.
-
-nRF Connect SDK v3.2.2
-**********************
-
-Bug fixes
-=========
-
-* Fixed an issue where MPSL was clearing IRQ number 75 instead of IRQ number 71 when running calling ECB APIs on nRF54L15, nRF54L10, or nRF54L05.
-
 nRF Connect SDK v3.2.0
 **********************
 
@@ -80,6 +62,7 @@ Added
 * Added support for the Simple GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-20506)
 * Added support for boosting the current timeslot priority for the nRF 802.15.4 Radio Driver. (KRKNWK-19125)
 * Added :c:func:`mpsl_clock_hfclk_src_request`, :c:func:`mpsl_clock_hfclk_src_release`, and :c:func:`mpsl_clock_hfclk_src_is_running` to manage the high-frequency clock for a given source.
+  The old API (:c:func:`mpsl_clock_hfclk_request`, :c:func:`mpsl_clock_hfclk_release`, and :c:func:`mpsl_clock_hfclk_is_running`) has been deprecated and will be removed in a future release.
 
 Bug fixes
 =========
