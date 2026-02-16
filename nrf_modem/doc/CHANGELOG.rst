@@ -22,6 +22,7 @@ DECT NR+
 ========
 
 * Added new interface for the DECT NR+ firmware.
+* Updated the radio modes section of the :ref:`nrf_modem_dect_phy` documentation to include detailed descriptions of the radio states and their associated latencies.
 
 nrf_modem 3.2.0
 ***************
