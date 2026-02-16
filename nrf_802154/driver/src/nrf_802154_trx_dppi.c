@@ -124,9 +124,7 @@ void nrf_802154_trx_ppi_for_disable(void)
     nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE, EGU_TIMER_START_EVENT);
 #endif
 
-#if NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY);
-#endif // NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE);
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_PHYEND);
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_END);
