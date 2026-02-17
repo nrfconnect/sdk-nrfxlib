@@ -37,7 +37,7 @@ doc/*                                     @b-gent
 /crypto/                                  @frkv @tejlmand
 /gzll/                                    @leewkb4567
 /mpsl/                                    @nrfconnect/ncs-dragoon
-/nfc/                                     @anangl @grochu @nrfconnect/ncs-radio-sw
+/nfc/                                     @nrfconnect/ncs-radio-sw
 /nrf_802154/                              @nrfconnect/ncs-radio-sw
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @lmaciejonczyk @edmont @canisLupus1313
