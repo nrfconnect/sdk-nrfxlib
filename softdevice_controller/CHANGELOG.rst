@@ -24,6 +24,9 @@ Changes
 
 * Optimized RAM consumption for simple configurations of the SoftDevice Controller. (DRGN-26915)
 * The controller now uses the same coding scheme as the associated periodic advertiser when using LE Coded PHY with the ``LE Create BIG`` or ``LE Create BIG Test`` HCI commands. (DRGN-27494)
+* The Quality of Service (QoS) channel survey feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-26264)
+* The :c:func:`sdc_hci_cmd_le_set_adv_data` and :c:func:`sdc_hci_cmd_le_set_scan_response_data` functions now return the error code ``0x12`` if the data length is more than 31 bytes.
+  Previously, the extra data was truncated. (DRGN-27247)
 
 Bug fixes
 =========
@@ -33,6 +36,13 @@ Bug fixes
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
   would select the wrong antenna during the first (TX) T_PM period of a mode-2 step if it followed a mode-3 step. (DRGN-27360)
+* Fixed an issue where the controller could send ``LL_CS_CAPABILITIES_REQ`` PDU on an unencrypted link.
+  This would only happen when the ``LE CS Read Remote Supported Capabilities`` HCI command triggers the Feature Exchange procedure. (DRGN-27530)
+* Fixed an issue where the controller could generate one too many HCI LE CS Subevent Result events for a CS procedure. (DRGN-27538)
+
+  The issue would only happen if all the following conditions are met:
+    * The CS procedure terminates due to running out of channels, based on the configured channel map and channel map repetition.
+    * The configured duration of the last CS subevent in the CS procedure is just enough to fit all the remaining CS steps.
 
 nRF Connect SDK v3.2.0
 **********************
