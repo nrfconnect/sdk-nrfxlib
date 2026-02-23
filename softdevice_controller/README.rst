@@ -106,7 +106,7 @@ Proprietary feature support:
 |                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 | QoS Channel Survey       |                 | X            | X         | Provides measurements of the energy levels on the Bluetooth LE channels.    |
-| (experimental support)   |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
+|                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 
