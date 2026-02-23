@@ -475,6 +475,8 @@ enum nrf_wifi_security_type {
 	NRF_WIFI_WPA3_HNP,
 	/** WPA3-H2E */
 	NRF_WIFI_WPA3_H2E,
+	/** WPA3-FT-SAE */
+	NRF_WIFI_WPA3_FT_SAE,
 	/** 8021X SUITE-B SHA256 */
 	NRF_WIFI_EAP_SUITEB_SHA256,
 	/** 8021X SUITE-B SHA384 */
@@ -559,7 +561,7 @@ struct nrf_wifi_ssid {
 	unsigned char nrf_wifi_ssid[NRF_WIFI_MAX_SSID_LEN];
 } __NRF_WIFI_PKD;
 
-#define NRF_WIFI_MAX_IE_LEN 400
+#define NRF_WIFI_MAX_IE_LEN 600
 
 /**
  * @brief This structure contains data related to the Information Elements (IEs).
@@ -615,7 +617,7 @@ struct nrf_wifi_sae {
 	unsigned char sae_data[NRF_WIFI_MAX_SAE_DATA_LENGTH];
 } __NRF_WIFI_PKD;
 
-#define NRF_WIFI_MAX_FRAME_LEN 400
+#define NRF_WIFI_MAX_FRAME_LEN 600
 
 /**
  * @brief This structure defines the frame that is intended for transmission.
@@ -707,9 +709,6 @@ struct nrf_wifi_channel {
 #define NRF_WIFI_SCAN_MAX_NUM_FREQUENCIES 89
 #define MAX_NUM_CHANNELS 42
 
-#define NRF_WIFI_SCAN_BAND_2GHZ	(1 << 0)
-#define NRF_WIFI_SCAN_BAND_5GHZ	(1 << 1)
-#define NRF_WIFI_SCAN_BAND_6GHZ	(1 << 2)
 
 /**
  * @brief This structure provides details about the parameters required for a scan request.
@@ -724,7 +723,7 @@ struct nrf_wifi_scan_params {
 	struct nrf_wifi_ssid scan_ssids[NRF_WIFI_SCAN_MAX_NUM_SSIDS];
 	/** used to send probe requests at non CCK rate in 2GHz band */
 	unsigned char no_cck;
-	/**  Bitmap of bands to be scanned. Value Zero will scan both 2.4 and 5 GHZ */
+	/**  Bitmap of bands to be scanned (NRF_WIFI_OP_BAND_2GHZ, NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ) */
 	unsigned char bands;
 	/** Information element(s) data nrf_wifi_ie*/
 	struct nrf_wifi_ie ie;
@@ -1128,7 +1127,7 @@ struct nrf_wifi_umac_hdr {
 #define NRF_WIFI_KEY_DEFAULT_MGMT (1 << 2)
 #define NRF_WIFI_KEY_DEFAULT_TYPE_UNICAST (1 << 3)
 #define NRF_WIFI_KEY_DEFAULT_TYPE_MULTICAST (1 << 4)
-
+#define NRF_WIFI_KEY_DEFAULT_BEACON (1 << 5)
 /**
  * @brief This structure contains information about a security key.
  *
@@ -1173,6 +1172,10 @@ enum scan_reason {
 struct nrf_wifi_umac_scan_info {
 	/** scan type see &enum scan_reason */
 	signed int scan_reason;
+	/** scan_db address */
+	unsigned int scan_db_addr;
+	/** max scan results count */
+	unsigned int scan_db_len;
 	/** scan parameters nrf_wifi_scan_params */
 	struct nrf_wifi_scan_params scan_params;
 } __NRF_WIFI_PKD;
@@ -1224,6 +1227,12 @@ struct nrf_wifi_umac_event_scan_done {
 	signed int status;
 	/** scan type see &enum scan_reason */
 	unsigned int scan_type;
+	/** no of scan results */
+	unsigned int scan_results_cnt;
+	/** scan_db address. Each scan result is of type 
+	 * see &struct umac_display_results. 
+	 */
+	unsigned int scan_db_addr;
 } __NRF_WIFI_PKD;
 
 
@@ -2770,22 +2779,6 @@ struct umac_display_results {
 
 #define DISPLAY_BSS_TOHOST_PEREVNT 8
 
-/**
- * @brief This structure serves as a response to the command NRF_WIFI_UMAC_CMD_GET_SCAN_RESULTS
- *  of display scan type. It contains a maximum of DISPLAY_BSS_TOHOST_PEREVENT scan results
- *  in each event. When umac_hdr->seq == 0, it indicates the last scan event.
- *
- */
-
-struct nrf_wifi_umac_event_new_scan_display_results {
-	/** Header nrf_wifi_umac_hdr */
-	struct nrf_wifi_umac_hdr umac_hdr;
-	/** Number of scan results in the current event */
-	unsigned char event_bss_count;
-	/** Display scan results info umac_display_results */
-	struct umac_display_results display_results[DISPLAY_BSS_TOHOST_PEREVNT];
-} __NRF_WIFI_PKD;
-
 #define NRF_WIFI_EVENT_MLME_FRAME_VALID (1 << 0)
 #define NRF_WIFI_EVENT_MLME_MAC_ADDR_VALID (1 << 1)
 #define NRF_WIFI_EVENT_MLME_FREQ_VALID (1 << 2)
@@ -3776,6 +3769,7 @@ struct nrf_wifi_umac_head {
 enum nrf_wifi_tx_flags {
 	NRF_WIFI_TX_FLAG_TWT_EMERGENCY_TX = (1 << 31),
 	NRF_WIFI_TX_FLAG_CHKSUM_AVAILABLE = (1 << 30),
+	NRF_WIFI_TX_FLAG_QOS_CTL_ACK_POLICY_NOACK = (1 << 29),
 };
 
 /**
@@ -4025,37 +4019,59 @@ struct nrf_wifi_umac_assoc_info {
 	unsigned char conn_type;
 } __NRF_WIFI_PKD;
 
+/**
+ * @brief This structure represents the command used to configure the signal quality
+ *  threshold for generating events when the signal quality crosses the configured threshold.
+ *
+ */
 struct nrf_wifi_cmd_sqi_threshold_config {
 	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
+	/** Interface index */
 	unsigned int if_index;
+	/** RSSI threshold */
 	int rssi_thold;
+	/** Hysteresis value */
 	unsigned int rssi_hyst;
 } __NRF_WIFI_PKD;
 
-/*!
- * enum NRF_WIFI_EVENT_SQI_LEVEL - signal quality level compared to the
+/** 
+ * @brief Signal Quality Level compared to the configured threshold.
+ * enum nrf_wifi_sqi_event_level - signal quality level compared to the
  *                             configured threshold.
- * @NRF_WIFI_EVENT_SQI_LEVEL_LOW: Current signal level is below threshold
- * @NRF_WIFI_EVENT_SQI_LEVEL_HIGH: Current signal level is above threshold
  */
-enum NRF_WIFI_EVENT_SQI_LEVEL {
+enum nrf_wifi_sqi_event_level {
+	/** Signal Quality Level is below the configured threshold */
 	NRF_WIFI_EVENT_SQI_LEVEL_LOW,
+	/** Signal Quality Level is above the configured threshold */
 	NRF_WIFI_EVENT_SQI_LEVEL_HIGH,
 } __NRF_WIFI_PKD;
 
+/**
+ * @brief This structure represents the event generated when the signal quality
+ * crosses the configured threshold.
+ *
+ */
 struct nrf_wifi_event_sqi_threshold_config {
 	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	enum NRF_WIFI_EVENT_SQI_LEVEL sqi_level;
+	/** Signal Quality Level see &enum nrf_wifi_sqi_event_level */
+	signed int sqi_level;
+	/** Last RSSI value */
 	int last_rssi;
 } __NRF_WIFI_PKD;
 
+/**
+ * @brief This structure represents the status code for a key command.
+ *
+ */
 struct nrf_wifi_umac_event_key_cmd_status {
 	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
+	/** Command status */
 	int cmd_status;
 } __NRF_WIFI_PKD;
+
 /**
  * @}
  */
@@ -4091,8 +4107,8 @@ struct nrf_wifi_umac_meas_request
 	signed int band;
 	/** center frequency in MHz */
 	unsigned int center_frequency;
-	/* Preamble to be used */
-	enum nrf_wifi_preamble preamble;
+	/** Preamble to be used see &enum nrf_wifi_preamble */
+	signed int preamble;
 	/** Interval between the FTM bursts, typically 200ms */
 	unsigned char burst_period;
 	/** Number of ranging measurements are to be
@@ -4140,14 +4156,26 @@ struct nrf_wifi_umac_cmd_meas_start {
 	/* @ref nrf_wifi_umac_meas_req_info */
 	struct nrf_wifi_umac_meas_req_info info;
 } __NRF_WIFI_PKD;
+
+/**
+ * @brief This enum contains FTM measurement failure reasons.
+ */
 enum nrf_wifi_peer_meas_ftm_failure_reasons {
+	/** Unspecified failure */
 	NRF_WIFI_FTM_FAILURE_UNSPECIFIED,
+	/** No response from peer */
 	NRF_WIFI_FTM_FAILURE_NO_RESPONSE,
+	/** Rejected by peer */
 	NRF_WIFI_FTM_FAILURE_REJECTED,
+	/** Wrong channel */
 	NRF_WIFI_FTM_FAILURE_WRONG_CHANNEL,
+	/** Peer not capable */
 	NRF_WIFI_FTM_FAILURE_PEER_NOT_CAPABLE,
+	/** Invalid timestamp */	
 	NRF_WIFI_FTM_FAILURE_INVALID_TIMESTAMP,
+	/** Peer busy */
 	NRF_WIFI_FTM_FAILURE_PEER_BUSY,
+	/** Bad changed parameters */
 	NRF_WIFI_FTM_FAILURE_BAD_CHANGED_PARAMS,
 } __NRF_WIFI_PKD;
 #define NRF_WIFI_EVENT_RESULT_RSSI_VALID (1 << 0)
@@ -4171,15 +4199,18 @@ struct nrf_wifi_umac_ftm_result
 	unsigned int lci_len;
 	/* Civic location data length */
 	unsigned int civicloc_len;
-	/* FTM measurement failure reason */
-	enum nrf_wifi_peer_meas_ftm_failure_reasons failure_reason;
+	/** FTM measurement failure reason see 
+	 * &enum nrf_wifi_peer_meas_ftm_failure_reasons 
+	 */
+	signed int failure_reason;
 	/* number of FTM bursts exchange */
 	unsigned char num_bursts_exp;
 	/* One burst measurement time  */
 	unsigned char burst_duration;
-        /** Number of ranging measurements are
-        performed within a single burst transmission */
-        unsigned char ftms_per_burst;
+    /** Number of ranging measurements are 
+	 * performed within a single burst transmission 
+	 */
+    unsigned char ftms_per_burst;
 	/* average RSSI over FTM action frames reported */
 	signed int rssi_avg;
 	/* RSSI spread over FTM action frames reported */
@@ -4197,35 +4228,45 @@ struct nrf_wifi_umac_ftm_result
 	/**distance spread measured  */
 	signed long long dist_spread;    
 } __NRF_WIFI_PKD;
+
 /**
  * enum nrf_wifi_meas_status - peer measurement status
 */
 enum nrf_wifi_meas_status {
+	/** Measurement successful */
 	NRF_WIFI_FTM_STATUS_SUCCESS,
+	/** Request failed */
 	NRF_WIFI_FTM_STATUS_REQ_FAIL,
+	/** No response from peer */
 	NRF_WIFI_FTM_STATUS_NO_RESP_FROM_PEER,
+	/** AP busy */
 	NRF_WIFI_FTM_STATUS_AP_BUSY,
+	/** FTM timeout */
 	NRF_WIFI_FTM_STATUS_FTM_TIMEOUT,
 };
+
 /**
  * enum nrf_wifi_meas_type - peer measurement type
 */
 enum nrf_wifi_meas_type {
+	/** Invalid measurement type */
 	NRF_WIFI_MEAS_TYPE_INVALID,
+	/** FTM measurement type */
 	NRF_WIFI_MEAS_TYPE_FTM,
 };
+
 /**
 @brief This structure contains the information to be passed to the APP/Host
 to send peer measurement results using the NRF_WIFI_UMAC_EVENT_MEAS_RESULTS event.
  */
 struct nrf_wifi_umac_meas_result_info
 {
-	/* Measurement status */
-	enum nrf_wifi_meas_status status;
+	/** Measurement status see &enum nrf_wifi_meas_status */
+	signed int status;
 	/* MAC Address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
-	/* Measurement type */
-	enum nrf_wifi_meas_type type;
+	/* Measurement type see &enum nrf_wifi_meas_type*/
+	signed int type;
 	/* Measurement results received from peer */
 	struct nrf_wifi_umac_ftm_result ftm;
 } __NRF_WIFI_PKD;
