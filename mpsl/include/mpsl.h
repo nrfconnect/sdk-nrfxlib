@@ -156,6 +156,16 @@ void mpsl_calibration_timer_handle(void);
  * RFU
  */
 void mpsl_pan_rfu(void);
+
+/** @brief Relax real-time requirements.
+ *
+ * When enabled, MPSL will not trigger assertions when real-time deadlines are missed.
+ * Such deadlines can be missed when interrupts are disabled for longer periods of time.
+ *
+ * @param[in] enable Set to true enable relaxed real-time mode
+ */
+void mpsl_relaxed_real_time_set(bool enable);
+
 #ifdef __cplusplus
 }
 #endif
