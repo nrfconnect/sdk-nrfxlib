@@ -1477,6 +1477,10 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * The returned timestamp may be set to a value in the past or into the future
  * depending on how the application has previously provided SDUs to the controller.
  *
+ * If the application provided the previous SDU with a timestamp in the past, the returned timestamp
+ * still represents the scheduled transmission time. That is, the timestamp
+ * cannot be used to know when the SDU was actually sent.
+ *
  * The returned timestamp can be used to make the application provide SDUs to the
  * controller right before they are sent on air. The returned value
  * can also be used to synchronize the transmitter and receiver.
