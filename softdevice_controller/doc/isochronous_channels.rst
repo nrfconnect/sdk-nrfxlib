@@ -198,6 +198,10 @@ Timestamps
 
    When a timestamp is added to the HCI data, the |controller| ignores the SDU sequence numbers.
 
+   When an SDU is provided with a timestamp, the |controller| will send the SDU at the indicated time.
+   That is, if the timestamp is in the past, the SDU will be flushed and will not be sent on air.
+   Also, if the timestamp is far into the future, it may take some time before the corresponding HCI buffers are freed.
+
 Time of arrival
    In the time of arrival mode, the |controller| records the time when the data is being processed inside the controller.
    The controller then tries to send the data in the next available CIS or BIS event where it does not yet have data to send.
@@ -235,6 +239,8 @@ Sequence numbers
 
    To use this mode, set the sequence number field and do not add a timestamp to the HCI ISO data.
 
+The controller only handles SDUs provided in chronological order.
+SDUs provided out of order are rejected.
 
 Synchronize data sent on multiple CISes or BISes
 ************************************************
