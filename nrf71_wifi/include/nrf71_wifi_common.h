@@ -599,12 +599,14 @@ struct nrf_wifi_cmd_sys_init {
 	 *  in the case of coexistence with Short Range radio.
 	 */
 	unsigned int inband_scan_type;
-       /** @ref nrf_wifi_ftm_loc_params */
-       struct nrf_wifi_ftm_loc_params  ftm_loc_params;
-       /** Bit 0 : LDPC in HT mode. Use NRF_WIFI_LDPC_ENABLE_HT
+	/** 0:umac checksum disable 1: umac checksum enable */
+        unsigned char tcp_ip_checksum_offload;
+        /** @ref nrf_wifi_ftm_loc_params */
+        struct nrf_wifi_ftm_loc_params  ftm_loc_params;
+        /** Bit 0 : LDPC in HT mode. Use NRF_WIFI_LDPC_ENABLE_HT
         *  Bit 1 : LDPC in VHT mode. Use NRF_WIFI_LDPC_ENABLE_VHT
         */
-       unsigned char ldpc_config;
+        unsigned char ldpc_config;
 
 } __NRF_WIFI_PKD;
 
@@ -752,7 +754,7 @@ struct rpu_conf_params {
 	unsigned char ru_index;
 	/** Desired tone frequency to be transmitted */
 	signed char tx_tone_freq;
-	/** Tone type to be transmitted (0-complex, 1-real-only, 2-imag-only) */
+	/** Tone type to be transmitted (0=complex, 1=real-only, 2=imag-only) */
 	unsigned char tx_tone_type;
 	/** DC offset for I channel (Q.11 format) */
 	signed short int tx_tone_dc_offset_i;
@@ -788,7 +790,9 @@ struct rpu_conf_params {
 	unsigned char tx_fec_padd_factor;
 	/** Informs number of HE-LTFs: 0->1x, 1->2x, 2->4x, 3->6x, 4->8x */
 	unsigned char tx_num_he_ltf;
+	/** An array containing RF & baseband control params */
 	unsigned int rf_params_addr[NUM_WIFI_PARAMS];
+	/** VTF buffer address */
 	unsigned int vtf_buffer_addr;
 } __NRF_WIFI_PKD;
 
@@ -1870,7 +1874,7 @@ struct nrf_wifi_rf_test_tx_params {
 	/* DC offset for Q channel. Format: Q.11 */
 	signed short int dc_offset_q;
 
-	/** Tone type: 0=complex, 1=real-only, 2=imag-only (use unsigned char for ABI). */
+	/** Tone type: 0=complex, 1=real-only, 2=imag-only */
 	unsigned char tone_type;
 } __NRF_WIFI_PKD;
 
@@ -1913,11 +1917,11 @@ struct nrf_wifi_rf_get_rf_rssi {
 	unsigned char agc_status_val;
 } __NRF_WIFI_PKD;
 
-struct nrf_wifi_rf_test_xo_calib  {
+struct nrf_wifi_rf_test_xo_calib {
 	unsigned char test;
 
-	/* XO value in the range between 0 to 127 */
-	unsigned char xo_val;
+	/* XO offset value as signed 8-bit integer (range -100 PPM to 100 PPM). */
+	signed char xo_val;
 
 } __NRF_WIFI_PKD;
 

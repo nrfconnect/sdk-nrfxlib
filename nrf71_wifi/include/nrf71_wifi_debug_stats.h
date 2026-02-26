@@ -360,7 +360,6 @@ struct umac_sleep_stats {
     unsigned int get_channel;
     unsigned int rx_pending;
     unsigned int pre_init;
-    unsigned int get_scan;
     unsigned int rx_mbox_pending;
     unsigned int tx_mbox_pending;
     unsigned int pending_cmd_resubmit;
@@ -779,16 +778,40 @@ struct lmac_sqi_stats
     unsigned int sqi_events_cnt;
 };
 
+// Interval index mapping
+enum {
+    INTERVAL_15SEC = 0,
+    INTERVAL_MAX,
+    INTERVAL_COUNT
+};
 
-
+/**
+ * @struct lmac_sleep_timing_stats
+ * @brief Tracks wake/sleep durations, counters, and interval stats.
+ *
+ * - last_wake_sleep_stats[i][type]:
+ *   Stores previous completed interval stats for wake/sleep.
+ *   i = interval index, type = 0 (wake), 1 (sleep)
+ * - cur_wake_sleep_stats[i][type]:
+ *   Accumulates stats for current ongoing interval.
+ * - time_stamps[i]:
+ *   Timestamp marking the start of each interval tracking window.
+ */
 struct lmac_sleep_timing_stats{
     unsigned int index;
-    unsigned int boot_time;
     unsigned int bcn_delay_after_wakeup;
-    unsigned int time_stamp_instance_before_sleep;
-    unsigned int time_stamp_instance_after_wakeup;
+    unsigned int last_one_minute_bcn_rcv_cnt;
+    unsigned int last_one_second_bcn_rcv_cnt;
+    unsigned int current_one_minute_bcn_rcv_cnt;
+    unsigned int current_one_second_bcn_rcv_cnt;
     unsigned int wake_duration[SLEEP_DEBUG_BUFFER];
     unsigned int sleep_duration[SLEEP_DEBUG_BUFFER];
+    unsigned int temp_time_stamp_minute;
+    unsigned int temp_time_stamp_second;
+    double time_stamps[INTERVAL_COUNT]; // 0->15s, 2->MAX
+    // 0: wake, 1: sleep
+    double last_wake_sleep_stats[INTERVAL_COUNT][2];
+    double cur_wake_sleep_stats[INTERVAL_COUNT][2];
 };
 
 
@@ -912,6 +935,7 @@ enum PHY_STATS_CATEGORY
 {
     PHY_RX_DEBUG_STATS  = (1 << 0),
     PHY_RSSI_HIST_STATS = (1 << 1),
+    PHY_STATS_END       = (1 << 2)
 };
 
 
