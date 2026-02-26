@@ -9,6 +9,15 @@ Changelog
 
 All notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* Updated to library version 1.1.1.
+* When initializing the library from a stored state and a battery model pointer is provided, this pointer has precedence over the one stored in the state blob.
+
 nRF Connect SDK v3.2.0
 **********************
 
