@@ -112,24 +112,62 @@ Radio modes
 ===========
 
 The radio modes have implications on operation latency and power consumption.
-The radio can be configured in one of three modes described in the following sections.
+The DECT modem supports the following three user-configurable radio modes:
 
-Low latency
------------
+* ``LOW_LATENCY`` - This mode has the lowest latency, the best RX/TX switching performance, and the highest idle power consumption.
+  This is the only mode that supports immediate start operations, that is, operations that have configured start time as zero.
+* ``LOW_LATENCY_WITH_STANDBY`` - This mode has the same RX/TX switching performance as the low latency mode, but higher operation start-up latency due to the radio entering standby mode when possible.
+  Idle power consumption is thus lower compared to the low latency mode.
+* ``NON_LBT_WITH_STANDBY`` - This mode has the lowest idle power consumption, due to the modem entering standby mode when possible and not using Listen-Before-Talk, at the cost of higher start-up latency.
 
-This mode has the lowest latency, the best RX/TX switching performance, and the highest power consumption.
-This is the only mode that supports immediate start operations, that is, operations that have configured start time as zero.
+In the figure and in the codes, these radio mode names are prefixed by ``NRF_MODEM_DECT_PHY_RADIO_MODE_*``.
 
-Low latency with standby
-------------------------
+.. figure:: images/radio_modes_and_latencies.svg
+   :alt: Radio modes and latencies
 
-This mode has the same RX/TX switching performance as the low latency mode, but higher operation start-up latency due to the radio entering standby mode when possible.
-Power consumption is thus lower compared to the low latency mode.
+   Radio modes and latencies
 
-No LBT with standby
--------------------
+The figure shows the difference between the ``LOW_LATENCY`` mode and the ``NON_LBT_WITH_STANDBY`` mode.
+In ``NON_LBT_WITH_STANDBY`` mode, the modem automatically returns to the ``STANDBY`` state, where both the receiver (RX) and transmitter (TX) are off.
+While in the ``IDLE`` state of ``LOW_LATENCY`` mode, the RX and TX remain partially activated.
+This enables faster radio operations but results in higher current consumption.
+The ``NON_LBT_WITH_STANDBY`` activates either TX or RX, and therefore Listening Before Talk (LBT) is not available in this mode.
 
-This mode has the lowest power consumption, due to the modem entering standby mode when possible and not using Listen-Before-Talk, at the cost of higher start-up latency and worse RX/TX switching performance compared to the other radio modes.
+The following lists the timing symbols of transition times between the states and operation latencies and their corresponding API parameters:
+
+* :math:`t_{scheduled\_operation\_advance}` - ``scheduled_operation_advance``
+* :math:`t_{idle\_to\_active}` - ``idle_to_active``
+* :math:`t_{scheduled\_operation\_advance + idle\_to\_active}` - ``scheduled_operation_advance`` + ``idle_to_active``
+* :math:`t_{minimum\_scheduled\_operation\_transition\_delay}` - ``minimum_scheduled_operation_transition_delay``
+* :math:`t_{active\_to\_idle}` - ``active_to_idle``
+
+The following lists the timing symbols of configuration duration and their corresponding API parameters:
+
+* :math:`t_\text{activation}` - ``activation``
+* :math:`t_\text{deactivation}` - ``deactivation``
+* :math:`t_\text{configuration}` - ``configuration``
+* :math:`t_\text{initialization}` - ``initialization``
+* :math:`t_\text{deinitialization}` - ``deinitialization``
+
+As an example, the minimum scheduling delay in ``LOW_LATENCY_WITH_STANDBY`` mode can be derived from the required state transitions.
+Any modem operation from the ``STANDBY`` state must go through the ``IDLE`` state before reaching the RX or TX state.
+Thus, the operation must be scheduled at the time as set in :math:`t_{scheduled\_operation\_advance}` + :math:`t_{idle\_to\_active}` in advance to ensure that the on‑air activity begins exactly at the desired time.
+In this context, ``rssi`` operations are executed in the RX state, as shown in the figure.
+
+You must ensure that the time between any two scheduled operations is not shorter than the value specified by :math:`t_{minimum\_scheduled\_operation\_transition\_delay}`.
+
+The modem always goes to the lowest possible current-consumption state based on the known radio operation schedule in the given configured radio mode.
+For example, in the ``LOW_LATENCY_WITH_STANDBY`` mode, after an RX operation completes, the modem autonomously evaluates whether sufficient time exists to drop to the ``STANDBY`` state or to ``IDLE`` and come back to the next TX or RX operation.
+If the timing does not permit this, the modem takes a shortcut to the next RX or TX operation.
+Within that ``STANDBY`` state, the modem autonomously enters the ``SLEEP`` mode if the time gap is long enough.
+The possible ``SLEEP`` wake-up times are factored into :math:`t_{scheduled\_operation\_advance}`.
+
+In ``LOW_LATENCY`` mode, the modem also accepts ``0`` as a radio operation start time.
+A value of ``0`` is interpreted as a best-effort command, where the modem initiates the operation as fast as possible based on the current state and the modem state transition times.
+To achieve the most power-efficient modem operation, the radio operation requests should be sent as early as possible so that the modem can make maximum use of low-power operating modes based on the scheduled operations.
+It is preferred to schedule non-overlapping radio operations in advance and to avoid as-fast-as-possible commands.
+
+For the radio current consumption for the various modem operating states, see `DECT NR+ current consumption`_.
 
 Deactivation
 ============
