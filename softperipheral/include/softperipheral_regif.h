@@ -7,6 +7,8 @@
 #ifndef SOFTPERIPHERAL_REGIF_H__
 #define SOFTPERIPHERAL_REGIF_H__
 
+#include <mdk/nrf.h>
+
 /* Shared between Host and Service, varies between platforms. */
 #if defined (NRF54L05_XXAA) || defined (NRF54L09_ENGA_XXAA) || defined (NRF54L10_XXAA) || \
     defined (NRF54L15_XXAA) || defined (NRF54LM20A_ENGA_XXAA) || \

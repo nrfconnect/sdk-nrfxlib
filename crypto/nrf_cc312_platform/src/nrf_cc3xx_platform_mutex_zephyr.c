@@ -9,6 +9,8 @@
 
 #include <zephyr/kernel.h>
 
+#include <mdk/nrf.h>
+
 BUILD_ASSERT(IS_ENABLED(CONFIG_MULTITHREADING),
 	"This file is intended for multi-threading, but single-threading is enabled. "
 	"Please check your config build configuration!");
