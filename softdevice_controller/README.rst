@@ -74,6 +74,8 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Shorter Connection Intervals   |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
+| LE Flushable ACL Data          |                 |              | X         |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -81,6 +83,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
+   * For the LE Flushable ACL Data feature, the support is experimental.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
    * For the nRF54L Series devices, the SoftDevice Controller in non-secure mode is experimental.
    * Channel Sounding is not supported on the nRF52 and nRF53 Series devices.
