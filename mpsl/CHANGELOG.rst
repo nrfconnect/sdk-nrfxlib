@@ -7,6 +7,19 @@ Changelog
    :local:
    :depth: 2
 
+nRF Connect SDK v2.6.5
+**********************
+
+All the notable changes included in the |NCS| v2.6.5 release are documented in this section.
+
+Added
+=====
+
+* Added :c:func:`mpsl_relaxed_real_time_set` to enable or disable relaxed real-time mode. (DRGN-27671)
+  When relaxed real-time mode is enabled, MPSL will handle missed real-time deadlines gracefully instead of asserting.
+  Missed real-time deadlines typically occur when interrupts are disabled for a longer period of time.
+  Relaxed real-time mode is disabled by default.
+
 nRF Connect SDK v2.6.3
 **********************
 
