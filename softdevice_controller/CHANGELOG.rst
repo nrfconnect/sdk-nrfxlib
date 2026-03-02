@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.6.5
+**********************
+
+All the notable changes included in the |NCS| v2.6.5 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where an assert could happen while scanning. (DRGN-27019)
+
 nRF Connect SDK v2.6.4
 **********************
 
