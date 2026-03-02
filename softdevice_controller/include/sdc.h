@@ -1605,6 +1605,16 @@ void sdc_support_channel_sounding_reflector_role(void);
  */
 void sdc_support_direct_test_mode(void);
 
+/** @brief Support Flushable ACL Data
+ *
+ * After this API is called, the controller will support the LE Flushable ACL Data feature.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_flushable_acl_data(void);
+
 #ifdef __cplusplus
 }
 #endif

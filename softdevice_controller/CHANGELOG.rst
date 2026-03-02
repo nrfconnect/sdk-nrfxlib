@@ -18,6 +18,7 @@ Added
 * Experimental support for the nRF54LS device. (DRGN-26915)
 * Separate libraries for the nRF54LM and nRF54LV series devices. (DRGN-27252)
 * Experimental support for Direct Test Mode. (DRGN-27368)
+* Experimental support for the LE Flushable ACL Data feature and the LE Read and Write Automatic Flush Timeout HCI commands. (DRGN-27485)
 
 Changes
 =======

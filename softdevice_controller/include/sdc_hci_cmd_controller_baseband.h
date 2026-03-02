@@ -43,6 +43,10 @@ enum sdc_hci_opcode_cb
     SDC_HCI_OPCODE_CMD_CB_READ_CONN_ACCEPT_TIMEOUT = 0xc15,
     /** @brief See @ref sdc_hci_cmd_cb_write_conn_accept_timeout(). */
     SDC_HCI_OPCODE_CMD_CB_WRITE_CONN_ACCEPT_TIMEOUT = 0xc16,
+    /** @brief See @ref sdc_hci_cmd_cb_read_automatic_flush_timeout(). */
+    SDC_HCI_OPCODE_CMD_CB_READ_AUTOMATIC_FLUSH_TIMEOUT = 0xc27,
+    /** @brief See @ref sdc_hci_cmd_cb_write_automatic_flush_timeout(). */
+    SDC_HCI_OPCODE_CMD_CB_WRITE_AUTOMATIC_FLUSH_TIMEOUT = 0xc28,
     /** @brief See @ref sdc_hci_cmd_cb_read_transmit_power_level(). */
     SDC_HCI_OPCODE_CMD_CB_READ_TRANSMIT_POWER_LEVEL = 0xc2d,
     /** @brief See @ref sdc_hci_cmd_cb_set_controller_to_host_flow_control(). */
@@ -184,6 +188,32 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_accept_timeout;
 } sdc_hci_cmd_cb_write_conn_accept_timeout_t;
+
+/** @brief Read Automatic Flush Timeout command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_cb_read_automatic_flush_timeout_t;
+
+/** @brief Read Automatic Flush Timeout return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint16_t flush_timeout;
+} sdc_hci_cmd_cb_read_automatic_flush_timeout_return_t;
+
+/** @brief Write Automatic Flush Timeout command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint16_t flush_timeout;
+} sdc_hci_cmd_cb_write_automatic_flush_timeout_t;
+
+/** @brief Write Automatic Flush Timeout return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_cb_write_automatic_flush_timeout_return_t;
 
 /** @brief Read Transmit Power Level command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -362,6 +392,52 @@ uint8_t sdc_hci_cmd_cb_read_conn_accept_timeout(sdc_hci_cmd_cb_read_conn_accept_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_cb_write_conn_accept_timeout(const sdc_hci_cmd_cb_write_conn_accept_timeout_t * p_params);
+
+/** @brief Read Automatic Flush Timeout.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.3.29
+ *
+ * This command reads the value for the Flush_Timeout parameter for the specified
+ * Connection_Handle. See Section 6.19.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_Read_Automatic_Flush_Timeout command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_cb_read_automatic_flush_timeout(const sdc_hci_cmd_cb_read_automatic_flush_timeout_t * p_params,
+                                                    sdc_hci_cmd_cb_read_automatic_flush_timeout_return_t * p_return);
+
+/** @brief Write Automatic Flush Timeout.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.3.30
+ *
+ * This command writes the value for the Flush_Timeout parameter for the specified
+ * Connection_Handle. See Section 6.19.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_Write_Automatic_Flush_Timeout command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_cb_write_automatic_flush_timeout(const sdc_hci_cmd_cb_write_automatic_flush_timeout_t * p_params,
+                                                     sdc_hci_cmd_cb_write_automatic_flush_timeout_return_t * p_return);
 
 /** @brief Read Transmit Power Level.
  *
