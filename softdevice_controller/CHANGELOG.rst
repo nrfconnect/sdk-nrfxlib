@@ -26,6 +26,9 @@ Bug fixes
     * The CS procedure terminates due to running out of channels, based on the configured channel map and channel map repetition.
     * The configured duration of the last CS subevent in the CS procedure is just enough to fit all the remaining CS steps.
 
+* Fixed an issue where the controller did not generate an ``LE CS Procedure Enable Complete`` HCI event when disabling the last CS procedure.
+  This would only happen if the maximum number of CS procedures (``Max_Procedure_Count``) was set to a value greater than ``1``. (DRGN-27705)
+
 nRF Connect SDK v3.2.0
 **********************
 
