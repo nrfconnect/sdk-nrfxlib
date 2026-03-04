@@ -607,6 +607,12 @@ struct nrf_wifi_cmd_sys_init {
         *  Bit 1 : LDPC in VHT mode. Use NRF_WIFI_LDPC_ENABLE_VHT
         */
         unsigned char ldpc_config;
+        /** Protocol mode bitmap for registration. Use NRF_WIFI_802_11G,
+         *  NRF_WIFI_802_11N, NRF_WIFI_802_11AC, NRF_WIFI_802_11AX from nrf71_wifi_ctrl.h.
+         *  Zero = all supported. Otherwise only the set bits are advertised (e.g. 11G only,
+         *  or 11G|11N, or 11G|11N|11AC, or 11G|11N|11AC|11AX). 11AC implies 11N; 11AX implies 11AC+11N.
+         */
+        unsigned int protocol_mode;
 
 } __NRF_WIFI_PKD;
 
@@ -1600,19 +1606,12 @@ struct phy_prod_stats {
 	unsigned int dsss_crc32_fail_cnt;
 	char averageRSSI;
 };
-struct lmac_offload_raw_tx_stats {
-	unsigned int offLoad_raw_tx_state;
-	unsigned int offload_raw_tx_cnt;
-	unsigned int offload_raw_tx_complete_cnt;
-	unsigned int warm_boot_cnt;
-} __NRF_WIFI_PKD;
+
 
 
 union rpu_stats {
 	struct lmac_prod_stats lmac_stats;
 	struct phy_prod_stats  phy_stats;
-	struct lmac_offload_raw_tx_stats offload_raw_tx_stats;
-
 };
 
 
@@ -1746,6 +1745,7 @@ enum nrf_wifi_rf_test {
 	NRF_WIFI_RF_TEST_PATCH_SETTINGS,
 	NRF_WIFI_RF_TEST_ENABLE_VT_CALIB,
 	NRF_WIFI_RF_TEST_ENABLE_VT_COMP,
+	NRF_WIFI_RF_SET_CALIB_REGS,
 	NRF_WIFI_RF_TEST_GET_STATS,
 	NRF_WIFI_RF_TEST_MAX,
 };
@@ -1785,6 +1785,7 @@ enum nrf_wifi_rf_test_event {
 	NRF_WIFI_RF_TEST_EVENT_PATCH_SETTINGS,
 	NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_CALIB,
 	NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_COMP,
+	NRF_WIFI_RF_TEST_EVENT_SET_CALIB_REGS,
 	NRF_WIFI_RF_TEST_EVENT_GET_STATS,
 	NRF_WIFI_RF_TEST_EVENT_MAX,
 
@@ -2265,6 +2266,29 @@ struct nrf_wifi_rf_test_enable_vt_calibration {
 struct nrf_wifi_rf_test_enable_vt_compensation {
 	unsigned char test_id;
 	unsigned char enable_compensation;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief Calibration register set type for NRF_WIFI_RF_SET_CALIB_REGS.
+ */
+enum cal_id_e {
+	RX_DC_CAL,
+	TX_DC_CAL,
+	RX_IQ_CAL,
+	TX_IQ_CAL,
+	DPD_CAL
+};
+
+/**
+ * @brief Structure for setting calibration registers (NRF_WIFI_RF_SET_CALIB_REGS).
+ */
+struct nrf_wifi_set_cal_regs {
+	unsigned char test;
+	/** Calibration identifier; see enum cal_id_e */
+	unsigned char cal_id;
+	unsigned char num_regs;
+	unsigned int reg_val[MAX_REGS_CONF];
+	unsigned int reg_addr[MAX_REGS_CONF];
 } __NRF_WIFI_PKD;
 
 /* Holds the transmit related info */

@@ -907,7 +907,12 @@ struct lmac_twt_stats
 	unsigned int time_stamp_before_sleep;
 	unsigned int time_stamp_after_sleep;
 };
-
+struct lmac_offload_raw_tx_stats {
+	unsigned int offLoad_raw_tx_state;
+	unsigned int offload_raw_tx_cnt;
+	unsigned int offload_raw_tx_complete_cnt;
+	unsigned int warm_boot_cnt;
+};
 
 enum LMAC_STATS_CATEGORY
 {
@@ -928,7 +933,8 @@ enum LMAC_STATS_CATEGORY
 	AGG_CONFIG = (1 << 14),
 	DEAGG_CONFIG = (1 << 15),
 	MAC_CTRL_CONFIG = (1 << 16),
-	MAC_STATS_END = (1 << 17),
+	OFFLOAD_RAW_TX_STATS = (1 << 17),
+	MAC_STATS_END = (1 << 18),
 };
 
 enum PHY_STATS_CATEGORY
@@ -963,6 +969,7 @@ struct lmac_debug_stats
 		unsigned int agg_config[96];
 		unsigned int deagg_config[96];
 		unsigned int mac_ctrl_config[96];
+		struct lmac_offload_raw_tx_stats offload_raw_tx_stats;
 	};
 
 } __NRF_WIFI_PKD;
