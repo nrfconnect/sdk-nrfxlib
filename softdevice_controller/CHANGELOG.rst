@@ -9,8 +9,8 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-v3.2.0 branch
-*************
+nRF Connect SDK v3.2.4
+**********************
 
 Bug fixes
 =========
@@ -20,11 +20,16 @@ Bug fixes
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
   would select the wrong antenna during the first (TX) T_PM period of a mode-2 step if it followed a mode-3 step. (DRGN-27360)
+* Fixed an issue where the controller could send ``LL_CS_CAPABILITIES_REQ`` PDU on an unencrypted link.
+  This would only happen when the ``LE CS Read Remote Supported Capabilities`` HCI command triggers the Feature Exchange procedure. (DRGN-27530)
 * Fixed an issue where the controller could generate one too many HCI LE CS Subevent Result events for a CS procedure. (DRGN-27538)
 
   The issue would only happen if all the following conditions are met:
     * The CS procedure terminates due to running out of channels, based on the configured channel map and channel map repetition.
     * The configured duration of the last CS subevent in the CS procedure is just enough to fit all the remaining CS steps.
+
+* Fixed an issue where the controller did not generate an ``LE CS Procedure Enable Complete`` HCI event when disabling the last CS procedure.
+  This would only happen if the maximum number of CS procedures (``Max_Procedure_Count``) was set to a value greater than ``1``. (DRGN-27705)
 
 nRF Connect SDK v3.2.0
 **********************
