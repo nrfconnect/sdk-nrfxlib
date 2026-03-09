@@ -110,12 +110,37 @@ int sw_codec_lc3_enc_uninit_all(void);
  */
 int sw_codec_lc3_dec_uninit_all(void);
 
+/**@brief	Uninitializes the LC3 Codec and frees allocated RAM
+ *
+ * @return 0 on success.	-EIO in case of error.
+ */
+int sw_codec_lc3_uninit(void);
+
 /**@brief Initializes the LC3 Codec
  *
  * @note: For documentation, see LC3API.h (/codec/inc/LC3API.h)
  */
 int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffer_size,
 		      uint16_t framesize_us);
+
+/**@brief Initializes the LC3 Codec with a single sample rate for encoder and decoder
+ *
+ * @details This function initializes the LC3 codec enabling only the requested sample rate
+ *          for encoder and decoder, which decreases RAM usage and initialization time
+ *          compared to sw_codec_lc3_init() which enables all supported sample rates.
+ *
+ * @param[in]		encoder_sample_rate		Encoder sample rate in Hz
+ * @param[in]		decoder_sample_rate		Decoder sample rate in Hz
+ * @param[in]		sw_codec_lc3_buffer		Pointer to a memory buffer
+ * @param[in,out]	sw_codec_lc3_buffer_size	Size of the memory buffer passed in, number of bytes
+ *							used returned
+ * @param[in]		framesize_us			Frame size in microseconds
+ *
+ */
+int sw_codec_lc3_single_rate_init(uint16_t encoder_sample_rate, uint16_t decoder_sample_rate,
+				  uint8_t *sw_codec_lc3_buffer,
+				  uint32_t *sw_codec_lc3_buffer_size,
+				  uint16_t framesize_us);
 
 /**@brief	Initializes the LC3 encoder and allocates required RAM
  *

@@ -187,6 +187,17 @@ int sw_codec_lc3_dec_uninit_all(void)
 	return 0;
 }
 
+int sw_codec_lc3_uninit(void)
+{
+	int ret;
+	ret = LC3Deinitialize();
+	if (ret) {
+		LOG_ERR("Failed to uninitialize LC3 Codec: %d", ret);
+		return -EIO;
+	}
+	return 0;
+}
+
 int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffer_size,
 		      uint16_t framesize_us)
 {
@@ -256,6 +267,93 @@ int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffe
 	}
 
 	ret = LC3Initialize(enc_sample_rates, dec_sample_rates, framesize, unique_session,
+			    sw_codec_lc3_buffer, sw_codec_lc3_buffer_size);
+	return ret;
+}
+
+static uint8_t enc_sample_rate_hz_to_bit(uint16_t sample_rate)
+{
+	switch (sample_rate) {
+	case 8000:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_8KHZ_SUPPORT) ? LC3_SAMPLE_RATE_8_KHZ : 0;
+	case 16000:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_16KHZ_SUPPORT) ? LC3_SAMPLE_RATE_16_KHZ : 0;
+	case 24000:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_24KHZ_SUPPORT) ? LC3_SAMPLE_RATE_24_KHZ : 0;
+	case 32000:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_32KHZ_SUPPORT) ? LC3_SAMPLE_RATE_32_KHZ : 0;
+	case 44100:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_441KHZ_SUPPORT) ? LC3_SAMPLE_RATE_441_KHZ : 0;
+	case 48000:
+		return IS_ENABLED(CONFIG_LC3_ENC_SAMPLE_RATE_48KHZ_SUPPORT) ? LC3_SAMPLE_RATE_48_KHZ : 0;
+	default:
+		return 0;
+	}
+}
+
+static uint8_t dec_sample_rate_hz_to_bit(uint16_t sample_rate)
+{
+	switch (sample_rate) {
+	case 8000:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_8KHZ_SUPPORT) ? LC3_SAMPLE_RATE_8_KHZ : 0;
+	case 16000:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_16KHZ_SUPPORT) ? LC3_SAMPLE_RATE_16_KHZ : 0;
+	case 24000:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_24KHZ_SUPPORT) ? LC3_SAMPLE_RATE_24_KHZ : 0;
+	case 32000:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_32KHZ_SUPPORT) ? LC3_SAMPLE_RATE_32_KHZ : 0;
+	case 44100:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_441KHZ_SUPPORT) ? LC3_SAMPLE_RATE_441_KHZ : 0;
+	case 48000:
+		return IS_ENABLED(CONFIG_LC3_DEC_SAMPLE_RATE_48KHZ_SUPPORT) ? LC3_SAMPLE_RATE_48_KHZ : 0;
+	default:
+		return 0;
+	}
+}
+
+int sw_codec_lc3_single_rate_init(uint16_t encoder_sample_rate, uint16_t decoder_sample_rate,
+				  uint8_t *sw_codec_lc3_buffer,
+				  uint32_t *sw_codec_lc3_buffer_size,
+				  uint16_t framesize_us)
+{
+	int ret;
+	uint8_t enc_sample_rate_bit;
+	uint8_t dec_sample_rate_bit;
+
+	/* Set unique session to 0 for using the default sharing memory setting.
+	 *
+	 * This could lead to higher heap consumption, but is able to manipulate
+	 * different sample rate setting between encoder/decoder.
+	 */
+	uint8_t unique_session = 0;
+
+	enc_sample_rate_bit = enc_sample_rate_hz_to_bit(encoder_sample_rate);
+	if (enc_sample_rate_bit == 0 && encoder_sample_rate != 0) {
+		LOG_ERR("Unsupported encoder sample rate: %d", encoder_sample_rate);
+		return -EINVAL;
+	}
+
+	dec_sample_rate_bit = dec_sample_rate_hz_to_bit(decoder_sample_rate);
+	if (dec_sample_rate_bit == 0 && decoder_sample_rate != 0) {
+		LOG_ERR("Unsupported decoder sample rate: %d", decoder_sample_rate);
+		return -EINVAL;
+	}
+
+	LC3FrameSizeConfig_t framesize;
+
+	switch (framesize_us) {
+	case 7500:
+		framesize = LC3FrameSize7_5MsConfig;
+		break;
+	case 10000:
+		framesize = LC3FrameSize10MsConfig;
+		break;
+	default:
+		LOG_ERR("Unsupported framesize: %d", framesize_us);
+		return -EINVAL;
+	}
+
+	ret = LC3Initialize(enc_sample_rate_bit, dec_sample_rate_bit, framesize, unique_session,
 			    sw_codec_lc3_buffer, sw_codec_lc3_buffer_size);
 	return ret;
 }
