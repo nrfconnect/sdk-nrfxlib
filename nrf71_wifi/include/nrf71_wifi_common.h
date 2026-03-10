@@ -1,13 +1,13 @@
 /*
  *
- *Copyright (c) 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2026 Nordic Semiconductor ASA
  *
- *SPDX-License-Identifier: BSD-3-Clause
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
  * @file
- * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @addtogroup nrf71_wifi_fw_if Wi-Fi driver and firmware interface
  * @{
  * @brief System interface between host and RPU
  */
@@ -272,7 +272,7 @@ enum nrf_wifi_sys_events {
 /**
  * @brief - Channel Bandwidth types.
  *
- **/
+ */
 enum rpu_ch_bw {
 	/** 20MHz bandwidth */
 	RPU_CH_BW_20,
@@ -287,8 +287,9 @@ enum rpu_ch_bw {
  *
  */
 struct chan_params {
-	/** Operating band bitmap values: NRF_WIFI_OP_BAND_2GHZ, 
-	NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ */
+	/** Operating band bitmap values: NRF_WIFI_OP_BAND_2GHZ,
+	 * NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ
+	 */
 	unsigned char op_band;
 	/** Primary channel number */
 	unsigned int primary_num;
@@ -505,11 +506,11 @@ struct temp_vbat_config {
 #define NRF_WIFI_CIVILOC_ENABLE (1 << 3)
 #define NRF_WIFI_GAS_ENABLE (1 << 4)
 
-struct nrf_wifi_ftm_loc_params{
-/** Enable = 1, Disable=0 */
-unsigned char ftm_enable;
-/** Capabilities NRF_WIFI_FTM_INITIATOR_ENABLE  & etc*/
-unsigned char capabilities;
+struct nrf_wifi_ftm_loc_params {
+	/** Enable = 1, Disable=0 */
+	unsigned char ftm_enable;
+	/** Capabilities NRF_WIFI_FTM_INITIATOR_ENABLE & etc */
+	unsigned char capabilities;
 };
 
 #define NRF_WIFI_LDPC_ENABLE_HT  (1 << 0)
@@ -533,19 +534,20 @@ struct nrf_wifi_cmd_sys_init {
 	struct rx_buf_pool_params rx_buf_pools[MAX_NUM_OF_RX_QUEUES];
 	/** Data configuration params, @ref nrf_wifi_data_config_params */
 	struct nrf_wifi_data_config_params data_config_params;
-	/** Calibration trigger control info based on battery voltage and temperature changes.
-	 *  @ref temp_vbat_config from lmac_if_common.h
-	 */
+	/** Temperature and battery voltage calibration */
 	struct temp_vbat_config temp_vbat_config_params;
 	/** Country code to set */
 	unsigned char country_code[NRF_WIFI_COUNTRY_CODE_LEN];
-	/** Operating band bitmap values: NRF_WIFI_OP_BAND_2GHZ, NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ */
+	/** Operating band bitmap values: NRF_WIFI_OP_BAND_2GHZ,
+	 * NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ
+	 */
 	unsigned char op_band;
 	/** Offload mgmt buffer refill to UMAC when enabled */
 	unsigned char mgmt_buff_offload;
 	/** Enable features from driver config */
 	unsigned int feature_flags;
-	/** To deactivate beamforming, By default the RPU enables the beamforming feature.
+	/** To deactivate beamforming,
+	 * By default the RPU enables the beamforming feature.
 	 *  If a user wishes to turn it off, they should set this parameter to 1.
 	 */
 	unsigned int disable_beamforming;
@@ -554,13 +556,13 @@ struct nrf_wifi_cmd_sys_init {
 	 */
 	unsigned int discon_timeout;
 	/** RPU uses QoS null frame or PS-Poll frame to retrieve buffered frames
-	 * from the AP in power save @ref ps_exit_strategy.
+	 * from the AP in power save
 	 */
 	unsigned char ps_exit_strategy;
 	/** The RPU uses this value to configure watchdog timer */
 	unsigned int watchdog_timer_val;
 	/** The RPU uses this value to decide whether keep alive
-	 *  feature is enabled or not see enum keep_alive_status
+	 *  feature is enabled or not.
 	 */
 	unsigned char keep_alive_enable;
 	/** The RPU uses this value(in seconds) for periodicity of the keep
@@ -600,20 +602,20 @@ struct nrf_wifi_cmd_sys_init {
 	 */
 	unsigned int inband_scan_type;
 	/** 0:umac checksum disable 1: umac checksum enable */
-        unsigned char tcp_ip_checksum_offload;
-        /** @ref nrf_wifi_ftm_loc_params */
-        struct nrf_wifi_ftm_loc_params  ftm_loc_params;
-        /** Bit 0 : LDPC in HT mode. Use NRF_WIFI_LDPC_ENABLE_HT
-        *  Bit 1 : LDPC in VHT mode. Use NRF_WIFI_LDPC_ENABLE_VHT
-        */
-        unsigned char ldpc_config;
-        /** Protocol mode bitmap for registration. Use NRF_WIFI_802_11G,
-         *  NRF_WIFI_802_11N, NRF_WIFI_802_11AC, NRF_WIFI_802_11AX from nrf71_wifi_ctrl.h.
-         *  Zero = all supported. Otherwise only the set bits are advertised (e.g. 11G only,
-         *  or 11G|11N, or 11G|11N|11AC, or 11G|11N|11AC|11AX). 11AC implies 11N; 11AX implies 11AC+11N.
-         */
-        unsigned int protocol_mode;
-
+	unsigned char tcp_ip_checksum_offload;
+	/** @ref nrf_wifi_ftm_loc_params */
+	struct nrf_wifi_ftm_loc_params  ftm_loc_params;
+	/** Bit 0 : LDPC in HT mode. Use NRF_WIFI_LDPC_ENABLE_HT
+	 *  Bit 1 : LDPC in VHT mode. Use NRF_WIFI_LDPC_ENABLE_VHT
+	 */
+	unsigned char ldpc_config;
+	/** Protocol mode bitmap for registration. Use NRF_WIFI_802_11G,
+	 *  NRF_WIFI_802_11N, NRF_WIFI_802_11AC, NRF_WIFI_802_11AX from nrf71_wifi_ctrl.h.
+	 *  Zero = all supported. Otherwise only the set bits are advertised (e.g. 11G only,
+	 *  or 11G|11N, or 11G|11N|11AC, or 11G|11N|11AC|11AX).
+	 *  11AC implies 11N; 11AX implies 11AC+11N.
+	 */
+	unsigned int protocol_mode;
 } __NRF_WIFI_PKD;
 
 /**
@@ -738,7 +740,7 @@ struct rpu_conf_params {
 	unsigned char agg;
 	/** Select HE LTF type viz, 0->1x, 1->2x and 2->4x */
 	unsigned char he_ltf;
-	/** Select HE GI type viz, 0->0.8us, 1->1.6us and 2->3.2us */
+	/** Select HE LTF type viz, 0->0.8us, 1->1.6us and 2->3.2us */
 	unsigned char he_gi;
 	/** Not required */
 	unsigned char set_he_ltf_gi;
@@ -892,16 +894,17 @@ struct nrf_wifi_umac_cmd_debug_stats {
 
 	/** Statistics type &enum rpu_stats_type */
 	signed int stats_type;
-	/* Control to enable/disable periodic stats
-		0 - Periodic stats will be disabled
-		non zero - Number of times Periodic stats will be sent.
-	*/
+	/**
+	 * Control to enable/disable periodic stats
+	 * 0 - Periodic stats will be disabled
+	 * non zero - Number of times Periodic stats will be sent.
+	 */
 	unsigned int periodic_stats_enable;
 	unsigned int periodic_stats_interval; /* in seconds */
 	/**Stats control in Bitmap */
 	unsigned int stats_ctrl;
 	/**Stats GDRAM Address */
-    unsigned int stats_addr;
+	unsigned int stats_addr;
 } __NRF_WIFI_PKD;
 
 /**
@@ -914,27 +917,29 @@ struct nrf_wifi_umac_event_debug_stats {
 	/** Statistics type &enum rpu_stats_type */
 	signed int stats_type;
 	/**Stats GDRAM Address */
-    unsigned int stats_addr;
-	/**Copy struct lmac_debug_stats OR struct umac_debug_stats OR 
-	struct phy_debug_stats to into struct nrf_wifi_rpu_debug_stats*/
-	//unsigned char stats[0];
+	unsigned int stats_addr;
+	/**Copy struct lmac_debug_stats OR struct umac_debug_stats OR
+	 * struct phy_debug_stats to into struct nrf_wifi_rpu_debug_stats
+	 */
 	struct nrf_wifi_rpu_debug_stats stats;
 } __NRF_WIFI_PKD;
 
+
+enum umac_fail_events {
+	UMAC_MEM_ALLOC_FAIL = 0,
+};
 /**
  * @brief This structure defines the event used to send error statistics to the Host.
  *
  */
- 
-struct nrf_wifi_umac_event_error_stats
-{
+struct nrf_wifi_umac_event_error_stats {
 	/** UMAC header, @ref nrf_wifi_sys_head*/
 	struct nrf_wifi_sys_head sys_head;
 	/** Statistics type &enum rpu_stats_type */
 	signed int stats_type;
 	/** @ref enum LMAC_ERROR_ID OR @ref enum UMAC_ERROR_ID*/
 	unsigned int status_code;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 /**
  * @brief This structure represents the channel parameters to configure specific channel.
@@ -1193,7 +1198,6 @@ struct nrf_wifi_event_raw_tx_done {
 	/** status of the raw tx packet command, success(0)/Fail(-1). */
 	int status;
 } __NRF_WIFI_PKD;
-
 
 /**
  * @brief This structure defines the command used to clear or reset statistics.
@@ -1502,7 +1506,6 @@ struct nrf_wifi_event_deinit_done {
 	struct nrf_wifi_sys_head sys_head;
 } __NRF_WIFI_PKD;
 
-
 /**
  * @brief This structure describes the command for reset of interface statistics.
  *
@@ -1549,7 +1552,6 @@ struct nrf_wifi_cmd_gi_config {
 
 /* Events */
 #define MAX_RSSI_SAMPLES 10
-
 struct lmac_prod_stats {
 	/*Structure that holds all the debug information in LMAC*/
 	unsigned int  resetCmdCnt;
@@ -1659,7 +1661,9 @@ struct lmac_fw_config_params {
 	unsigned int sysFrequencyInMhz;
 	/** queue which contains Free GRAM pointers for commands. */
 	struct hpqmQueue FreeCmdPtrQ;
-	/** Command pointer queue. Host should pick gram pointer from FreeCmdPtrQ. Populate command in GRAM and submit back to this queue for RPU. */
+	/** Command pointer queue. Host picks gram pointer from FreeCmdPtrQ,
+	 *  populates command in GRAM and submits back to this queue for RPU.
+	 */
 	struct hpqmQueue cmdPtrQ;
 	/** Event pointer queue. Host should pick gram event pointer in isr */
 	struct hpqmQueue eventPtrQ;
@@ -1711,84 +1715,98 @@ enum wifi_operation_modes {
  * register/memory access, and compensation/calibration routines.
  */
 enum nrf_wifi_rf_test {
-	NRF_WIFI_RF_TEST_RX_ADC_CAP,
-	NRF_WIFI_RF_TEST_RX_STAT_PKT_CAP,
-	NRF_WIFI_RF_TEST_RX_DYN_PKT_CAP,
-	NRF_WIFI_RF_TEST_TX_TONE,
-	NRF_WIFI_RF_TEST_DPD,
-	NRF_WIFI_RF_TEST_RF_RSSI,
-	NRF_WIFI_RF_TEST_SLEEP,
-	NRF_WIFI_RF_TEST_GET_TEMPERATURE,
-	NRF_WIFI_RF_TEST_XO_CALIB,
-	NRF_WIFI_RF_TEST_XO_TUNE,
-	NRF_WIFI_RF_TEST_GET_BAT_VOLT,
-	NRF_WIFI_SET_TEMP_VOLT_RECAL_PARAMS,
-	NRF_WIFI_SET_CALIB_CTRL_PARAMS,
-	NRF_WIFI_SET_TX_POWER_CEILINGS,
-	NRF_WIFI_SET_TX_POWER_OFFSETS,
-	NRF_WIFI_SET_PHY_PARAMS,
-	NRF_WIFI_SET_TEMP_VOLT_BUF_ADDR,	
-	NRF_WIFI_SET_RX_GAINS_OFFSETS,
-	NRF_WIFI_SET_EDGE_CHANNEL_PARAMS,	
-	NRF_WIFI_SET_EVM_AFFECTED_CHANNELS,
-	NRF_WIFI_SET_ANTENNA_GAIN_PARAMS,		
-	NRF_WIFI_SET_MULTIPATH_DET_PARAMS,
-	NRF_WIFI_RH_START,
-	NRF_WIFI_RH_STOP,	
-	NRF_WIFI_RF_TEST_SET_REGS = 128,
-	NRF_WIFI_RF_TEST_READ_REGS,
-	NRF_WIFI_RF_TEST_SET_MEM,
-	NRF_WIFI_RF_TEST_READ_MEM,
-	NRF_WIFI_RF_PERFORM_CALIBRATION,
-	NRF_WIFI_RF_APPLY_COMPENSATION,
-	NRF_WIFI_RF_READ_COMP_RESULTS,
-	NRF_WIFI_RF_TEST_PATCH_SETTINGS,
-	NRF_WIFI_RF_TEST_ENABLE_VT_CALIB,
-	NRF_WIFI_RF_TEST_ENABLE_VT_COMP,
-	NRF_WIFI_RF_SET_CALIB_REGS,
-	NRF_WIFI_RF_TEST_GET_STATS,
-	NRF_WIFI_RF_TEST_MAX,
+    NRF_WIFI_RF_TEST_RX_ADC_CAP,
+    NRF_WIFI_RF_TEST_RX_STAT_PKT_CAP,
+    NRF_WIFI_RF_TEST_RX_DYN_PKT_CAP,
+    NRF_WIFI_RF_TEST_TX_TONE,
+    NRF_WIFI_RF_TEST_DPD,
+    NRF_WIFI_RF_TEST_RF_RSSI,
+    NRF_WIFI_RF_TEST_SLEEP,
+    NRF_WIFI_RF_TEST_GET_TEMPERATURE,
+    NRF_WIFI_RF_TEST_XO_CALIB,
+    NRF_WIFI_RF_TEST_XO_TUNE,
+    NRF_WIFI_RF_TEST_GET_BAT_VOLT,
+
+    /* Internal but may be required to be called from host */
+    NRF_WIFI_RF_TEST_SET_REGS = 64,
+    NRF_WIFI_RF_TEST_READ_REGS,
+    NRF_WIFI_RF_TEST_SET_MEM,
+    NRF_WIFI_RF_TEST_READ_MEM,
+    NRF_WIFI_RF_TEST_PATCH_SETTINGS,
+    NRF_WIFI_RH_START,
+    NRF_WIFI_RH_STOP,
+	NRF_WIFI_RH_ONESHOT,
+    NRF_WIFI_RF_TEST_GET_STATS,
+
+    /* Internal but RF team requires */ 
+    NRF_WIFI_RF_PERFORM_CALIBRATION = 96,
+    NRF_WIFI_RF_APPLY_COMPENSATION,
+    NRF_WIFI_RF_READ_COMP_RESULTS,
+    NRF_WIFI_RF_TEST_ENABLE_VT_CALIB,
+    NRF_WIFI_RF_TEST_ENABLE_VT_COMP,
+    NRF_WIFI_RF_SET_CALIB_REGS,
+    NRF_WIFI_RF_TEST_ADPLL_CAP_NOT_LOCKED,
+    NRF_WIFI_RF_TEST_ADPLL_CAP_NORMAL,
+
+    /* Internal for PHY team for testing */ 
+    NRF_WIFI_SET_TEMP_VOLT_RECAL_PARAMS = 128,
+    NRF_WIFI_SET_CALIB_CTRL_PARAMS,
+    NRF_WIFI_SET_TX_POWER_CEILINGS,
+    NRF_WIFI_SET_TX_POWER_OFFSETS,
+    NRF_WIFI_SET_PHY_PARAMS,
+    NRF_WIFI_SET_TEMP_VOLT_BUF_ADDR,
+    NRF_WIFI_SET_RX_GAINS_OFFSETS,
+    NRF_WIFI_SET_EDGE_CHANNEL_PARAMS,
+    NRF_WIFI_SET_EVM_AFFECTED_CHANNELS,
+    NRF_WIFI_SET_ANTENNA_GAIN_PARAMS,
+    NRF_WIFI_SET_MULTIPATH_DET_PARAMS,
+    NRF_WIFI_RF_TEST_MAX,
 };
 
 enum nrf_wifi_rf_test_event {
-	NRF_WIFI_RF_TEST_EVENT_RX_ADC_CAP,
-	NRF_WIFI_RF_TEST_EVENT_RX_STAT_PKT_CAP,
-	NRF_WIFI_RF_TEST_EVENT_RX_DYN_PKT_CAP,
-	NRF_WIFI_RF_TEST_EVENT_TX_TONE_START,
-	NRF_WIFI_RF_TEST_EVENT_DPD_ENABLE,
-	NRF_WIFI_RF_TEST_EVENT_RF_RSSI,
-	NRF_WIFI_RF_TEST_EVENT_SLEEP,
-	NRF_WIFI_RF_TEST_EVENT_TEMP_MEAS,
-	NRF_WIFI_RF_TEST_EVENT_XO_CALIB,
-	NRF_WIFI_RF_TEST_EVENT_XO_TUNE,
-	NRF_WIFI_RF_TEST_EVENT_GET_BAT_VOLT,
-	NRF_WIFI_EVENT_SET_TEMP_VOLT_RECAL_PARAMS,
-	NRF_WIFI_EVENT_SET_CALIB_CTRL_PARAMS,
-	NRF_WIFI_EVENT_SET_TX_POWER_CEILINGS,
-	NRF_WIFI_EVENT_SET_TX_POWER_OFFSETS,
-	NRF_WIFI_EVENT_SET_PHY_PARAMS,
-	NRF_WIFI_EVENT_SET_TEMP_VOLT_BUF_ADDR,
-	NRF_WIFI_EVENT_SET_RX_GAINS_OFFSETS,
-	NRF_WIFI_EVENT_SET_EDGE_CHANNEL_PARAMS,	
-	NRF_WIFI_EVENT_SET_EVM_AFFECTED_CHANNELS,
-	NRF_WIFI_EVENT_SET_ANTENNA_GAIN_PARAMS,	
-	NRF_WIFI_EVENT_SET_MULTIPATH_DET_PARAMS,
-	NRF_WIFI_RH_TEST_EVENT_START,
-	NRF_WIFI_RH_TEST_EVENT_STOP,
-	NRF_WIFI_RF_TEST_EVENT_SET_REGS = 128,
-	NRF_WIFI_RF_TEST_EVENT_READ_REGS,
-	NRF_WIFI_RF_TEST_EVENT_SET_MEM,
-	NRF_WIFI_RF_TEST_EVENT_READ_MEM,
-	NRF_WIFI_RF_TEST_EVENT_PERFORM_CALIBRATION,
-	NRF_WIFI_RF_TEST_EVENT_APPLY_COMPENSATION,
-	NRF_WIFI_RF_TEST_EVENT_READ_COMP_RESULTS,
-	NRF_WIFI_RF_TEST_EVENT_PATCH_SETTINGS,
-	NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_CALIB,
-	NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_COMP,
-	NRF_WIFI_RF_TEST_EVENT_SET_CALIB_REGS,
-	NRF_WIFI_RF_TEST_EVENT_GET_STATS,
-	NRF_WIFI_RF_TEST_EVENT_MAX,
+    NRF_WIFI_RF_TEST_EVENT_RX_ADC_CAP,
+    NRF_WIFI_RF_TEST_EVENT_RX_STAT_PKT_CAP,
+    NRF_WIFI_RF_TEST_EVENT_RX_DYN_PKT_CAP,
+    NRF_WIFI_RF_TEST_EVENT_TX_TONE_START,
+    NRF_WIFI_RF_TEST_EVENT_DPD_ENABLE,
+    NRF_WIFI_RF_TEST_EVENT_RF_RSSI,
+    NRF_WIFI_RF_TEST_EVENT_SLEEP,
+    NRF_WIFI_RF_TEST_EVENT_TEMP_MEAS,
+    NRF_WIFI_RF_TEST_EVENT_XO_CALIB,
+    NRF_WIFI_RF_TEST_EVENT_XO_TUNE,
+    NRF_WIFI_RF_TEST_EVENT_GET_BAT_VOLT,
 
+    NRF_WIFI_RF_TEST_EVENT_SET_REGS = 64,
+    NRF_WIFI_RF_TEST_EVENT_READ_REGS,
+    NRF_WIFI_RF_TEST_EVENT_SET_MEM,
+    NRF_WIFI_RF_TEST_EVENT_READ_MEM,
+    NRF_WIFI_RF_TEST_EVENT_PATCH_SETTINGS,
+    NRF_WIFI_RH_TEST_EVENT_START,
+    NRF_WIFI_RH_TEST_EVENT_STOP,
+	NRF_WIFI_RH_TEST_EVENT_ONESHOT,
+    NRF_WIFI_RF_TEST_EVENT_GET_STATS,
+
+    NRF_WIFI_RF_TEST_EVENT_PERFORM_CALIBRATION = 96,
+    NRF_WIFI_RF_TEST_EVENT_APPLY_COMPENSATION,
+    NRF_WIFI_RF_TEST_EVENT_READ_COMP_RESULTS,
+    NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_CALIB,
+    NRF_WIFI_RF_TEST_EVENT_ENABLE_VT_COMP,
+    NRF_WIFI_RF_TEST_EVENT_SET_CALIB_REGS,
+    NRF_WIFI_RF_TEST_EVENT_ADPLL_CAP_NOT_LOCKED,
+    NRF_WIFI_RF_TEST_EVENT_ADPLL_CAP_NORMAL,
+
+    NRF_WIFI_EVENT_SET_TEMP_VOLT_RECAL_PARAMS = 128,
+    NRF_WIFI_EVENT_SET_CALIB_CTRL_PARAMS,
+    NRF_WIFI_EVENT_SET_TX_POWER_CEILINGS,
+    NRF_WIFI_EVENT_SET_TX_POWER_OFFSETS,
+    NRF_WIFI_EVENT_SET_PHY_PARAMS,
+    NRF_WIFI_EVENT_SET_TEMP_VOLT_BUF_ADDR,
+    NRF_WIFI_EVENT_SET_RX_GAINS_OFFSETS,
+    NRF_WIFI_EVENT_SET_EDGE_CHANNEL_PARAMS,
+    NRF_WIFI_EVENT_SET_EVM_AFFECTED_CHANNELS,
+    NRF_WIFI_EVENT_SET_ANTENNA_GAIN_PARAMS,
+    NRF_WIFI_EVENT_SET_MULTIPATH_DET_PARAMS,
+    NRF_WIFI_RF_TEST_EVENT_MAX,
 };
 
 #define MAX_REGS_CONF 8
@@ -1825,7 +1843,7 @@ struct nrf_wifi_rf_test_capture_params {
 	 * It supports 64dB range.The increment happens lineraly 2dB/step
 	 */
 	unsigned char bb_gain;
-	
+
 	/* address of the capture data */
 	unsigned int *capture_addr;
 } __NRF_WIFI_PKD;
@@ -1921,7 +1939,6 @@ struct nrf_wifi_rf_get_rf_rssi {
 struct nrf_wifi_rf_test_xo_calib {
 	unsigned char test;
 
-	/* XO offset value as signed 8-bit integer (range -100 PPM to 100 PPM). */
 	signed char xo_val;
 
 } __NRF_WIFI_PKD;
@@ -1932,9 +1949,12 @@ struct nrf_wifi_rf_get_xo_value {
 	/* XO offset in PPM (Gen3B). */
 	signed int xo_offset;
 
-	/* Status: 0 = success, 1 = tone not detected, 2 = gain fail (high), 3 = gain fail (low), 4 = gain fail (timeout) */
+	/* Status: 0 = success, 1 = tone not detected, 2 = gain fail (high),
+	 * 3 = gain fail (low), 4 = gain fail (timeout)
+	 */
 	unsigned char status;
 } __NRF_WIFI_PKD;
+
 
 struct nrf_wifi_rf_test_enter_sleep {
 	unsigned char test;
@@ -1956,13 +1976,10 @@ struct nrf_wifi_bat_volt_params {
 	unsigned int cmd_status;
 } __NRF_WIFI_PKD;
 
-/*! Enum for selecting operating mode of RF
-    rx_only_mode: Only RX is supported in this mode.
-    trx_normal_mode: Both RX and TX are supported by RF. */
 typedef enum {
 	rx_only_mode,
 	trx_normal_mode
-}sys_oper_mode_e;
+} sys_oper_mode_e;
 
 /**
  * @struct nrf_wifi_rf_config_regs
@@ -2006,26 +2023,26 @@ struct nrf_wifi_rf_config_mem {
  * @struct nrf_wifi_rf_calib
  * @brief Holds calibration configuration details for RPU.
  */
-struct nrf_wifi_rf_calib
-{
-    /** Test identifier */
-    unsigned char test;
+struct nrf_wifi_rf_calib {
+	/** Test identifier */
+	unsigned char test;
 
-    /** RF calibration bit map */
-    unsigned char calib_bitmap;
+	/** RF calibration bit map */
+	unsigned char calib_bitmap;
 
 	/** refer enum sys_oper_mode_e. */
-    unsigned char sys_operating_mode;
+	unsigned char sys_operating_mode;
 
 	/** Index of the calibration results to be used. */
 	unsigned char index;
 
-    /** Result structure to store calibration results (pointer to buffer of size >= CAL_MEM_SIZE) */
-    unsigned char *rf_calib_results;
+	/** Result structure to store calibration results
+	 * (pointer to buffer of size >= CAL_MEM_SIZE)
+	 */
+	unsigned char *rf_calib_results;
 } __NRF_WIFI_PKD;
 
-enum nrf_wifi_rf_get_calib_results_mode_e
-{
+enum nrf_wifi_rf_get_calib_results_mode_e {
 	OPERATING_CHANNEL_RESULTS,
 	SCAN_CHANNEL_RESULTS,
 };
@@ -2034,163 +2051,157 @@ enum nrf_wifi_rf_get_calib_results_mode_e
  * @struct nrf_wifi_rf_read_calib_results
  * @brief Read calibration results structure for the current channel.
  */
-struct nrf_wifi_rf_read_calib_results
-{
-    /** Test identifier */
-    unsigned char test;
+struct nrf_wifi_rf_read_calib_results {
+	/** Test identifier */
+	unsigned char test;
 
 	/** refer enum nrf_wifi_rf_get_calib_results_mode_e. */
-    unsigned char mode;
+	unsigned char mode;
 
-	/** If mode is OPERATING_CHANNEL_RESULTS then 
+	/** If mode is OPERATING_CHANNEL_RESULTS then
 	 * configure index as 0 or 1 based on which results are needed.
 	 */
 	unsigned char index;
 
-    /** Result structure to store calibration results (pointer to buffer of size >= CAL_MEM_SIZE) */
-    unsigned char *rf_calib_results;
+	/** Result structure to store calibration results
+	 * (pointer to buffer of size >= CAL_MEM_SIZE)
+	 */
+	unsigned char *rf_calib_results;
 } __NRF_WIFI_PKD;
 
 
-enum freq_hb_slice_e
-{
-    FREQHB_SLICE_PA_DA_TUNE,
-    FREQHB_SLICE_PA_PGA_TUNE,
-    FREQHB_SLICE_TXPA_TUNE,
-    FREQHB_SLICE_ICT_LO_HB_DRV,
-    FREQHB_SLICE_RXBIAS_LODIV,
-    FREQHB_SLICE_LOGEN_CAP,
-    FREQHB_SLICE_LOGEN_BIAS,
-    FREQHB_SLICE_LO_HB_DRV_CLOAD,
-    FREQHB_SLICE_ICT_TXRF_LODIV,
-    FREQHB_SLICE_LNA_CAP,
-    FREQHB_SLICE_PLACE_HOLDER1,
-    FREQHB_SLICE_PLACE_HOLDER2,
+enum freq_hb_slice_e {
+	FREQHB_SLICE_PA_DA_TUNE,
+	FREQHB_SLICE_PA_PGA_TUNE,
+	FREQHB_SLICE_TXPA_TUNE,
+	FREQHB_SLICE_ICT_LO_HB_DRV,
+	FREQHB_SLICE_RXBIAS_LODIV,
+	FREQHB_SLICE_LOGEN_CAP,
+	FREQHB_SLICE_LOGEN_BIAS,
+	FREQHB_SLICE_LO_HB_DRV_CLOAD,
+	FREQHB_SLICE_ICT_TXRF_LODIV,
+	FREQHB_SLICE_LNA_CAP,
+	FREQHB_SLICE_PLACE_HOLDER1,
+	FREQHB_SLICE_PLACE_HOLDER2,
 };
 
-enum freq_lb_slice_e
-{
-    FREQLB_SLICE_LOGEN_CAP
+enum freq_lb_slice_e {
+	FREQLB_SLICE_LOGEN_CAP
 };
 
-enum temp_hb_slice_e
-{
-    TEMPHB_SLICE_PA_DABIAS,
-    TEMPHB_SLICE_PA_PGABIAS,
-    TEMPHB_SLICE_LOGEN_BIAS_CTRL,
-    TEMPHB_SLICE_ICT_TXRF_LODIV_CTRL,
-    TEMPHB_SLICE_PLACE_HOLDER1,
-    TEMPHB_SLICE_PLACE_HOLDER2,
+enum temp_hb_slice_e {
+	TEMPHB_SLICE_PA_DABIAS,
+	TEMPHB_SLICE_PA_PGABIAS,
+	TEMPHB_SLICE_LOGEN_BIAS_CTRL,
+	TEMPHB_SLICE_ICT_TXRF_LODIV_CTRL,
+	TEMPHB_SLICE_PLACE_HOLDER1,
+	TEMPHB_SLICE_PLACE_HOLDER2,
 };
 
-enum temp_lb_slice_e
-{
-    TEMPLB_SLICE_PA_DABIAS,
-    TEMPLB_SLICE_PA_PGABIAS,
-    TEMPLB_SLICE_LOGEN_BIAS_CTRL,
-    TEMPLB_SLICE_ICT_TXRF_LODIV_CTRL,
-    TEMPLB_SLICE_PLACE_HOLDER1,
-    TEMPLB_SLICE_PLACE_HOLDER2,
+enum temp_lb_slice_e {
+	TEMPLB_SLICE_PA_DABIAS,
+	TEMPLB_SLICE_PA_PGABIAS,
+	TEMPLB_SLICE_LOGEN_BIAS_CTRL,
+	TEMPLB_SLICE_ICT_TXRF_LODIV_CTRL,
+	TEMPLB_SLICE_PLACE_HOLDER1,
+	TEMPLB_SLICE_PLACE_HOLDER2,
 };
 
-enum optimized_settings_slice_e
-{
-    OPTIM_SETTINGS_SLICE_TRX_ADC_DAC,
-    OPTIM_SETTINGS_SLICE_TRX_RX_SX_PWR,
-    OPTIM_SETTINGS_SLICE_DTIM
+enum optimized_settings_slice_e {
+	OPTIM_SETTINGS_SLICE_TRX_ADC_DAC,
+	OPTIM_SETTINGS_SLICE_TRX_RX_SX_PWR,
+	OPTIM_SETTINGS_SLICE_DTIM
 };
 
-enum tx_gain_table_slice_e
-{
-    TXGAIN_SLICE_PA,
-    TXGAIN_SLICE_DA,
-    TXGAIN_SLICE_PGA,
-    TXGAIN_SLICE_BB,
-    TXGAIN_SLICE_ALL
+enum tx_gain_table_slice_e {
+	TXGAIN_SLICE_PA,
+	TXGAIN_SLICE_DA,
+	TXGAIN_SLICE_PGA,
+	TXGAIN_SLICE_BB,
+	TXGAIN_SLICE_ALL
 };
 
-enum rx_bb_gain_table_slice_e
-{
-    RXBB_GAIN_SLICE_GAIN1,
-    RXBB_GAIN_SLICE_GAIN2,
-    RXBB_GAIN_SLICE_GAIN3,
-    RXBB_GAIN_SLICE_RXLB_DTIM_V2I_SLICE_EN,
-    RXBB_GAIN_SLICE_RXLB_MAIN_V2I_SLICE_EN,
-    RXBB_GAIN_SLICE_RXHB_DTIM_V2I_SLICE_EN,
-    RXBB_GAIN_SLICE_RXHB_MAIN_V2I_SLICE_EN,
-    RXBB_GAIN_SLICE_ALL
+enum rx_bb_gain_table_slice_e {
+	RXBB_GAIN_SLICE_GAIN1,
+	RXBB_GAIN_SLICE_GAIN2,
+	RXBB_GAIN_SLICE_GAIN3,
+	RXBB_GAIN_SLICE_RXLB_DTIM_V2I_SLICE_EN,
+	RXBB_GAIN_SLICE_RXLB_MAIN_V2I_SLICE_EN,
+	RXBB_GAIN_SLICE_RXHB_DTIM_V2I_SLICE_EN,
+	RXBB_GAIN_SLICE_RXHB_MAIN_V2I_SLICE_EN,
+	RXBB_GAIN_SLICE_ALL
 };
 
-enum rx_lna_gain_table_slice_e
-{
-    RXLNA_GAIN_SLICE_LB_GAIN_CTRL,
-    RXLNA_GAIN_SLICE_LB_GAIN_FEEDBACKR_CTRL,
-    RXLNA_GAIN_SLICE_LB_ALL,
-    RXLNA_GAIN_SLICE_HB_GAIN_CTRL,
-    RXLNA_GAIN_SLICE_HB_GAIN_CASCODE_CTRL,
-    RXLNA_GAIN_SLICE_HB_ALL
+enum rx_lna_gain_table_slice_e {
+	RXLNA_GAIN_SLICE_LB_GAIN_CTRL,
+	RXLNA_GAIN_SLICE_LB_GAIN_FEEDBACKR_CTRL,
+	RXLNA_GAIN_SLICE_LB_ALL,
+	RXLNA_GAIN_SLICE_HB_GAIN_CTRL,
+	RXLNA_GAIN_SLICE_HB_GAIN_CASCODE_CTRL,
+	RXLNA_GAIN_SLICE_HB_ALL
 };
 
-enum wait_idx_e
-{
-    WAITIDX_Activate_TX2RX = 0,
-    WAITIDX_Activate_RX2TX,
-    WAITIDX_Deactivate_TXRX,
-    WAITIDX_Activate_RX_DCOC_INTERNAL_LOOP,
-    WAITIDX_Activate_TX_DCOC_INTERNAL_LOOP,
-    WAITIDX_Activate_WLPWR_TRX_ON,
-    WAITIDX_Activate_WLPWR_DTIM_ON,
-    WAITIDX_Activate_WLPWR_WUR_LB_ON,
-    WAITIDX_Activate_WLPWR_WUR_HB_ON,
-    WAITIDX_Activate_RXPWR_DTIM_ON,
-    WAITIDX_Activate_RXPWR_WUR_ON,
-    WAITIDX_Activate_SXLP_DTIM_LB_ON,
-    WAITIDX_Activate_SXLP_DTIM_HB_ON,
-    WAITIDX_Activate_WUR_DCOC_INTERNAL_LOOP,
-    WAITIDX_Activate_TRXPWR_LB_ALL,
-    WAITIDX_Activate_TRXPWR_HB_ALL,
-    WAITIDX_Activate_SXHP_ALLPWR,
-    WAITIDX_WLPWR_PALDO_SOFTST,   // Hardcoded 4us wait
-    WAITIDX_PWR_BEACON2TRX_RFLDO, // Hardcoded 20us wait
-    WAITIDX_PWR_BEACON2TRX_SXHP,  // Hardcoded 40us wait
-    WAITIDX_COUNT                 // Must be last - used for array size
+enum wait_idx_e {
+	WAITIDX_Activate_TX2RX = 0,
+	WAITIDX_Activate_RX2TX,
+	WAITIDX_Deactivate_TXRX,
+	WAITIDX_Activate_RX_DCOC_INTERNAL_LOOP,
+	WAITIDX_Activate_TX_DCOC_INTERNAL_LOOP,
+	WAITIDX_Activate_WLPWR_TRX_ON,
+	WAITIDX_Activate_WLPWR_DTIM_ON,
+	WAITIDX_Activate_WLPWR_WUR_LB_ON,
+	WAITIDX_Activate_WLPWR_WUR_HB_ON,
+	WAITIDX_Activate_RXPWR_DTIM_ON,
+	WAITIDX_Activate_RXPWR_WUR_ON,
+	WAITIDX_Activate_SXLP_DTIM_LB_ON,
+	WAITIDX_Activate_SXLP_DTIM_HB_ON,
+	WAITIDX_Activate_WUR_DCOC_INTERNAL_LOOP,
+	WAITIDX_Activate_TRXPWR_LB_ALL,
+	WAITIDX_Activate_TRXPWR_HB_ALL,
+	WAITIDX_Activate_SXHP_ALLPWR,
+	/** Hardcoded 4us wait */
+	WAITIDX_WLPWR_PALDO_SOFTST,
+	/** Hardcoded 20us wait */
+	WAITIDX_PWR_BEACON2TRX_RFLDO,
+	/** Hardcoded 40us wait */
+	WAITIDX_PWR_BEACON2TRX_SXHP,
+	/** Must be last - used for array size */
+	WAITIDX_COUNT,
 };
 
 /**
  * @brief Enum for SXHP ADPLL static setting indices
  */
-enum sxhp_adpll_slice_e
-{
-    SXHPADPLL_SLICE_EST_KDTC_EN = 0,
-    SXHPADPLL_SLICE_FSM_ACQ_FIRST_GEAR,
-    SXHPADPLL_SLICE_FSM_ACQ_SECOND_GEAR,
-    SXHPADPLL_SLICE_FSM_ACQ_TOTAL_TIME,
-    SXHPADPLL_SLICE_FSM_TRK_FIRST_GEAR,
-    SXHPADPLL_SLICE_FSM_TRK_SECOND_GEAR,
-    SXHPADPLL_SLICE_FSM_TRK_THIRD_GEAR,
-    SXHPADPLL_SLICE_LOOP_FILTER_CFG,
-    SXHPADPLL_SLICE_TDC_LOCK_THRESHOLD,
-    SXHPADPLL_SLICE_SPARE1,
-    SXHPADPLL_SLICE_SPARE2,
-    SXHPADPLL_SLICE_SPARE3,
+enum sxhp_adpll_slice_e {
+	SXHPADPLL_SLICE_EST_KDTC_EN = 0,
+	SXHPADPLL_SLICE_FSM_ACQ_FIRST_GEAR,
+	SXHPADPLL_SLICE_FSM_ACQ_SECOND_GEAR,
+	SXHPADPLL_SLICE_FSM_ACQ_TOTAL_TIME,
+	SXHPADPLL_SLICE_FSM_TRK_FIRST_GEAR,
+	SXHPADPLL_SLICE_FSM_TRK_SECOND_GEAR,
+	SXHPADPLL_SLICE_FSM_TRK_THIRD_GEAR,
+	SXHPADPLL_SLICE_LOOP_FILTER_CFG,
+	SXHPADPLL_SLICE_TDC_LOCK_THRESHOLD,
+	SXHPADPLL_SLICE_SPARE1,
+	SXHPADPLL_SLICE_SPARE2,
+	SXHPADPLL_SLICE_SPARE3,
 };
 
 /**
  * @brief Enum for SXLP ADPLL static setting indices
  */
-enum sxlp_adpll_slice_e
-{
-    SXLPADPLL_SLICE_FSM_ACQ_FIRST_GEAR = 0,
-    SXLPADPLL_SLICE_FSM_ACQ_SECOND_GEAR,
-    SXLPADPLL_SLICE_FSM_ACQ_TOTAL_TIME,
-    SXLPADPLL_SLICE_FSM_TRK_FIRST_GEAR,
-    SXLPADPLL_SLICE_FSM_TRK_SECOND_GEAR,
-    SXLPADPLL_SLICE_FSM_TRK_THIRD_GEAR,
-    SXLPADPLL_SLICE_LOOP_FILTER_CFG,
-    SXLPADPLL_SLICE_TDC_LOCK_THRESHOLD,
-    SXLPADPLL_SLICE_SPARE1,
-    SXLPADPLL_SLICE_SPARE2,
-    SXLPADPLL_SLICE_SPARE3,
+enum sxlp_adpll_slice_e {
+	SXLPADPLL_SLICE_FSM_ACQ_FIRST_GEAR = 0,
+	SXLPADPLL_SLICE_FSM_ACQ_SECOND_GEAR,
+	SXLPADPLL_SLICE_FSM_ACQ_TOTAL_TIME,
+	SXLPADPLL_SLICE_FSM_TRK_FIRST_GEAR,
+	SXLPADPLL_SLICE_FSM_TRK_SECOND_GEAR,
+	SXLPADPLL_SLICE_FSM_TRK_THIRD_GEAR,
+	SXLPADPLL_SLICE_LOOP_FILTER_CFG,
+	SXLPADPLL_SLICE_TDC_LOCK_THRESHOLD,
+	SXLPADPLL_SLICE_SPARE1,
+	SXLPADPLL_SLICE_SPARE2,
+	SXLPADPLL_SLICE_SPARE3,
 };
 
 /**
@@ -2237,10 +2248,12 @@ struct nrf_wifi_patch_settings {
 	/** Slice identifier; meaning depends on patch_type */
 	unsigned char slice;
 	/** Band identifier; used only for PATCH_CONST_SETTINGS, PATCH_TX_GAIN_TABLE,
-	 *  PATCH_RX_LNA_GAIN_TABLE; otherwise 0 */
+	 *  PATCH_RX_LNA_GAIN_TABLE; otherwise 0
+	 */
 	unsigned char band;
 	/** New-setting flag (0 or 1); only for PATCH_CONST_SETTINGS, PATCH_OPTIMIZED_SETTINGS;
-	 *  otherwise 0 */
+	 *  otherwise 0
+	 */
 	unsigned char is_new_setting;
 	/** Value; use low 8, low 16, or full 32 bits depending on patch_type */
 	unsigned int value;
@@ -2600,7 +2613,6 @@ struct nrf_wifi_tx_pwr_ceil_params {
 	 */
 	unsigned char max_pwr_2g_mcs7;
 
-#ifndef NRF70_2_4G_ONLY
 	/** Maximum power permitted while transmitting MCS0 rate in 5G lowband.
 	 * Low band corresponds to ch: 36 to 64 Resolution is 0.25dBm.
 	 */
@@ -2625,7 +2637,6 @@ struct nrf_wifi_tx_pwr_ceil_params {
 	 * High band corresponds to ch: 136 to 177, resolution is 0.25dBm.
 	 */
 	unsigned char max_pwr_5g_high_mcs7;
-#endif /* NRF70_2_4G_ONLY */
 } __NRF_WIFI_PKD;
 
 struct nrf_wifi_cmd_coding_type_config {
@@ -2657,18 +2668,19 @@ struct nrf_wifi_cmd_xo_tune {
  *
  * This enumeration defines the various signal sources that can be used for
  * Signal Quality Indicator (SQI) measurement in the Wi-Fi RPU.
+ *
  */
 enum nrf_wifi_sqi {
-    /** Invalid SQI source */
-    NRF_WIFI_SQI_RX_INVALID = 0,
-    /** Beacon frames */
-    NRF_WIFI_SQI_RX_BCN = (1 << 0),
-    /** Unicast and broadcast frames */
-    NRF_WIFI_SQI_RX_UCAST_BCAST = (1 << 1),
-    /** BSS traffic unicast frames */
-    NRF_WIFI_SQI_RX_BSS_TP_UCAST = (1 << 2),
-    /* @NRF_WIFI_SQI_RX_ALL sets all the above flags */
-    NRF_WIFI_SQI_RX_ALL = (1 << 3) - 1,
+	/** Invalid SQI source */
+	NRF_WIFI_SQI_RX_INVALID = 0,
+	/** Beacon frames */
+	NRF_WIFI_SQI_RX_BCN = (1 << 0),
+	/** Unicast and broadcast frames */
+	NRF_WIFI_SQI_RX_UCAST_BCAST = (1 << 1),
+	/** BSS traffic unicast frames */
+	NRF_WIFI_SQI_RX_BSS_TP_UCAST = (1 << 2),
+	/* @NRF_WIFI_SQI_RX_ALL sets all the above flags */
+	NRF_WIFI_SQI_RX_ALL = (1 << 3) - 1,
 } __NRF_WIFI_PKD;
 
 /**
@@ -2679,12 +2691,12 @@ enum nrf_wifi_sqi {
  * Signal Quality Indicator (SQI) measurement in the Wi-Fi RPU.
  */
 enum nrf_wifi_sqi_sample_count {
-    /** 4 samples */
-    NRF_WIFI_SQI_SAMPLE_COUNT_4 = 4,
-    /** 8 samples */
-    NRF_WIFI_SQI_SAMPLE_COUNT_8 = 8,
-    /** 16 samples */
-    NRF_WIFI_SQI_SAMPLE_COUNT_16 = 16,
+	/** 4 samples */
+	NRF_WIFI_SQI_SAMPLE_COUNT_4 = 4,
+	/** 8 samples */
+	NRF_WIFI_SQI_SAMPLE_COUNT_8 = 8,
+	/** 16 samples */
+	NRF_WIFI_SQI_SAMPLE_COUNT_16 = 16,
 } __NRF_WIFI_PKD;
 
 /**
@@ -2692,12 +2704,12 @@ enum nrf_wifi_sqi_sample_count {
  * Signal Quality Indicator (SQI) measurement.
  */
 struct nrf_wifi_cmd_sqi {
-    /** umac header, see &nrf_wifi_sys_head */
-    struct nrf_wifi_sys_head sys_head;
-    /** Signal source for SQI measurement */
-    unsigned int nrf_wifi_signal_src;
-    /** Number of average samples count */
-    unsigned int nrf_wifi_avg_cnt;
+	/** umac header, see &nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+	/** Signal source for SQI measurement */
+	unsigned int nrf_wifi_signal_src;
+	/** Number of average samples count */
+	unsigned int nrf_wifi_avg_cnt;
 } __NRF_WIFI_PKD;
 
 
@@ -2714,24 +2726,23 @@ struct nrf_wifi_cmd_sqi {
  * IDs of different messages posted from Coexistence Driver (CD) to
  * Coexistence Manager (CM) for command routing.
  */
-enum cd2cm_msg_id_t
-{
-    /** To enable coexistence. */
-    CD2CM_ENABLE_COEXISTENCE = 0,
-    /** To allocate periodic priority windows to Wi-Fi and SR. */
-    CD2CM_ALLOCATE_PPW,
-    /** To set Wi-Fi (SW and HW) and SR SW priority ranges. */
-    CD2CM_SET_PRIORITY_RANGES,
-    /** To initialize coexistence user parameters. */
-    CD2CM_UPDATE_COEX_USER_PARAMS,
-    /** To initialize coexistence parameters. */
-    CD2CM_UPDATE_COEX_PARAMS,
-    /** To post a SW client request to protect Wi-Fi activity */
-    CD2CM_WIFI_SW_CLIENT_REQUEST,
-    /** To get all the CM stats. */
-    CD2CM_GET_STATS,
-    /** Total number of valid message IDs. */
-    CD2CM_MSG_ID_COUNT
+enum cd2cm_msg_id_t {
+	/** To enable coexistence. */
+	CD2CM_ENABLE_COEXISTENCE = 0,
+	/** To allocate periodic priority windows to Wi-Fi and SR. */
+	CD2CM_ALLOCATE_PPW,
+	/** To set Wi-Fi (SW and HW) and SR SW priority ranges. */
+	CD2CM_SET_PRIORITY_RANGES,
+	/** To initialize coexistence user parameters. */
+	CD2CM_UPDATE_COEX_USER_PARAMS,
+	/** To initialize coexistence parameters. */
+	CD2CM_UPDATE_COEX_PARAMS,
+	/** To post a SW client request to protect Wi-Fi activity */
+	CD2CM_WIFI_SW_CLIENT_REQUEST,
+	/** To get all the CM stats. */
+	CD2CM_GET_STATS,
+	/** Total number of valid message IDs. */
+	CD2CM_MSG_ID_COUNT
 };
 
 /**
@@ -2740,12 +2751,11 @@ enum cd2cm_msg_id_t
  * Indicates if allocation of Periodic Priority Windows (PPWs) is to be
  * started or stopped.
  */
-enum start_stop_ppw_t
-{
-    /** To stop allocation of windows. */
-    STOP_ALLOC_WINDOWS = 0,
-    /** To start allocation of windows. */
-    START_ALLOC_WINDOWS
+enum start_stop_ppw_t {
+	/** To stop allocation of windows. */
+	STOP_ALLOC_WINDOWS = 0,
+	/** To start allocation of windows. */
+	START_ALLOC_WINDOWS
 };
 
 /**
@@ -2753,12 +2763,11 @@ enum start_stop_ppw_t
  *
  * Indicates to which radio the first priority window of PPWs to be allocated.
  */
-enum coex_radios_t
-{
-    /** Allocate first window to Wi-Fi radio. */
-    WIFI_RADIO = 0,
-    /** Allocate first window to SR radio. */
-    SR_RADIO
+enum coex_radios_t {
+	/** Allocate first window to Wi-Fi radio. */
+	WIFI_RADIO = 0,
+	/** Allocate first window to SR radio. */
+	SR_RADIO
 };
 
 /**
@@ -2766,14 +2775,13 @@ enum coex_radios_t
  *
  * Indicates the antenna allocation mode for the shared antenna.
  */
-enum antenna_allocation_t
-{
-    /** Antenna allocation dynamic (as per default logic). */
-    ANT_ALLOC_DYNAMIC = 0,
-    /** Antenna allocation static (overrides default logic). Connect to Wi-Fi. */
-    ANT_ALLOC_STATIC_WIFI,
-    /** Antenna allocation static (overrides default logic). Connect to Short Range. */
-    ANT_ALLOC_STATIC_SR
+enum antenna_allocation_t {
+	/** Antenna allocation dynamic (as per default logic). */
+	ANT_ALLOC_DYNAMIC = 0,
+	/** Antenna allocation static (overrides default logic). Connect to Wi-Fi. */
+	ANT_ALLOC_STATIC_WIFI,
+	/** Antenna allocation static (overrides default logic). Connect to Short Range. */
+	ANT_ALLOC_STATIC_SR
 };
 
 /**
@@ -2782,12 +2790,11 @@ enum antenna_allocation_t
  * Indicates COEX is to be enabled/disabled. This is used to configure
  * the coexistence HW blocks accordingly.
  */
-enum coex_en_or_dis_t
-{
-    /** To disable coexistence. */
-    COEX_DISABLE = 0,
-    /** To enable coexistence. */
-    COEX_ENABLE
+enum coex_en_or_dis_t {
+	/** To disable coexistence. */
+	COEX_DISABLE = 0,
+	/** To enable coexistence. */
+	COEX_ENABLE
 };
 
 /**
@@ -2795,12 +2802,11 @@ enum coex_en_or_dis_t
  *
  * Indicates the type of SW client operation.
  */
-enum coex_wifi_sw_client_req_type_t
-{
-    /** Indicates the SW client release. */
-    WIFI_SW_CLIENT_RELEASE = 0,
-    /** Indicates the SW client request. */
-    WIFI_SW_CLIENT_REQUEST = 1
+enum coex_wifi_sw_client_req_type_t {
+	/** Indicates the SW client release. */
+	WIFI_SW_CLIENT_RELEASE = 0,
+	/** Indicates the SW client request. */
+	WIFI_SW_CLIENT_REQUEST = 1
 };
 
 /**
@@ -2808,18 +2814,17 @@ enum coex_wifi_sw_client_req_type_t
  *
  * Indicates the priority level of the SW client request.
  */
-enum coex_wifi_sw_client_req_pti_level_t
-{
-    /** Low priority level. */
-    WIFI_SW_CLIENT_REQ_PTI_LOW = 0,
-    /** Medium priority level. */
-    WIFI_SW_CLIENT_REQ_PTI_MEDIUM,
-    /** High priority level. */
-    WIFI_SW_CLIENT_REQ_PTI_HIGH,
-    /** Highest priority level. */
-    WIFI_SW_CLIENT_REQ_PTI_HIGHEST,
-    /** Total number of priority levels. */
-    WIFI_SW_CLIENT_REQ_PTI_COUNT
+enum coex_wifi_sw_client_req_pti_level_t {
+	/** Low priority level. */
+	WIFI_SW_CLIENT_REQ_PTI_LOW = 0,
+	/** Medium priority level. */
+	WIFI_SW_CLIENT_REQ_PTI_MEDIUM,
+	/** High priority level. */
+	WIFI_SW_CLIENT_REQ_PTI_HIGH,
+	/** Highest priority level. */
+	WIFI_SW_CLIENT_REQ_PTI_HIGHEST,
+	/** Total number of priority levels. */
+	WIFI_SW_CLIENT_REQ_PTI_COUNT
 };
 
 /**
@@ -2827,18 +2832,17 @@ enum coex_wifi_sw_client_req_pti_level_t
  *
  * Indicates different Wi-Fi SW clients that can request COEX resources.
  */
-enum wifi_sw_client_t
-{
-    /** To protect beacon reception from SR interference. */
-    WIFI_BEACON_RECEPTION = 0,
-    /** To protect connection phase from SR interference. */
-    WIFI_CONNECTION,
-    /** To protect calibrations from SR interference. */
-    WIFI_CALIBRATIONS,
-    /** To protect scan from SR interference. */
-    WIFI_SCAN,
-    /** Total number of Wi-Fi SW client types. */
-    WIFI_SW_CLIENT_COUNT
+enum wifi_sw_client_t {
+	/** To protect beacon reception from SR interference. */
+	WIFI_BEACON_RECEPTION = 0,
+	/** To protect connection phase from SR interference. */
+	WIFI_CONNECTION,
+	/** To protect calibrations from SR interference. */
+	WIFI_CALIBRATIONS,
+	/** To protect scan from SR interference. */
+	WIFI_SCAN,
+	/** Total number of Wi-Fi SW client types. */
+	WIFI_SW_CLIENT_COUNT
 };
 
 /**
@@ -2848,22 +2852,21 @@ enum wifi_sw_client_t
  * Periodic Priority Windows (PPWs) for Wi-Fi and SR radios.
  * Embedded in cd2cm_genarate_ppw_t message.
  */
-struct coex_ppw_parameters_t
-{
-    /** Start or stop priority windows. */
-    enum start_stop_ppw_t start_or_stop_ppw;
-    /** Radio to which first priority window to be allocated. */
-    enum coex_radios_t    first_window_to_wifi_or_sr;
-    /** Wi-Fi priority window duration in milliseconds. */
-    unsigned int         wifi_pti_window_duration;
-    /** SR priority window duration in milliseconds. */
-    unsigned int         sr_pti_window_duration;
-    /** Maximum time (in milliseconds) to wait for a corresponding "stop" command
-     * after a "start" has been issued. If this timeout expires without receiving
-     * the "stop" signal, the Coexistence Manager (CM) will automatically terminate
-     * Priority Window (PPW) generation to prevent indefinite continuation.
-     */
-    unsigned int        ppws_timeout;
+struct coex_ppw_parameters_t {
+	/** Start or stop priority windows. */
+	enum start_stop_ppw_t start_or_stop_ppw;
+	/** Radio to which first priority window to be allocated. */
+	enum coex_radios_t    first_window_to_wifi_or_sr;
+	/** Wi-Fi priority window duration in milliseconds. */
+	unsigned int         wifi_pti_window_duration;
+	/** SR priority window duration in milliseconds. */
+	unsigned int         sr_pti_window_duration;
+	/** Maximum time (in milliseconds) to wait for a corresponding "stop" command
+	 * after a "start" has been issued. If this timeout expires without receiving
+	 * the "stop" signal, the Coexistence Manager (CM) will automatically terminate
+	 * Priority Window (PPW) generation to prevent indefinite continuation.
+	 */
+	unsigned int        ppws_timeout;
 };
 
 /**
@@ -2872,12 +2875,11 @@ struct coex_ppw_parameters_t
  * Message from driver to CM to allocate Periodic Priority Windows
  * to Wi-Fi and SR radios.
  */
-struct cd2cm_genarate_ppw_t
-{
-    /** Message ID. Set to CD2CM_ALLOCATE_PPW. */
-   enum cd2cm_msg_id_t          message_id;
-    /** Parameters related to PPW generation. */
-   struct coex_ppw_parameters_t   ppw_parameters;
+struct cd2cm_genarate_ppw_t {
+	/** Message ID. Set to CD2CM_ALLOCATE_PPW. */
+	enum cd2cm_msg_id_t          message_id;
+	/** Parameters related to PPW generation. */
+	struct coex_ppw_parameters_t   ppw_parameters;
 };
 
 /**
@@ -2886,21 +2888,20 @@ struct cd2cm_genarate_ppw_t
  * Contains Wi-Fi SW and HW clients priority range values for
  * coexistence configuration. Each range is defined as [min, max, step].
  */
-struct coex_wifi_priority_range_t
-{
-    /** Wi-Fi SW request priority range */
-    unsigned char     sw_request_priority_range[NUM_ELEMENTS_IN_SW_PTI_RANGE];
-    /** Wi-Fi high priority Rx client CCCONF priority range. */
-    unsigned char     client0_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** Wi-Fi high priority Tx client CCCONF priority range. */
-    unsigned char     client1_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** Wi-Fi low priority Rx client CCCONF priority range. */
-    unsigned char     client2_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** Wi-Fi low priority Tx client CCCONF priority range. */
-    unsigned char     client3_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** Priority level used to choose the priority value. */
-    unsigned char     hw_client_priority_level;
-}  __NRF_WIFI_PKD;
+struct coex_wifi_priority_range_t {
+	/** Wi-Fi SW request priority range */
+	unsigned char     sw_request_priority_range[NUM_ELEMENTS_IN_SW_PTI_RANGE];
+	/** Wi-Fi high priority Rx client CCCONF priority range. */
+	unsigned char     client0_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** Wi-Fi high priority Tx client CCCONF priority range. */
+	unsigned char     client1_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** Wi-Fi low priority Rx client CCCONF priority range. */
+	unsigned char     client2_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** Wi-Fi low priority Tx client CCCONF priority range. */
+	unsigned char     client3_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** Priority level used to choose the priority value. */
+	unsigned char     hw_client_priority_level;
+} __NRF_WIFI_PKD;
 
 /**
  * SR clients priority range values.
@@ -2908,14 +2909,13 @@ struct coex_wifi_priority_range_t
  * Contains SR clients priority range values for
  * coexistence configuration. Each range is defined as [min, max, step].
  */
-struct coex_sr_priority_range_t
-{
-    /** SR Rx client CCCONF priority range. */
-    unsigned char     client4_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** SR Tx client CCCONF priority range. */
-    unsigned char     client5_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
-    /** Priority level used to choose the priority value. */
-    unsigned char     client_priority_level;
+struct coex_sr_priority_range_t {
+	/** SR Rx client CCCONF priority range. */
+	unsigned char     client4_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** SR Tx client CCCONF priority range. */
+	unsigned char     client5_ccconf_pti_range[NUM_ELEMENTS_IN_CCCONF_PTI_RANGE];
+	/** Priority level used to choose the priority value. */
+	unsigned char     client_priority_level;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2923,12 +2923,11 @@ struct coex_sr_priority_range_t
  *
  * Message from CD to CM to enable/disable the coexistence.
  */
-struct cd2cm_enable_coexistence_t
-{
-    /** Message ID. Set to CD2CM_ENABLE_COEXISTENCE. */
-    enum cd2cm_msg_id_t      message_id;
-    /** Indicates if COEX is enabled or disabled. */
-    enum coex_en_or_dis_t    coex_en_or_dis;
+struct cd2cm_enable_coexistence_t {
+	/** Message ID. Set to CD2CM_ENABLE_COEXISTENCE. */
+	enum cd2cm_msg_id_t      message_id;
+	/** Indicates if COEX is enabled or disabled. */
+	enum coex_en_or_dis_t    coex_en_or_dis;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2936,14 +2935,13 @@ struct cd2cm_enable_coexistence_t
  *
  * Message from CD to CM to initialize Wi-Fi and SR priority ranges.
  */
-struct cd2cm_set_priority_ranges_t
-{
-    /** Message ID. Set to CD2CM_SET_PRIORITY_RANGES. */
-    enum cd2cm_msg_id_t             message_id;
-    /** Wi-Fi priority range values. */
-    struct coex_wifi_priority_range_t wifi_pti_range;
-    /** SR priority range values. */
-    struct coex_sr_priority_range_t   sr_pti_range;
+struct cd2cm_set_priority_ranges_t {
+	/** Message ID. Set to CD2CM_SET_PRIORITY_RANGES. */
+	enum cd2cm_msg_id_t             message_id;
+	/** Wi-Fi priority range values. */
+	struct coex_wifi_priority_range_t wifi_pti_range;
+	/** SR priority range values. */
+	struct coex_sr_priority_range_t   sr_pti_range;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2951,12 +2949,11 @@ struct cd2cm_set_priority_ranges_t
  *
  * Message from CD to CM to get the COEX statistics.
  */
-struct cd2cm_get_coex_stats_t
-{
-    /** Message ID. Set to CD2CM_GET_STATS. */
-    enum cd2cm_msg_id_t  message_id;
-    /** Reserved field for future use. */
-    unsigned int        reserved;
+struct cd2cm_get_coex_stats_t {
+	/** Message ID. Set to CD2CM_GET_STATS. */
+	enum cd2cm_msg_id_t  message_id;
+	/** Reserved field for future use. */
+	unsigned int        reserved;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2965,31 +2962,29 @@ struct cd2cm_get_coex_stats_t
  * This structure holds the parameters required to post
  * a SW client request ro request COEX resources.
  */
-struct coex_sw_client_params_t
-{
-    /** Wi-Fi SW client request/release */
-    enum coex_wifi_sw_client_req_type_t sw_client_request;
-    /** SW client priority level */
-    enum coex_wifi_sw_client_req_pti_level_t sw_client_pti_level;
-    /** SW client type */
-    enum wifi_sw_client_t sw_client_type;
-    /** SW request timeout in milliseconds */
-    unsigned int request_timeout_in_ms;
-    /** Wi-Fi operating band */
-    unsigned int wifi_operating_band;
- } __NRF_WIFI_PKD;
+struct coex_sw_client_params_t {
+	/** Wi-Fi SW client request/release */
+	enum coex_wifi_sw_client_req_type_t sw_client_request;
+	/** SW client priority level */
+	enum coex_wifi_sw_client_req_pti_level_t sw_client_pti_level;
+	/** SW client type */
+	enum wifi_sw_client_t sw_client_type;
+	/** SW request timeout in milliseconds */
+	unsigned int request_timeout_in_ms;
+	/** Wi-Fi operating band */
+	unsigned int wifi_operating_band;
+} __NRF_WIFI_PKD;
 
 /**
  * Message to post a SW client request.
  *
  * Message from CD to CM to request COEX resources.
  */
-struct cd2cm_wifi_sw_client_request_t
-{
-    /** Message ID. Set to CD2CM_WIFI_SW_CLIENT_REQUEST. */
-    enum cd2cm_msg_id_t  message_id;
-    /** SW client request parameters */
-    struct coex_sw_client_params_t sw_client_parameters;
+struct cd2cm_wifi_sw_client_request_t {
+	/** Message ID. Set to CD2CM_WIFI_SW_CLIENT_REQUEST. */
+	enum cd2cm_msg_id_t  message_id;
+	/** SW client request parameters */
+	struct coex_sw_client_params_t sw_client_parameters;
 } __NRF_WIFI_PKD;
 
 /**
@@ -2999,10 +2994,9 @@ struct cd2cm_wifi_sw_client_request_t
  * overall system performance.
  * For now, there is only one parameter. Add additional parameters based on design.
  */
-struct wifi_scan_puncture_info_t
-{
-    /** Wi-Fi scan protection probability (0-100%). */
-    unsigned int    wifi_scan_prot_prob;
+struct wifi_scan_puncture_info_t {
+	/** Wi-Fi scan protection probability (0-100%). */
+	unsigned int    wifi_scan_prot_prob;
 } __NRF_WIFI_PKD;
 
 /**
@@ -3010,55 +3004,54 @@ struct wifi_scan_puncture_info_t
  *
  * Contains coexistence parameters configurable by the user.
  */
-struct coex_user_params_t
-{
-    /** Message ID. Set to CD2CM_UPDATE_COEX_USER_PARAMS. */
-    enum cd2cm_msg_id_t  message_id;
+struct coex_user_params_t {
+	/** Message ID. Set to CD2CM_UPDATE_COEX_USER_PARAMS. */
+	enum cd2cm_msg_id_t  message_id;
 
-    /**
-     * Percentage probability to protect SR Rx (PS: listen to inactive).
-     *
-     * Wi-Fi enter and exit powersave scenario (active <=> inactive).
-     * Valid range: 0-100.
-     */
-    unsigned int    listen2inactive_sr_rx_prot_prob_ps;
+	/**
+	 * Percentage probability to protect SR Rx (PS: listen to inactive).
+	 *
+	 * Wi-Fi enter and exit powersave scenario (active <=> inactive).
+	 * Valid range: 0-100.
+	 */
+	unsigned int    listen2inactive_sr_rx_prot_prob_ps;
 
-    /**
-     * Percentage probability to protect SR Rx (PS: inactive to listen).
-     *
-     * Wi-Fi enter and exit powersave scenario.
-     * Valid range: 0-100.
-     */
-    unsigned int    inactive2listen_sr_rx_prot_prob_ps;
+	/**
+	 * Percentage probability to protect SR Rx (PS: inactive to listen).
+	 *
+	 * Wi-Fi enter and exit powersave scenario.
+	 * Valid range: 0-100.
+	 */
+	unsigned int    inactive2listen_sr_rx_prot_prob_ps;
 
-    /**
-     * Percentage probability to protect SR Rx (calib: inactive to listen).
-     *
-     * Wi-Fi calibrations start and stop scenario.
-     * Valid range: 0-100.
-     */
-    unsigned int    inactive2listen_sr_rx_prot_prob_calib;
+	/**
+	 * Percentage probability to protect SR Rx (calib: inactive to listen).
+	 *
+	 * Wi-Fi calibrations start and stop scenario.
+	 * Valid range: 0-100.
+	 */
+	unsigned int    inactive2listen_sr_rx_prot_prob_calib;
 
-    /**
-     * Percentage probability to protect SR Rx (calib: listen to inactive).
-     *
-     * Wi-Fi calibrations start and stop scenario.
-     * Valid range: 0-100.
-     */
-    unsigned int    listen2inactive_sr_rx_prot_prob_calib;
+	/**
+	 * Percentage probability to protect SR Rx (calib: listen to inactive).
+	 *
+	 * Wi-Fi calibrations start and stop scenario.
+	 * Valid range: 0-100.
+	 */
+	unsigned int    listen2inactive_sr_rx_prot_prob_calib;
 
-    /** Wi-Fi scan puncture information. */
-    struct wifi_scan_puncture_info_t wifi_scan_puncture_info;
+	/** Wi-Fi scan puncture information. */
+	struct wifi_scan_puncture_info_t wifi_scan_puncture_info;
 
-    /** Wi-Fi beacon protection percentage probability, Valid range: 0-100. */
-    unsigned int    wifi_beacon_prot_prob;
-    /** Wi-Fi connection protection percentage probability, Valid range: 0-100. */
-    unsigned int    wifi_conn_prot_prob;
-    /** Wi-Fi calibrations protection percentage probability, Valid range: 0-100. */
-    unsigned int    wifi_calib_prot_prob;
+	/** Wi-Fi beacon protection percentage probability, Valid range: 0-100. */
+	unsigned int    wifi_beacon_prot_prob;
+	/** Wi-Fi connection protection percentage probability, Valid range: 0-100. */
+	unsigned int    wifi_conn_prot_prob;
+	/** Wi-Fi calibrations protection percentage probability, Valid range: 0-100. */
+	unsigned int    wifi_calib_prot_prob;
 
-    /** Force shared antenna allocation mode. */
-    enum antenna_allocation_t shared_ant_control;
+	/** Force shared antenna allocation mode. */
+	enum antenna_allocation_t shared_ant_control;
 } __NRF_WIFI_PKD;
 
 /**
@@ -3066,65 +3059,92 @@ struct coex_user_params_t
  *
  * Message from driver to CM to update user parameters.
  */
-struct cd2cm_coex_user_params_t
-{
-    /** Message ID. Set to CD2CM_UPDATE_COEX_USER_PARAMS. */
-    enum cd2cm_msg_id_t  message_id;
-    /** Coexistence parameters configurable by the user */
-    struct coex_user_params_t   user_params;
+struct cd2cm_coex_user_params_t {
+	/** Message ID. Set to CD2CM_UPDATE_COEX_USER_PARAMS. */
+	enum cd2cm_msg_id_t  message_id;
+	/** Coexistence parameters configurable by the user */
+	struct coex_user_params_t   user_params;
 } __NRF_WIFI_PKD;
 
-struct lmac_tuning_params 
-{
-    unsigned int ofdm_sifs_value;
-    unsigned int dsss_sifs_value;
-    unsigned int cfg_bet_enable;
-    unsigned int lp_rx_enable;
-    unsigned int ack_margin;
-    unsigned int data_path_watch_dog_timer; /* legacy name kept for compatibility */
-    unsigned int tsf_comp_for_ofsets; /* legacy field name */
-    unsigned int inactivity_timer;
-    unsigned int bcst_wait_period;
-    unsigned int inactivity_timer_after_rx;
-    unsigned int tsf_correction_enable;
+struct lmac_tuning_params {
+	unsigned int ofdm_sifs_value;
+	unsigned int dsss_sifs_value;
+	unsigned int cfg_bet_enable;
+	unsigned int lp_rx_enable;
+	unsigned int ack_margin;
+	unsigned int data_path_watch_dog_timer; /* legacy name kept for compatibility */
+	unsigned int tsf_comp_for_ofsets; /* legacy field name */
+	unsigned int inactivity_timer;
+	unsigned int bcst_wait_period;
+	unsigned int inactivity_timer_after_rx;
+	unsigned int tsf_correction_enable;
 	unsigned int allowed_bcn_miss_before_wakeup;
 	unsigned int beacon_wait_time;
-    unsigned int wifi_priority_for_coldboot;
-    unsigned int wifi_priority_for_warmboot;
-    unsigned int wifi_priority_for_shdn;
+	unsigned int wifi_priority_for_coldboot;
+	unsigned int wifi_priority_for_warmboot;
+	unsigned int wifi_priority_for_shdn;
 	unsigned int wifi_priority_for_chnlprog;
 	unsigned int scan_priority_for_pta;
-    unsigned int protect_beacon_period;
-    unsigned int beacon_coex_priority;
-    unsigned int protect_connection_period;
-    unsigned int coex_mgmt_priority;
+	unsigned int protect_beacon_period;
+	unsigned int beacon_coex_priority;
+	unsigned int protect_connection_period;
+	unsigned int coex_mgmt_priority;
 	unsigned int additional_retry_bk;
 	unsigned int additional_retry_be;
 	unsigned int additional_retry_vi;
 	unsigned int additional_retry_vo;
-    unsigned int enable_vif_tsmc;
-    unsigned int vif_channel_switch_delay;
-    unsigned int vif_window_size_in_usec;
-    unsigned int cts_duration_field;
-	unsigned char  offloadTXChecksum;
-	unsigned char offloadRXChecksum;
+	unsigned int enable_vif_tsmc;
+	unsigned int vif_channel_switch_delay;
+	unsigned int vif_window_size_in_usec;
+	unsigned int cts_duration_field;
+	unsigned int  offloadTXChecksum;
+	unsigned int offloadRXChecksum;
+	unsigned int  internal_recovery_enable;
+	unsigned int  ppmError;
+	unsigned int reSyncTime; 
+	unsigned int syncTSF; 
 	/* reserved for patching */
 	unsigned int reserved[16];
-}__NRF_WIFI_PKD;
-struct nrf_wifi_cmd_lmac_tuning_params
-{
+} __NRF_WIFI_PKD;
+
+struct nrf_wifi_cmd_lmac_tuning_params {
 	/** UMAC header, @ref nrf_wifi_sys_head*/
 	struct nrf_wifi_sys_head sys_head;
 	/** LMAC tuning parameters */
 	struct lmac_tuning_params params;
-}__NRF_WIFI_PKD;
-
-struct nrf_wifi_vtf_params
-{
-        unsigned int voltage;
-        unsigned int temp;
-        unsigned int x0_freq;
 } __NRF_WIFI_PKD;
 
+struct nrf_wifi_vtf_params {
+	unsigned int voltage;
+	unsigned int temp;
+	unsigned int x0_freq;
+} __NRF_WIFI_PKD;
+
+/* ADPLL capture-related parameters */
+struct nrf_wifi_set_adpll_capture_params {
+	unsigned char test;
+
+	/* Control for the ADPLL capture module */
+	unsigned char enabled;
+
+	/* Enable Trace data logging */
+	unsigned char enable_tracing;
+
+	/* Number of samples to be captured. */
+	unsigned short int cap_len;
+
+	/* address of the adpll capture data */
+	unsigned int *cap_addr;
+} __NRF_WIFI_PKD;
+
+/* ADPLL capture-related info */
+typedef struct nrf_wifi_adpll_capture_info {
+	
+	unsigned char channel_num;
+	unsigned char freq_band;
+	unsigned char power_mode;
+	unsigned char status;
+	unsigned int *cap_addr;
+} __NRF_WIFI_PKD nrf_wifi_adpll_capture_info_t;
 
 #endif /* __NRF71_WIFI_COMMON_H__ */

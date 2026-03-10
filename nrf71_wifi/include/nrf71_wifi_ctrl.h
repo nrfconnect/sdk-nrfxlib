@@ -1,13 +1,13 @@
 /*
  *
- *Copyright (c) 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2026 Nordic Semiconductor ASA
  *
- *SPDX-License-Identifier: BSD-3-Clause
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
  * @file
- * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @addtogroup nrf71_wifi_fw_if Wi-Fi driver and firmware interface
  * @{
  * @brief Control interface between host and RPU
  */
@@ -153,15 +153,15 @@ enum nrf_wifi_umac_commands {
 	NRF_WIFI_UMAC_CMD_GAS_ANQP_QUERY,
 	/** Command to send NEIGHBOR request @ref nrf_wifi_cmd_neighbor_req_config */
 	NRF_WIFI_UMAC_CMD_CONFIG_NEIGHBOR_REQ,
-	
+
 	/** Command to set sqi threshold */
 	NRF_WIFI_UMAC_CMD_SQI_SET_THRESHOLD
 };
 
- /**
-  * @brief The host can receive the following events from the RPU.
-  *
-  */
+/**
+ * @brief The host can receive the following events from the RPU.
+ *
+ */
 
 enum nrf_wifi_umac_events {
 	NRF_WIFI_UMAC_EVENT_UNSPECIFIED = 256,
@@ -475,6 +475,8 @@ enum nrf_wifi_security_type {
 	NRF_WIFI_WPA3_HNP,
 	/** WPA3-H2E */
 	NRF_WIFI_WPA3_H2E,
+	/** WPA3-AUTO : HNP-H2E */
+	NRF_WIFI_WPA3_AUTO,
 	/** WPA3-FT-SAE */
 	NRF_WIFI_WPA3_FT_SAE,
 	/** 8021X SUITE-B SHA256 */
@@ -723,7 +725,9 @@ struct nrf_wifi_scan_params {
 	struct nrf_wifi_ssid scan_ssids[NRF_WIFI_SCAN_MAX_NUM_SSIDS];
 	/** used to send probe requests at non CCK rate in 2GHz band */
 	unsigned char no_cck;
-	/**  Bitmap of bands to be scanned (NRF_WIFI_OP_BAND_2GHZ, NRF_WIFI_OP_BAND_5GHZ, NRF_WIFI_OP_BAND_6GHZ) */
+	/** Bitmap of bands to be scanned (NRF_WIFI_OP_BAND_2GHZ, NRF_WIFI_OP_BAND_5GHZ,
+	 *  NRF_WIFI_OP_BAND_6GHZ)
+	 */
 	unsigned char bands;
 	/** Information element(s) data nrf_wifi_ie*/
 	struct nrf_wifi_ie ie;
@@ -737,16 +741,19 @@ struct nrf_wifi_scan_params {
 	unsigned short num_scan_channels;
 	/** If true, skip local and IANA Unicast reserved MACs **/
 	unsigned char skip_local_admin_macs;
-	/** Maximum time (in milliseconds) the module can operate without a BT grant 
-	  * before requiring Bluetooth access.
-	  * Minimum allowed value: 30 ms.
-	  * Use 0 or 0xFFFFFFFF for infinite duration (Wi-Fi can use the medium for the entire scan 
-	  * without allocating grant to BT).
-	  * This parameter applies only to scan operations in the 2.4 GHz band 
-	  **/
+	/**
+	 * Maximum time (in milliseconds) the module can operate without a BT grant
+	 * before requiring Bluetooth access.
+	 * Minimum allowed value: 30 ms.
+	 * Use 0 or 0xFFFFFFFF for infinite duration (Wi-Fi can use the medium for
+	 * the entire scan without allocating grant to BT).
+	 * This parameter applies only to scan operations in the 2.4 GHz band
+	 */
 	unsigned int bt_grant_tolerance_time;
-	/* Variable encodes the amount of time (in milliseconds) BT expects between scan operations. 
-	 * BT coexistence logic will attempt to allocate this amount of time while scanning between channels. 
+	/**
+	 * Variable encodes the amount of time (in milliseconds) BT expects between
+	 * scan operations. BT coexistence logic will attempt to allocate this
+	 * amount of time while scanning between channels.
 	 */
 	unsigned int bt_grant_time;
 	/** specific channels to be scanned */
@@ -881,7 +888,7 @@ struct nrf_wifi_connect_common_info {
 
 
 /**
- * @brief This structure provides information about bss color code. 
+ * @brief This structure provides information about bss color code.
  *
  */
 struct nrf_wifi_he_bss_color {
@@ -1229,8 +1236,8 @@ struct nrf_wifi_umac_event_scan_done {
 	unsigned int scan_type;
 	/** no of scan results */
 	unsigned int scan_results_cnt;
-	/** scan_db address. Each scan result is of type 
-	 * see &struct umac_display_results. 
+	/** scan_db address. Each scan result is of type
+	 *  see &struct umac_display_results.
 	 */
 	unsigned int scan_db_addr;
 } __NRF_WIFI_PKD;
@@ -1868,21 +1875,20 @@ struct nrf_wifi_sta_flags2 {
  *
  */
 struct nrf_wifi_event_mcs_info {
-        /** RX mask */
-        unsigned char nrf_wifi_rx_mask[NRF_WIFI_HT_MCS_MASK_LEN];
-        /** Highest supported RX rate */
-        unsigned short nrf_wifi_rx_highest;
-        /** TX parameters */
-        unsigned char nrf_wifi_tx_params;
-        /** reserved */
-        unsigned char nrf_wifi_reserved[NRF_WIFI_HT_MCS_RES_LEN];
+	/** RX mask */
+	unsigned char nrf_wifi_rx_mask[NRF_WIFI_HT_MCS_MASK_LEN];
+	/** Highest supported RX rate */
+	unsigned short nrf_wifi_rx_highest;
+	/** TX parameters */
+	unsigned char nrf_wifi_tx_params;
+	/** reserved */
+	unsigned char nrf_wifi_reserved[NRF_WIFI_HT_MCS_RES_LEN];
 } __NRF_WIFI_PKD;
 
 /**
- * @brief HT capabilties information.
+ * @brief HT capabilities information.
  *
  */
-
 struct nrf_wifi_sta_ht_cap {
 	/** HT capabilities, as in the HT information IE */
 	unsigned short nrf_wifi_cap;
@@ -1904,22 +1910,22 @@ struct nrf_wifi_sta_ht_cap {
  */
 
 struct nrf_wifi_event_vht_mcs_info {
-        /** RX MCS map 2 bits for each stream, total 8 streams */
-        unsigned short rx_mcs_map;
-        /** Indicates highest long GI VHT PPDU data rate
-         *  STA can receive. Rate expressed in units of 1 Mbps.
-         *  If this field is 0 this value should not be used to
-         *  consider the highest RX data rate supported.
-         */
-        unsigned short rx_highest;
-        /** TX MCS map 2 bits for each stream, total 8 streams */
-        unsigned short tx_mcs_map;
-        /** Indicates highest long GI VHT PPDU data rate
-         *  STA can transmit. Rate expressed in units of 1 Mbps.
-         *  If this field is 0 this value should not be used to
-         *  consider the highest TX data rate supported.
-         */
-        unsigned short tx_highest;
+	/** RX MCS map 2 bits for each stream, total 8 streams */
+	unsigned short rx_mcs_map;
+	/** Indicates highest long GI VHT PPDU data rate
+	 *  STA can receive. Rate expressed in units of 1 Mbps.
+	 *  If this field is 0 this value should not be used to
+	 *  consider the highest RX data rate supported.
+	 */
+	unsigned short rx_highest;
+	/** TX MCS map 2 bits for each stream, total 8 streams */
+	unsigned short tx_mcs_map;
+	/** Indicates highest long GI VHT PPDU data rate
+	 *  STA can transmit. Rate expressed in units of 1 Mbps.
+	 *  If this field is 0 this value should not be used to
+	 *  consider the highest TX data rate supported.
+	 */
+	unsigned short tx_highest;
 } __NRF_WIFI_PKD;
 
 /**
@@ -3288,7 +3294,7 @@ struct nrf_wifi_event_sta_vht_cap {
 struct nrf_wifi_event_sta_he_cap {
 	/** 1 indicates HE Supported */
 	signed char nrf_wifi_he_supported;
-	/** HE capabilties information */
+	/** HE capabilities information */
 	struct nrf_wifi_he_cap_elem he_cap_elem;
 } __NRF_WIFI_PKD;
 
@@ -4035,7 +4041,7 @@ struct nrf_wifi_cmd_sqi_threshold_config {
 	unsigned int rssi_hyst;
 } __NRF_WIFI_PKD;
 
-/** 
+/**
  * @brief Signal Quality Level compared to the configured threshold.
  * enum nrf_wifi_sqi_event_level - signal quality level compared to the
  *                             configured threshold.
@@ -4080,27 +4086,26 @@ struct nrf_wifi_umac_event_key_cmd_status {
 #define NRF_WIFI_CMD_MEAS_START_ASAP_VALID (1 << 1)
 #define NRF_WIFI_CMD_MEAS_START_REQUEST_LCI_VALID (1 << 2)
 #define NRF_WIFI_CMD_MEAS_START_REQUEST_CIVILOC_VALID (1 << 3)
-/**
-@brief This enum contains type of preamble to be used.
+/*
+ * @brief This enum contains type of preamble to be used.
  */
 enum nrf_wifi_preamble {
 	/* legacy (HR/DSSS, OFDM, ERP PHY) preamble */
 	NRF_WIFI_PREAMBLE_LEGACY,
-	/* HT preamble  */
+	/* HT preamble */
 	NRF_WIFI_PREAMBLE_HT,
-	/* VHT preamble  */
+	/* VHT preamble */
 	NRF_WIFI_PREAMBLE_VHT,
-	/* DMG preamble  */
+	/* DMG preamble */
 	NRF_WIFI_PREAMBLE_DMG,
-	/* HE preamble  */
+	/* HE preamble */
 	NRF_WIFI_PREAMBLE_HE,
 } __NRF_WIFI_PKD;
-/**
-@brief This structure contains the information peer measurement params to be used in
- peer measurement req structure.
+/*
+ * @brief This structure contains the information peer measurement params
+ * to be used in peer measurement req structure.
  */
-struct nrf_wifi_umac_meas_request
-{
+struct nrf_wifi_umac_meas_request {
 	/** Peer MAC Address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
 	/** band this channel belongs to */
@@ -4111,42 +4116,45 @@ struct nrf_wifi_umac_meas_request
 	signed int preamble;
 	/** Interval between the FTM bursts, typically 200ms */
 	unsigned char burst_period;
-	/** Number of ranging measurements are to be
-	  performed within a single burst transmission */
+	/** Number of ranging measurements to be performed within a single
+	 *  burst transmission.
+	 */
 	unsigned char ftms_per_burst;
-	/* FTM parameters, NRF_WIFI_CMD_MEAS_START_REQUESTED_VALID etc*/
-	unsigned char  ftm_params;
+	/* FTM parameters, NRF_WIFI_CMD_MEAS_START_REQUESTED_VALID etc */
+	unsigned char ftm_params;
 	/** One burst measurement time */
 	unsigned char burst_duration;
-	/* Number of FTM bursts exchange in total: After negotiation to meas complete*/
+	/* Number of FTM bursts exchange in total: After negotiation to meas
+	 * complete
+	 */
 	unsigned char num_bursts_exp;
 	/* Minimum delta FTM */
-    unsigned char min_delta_ftm;
+	unsigned char min_delta_ftm;
 	/* Tsf Timer value */
 	unsigned short tsf_timer_value;
-	/* Enable/disable  Tsf Timer */
-    unsigned char tsf_timer_disable;
+	/* Enable/disable Tsf Timer */
+	unsigned char tsf_timer_disable;
 } __NRF_WIFI_PKD;
 #define MAX_NUM_PEERS  4
-/**
-@brief This structure contains the information to be passed to the RPU
-to send peer measurement req using the NRF_WIFI_UMAC_CMD_MEAS_START command.
+/*
+ * @brief This structure contains the information to be passed to the RPU
+ * to send peer measurement req using the NRF_WIFI_UMAC_CMD_MEAS_START command.
  */
-struct nrf_wifi_umac_meas_req_info
-{
-	/* measurement to be done with number of peers  */
+struct nrf_wifi_umac_meas_req_info {
+	/* measurement to be done with number of peers */
 	unsigned int n_peers;
 	/* timeout (in milliseconds) for the whole operation,
-	if zero it means there's no timeout */
+	 * if zero it means there's no timeout
+	 */
 	unsigned int timeout;
 	/* Initiator MAC Address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
 	/* Peer requests */
 	struct nrf_wifi_umac_meas_request meas_req[MAX_NUM_PEERS];
 } __NRF_WIFI_PKD;
-/**
-@brief This structure defines a command used to start FTM measurements with peers
-using the NRF_WIFI_UMAC_CMD_MEAS_START command.
+/*
+ * @brief This structure defines a command used to start FTM measurements
+ * with peers using the NRF_WIFI_UMAC_CMD_MEAS_START command.
  */
 struct nrf_wifi_umac_cmd_meas_start {
 	/* Header @ref nrf_wifi_umac_hdr */
@@ -4171,7 +4179,7 @@ enum nrf_wifi_peer_meas_ftm_failure_reasons {
 	NRF_WIFI_FTM_FAILURE_WRONG_CHANNEL,
 	/** Peer not capable */
 	NRF_WIFI_FTM_FAILURE_PEER_NOT_CAPABLE,
-	/** Invalid timestamp */	
+	/** Invalid timestamp */
 	NRF_WIFI_FTM_FAILURE_INVALID_TIMESTAMP,
 	/** Peer busy */
 	NRF_WIFI_FTM_FAILURE_PEER_BUSY,
@@ -4187,10 +4195,9 @@ enum nrf_wifi_peer_meas_ftm_failure_reasons {
 #define NRF_WIFI_EVENT_RESULT_DISTANCE_VARIANCE_VALID (1 << 6)
 #define NRF_WIFI_EVENT_RESULT_DISTANCE_SPREAD_VALID (1 << 7)
 /**
-@brief This structure contains the peer measurement results information.
+ * @brief This structure contains the peer measurement results information.
  */
-struct nrf_wifi_umac_ftm_result
-{
+struct nrf_wifi_umac_ftm_result {
 	/* LCI data */
 	unsigned char lci[100];
 	/* civic location data */
@@ -4199,39 +4206,39 @@ struct nrf_wifi_umac_ftm_result
 	unsigned int lci_len;
 	/* Civic location data length */
 	unsigned int civicloc_len;
-	/** FTM measurement failure reason see 
-	 * &enum nrf_wifi_peer_meas_ftm_failure_reasons 
+	/** FTM measurement failure reason see
+	 * &enum nrf_wifi_peer_meas_ftm_failure_reasons
 	 */
 	signed int failure_reason;
 	/* number of FTM bursts exchange */
 	unsigned char num_bursts_exp;
-	/* One burst measurement time  */
+	/* One burst measurement time */
 	unsigned char burst_duration;
-    /** Number of ranging measurements are 
-	 * performed within a single burst transmission 
+	/** Number of ranging measurements are
+	 * performed within a single burst transmission
 	 */
-    unsigned char ftms_per_burst;
+	unsigned char ftms_per_burst;
 	/* average RSSI over FTM action frames reported */
 	signed int rssi_avg;
 	/* RSSI spread over FTM action frames reported */
-	signed int rssi_spread;    
-	/**average of RTTs measured  */
+	signed int rssi_spread;
+	/** average of RTTs measured */
 	signed long long rtt_avg;
-	/**RTTs variance measured  */
+	/** RTTs variance measured */
 	signed long long rtt_variance;
-	/**RTTs spread measured  */
-	signed long long rtt_spread;    
-	/**average of distance measured  */
+	/** RTTs spread measured */
+	signed long long rtt_spread;
+	/** average of distance measured */
 	signed long long dist_avg;
-	/**distance variance measured  */
+	/** distance variance measured */
 	signed long long dist_variance;
-	/**distance spread measured  */
-	signed long long dist_spread;    
+	/** distance spread measured */
+	signed long long dist_spread;
 } __NRF_WIFI_PKD;
 
-/**
+/*
  * enum nrf_wifi_meas_status - peer measurement status
-*/
+ */
 enum nrf_wifi_meas_status {
 	/** Measurement successful */
 	NRF_WIFI_FTM_STATUS_SUCCESS,
@@ -4245,9 +4252,9 @@ enum nrf_wifi_meas_status {
 	NRF_WIFI_FTM_STATUS_FTM_TIMEOUT,
 };
 
-/**
+/*
  * enum nrf_wifi_meas_type - peer measurement type
-*/
+ */
 enum nrf_wifi_meas_type {
 	/** Invalid measurement type */
 	NRF_WIFI_MEAS_TYPE_INVALID,
@@ -4255,12 +4262,12 @@ enum nrf_wifi_meas_type {
 	NRF_WIFI_MEAS_TYPE_FTM,
 };
 
-/**
-@brief This structure contains the information to be passed to the APP/Host
-to send peer measurement results using the NRF_WIFI_UMAC_EVENT_MEAS_RESULTS event.
+/*
+ * @brief This structure contains the information to be passed to the APP/Host
+ * to send peer measurement results using the NRF_WIFI_UMAC_EVENT_MEAS_RESULTS
+ * event.
  */
-struct nrf_wifi_umac_meas_result_info
-{
+struct nrf_wifi_umac_meas_result_info {
 	/** Measurement status see &enum nrf_wifi_meas_status */
 	signed int status;
 	/* MAC Address */
@@ -4272,9 +4279,9 @@ struct nrf_wifi_umac_meas_result_info
 } __NRF_WIFI_PKD;
 
 #define NRF_WIFI_MAX_PMSR_PEERS 8
-/**
-@brief This structure defines a event used to send FTM measurements results with peers
-using the NRF_WIFI_UMAC_EVENT_PEER_MEAS_RESULTS.
+/*
+ * @brief This structure defines a event used to send FTM measurements results
+ * with peers using the NRF_WIFI_UMAC_EVENT_PEER_MEAS_RESULTS.
  */
 struct nrf_wifi_umac_event_peer_meas_results {
 	/* Header @ref nrf_wifi_umac_hdr */
@@ -4288,9 +4295,9 @@ struct nrf_wifi_umac_event_peer_meas_results {
 } __NRF_WIFI_PKD;
 #define NRF_WIFI_EVENT_GET_LCI_VALID (1 << 0)
 #define NRF_WIFI_EVENT_GET_CIVIC_VALID (1 << 1)
-/**
-@brief This structure defines a event used to get the FTM LCI & Civic
-Location info using the NRF_WIFI_UMAC_EVENT_GET_LCI_CIVIC_INFO.
+/*
+ * @brief This structure defines a event used to get the FTM LCI & Civic
+ * Location info using the NRF_WIFI_UMAC_EVENT_GET_LCI_CIVIC_INFO.
  */
 struct nrf_wifi_umac_event_get_lci_civic_info {
 	/* Header @ref nrf_wifi_umac_hdr */
@@ -4298,11 +4305,11 @@ struct nrf_wifi_umac_event_get_lci_civic_info {
 	/* Get LCI & Civil location info ex: NRF_WIFI_EVENT_GET_LCI_VALID  */
 	unsigned char lci_civic_flag;
 } __NRF_WIFI_PKD;
-/**
-@brief This structure contains the LCI & Civic location information to send peer device.
+/*
+ * @brief This structure contains the LCI & Civic location information to send
+ * peer device.
  */
-struct nrf_wifi_umac_lci_civic_info
-{
+struct nrf_wifi_umac_lci_civic_info {
 	/* LCI data length */
 	unsigned int lci_len;
 	/* Civic location data length */
@@ -4311,10 +4318,10 @@ struct nrf_wifi_umac_lci_civic_info
 	unsigned char lci[100];
 	/* civic location data */
 	unsigned char civicloc[100];
-}__NRF_WIFI_PKD;
-/**
-@brief This structure defines a command used to send FTM LCI & Civic info to peers
-using the NRF_WIFI_UMAC_CMD_LCI_CIVIC_INFO command.
+} __NRF_WIFI_PKD;
+/*
+ * @brief This structure defines a command used to send FTM LCI & Civic info
+ * to peers using the NRF_WIFI_UMAC_CMD_LCI_CIVIC_INFO command.
  */
 struct nrf_wifi_umac_cmd_lci_civic_info {
 	/* Header @ref nrf_wifi_umac_hdr */
@@ -4323,10 +4330,9 @@ struct nrf_wifi_umac_cmd_lci_civic_info {
 	struct nrf_wifi_umac_lci_civic_info info;
 } __NRF_WIFI_PKD;
 
-/**
-@brief This structure contains the ftm parameters configuration information.
+/*
+ * @brief This structure contains the ftm parameters configuration information.
  */
-
 struct nrf_wifi_umac_ftm_responder_config_info {
 	/** FTM responder runtime mode, Enable = 1, Disable=0 */
 	unsigned char ftm_responder_enable;
@@ -4334,42 +4340,41 @@ struct nrf_wifi_umac_ftm_responder_config_info {
 	unsigned char power_save;
 	/* Channel information.@ref nrf_wifi_chan_definition, valid in non-connected mode */
 	struct nrf_wifi_chan_definition chan_def;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
-/**
-@brief This structure defines a command used to configure ftm responder.
+/*
+ * @brief This structure defines a command used to configure ftm responder.
  */
-
 struct nrf_wifi_cmd_ftm_responder_config {
 	/* Header @ref nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/* @ref nrf_wifi_umac_ftm_config_info */
 	struct nrf_wifi_umac_ftm_responder_config_info info;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 struct nrf_wifi_gas_query_config_info {
 	/** Mac address of AP */
 	unsigned char bssid[6];
-	 /** dialog_token of gas query frame */
+	/** dialog_token of gas query frame */
 	unsigned char dialog_token;
-        /** Channel in which req need to sent */
-        unsigned int channel_num;
+	/** Channel in which req need to sent */
+	unsigned int channel_num;
 	/** band in which channel belongs to */
 	signed int band;
-	 /** protocol ie */
+	/** protocol ie */
 	unsigned char protocol_ie[4];
 	/** length of frame */
 	unsigned char length;
 	/** query_ids info */
-        unsigned char query_ids[0];
-}__NRF_WIFI_PKD;
+	unsigned char query_ids[0];
+} __NRF_WIFI_PKD;
 
 struct nrf_wifi_cmd_gas_anqp_config {
 	/* Header @ref nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/* @ref nrf_wifi_gas_query_config_info*/
 	struct nrf_wifi_gas_query_config_info info;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 
 struct nrf_wifi_gas_anqp_info {
@@ -4385,7 +4390,7 @@ struct nrf_wifi_gas_anqp_info {
 	unsigned char query_resp_len;
 	/** query data in response */
 	unsigned char resp_data[0];
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 struct nrf_wifi_umac_event_get_gas_anqp_resp {
 	/* Header @ref nrf_wifi_umac_hdr */
@@ -4401,7 +4406,7 @@ struct sub_elememts {
 	unsigned char req_token;
 	/** Subject used in request */
 	unsigned char req_sub;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 #define LCI_REQ    1
 #define CIVIC_REQ  2
@@ -4421,15 +4426,15 @@ struct nrf_wifi_neighbor_req_config_info {
 	unsigned char civic_interval_units;
 	/** civic interval value */
 	unsigned short civic_interval;
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 
 struct nrf_wifi_cmd_neighbor_req_config {
-        /* Header @ref nrf_wifi_umac_hdr */
-        struct nrf_wifi_umac_hdr umac_hdr;
-        /* @ref nrf_wifi_neighbor_req_config_info*/
-        struct nrf_wifi_neighbor_req_config_info info;
-}__NRF_WIFI_PKD;
+	/* Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/* @ref nrf_wifi_neighbor_req_config_info*/
+	struct nrf_wifi_neighbor_req_config_info info;
+} __NRF_WIFI_PKD;
 
 struct nrf_wifi_neighbor_report_info {
 	/** dialog_token of neighbor resp frame */
@@ -4439,13 +4444,13 @@ struct nrf_wifi_neighbor_report_info {
 	/** Neighbor response data */
 	unsigned char resp_data[0];
 
-}__NRF_WIFI_PKD;
+} __NRF_WIFI_PKD;
 
 struct nrf_wifi_event_neighbor_report_result {
-        /* Header @ref nrf_wifi_umac_hdr */
-        struct nrf_wifi_umac_hdr umac_hdr;
-        /* @ref nrf_wifi_neighbor_report_info */
-        struct nrf_wifi_neighbor_report_info info;
-}__NRF_WIFI_PKD;
+	/* Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/* @ref nrf_wifi_neighbor_report_info */
+	struct nrf_wifi_neighbor_report_info info;
+} __NRF_WIFI_PKD;
 
 #endif /* __NRF71_WIFI_CTRL_H */

@@ -1,13 +1,13 @@
 /*
  *
- *Copyright (c) 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2024 Nordic Semiconductor ASA
  *
- *SPDX-License-Identifier: BSD-3-Clause
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /**
  * @file
- * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @addtogroup nrf71_wifi_fw_if Wi-Fi driver and firmware interface
  * @{
  * @brief Debug interface between host and RPU
  */
@@ -15,10 +15,7 @@
 #ifndef __NRF71_WIFI_DEBUG_STATS_H__
 #define __NRF71_WIFI_DEBUG_STATS_H__
 
-
 #include "pack_def.h"
-
-
 
 /**
  *  @brief This enum defines various types of statistics.
@@ -109,8 +106,8 @@ struct umac_rx_dbg_params {
 	unsigned int max_coalesce_pkts;
 	/** Packets received with null skb pointer from LMAC */
 	unsigned int null_skb_pointer_from_lmac;
-    unsigned int null_skb_pointer_from_host;
-    unsigned int null_skb_pointer_resubmitted;
+	unsigned int null_skb_pointer_from_host;
+	unsigned int null_skb_pointer_resubmitted;
 	unsigned int unexpected_mgmt_pkt;
 	/** Number of packets flushed from reorder buffer before going to sleep */
 	unsigned int reorder_flush_pkt_count;
@@ -118,11 +115,11 @@ struct umac_rx_dbg_params {
 	unsigned int unsecured_data_error;
 	/** Packets received with null skb pointer from LMAC in coalesce event */
 	unsigned int pkts_in_null_skb_pointer_event;
-   	unsigned int rx_buffs_resubmit_cnt;
-    unsigned int rx_packet_amsdu_cnt;
-    unsigned int rx_packet_mpdu_cnt;
-    unsigned int rx_err_secondary_pkt;
-    unsigned int rx_err_invalid_pkt_info_type;
+	unsigned int rx_buffs_resubmit_cnt;
+	unsigned int rx_packet_amsdu_cnt;
+	unsigned int rx_packet_mpdu_cnt;
+	unsigned int rx_err_secondary_pkt;
+	unsigned int rx_err_invalid_pkt_info_type;
 } __NRF_WIFI_PKD;
 
 /**
@@ -243,9 +240,9 @@ struct umac_cmd_evnt_dbg_params {
 	unsigned int umac_scan_complete;
 	/** Number of scan requests received from host when previous scan is in progress */
 	unsigned int umac_scan_busy;
-    unsigned int umac_scan_abort;
-    unsigned int umac_scan_abort_complete;
-    unsigned int umac_scan_abort_fail;
+	unsigned int umac_scan_abort;
+	unsigned int umac_scan_abort_complete;
+	unsigned int umac_scan_abort_fail;
 	/** Number of authentication requests received from host */
 	unsigned int cmd_auth;
 	/** Number of association requests received from host */
@@ -338,33 +335,33 @@ struct nrf_wifi_interface_stats {
 } __NRF_WIFI_PKD;
 
 struct umac_sleep_stats {
-    unsigned int sleep_req;
-    unsigned int sleep_req_succ;
-    unsigned int sleep_req_fail;
+	unsigned int sleep_req;
+	unsigned int sleep_req_succ;
+	unsigned int sleep_req_fail;
 	unsigned int sleep_status_to_lmac;
-    unsigned int umac_init;
-    unsigned int umac_init_warmboot;
-    unsigned int reorder_not_empty;
-    unsigned int outstanding_cmds;
-    unsigned int umac_init_coldboot;
-    unsigned int not_station;
-    unsigned int authenticating;
-    unsigned int associating;
-    unsigned int cmd_processing;
-    unsigned int tx_done_pending;
-    unsigned int tx_cmds_currently_in_use;
-    unsigned int events_pending_list_gg;
-    unsigned int HPQM_CMD_NOT_EMPTY;
-    unsigned int HPQM_EVENTQ_NOT_EMPTY;
-    unsigned int pending_addba_resp;
-    unsigned int get_channel;
-    unsigned int rx_pending;
-    unsigned int pre_init;
-    unsigned int rx_mbox_pending;
-    unsigned int tx_mbox_pending;
-    unsigned int pending_cmd_resubmit;
-    unsigned int umac_goto_sleep;
-    unsigned int max_twt_awake_cnt;
+	unsigned int umac_init;
+	unsigned int umac_init_warmboot;
+	unsigned int reorder_not_empty;
+	unsigned int outstanding_cmds;
+	unsigned int umac_init_coldboot;
+	unsigned int not_station;
+	unsigned int authenticating;
+	unsigned int associating;
+	unsigned int cmd_processing;
+	unsigned int tx_done_pending;
+	unsigned int tx_cmds_currently_in_use;
+	unsigned int events_pending_list_gg;
+	unsigned int HPQM_CMD_NOT_EMPTY;
+	unsigned int HPQM_EVENTQ_NOT_EMPTY;
+	unsigned int pending_addba_resp;
+	unsigned int get_channel;
+	unsigned int rx_pending;
+	unsigned int pre_init;
+	unsigned int rx_mbox_pending;
+	unsigned int tx_mbox_pending;
+	unsigned int pending_cmd_resubmit;
+	unsigned int umac_goto_sleep;
+	unsigned int max_twt_awake_cnt;
 };
 /**
  * @brief This structure specifies the UMAC SoftAP debug parameters used for debugging purpose.
@@ -415,28 +412,44 @@ struct nrf_wifi_misc_stats {
 	unsigned int twt_teardown_info_sent_to_lmac;
 	/** Number of FTM requests sent to LMAC */
 	unsigned int ftm_req_info_sent_to_lmac;
-	/** Number of FTM responses recieved from LMAC */
+	/** Number of FTM responses received from LMAC */
 	unsigned int ftm_resp_rcvd;
+	/** Number of gas requests sent */
+	unsigned int gas_req_sent;
+	/** Number of gas responses received */
+	unsigned int gas_resp_received;
+	/** Number of gas comeback requests sent */
+	unsigned int gas_comeback_req_sent;
+	/** Number of neighbor requests sent */
+	unsigned int neighbor_req_sent;
+	/** Number of neighbor responses received */
+	unsigned int neighbor_resp_received;
+	/** Number of IPC tx initialisation failures*/
+	unsigned int ipc_tx_init_fail;
+	/** Number of IPC rx initialisation failures*/
+	unsigned int ipc_rx_init_fail;
+	/** Number of IPC bind failures*/
+	unsigned int ipc_bind_fail;
 
 } __NRF_WIFI_PKD;
 
 struct umac_raw_stats {
-	    unsigned int raw_tx_from_host;
-	    unsigned int raw_tx_to_lmac;
-	    unsigned int raw_tx_dones_from_lmac;
-	    unsigned int raw_tx_dones_to_host;
-	    unsigned int total_rx_pkts_from_lmac;
-	    unsigned int total_raw_rx_pkts_from_lmac;
-	    unsigned int valid_raw_rx_pkts_from_lmac;
-	    unsigned int raw_rx_pkts_to_host;
+		unsigned int raw_tx_from_host;
+		unsigned int raw_tx_to_lmac;
+		unsigned int raw_tx_dones_from_lmac;
+		unsigned int raw_tx_dones_to_host;
+		unsigned int total_rx_pkts_from_lmac;
+		unsigned int total_raw_rx_pkts_from_lmac;
+		unsigned int valid_raw_rx_pkts_from_lmac;
+		unsigned int raw_rx_pkts_to_host;
 } __NRF_WIFI_PKD;
 
 struct umac_ap_stats {
-    unsigned int ap_bss_info_changed;
-    unsigned int enable_beacon;
-    unsigned int del_bcn_timer;
-    unsigned int bcn_timer_expiry;
-    unsigned int bcn_enabled_flag;
+	unsigned int ap_bss_info_changed;
+	unsigned int enable_beacon;
+	unsigned int del_bcn_timer;
+	unsigned int bcn_timer_expiry;
+	unsigned int bcn_enabled_flag;
 } __NRF_WIFI_PKD;
 
 
@@ -457,8 +470,7 @@ struct rpu_umac_stats {
 
 } __NRF_WIFI_PKD;
 
-enum UMAC_STATS_CATEGORY
-{
+enum UMAC_STATS_CATEGORY {
 	UMAC_CMD_EVENT_DEBUG_PARAMS = (1 << 0),
 	UMAC_TX_DEBUG_PARAMS = (1 << 1),
 	UMAC_RX_DEBUG_PARAMS = (1 << 2),
@@ -471,11 +483,9 @@ enum UMAC_STATS_CATEGORY
 	UMAC_MISC_DEBUG_PARAMS = (1 << 10),
 };
 
-struct umac_debug_stats 
-{
+struct umac_debug_stats {
 	unsigned int stats_category;
-	union 
-	{
+	union {
 		/** Transmit debug statistics @ref umac_tx_dbg_params */
 		struct umac_tx_dbg_params tx_dbg_params;
 		/** Receive debug statistics @ref umac_rx_dbg_params */
@@ -494,79 +504,76 @@ struct umac_debug_stats
 
 #define SLEEP_DEBUG_BUFFER 32
 
-struct lmac_he_stats
-{
+struct lmac_he_stats {
 	unsigned int trigger_pkt_cnt;
 	unsigned int trigger_aid_matched_cnt;
-	unsigned int basic ;
-	unsigned int bfrp ;
-	unsigned int mu_bar ;
-	unsigned int mu_rts ;
-	unsigned int bsrp ;
-	unsigned int gcr_mu_bar ;
-	unsigned int bqrp ;
-	unsigned int nfrp ;
-	unsigned int aid_matched_basic ;
-	unsigned int aid_matched_bfrp ;
-	unsigned int aid_matched_mu_bar ;
-	unsigned int aid_matched_mu_rts ;
-	unsigned int aid_matched_bsrp ;
-	unsigned int aid_matched_gcr_mu_bar ;
-	unsigned int aid_matched_bqrp ;
-	unsigned int aid_matched_nfrp ;
-    unsigned int edca_switch_cnt;
-    unsigned int mu_edca_triggerd_cnt;
-}__NRF_WIFI_PKD ;
+	unsigned int basic;
+	unsigned int bfrp;
+	unsigned int mu_bar;
+	unsigned int mu_rts;
+	unsigned int bsrp;
+	unsigned int gcr_mu_bar;
+	unsigned int bqrp;
+	unsigned int nfrp;
+	unsigned int aid_matched_basic;
+	unsigned int aid_matched_bfrp;
+	unsigned int aid_matched_mu_bar;
+	unsigned int aid_matched_mu_rts;
+	unsigned int aid_matched_bsrp;
+	unsigned int aid_matched_gcr_mu_bar;
+	unsigned int aid_matched_bqrp;
+	unsigned int aid_matched_nfrp;
+	unsigned int edca_switch_cnt;
+	unsigned int mu_edca_triggered_cnt;
+} __NRF_WIFI_PKD;
 
-struct phy_if_stats 
-{
+struct phy_if_stats {
 	unsigned int phy_init_fail_cnt;
 	unsigned int phy_ch_switch_fail_cnt;
 	unsigned int phy_config_fail_cnt;
 	unsigned int phy_config_power_cnt;
 	unsigned int rf_test_cmd;
 	unsigned int cmd_pwr_mon;
-    unsigned int cmd_pwr_mon_all;
-    unsigned int vbat_mon;
-    unsigned int temp;
-    unsigned int lfc_err;	
+	unsigned int cmd_pwr_mon_all;
+	unsigned int vbat_mon;
+	unsigned int temp;
+	unsigned int lfc_err;
 };
 
-struct lmac_common_stats
-{
-    unsigned int general_purpose_timer_isr_cnt;
+struct lmac_common_stats {
+	unsigned int general_purpose_timer_isr_cnt;
 	unsigned int lmac_task_inprogress;
-    unsigned int current_cmd;
-    unsigned int cmds_going_to_wait_list;
-    unsigned int unexpected_internal_cmd_during_umac_wait;
-    unsigned int lmac_rx_isr_inprogress;
-    unsigned int hw_timer_isr_inprogress;
-    unsigned int deagg_isr_inprogress;
-    unsigned int tx_isr_inprogress;
+	unsigned int current_cmd;
+	unsigned int cmds_going_to_wait_list;
+	unsigned int unexpected_internal_cmd_during_umac_wait;
+	unsigned int lmac_rx_isr_inprogress;
+	unsigned int hw_timer_isr_inprogress;
+	unsigned int deagg_isr_inprogress;
+	unsigned int tx_isr_inprogress;
 	unsigned int channel_switch_inprogress;
 	unsigned int rpu_lockup_event;
 	unsigned int rpu_lockup_cnt;
-	unsigned int rpu_lockup_recovery_done;	 	 
-    unsigned int reset_cmd_cnt;
-    unsigned int reset_complete_event_cnt;
-    unsigned int commad_ent_default;
-    unsigned int lmac_enable_cnt;
-    unsigned int lmac_disable_cnt;
-    unsigned int lmac_error_cnt ;
-    unsigned int unable_gen_event;
-    unsigned int mem_pool_full_cnt;
-    unsigned int ch_prog_cmd_cnt ;
-    unsigned int channel_prog_done;
-    unsigned int connect_lost_status;
-    unsigned int tx_core_pool_full_cnt;
+	unsigned int rpu_lockup_recovery_done;
+	unsigned int reset_cmd_cnt;
+	unsigned int reset_complete_event_cnt;
+	unsigned int commad_ent_default;
+	unsigned int lmac_enable_cnt;
+	unsigned int lmac_disable_cnt;
+	unsigned int lmac_error_cnt;
+	unsigned int unable_gen_event;
+	unsigned int mem_pool_full_cnt;
+	unsigned int ch_prog_cmd_cnt;
+	unsigned int channel_prog_done;
+	unsigned int connect_lost_status;
+	unsigned int tx_core_pool_full_cnt;
 	unsigned int patch_debug_cnt;
 	unsigned int fw_error_event_cnt;
-    unsigned int tx_deinit_cmd_cnt;
-    unsigned int tx_deinit_done_cnt;
-    unsigned int internal_buf_pool_null;    
-    unsigned int rx_buffer_cmd;
-    unsigned int wait_for_tx_done_loop;
-    unsigned int cca_busy;     
+	unsigned int tx_deinit_cmd_cnt;
+	unsigned int tx_deinit_done_cnt;
+	unsigned int internal_buf_pool_null;
+	unsigned int rx_buffer_cmd;
+	unsigned int wait_for_tx_done_loop;
+	unsigned int cca_busy;
 	unsigned int temp_measure_window_expired;
 	unsigned int temp_inter_pool_full;
 	unsigned int lmac_internal_cmd;
@@ -574,215 +581,209 @@ struct lmac_common_stats
 	unsigned int fresh_calib_cnt;
 	unsigned int coex_event_cnt;
 	unsigned int coex_cmd_cnt;
-    unsigned int coex_isr_cnt;   
-    unsigned int block_wlan_traffic_cnt;
-    unsigned int un_block_wlan_traffic_cnt;
+	unsigned int coex_isr_cnt;
+	unsigned int block_wlan_traffic_cnt;
+	unsigned int un_block_wlan_traffic_cnt;
 	unsigned int p2p_no_a_cnt;
-    unsigned int scan_timer_task_pending;
-    unsigned int scan_timer_task_complete;
+	unsigned int scan_timer_task_pending;
+	unsigned int scan_timer_task_complete;
 	unsigned int coex_request_fail_cnt;
-};	
+};
 
-struct lmac_scan_stats 
-{
+struct lmac_scan_stats {
 	unsigned int scan_req;
-    unsigned int scan_complete;
-    unsigned int scan_abort_req;
-    unsigned int scan_abort_complete;
-	unsigned int scan_probe_fail; 
+	unsigned int scan_complete;
+	unsigned int scan_abort_req;
+	unsigned int scan_abort_complete;
+	unsigned int scan_probe_fail;
 	unsigned int scan_function_inprogress;
 	unsigned int scan_event;
 	unsigned int current_scan_channel;
 	unsigned int current_scan_band;
 };
 
-struct lmac_tx_stats 
-{
-     unsigned int tx_pkt_cnt;
-     unsigned int tx_pkt_done_cnt;
-     unsigned int tx_pkt_success;
-     unsigned int tx_pkt_underrun;
-     unsigned int unknown_status;
-     unsigned int agg_tx_timeout;
-     unsigned int agg_phy_cca_abort;
-     unsigned int bt_abort_at_start;
-     unsigned int bt_abort_at_end;
-     unsigned int scan_pkt_cnt;
-     unsigned int internal_pkt_cnt;
-     unsigned int internal_pkt_done_cnt;
-     unsigned int dcp_submit_cnt;
-     unsigned int edca_isr_cnt;
-     unsigned int tx_dma_complete;
-     unsigned int ack_resp_cnt;
-     unsigned int tx_timeout;
-     unsigned int tx_drop_cnt;
-     unsigned int blocked_tx_pkt_cnt;
-     unsigned int dbg_tx_invalid_tx_vect;
-     unsigned int dbg_tx_abort_cnt;
-     unsigned int ignore_ack_frame;
-     unsigned int edca_tx_abort_cnt;
-     unsigned int tx_block_ack_fail_cnt;
-     unsigned int data_frame_cnt;
-     unsigned int qos_data_frame_cnt;
-     unsigned int ctrl_frame_cnt;
-     unsigned int mgmt_frame_cnt;
-     unsigned int beacon_frame_cnt;
-     unsigned int auth_req_frame_cnt;
-     unsigned int deauth_frame_cnt;
-     unsigned int assoc_req_frame_cnt;
-     unsigned int assoc_response_frame_cnt;
-     unsigned int re_assoc_req_frame_cnt;
-     unsigned int re_assoc_response_frame_cnt;
-     unsigned int de_assoc_req_cnt;
-     unsigned int probe_req_cnt;
-     unsigned int probe_response_cnt;
-     unsigned int ht_ctrl_field;
-     unsigned int keep_alive_frame_success;
-     unsigned int keep_alive_frame_fail;
+struct lmac_tx_stats {
+	unsigned int tx_pkt_cnt;
+	unsigned int tx_pkt_done_cnt;
+	unsigned int tx_pkt_success;
+	unsigned int tx_pkt_underrun;
+	unsigned int unknown_status;
+	unsigned int agg_tx_timeout;
+	unsigned int agg_phy_cca_abort;
+	unsigned int bt_abort_at_start;
+	unsigned int bt_abort_at_end;
+	unsigned int scan_pkt_cnt;
+	unsigned int internal_pkt_cnt;
+	unsigned int internal_pkt_done_cnt;
+	unsigned int dcp_submit_cnt;
+	unsigned int edca_isr_cnt;
+	unsigned int tx_dma_complete;
+	unsigned int ack_resp_cnt;
+	unsigned int tx_timeout;
+	unsigned int tx_drop_cnt;
+	unsigned int blocked_tx_pkt_cnt;
+	unsigned int dbg_tx_invalid_tx_vect;
+	unsigned int dbg_tx_abort_cnt;
+	unsigned int ignore_ack_frame;
+	unsigned int edca_tx_abort_cnt;
+	unsigned int tx_block_ack_fail_cnt;
+	unsigned int data_frame_cnt;
+	unsigned int qos_data_frame_cnt;
+	unsigned int ctrl_frame_cnt;
+	unsigned int mgmt_frame_cnt;
+	unsigned int beacon_frame_cnt;
+	unsigned int auth_req_frame_cnt;
+	unsigned int deauth_frame_cnt;
+	unsigned int assoc_req_frame_cnt;
+	unsigned int assoc_response_frame_cnt;
+	unsigned int re_assoc_req_frame_cnt;
+	unsigned int re_assoc_response_frame_cnt;
+	unsigned int de_assoc_req_cnt;
+	unsigned int probe_req_cnt;
+	unsigned int probe_response_cnt;
+	unsigned int ht_ctrl_field;
+	unsigned int keep_alive_frame_success;
+	unsigned int keep_alive_frame_fail;
 };
 
 
-struct lmac_rx_stats
-{
-    unsigned int deagg_isr;
-    unsigned int lmac_rxisr_cnt;
-    unsigned int lmac_rx_isr_dropped_cnt;
-    unsigned int rx_ctrl_mem_full;
-    unsigned int rx_total_mpdu_cnt;
-    unsigned int rx_mpdu_crc_fail_cnt;
-    unsigned int rx_mpdu_crc_success_cnt;
-    unsigned int rx_ofdm_crc_success_cnt;
-    unsigned int rx_ofdm_crc_fail_cnt;
-    unsigned int rx_dsss_crc_success_cnt;
-    unsigned int rx_dsss_crc_fail_cnt;
-    unsigned int dbg_mic_error;
-    unsigned int dbg_icv_error;
-    unsigned int ndpa_frame_cnt;
-    unsigned int rts_cts;
-    unsigned int rx_ack_cnt;
-    unsigned int rx_ba_cnt;
-    unsigned int rx_ack_process_cnt;
-    unsigned int rx_ba_process_cnt;
-    unsigned int rx_mcst_filter_fail;
-    unsigned int rx_mcst_filter_success;
-    unsigned int mcst_bcst_frame_for_dut;
-    unsigned int rx_ucast_frame;
-    unsigned int frame_not_for_dut;
-    unsigned int ucast_frame_for_dut;
-    unsigned int bcst_frame;
-    unsigned int packets_to_host;
-    unsigned int packets_dropped_in_lmac;
-    unsigned int deagg_inptr_desc_empty;
-    unsigned int deagg_circular_buffer_full;
-    unsigned int rx_decrypt_cnt;
-    unsigned int process_decrypt_fail;
-    unsigned int prepa_rx_event_fail;
-    unsigned int rx_bcst_frame;
-    unsigned int rx_mcst_frame;
-    unsigned int rx_unicast_frame;
-    unsigned int unicast_addr_match;
-    unsigned int unicast_addr_mismatch;
-    unsigned int bcst_mcst_ours;
-    unsigned int bcst_mcst_non_network_frames;
-    unsigned int rx_crypto_start_cnt;
-    unsigned int rx_crypto_done_cnt;
-    unsigned int rx_dma_start_cnt;
-    unsigned int rx_dma_done_cnt;
-    unsigned int rx_hdr_dma_job_cnt;
-    unsigned int rx_deadlock_cnt;
-    unsigned int rx_event_buf_full;
-    unsigned int rx_extram_buf_full;
-    unsigned int key_not_found;
-    unsigned int rx_key_found;
-    unsigned int rx_packet;
-    unsigned int amsdu_packet_cnt;
-    unsigned int amsdu_process_fail_cnt;
-    unsigned int rx_frag_packet_cnt;
-    unsigned int rx_defrag_fail_cnt;
-    unsigned int unexpected_cnt;
-    unsigned int unexpected_cnt1;
-    unsigned int rx_job_success_cnt;
-    unsigned int channel_switch_announcement_cnt;
+struct lmac_rx_stats {
+	unsigned int deagg_isr;
+	unsigned int lmac_rxisr_cnt;
+	unsigned int lmac_rx_isr_dropped_cnt;
+	unsigned int rx_ctrl_mem_full;
+	unsigned int rx_total_mpdu_cnt;
+	unsigned int rx_mpdu_crc_fail_cnt;
+	unsigned int rx_mpdu_crc_success_cnt;
+	unsigned int rx_ofdm_crc_success_cnt;
+	unsigned int rx_ofdm_crc_fail_cnt;
+	unsigned int rx_dsss_crc_success_cnt;
+	unsigned int rx_dsss_crc_fail_cnt;
+	unsigned int dbg_mic_error;
+	unsigned int dbg_icv_error;
+	unsigned int ndpa_frame_cnt;
+	unsigned int rts_cts;
+	unsigned int rx_ack_cnt;
+	unsigned int rx_ba_cnt;
+	unsigned int rx_ack_process_cnt;
+	unsigned int rx_ba_process_cnt;
+	unsigned int rx_mcst_filter_fail;
+	unsigned int rx_mcst_filter_success;
+	unsigned int mcst_bcst_frame_for_dut;
+	unsigned int rx_ucast_frame;
+	unsigned int frame_not_for_dut;
+	unsigned int ucast_frame_for_dut;
+	unsigned int bcst_frame;
+	unsigned int packets_to_host;
+	unsigned int packets_dropped_in_lmac;
+	unsigned int deagg_inptr_desc_empty;
+	unsigned int deagg_circular_buffer_full;
+	unsigned int rx_decrypt_cnt;
+	unsigned int process_decrypt_fail;
+	unsigned int prepa_rx_event_fail;
+	unsigned int rx_bcst_frame;
+	unsigned int rx_mcst_frame;
+	unsigned int rx_unicast_frame;
+	unsigned int unicast_addr_match;
+	unsigned int unicast_addr_mismatch;
+	unsigned int bcst_mcst_ours;
+	unsigned int bcst_mcst_non_network_frames;
+	unsigned int rx_crypto_start_cnt;
+	unsigned int rx_crypto_done_cnt;
+	unsigned int rx_dma_start_cnt;
+	unsigned int rx_dma_done_cnt;
+	unsigned int rx_hdr_dma_job_cnt;
+	unsigned int rx_deadlock_cnt;
+	unsigned int rx_event_buf_full;
+	unsigned int rx_extram_buf_full;
+	unsigned int key_not_found;
+	unsigned int rx_key_found;
+	unsigned int rx_packet;
+	unsigned int amsdu_packet_cnt;
+	unsigned int amsdu_process_fail_cnt;
+	unsigned int rx_frag_packet_cnt;
+	unsigned int rx_defrag_fail_cnt;
+	unsigned int unexpected_cnt;
+	unsigned int unexpected_cnt1;
+	unsigned int rx_job_success_cnt;
+	unsigned int channel_switch_announcement_cnt;
 };
 
-struct ftm_debug_stats
-{
-    unsigned int timer_start_cnt;
-    unsigned int timer_cnt;
-    unsigned int ftm_initiator_cmd_cnt;
-    unsigned int ftm_initiator_cmd_dropped;
-    unsigned int ftm_closing_done_event;
-    unsigned int beacon_captured;
-    unsigned int beacon_not_captured;
-    unsigned int ftm_event;
-    unsigned int ftm_event_failed;
-    unsigned int ftm_initiator_cpy_params_cnt;
-    unsigned int ftm_null_frm_send_success;
-    unsigned int ftm_null_frm_send_fail;
-    unsigned int chnl_switch_done;
-    unsigned int asap_case;
-    unsigned int ftm_failed_no_response;
-    unsigned int initiate_ftm_burst_cnt;
-    unsigned int ftmi_trigger_cmd;
-    unsigned int ftm_fr_send_cmd;
-    unsigned int send_ftm_frame_cnt;
-    unsigned int send_ftm_frame_done_cnt;
-    unsigned int trigger_ftm_burst_cnt;
-    unsigned int send_initial_ftm_request_frame_fail_cnt;
-    unsigned int send_initial_ftm_request_frame_done_cnt;
-    unsigned int off_channel_switch_cnt;
-    unsigned int return_to_working_channel_cnt;
-    unsigned int done_evt_failed_cnt;
-    unsigned int done_evt_ap_busy_cnt;
-    unsigned int mem_error_cnt;
-    unsigned int ftm_request_received_cnt;
-    unsigned int ftm_request_initial_received_cnt;
-    unsigned int ftm_params_decode_error_cnt;
-    unsigned int ftm_request_incapable_cnt;
-    unsigned int ftm_request_failed_cnt;
-    unsigned int ftm_non_asap_timer_set_cnt;
-    unsigned int ftm_response_frame_initial_cnt;
-    unsigned int ftm_response_frame_decode_error_cnt;
-    unsigned int ftm_response_frame_followup_cnt;
-    unsigned int ftm_response_frame_duplicate_cnt;
-    unsigned int ftm_dialog_closed_cnt;
-    unsigned int scan_timer_in_ftmi;
-    unsigned int scan_timer_in_ftmr;
-    unsigned int scan_timer_in_scan;
-    unsigned int cordic_overflow;
-    unsigned int car2pol_overflow;
-    unsigned int pol2car_overflow;
-    unsigned int denom_zero;
-    unsigned int responder_enable;
-    unsigned int ftm_inv_req_cnt;
-    unsigned int lci_buffer_overflow;
-    unsigned int civic_buffer_overflow;
+struct ftm_debug_stats {
+	unsigned int timer_start_cnt;
+	unsigned int timer_cnt;
+	unsigned int ftm_initiator_cmd_cnt;
+	unsigned int ftm_initiator_cmd_dropped;
+	unsigned int ftm_closing_done_event;
+	unsigned int beacon_captured;
+	unsigned int beacon_not_captured;
+	unsigned int ftm_event;
+	unsigned int ftm_event_failed;
+    unsigned int ftm_timer_expired;
+	unsigned int ftm_initiator_cpy_params_cnt;
+	unsigned int ftm_null_frm_send_success;
+	unsigned int ftm_null_frm_send_fail;
+	unsigned int chnl_switch_done;
+	unsigned int asap_case;
+	unsigned int ftm_failed_no_response;
+	unsigned int initiate_ftm_burst_cnt;
+	unsigned int ftmi_trigger_cmd;
+	unsigned int ftm_fr_send_cmd;
+	unsigned int send_ftm_frame_cnt;
+	unsigned int send_ftm_frame_done_cnt;
+	unsigned int trigger_ftm_burst_cnt;
+	unsigned int send_initial_ftm_request_frame_fail_cnt;
+	unsigned int send_initial_ftm_request_frame_done_cnt;
+	unsigned int off_channel_switch_cnt;
+	unsigned int return_to_working_channel_cnt;
+	unsigned int done_evt_failed_cnt;
+	unsigned int done_evt_ap_busy_cnt;
+	unsigned int mem_error_cnt;
+	unsigned int ftm_request_received_cnt;
+	unsigned int ftm_request_initial_received_cnt;
+	unsigned int ftm_params_decode_error_cnt;
+	unsigned int ftm_request_incapable_cnt;
+	unsigned int ftm_request_failed_cnt;
+	unsigned int ftm_non_asap_timer_set_cnt;
+	unsigned int ftm_response_frame_initial_cnt;
+	unsigned int ftm_response_frame_decode_error_cnt;
+	unsigned int ftm_response_frame_followup_cnt;
+	unsigned int ftm_response_frame_duplicate_cnt;
+	unsigned int ftm_dialog_closed_cnt;
+	unsigned int scan_timer_in_ftmi;
+	unsigned int scan_timer_in_ftmr;
+	unsigned int scan_timer_in_scan;
+	unsigned int cordic_overflow;
+	unsigned int car2pol_overflow;
+	unsigned int pol2car_overflow;
+	unsigned int denom_zero;
+	unsigned int responder_enable;
+	unsigned int ftm_inv_req_cnt;
+	unsigned int lci_buffer_overflow;
+	unsigned int civic_buffer_overflow;
 };
 
-struct  lp_rx_stats 
-{
-    unsigned int scan_rf_mode_lp_rx;
-    unsigned int scan_rf_mode_hptrx;
-    unsigned int rf_mode_lp_rx;
-    unsigned int rf_mode_hptrx;
-    unsigned int bet_isr;
-    unsigned int bet_bcn_abort;
-    unsigned int bet_bcn_rf_switch;
-    unsigned int rf_mode_switch;
+struct lp_rx_stats {
+	unsigned int scan_rf_mode_lp_rx;
+	unsigned int scan_rf_mode_hptrx;
+	unsigned int rf_mode_lp_rx;
+	unsigned int rf_mode_hptrx;
+	unsigned int bet_isr;
+	unsigned int bet_bcn_abort;
+	unsigned int bet_bcn_rf_switch;
+	unsigned int rf_mode_switch;
 };
 
-struct lmac_sqi_stats
-{
-    unsigned int sqi_threshold_cmds_cnt;
-    unsigned int sqi_config_cmds_cnt;
-    unsigned int sqi_events_cnt;
+struct lmac_sqi_stats {
+	unsigned int sqi_threshold_cmds_cnt;
+	unsigned int sqi_config_cmds_cnt;
+	unsigned int sqi_events_cnt;
 };
 
-// Interval index mapping
 enum {
-    INTERVAL_15SEC = 0,
-    INTERVAL_MAX,
-    INTERVAL_COUNT
+	INTERVAL_15SEC = 0,
+	INTERVAL_MAX,
+	INTERVAL_COUNT
 };
 
 /**
@@ -797,82 +798,82 @@ enum {
  * - time_stamps[i]:
  *   Timestamp marking the start of each interval tracking window.
  */
-struct lmac_sleep_timing_stats{
-    unsigned int index;
-    unsigned int bcn_delay_after_wakeup;
-    unsigned int last_one_minute_bcn_rcv_cnt;
-    unsigned int last_one_second_bcn_rcv_cnt;
-    unsigned int current_one_minute_bcn_rcv_cnt;
-    unsigned int current_one_second_bcn_rcv_cnt;
-    unsigned int wake_duration[SLEEP_DEBUG_BUFFER];
-    unsigned int sleep_duration[SLEEP_DEBUG_BUFFER];
-    unsigned int temp_time_stamp_minute;
-    unsigned int temp_time_stamp_second;
-    double time_stamps[INTERVAL_COUNT]; // 0->15s, 2->MAX
-    // 0: wake, 1: sleep
-    double last_wake_sleep_stats[INTERVAL_COUNT][2];
-    double cur_wake_sleep_stats[INTERVAL_COUNT][2];
+struct lmac_sleep_timing_stats {
+	unsigned int index;
+	unsigned int bcn_delay_after_wakeup;
+	unsigned int last_one_minute_bcn_rcv_cnt;
+	unsigned int last_one_second_bcn_rcv_cnt;
+	unsigned int current_one_minute_bcn_rcv_cnt;
+	unsigned int current_one_second_bcn_rcv_cnt;
+	unsigned int wake_duration[SLEEP_DEBUG_BUFFER];
+	unsigned int sleep_duration[SLEEP_DEBUG_BUFFER];
+	unsigned int temp_time_stamp_minute;
+	unsigned int temp_time_stamp_second;
+	/* 0->15s, 2->MAX */
+	double time_stamps[INTERVAL_COUNT];
+	/* 0: wake, 1: sleep */
+	double last_wake_sleep_stats[INTERVAL_COUNT][2];
+	double cur_wake_sleep_stats[INTERVAL_COUNT][2];
 };
 
 
 
 /* Sleep Debug Params */
-struct lmac_sleep_stats
-{
-    unsigned int sleep_command_in_lmac_task;
-    unsigned int sleep_disable_cnt;
-    unsigned int wifi_powersave_disabled;
-    unsigned int total_boot_cnt;
-    unsigned int warm_boot_timer_isr;
-    unsigned int try_to_enter_sleep;
-    unsigned int pre_assoc_timer_cnt;
-    unsigned int wait_for_bcn_expired;
-    unsigned int rx_bcn_cnt;
-    unsigned int wait_for_bcn_cnt;
-    unsigned int wait_for_unicast_cnt;
-    unsigned int wait_for_broadcast_cnt;
-    unsigned int cancel_warm_boot_timer;
-    unsigned int more_buffered_unicast;
-    unsigned int buffered_unicast;
-    unsigned int more_buffered_broadcast;
-    unsigned int buffered_broadcast;
-    unsigned int sleep_attempt_fail_power_save_off;
-    unsigned int sleep_attempt_fail_vif_non_sta;
-    unsigned int sleep_attempt_fail_cmds_present;
-    unsigned int scan_in_progress;
-    unsigned int tx_pkt_pending;
-    unsigned int host_cmds;
-    unsigned int host_events;
-    unsigned int rx_in_progress;
-    unsigned int tx_in_progress;
-    unsigned int sleep_request_failed;
-    unsigned int attempt_sleep_req_cnt;
-    unsigned int warm_boot_cnt;
-    unsigned int wakeup_rpu_enabled;
-    unsigned int wakeup_now;
-    unsigned int sleep_failed;
-    unsigned int cmd_ps_from_host;
-    unsigned int power_save_indication_to_ap_success;
-    unsigned int power_save_indication_to_ap_fail;
-    unsigned int post_assoc_int_command;
-    unsigned int post_assoc_check_lmac_activity_fail;
-    unsigned int too_less_to_sleep;
-    unsigned int sleep_time_in_us;
-    unsigned int sleep_request_to_umac;
-    unsigned int sleep_status_from_umac;
-    unsigned int sleep_request_to_umac_failed;
-    unsigned int hal_event_cnt;
-    unsigned int rx_event_pending;
-    unsigned int seq_nu;
-    unsigned int grtc_isrcnt;
-    unsigned int bb_isrcnt;
-    unsigned int lp_bringup_time;
-    unsigned int hp_bringup_time;
-    unsigned int lp2hp_bringup_time;
+struct lmac_sleep_stats {
+	unsigned int sleep_command_in_lmac_task;
+	unsigned int sleep_disable_cnt;
+	unsigned int wifi_powersave_disabled;
+	unsigned int total_boot_cnt;
+	unsigned int warm_boot_timer_isr;
+	unsigned int try_to_enter_sleep;
+	unsigned int pre_assoc_timer_cnt;
+	unsigned int wait_for_bcn_expired;
+	unsigned int rx_bcn_cnt;
+	unsigned int wait_for_bcn_cnt;
+	unsigned int wait_for_unicast_cnt;
+	unsigned int wait_for_broadcast_cnt;
+	unsigned int cancel_warm_boot_timer;
+	unsigned int more_buffered_unicast;
+	unsigned int buffered_unicast;
+	unsigned int more_buffered_broadcast;
+	unsigned int buffered_broadcast;
+	unsigned int sleep_attempt_fail_power_save_off;
+	unsigned int sleep_attempt_fail_ftm_responder_active;
+	unsigned int sleep_attempt_fail_vif_non_sta;
+	unsigned int sleep_attempt_fail_cmds_present;
+	unsigned int scan_in_progress;
+	unsigned int tx_pkt_pending;
+	unsigned int host_cmds;
+	unsigned int host_events;
+	unsigned int rx_in_progress;
+	unsigned int tx_in_progress;
+	unsigned int sleep_request_failed;
+	unsigned int attempt_sleep_req_cnt;
+	unsigned int warm_boot_cnt;
+	unsigned int wakeup_rpu_enabled;
+	unsigned int wakeup_now;
+	unsigned int sleep_failed;
+	unsigned int cmd_ps_from_host;
+	unsigned int power_save_indication_to_ap_success;
+	unsigned int power_save_indication_to_ap_fail;
+	unsigned int post_assoc_int_command;
+	unsigned int post_assoc_check_lmac_activity_fail;
+	unsigned int too_less_to_sleep;
+	unsigned int sleep_time_in_us;
+	unsigned int sleep_request_to_umac;
+	unsigned int sleep_status_from_umac;
+	unsigned int sleep_request_to_umac_failed;
+	unsigned int hal_event_cnt;
+	unsigned int rx_event_pending;
+	unsigned int seq_nu;
+	unsigned int grtc_isrcnt;
+	unsigned int bb_isrcnt;
+	unsigned int lp_bringup_time;
+	unsigned int hp_bringup_time;
+	unsigned int lp2hp_bringup_time;
 };
 
-struct lmac_twt_stats
-{
+struct lmac_twt_stats {
 	unsigned int twt_isr;
 	unsigned int twt_isr_start;
 	unsigned int twt_isr_end;
@@ -914,8 +915,7 @@ struct lmac_offload_raw_tx_stats {
 	unsigned int warm_boot_cnt;
 };
 
-enum LMAC_STATS_CATEGORY
-{
+enum LMAC_STATS_CATEGORY {
 	LMAC_STATS_INIT_DEBUG_PARAMS = (1 << 0),
 	PHY_IF_DEBUG_STATS = (1 << 1),
 	TX_DEBUG_PARAMS = (1 << 2),
@@ -937,33 +937,29 @@ enum LMAC_STATS_CATEGORY
 	MAC_STATS_END = (1 << 18),
 };
 
-enum PHY_STATS_CATEGORY
-{
-    PHY_RX_DEBUG_STATS  = (1 << 0),
-    PHY_RSSI_HIST_STATS = (1 << 1),
-    PHY_STATS_END       = (1 << 2)
+enum PHY_STATS_CATEGORY {
+	PHY_RX_DEBUG_STATS = (1 << 0),
+	PHY_RSSI_HIST_STATS = (1 << 1),
+	PHY_STATS_END       = (1 << 2)
 };
 
 
 
-struct lmac_debug_stats 
-{
-
+struct lmac_debug_stats {
 	unsigned int stats_category;
-	union 
-	{
-		struct   lmac_common_stats lmac_common_stats;
-		struct   phy_if_stats phy_if_stats;
-		struct   lmac_tx_stats tx_stats;
-		struct   lmac_rx_stats rx_stats;
-		struct   lmac_scan_stats  scan_stats;
-		struct   lmac_sleep_stats  sleep_stats;
-    	struct   lmac_sleep_timing_stats   sleep_timing_stats;
-		struct   lmac_twt_stats  twt_stats;
-		struct   lmac_he_stats he_stats;
-    	struct   ftm_debug_stats ftm_debug_stats;
-    	struct   lp_rx_stats lp_stats;
-    	struct   lmac_sqi_stats sqi_stats; 
+	union {
+		struct lmac_common_stats lmac_common_stats;
+		struct phy_if_stats phy_if_stats;
+		struct lmac_tx_stats tx_stats;
+		struct lmac_rx_stats rx_stats;
+		struct lmac_scan_stats scan_stats;
+		struct lmac_sleep_stats sleep_stats;
+		struct lmac_sleep_timing_stats sleep_timing_stats;
+		struct lmac_twt_stats twt_stats;
+		struct lmac_he_stats he_stats;
+		struct ftm_debug_stats ftm_debug_stats;
+		struct lp_rx_stats lp_stats;
+		struct lmac_sqi_stats sqi_stats;
 		unsigned int edca_config[96];
 		unsigned int crypto_config[96];
 		unsigned int agg_config[96];
@@ -1068,7 +1064,7 @@ struct rpu_lmac_stats {
 
 /*! LMAC error event status */
 enum LMAC_ERROR_ID {
-    /*! LMAC internal memory full */
+	/*! LMAC internal memory full */
 	LMAC_FW_PEER_DATA_BASE_FULL = 0,
 };
 
@@ -1114,7 +1110,7 @@ struct pool_data_to_host {
 
 /**
  * struct lmac_prod_stats - used to get the production mode stats
- **/
+ */
 
 /* Events */
 #define MAX_RSSI_SAMPLES 10
@@ -1179,21 +1175,15 @@ struct nrf_wifi_rf_get_rx_debug_stats {
 	unsigned int spatialReuseCnt;
 } __NRF_WIFI_PKD;
 
-struct phy_debug_stats 
-{
-
+struct phy_debug_stats {
 	unsigned int stats_category;
-	union 
-	{
-		unsigned int phy_stats[128];
+	union {
+		unsigned int phy_stats[64];
 	};
-
 } __NRF_WIFI_PKD;
 
-struct nrf_wifi_rpu_debug_stats 
-{
-	union 
-	{
+struct nrf_wifi_rpu_debug_stats {
+	union {
 		struct lmac_debug_stats lmac_stats;
 		struct umac_debug_stats umac_stats;
 		struct phy_debug_stats phy_stats;
@@ -1201,6 +1191,6 @@ struct nrf_wifi_rpu_debug_stats
 } __NRF_WIFI_PKD;
 
 /**
- * 
+ *
  */
 #endif /* __NRF71_WIFI_STATS_H__ */
