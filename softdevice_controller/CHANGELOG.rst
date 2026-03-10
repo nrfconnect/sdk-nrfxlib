@@ -47,6 +47,7 @@ Bug fixes
 
 * Fixed an issue where the controller did not generate an ``LE CS Procedure Enable Complete`` HCI event when disabling the last CS procedure.
   This would only happen if the maximum number of CS procedures (``Max_Procedure_Count``) was set to a value greater than ``1``. (DRGN-27705)
+* Fixed a rare issue where establishing a CIS would make the CIS peripheral unresponsive on other established CISes in the same CIG. (DRGN-23021)
 
 nRF Connect SDK v3.2.0
 **********************

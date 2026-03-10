@@ -72,6 +72,7 @@ The following table summarizes the priorities.
    |                             | * Isochronous Broadcaster                                                                         |
    |                             | * Synchronized Receiver receiving the first BN subevents of relevant BISes in a BIG event         |
    |                             | * Synchronized Receiver receiving packets in a BIG control subevent                               |
+   |                             | * Channel Sounding (CS) subevents subsequent to the first CS subevent of a CS event.              |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
