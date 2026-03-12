@@ -27,10 +27,10 @@
  * \note This file must be included by psa_crypto_driver_wrappers.c. The
  * definition of the context types used in the implementation is provided
  * through \ref cc3xx_crypto_primitives_private.h which is included, when
- * \ref PSA_CRYPTO_DRIVER_CC3XX is defined, in turn by psa/crypto.h, then
+ * `PSA_CRYPTO_DRIVER_CC3XX` is defined, in turn by psa/crypto.h, then
  * psa/crypto_struct.h and finally by psa/crypto_driver_context_primitives.h
  * and by psa/crypto_driver_context_composites.h from the mbedTLS module.
- * When \ref PSA_CRYPTO_DRIVER_CC3XX is not defined, the implementation
+ * When `PSA_CRYPTO_DRIVER_CC3XX` is not defined, the implementation
  * must explicitly include \ref cc3xx_crypto_primitives_private.h while the
  * interface can include \ref cc3xx_crypto_primitives.h only
  *
