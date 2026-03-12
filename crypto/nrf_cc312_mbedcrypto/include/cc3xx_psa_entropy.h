@@ -30,7 +30,7 @@ extern "C" {
  * \param[out] output        Collected entropy from the TRNG source
  * \param[in]  output_size   Size of the output buffer
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_get_entropy(uint32_t flags, size_t *estimate_bits,

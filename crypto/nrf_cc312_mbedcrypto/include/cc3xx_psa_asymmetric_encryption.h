@@ -37,7 +37,7 @@ extern "C" {
  * \param[in]  output_size     Size in bytes of the output buffer
  * \param[out] output_length   Size in bytes of the encrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_asymmetric_encrypt(const psa_key_attributes_t *attributes,
@@ -65,7 +65,7 @@ psa_status_t cc3xx_asymmetric_encrypt(const psa_key_attributes_t *attributes,
  * \param[in]  output_size     Size in bytes of the output buffer
  * \param[out] output_length   Size in bytes of the decrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_asymmetric_decrypt(const psa_key_attributes_t *attributes,

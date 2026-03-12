@@ -30,8 +30,8 @@ extern "C" {
 *          that the hashing input resides in RAM or the implementation supports
 *          DMA from Flash, NULL and a size of 0 can be provided.
 *
-* @note    The address provided for @ref ram_buffer must be word-aligned.
-*          The @ref ram_buffer_size should be a multiple of the word size
+* @note    The address provided for @p ram_buffer must be word-aligned.
+*          The @p ram_buffer_size should be a multiple of the word size
 *          between 16 and 35520 bytes.
 *
 * @param[in,out]  ram_buffer        Pointer to a RAM buffer used to hash from flash.
