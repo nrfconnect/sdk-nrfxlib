@@ -322,16 +322,74 @@ enum sdc_hci_opcode_le
 /** @brief LE subevent Code values. */
 enum sdc_hci_subevent_le
 {
+    /** @brief See @ref sdc_hci_subevent_le_conn_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CONN_COMPLETE = 0x01,
     /** @brief See @ref sdc_hci_subevent_le_adv_report_t. */
     SDC_HCI_SUBEVENT_LE_ADV_REPORT = 0x02,
+    /** @brief See @ref sdc_hci_subevent_le_conn_update_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CONN_UPDATE_COMPLETE = 0x03,
+    /** @brief See @ref sdc_hci_subevent_le_read_remote_features_page_0_complete_t. */
+    SDC_HCI_SUBEVENT_LE_READ_REMOTE_FEATURES_PAGE_0_COMPLETE = 0x04,
+    /** @brief See @ref sdc_hci_subevent_le_long_term_key_request_t. */
+    SDC_HCI_SUBEVENT_LE_LONG_TERM_KEY_REQUEST = 0x05,
+    /** @brief See @ref sdc_hci_subevent_le_data_length_change_t. */
+    SDC_HCI_SUBEVENT_LE_DATA_LENGTH_CHANGE = 0x07,
+    /** @brief See @ref sdc_hci_subevent_le_enhanced_conn_complete_t. */
+    SDC_HCI_SUBEVENT_LE_ENHANCED_CONN_COMPLETE = 0x0a,
     /** @brief See @ref sdc_hci_subevent_le_directed_adv_report_t. */
     SDC_HCI_SUBEVENT_LE_DIRECTED_ADV_REPORT = 0x0b,
+    /** @brief See @ref sdc_hci_subevent_le_phy_update_complete_t. */
+    SDC_HCI_SUBEVENT_LE_PHY_UPDATE_COMPLETE = 0x0c,
     /** @brief See @ref sdc_hci_subevent_le_ext_adv_report_t. */
     SDC_HCI_SUBEVENT_LE_EXT_ADV_REPORT = 0x0d,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_established_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SYNC_ESTABLISHED = 0x0e,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_REPORT = 0x0f,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_lost_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SYNC_LOST = 0x10,
+    /** @brief See @ref sdc_hci_subevent_le_adv_set_terminated_t. */
+    SDC_HCI_SUBEVENT_LE_ADV_SET_TERMINATED = 0x12,
+    /** @brief See @ref sdc_hci_subevent_le_scan_request_received_t. */
+    SDC_HCI_SUBEVENT_LE_SCAN_REQUEST_RECEIVED = 0x13,
+    /** @brief See @ref sdc_hci_subevent_le_channel_selection_algorithm_t. */
+    SDC_HCI_SUBEVENT_LE_CHANNEL_SELECTION_ALGORITHM = 0x14,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_transfer_received_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SYNC_TRANSFER_RECEIVED = 0x18,
     /** @brief See @ref sdc_hci_subevent_le_cis_established_t. */
     SDC_HCI_SUBEVENT_LE_CIS_ESTABLISHED = 0x19,
+    /** @brief See @ref sdc_hci_subevent_le_cis_request_t. */
+    SDC_HCI_SUBEVENT_LE_CIS_REQUEST = 0x1a,
+    /** @brief See @ref sdc_hci_subevent_le_create_big_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CREATE_BIG_COMPLETE = 0x1b,
+    /** @brief See @ref sdc_hci_subevent_le_terminate_big_complete_t. */
+    SDC_HCI_SUBEVENT_LE_TERMINATE_BIG_COMPLETE = 0x1c,
+    /** @brief See @ref sdc_hci_subevent_le_big_sync_established_t. */
+    SDC_HCI_SUBEVENT_LE_BIG_SYNC_ESTABLISHED = 0x1d,
+    /** @brief See @ref sdc_hci_subevent_le_big_sync_lost_t. */
+    SDC_HCI_SUBEVENT_LE_BIG_SYNC_LOST = 0x1e,
+    /** @brief See @ref sdc_hci_subevent_le_request_peer_sca_complete_t. */
+    SDC_HCI_SUBEVENT_LE_REQUEST_PEER_SCA_COMPLETE = 0x1f,
+    /** @brief See @ref sdc_hci_subevent_le_path_loss_threshold_t. */
+    SDC_HCI_SUBEVENT_LE_PATH_LOSS_THRESHOLD = 0x20,
+    /** @brief See @ref sdc_hci_subevent_le_transmit_power_reporting_t. */
+    SDC_HCI_SUBEVENT_LE_TRANSMIT_POWER_REPORTING = 0x21,
+    /** @brief See @ref sdc_hci_subevent_le_big_info_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_BIG_INFO_ADV_REPORT = 0x22,
     /** @brief See @ref sdc_hci_subevent_le_subrate_change_t. */
     SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_established_v2_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SYNC_ESTABLISHED_V2 = 0x24,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_report_v2_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_REPORT_V2 = 0x25,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_transfer_received_v2_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SYNC_TRANSFER_RECEIVED_V2 = 0x26,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_subevent_data_request_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_SUBEVENT_DATA_REQUEST = 0x27,
+    /** @brief See @ref sdc_hci_subevent_le_periodic_adv_response_report_t. */
+    SDC_HCI_SUBEVENT_LE_PERIODIC_ADV_RESPONSE_REPORT = 0x28,
+    /** @brief See @ref sdc_hci_subevent_le_enhanced_conn_complete_v2_t. */
+    SDC_HCI_SUBEVENT_LE_ENHANCED_CONN_COMPLETE_V2 = 0x29,
     /** @brief See @ref sdc_hci_subevent_le_cis_established_v2_t. */
     SDC_HCI_SUBEVENT_LE_CIS_ESTABLISHED_V2 = 0x2a,
     /** @brief See @ref sdc_hci_subevent_le_read_all_remote_features_complete_t. */
@@ -392,6 +450,18 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bis;
 } sdc_hci_le_big_create_sync_array_params_t;
+
+/** @brief LE BIG Sync Established array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_le_big_sync_established_array_params_t;
+
+/** @brief LE Create BIG Complete array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_le_create_big_complete_array_params_t;
 
 /** @brief LE Create CIS array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -612,6 +682,18 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rfu : 5;
 } sdc_hci_le_periodic_adv_create_sync_options_params_t;
 
+/** @brief LE Periodic Advertising Response Report array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    int8_t tx_power;
+    int8_t rssi;
+    uint8_t cte_type;
+    uint8_t response_slot;
+    uint8_t data_status;
+    uint8_t data_length;
+    uint8_t data[];
+} sdc_hci_le_periodic_adv_response_report_array_params_t;
+
 /** @brief LE Read Minimum Supported Connection Interval groups. */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -734,6 +816,40 @@ typedef struct __PACKED __ALIGN(1)
  * @{
  */
 
+/** @brief LE Connection Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.1
+ *
+ * This event indicates to both of the Hosts forming the connection that a new connection
+ * has been created. Upon the creation of the connection a Connection_Handle shall
+ * be assigned by the Controller, and passed to the Host in this event. If the
+ * connection creation fails this event shall be provided to the Host that had issued the
+ * HCI_LE_Create_Connection command.
+ *
+ * This event indicates to the Host which issued an HCI_LE_Create_Connection command
+ * and received an HCI_Command_Status event if the connection creation failed or was
+ * successful.
+ *
+ * The Central_Clock_Accuracy parameter is only valid for a Peripheral. On a Central, this
+ * parameter shall be set to 0x00.
+ *
+ * Note: This event is not sent if the HCI_LE_Enhanced_Connection_Complete event (see
+ * Section 7.7.65.10) is unmasked.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t role;
+    uint8_t peer_address_type;
+    uint8_t peer_address[6];
+    uint16_t conn_interval;
+    uint16_t peripheral_latency;
+    uint16_t supervision_timeout;
+    uint8_t central_clock_accuracy;
+} sdc_hci_subevent_le_conn_complete_t;
+
 /** @brief LE Advertising Report.
  *
  * The description below is extracted from Core_v6.2,
@@ -755,6 +871,148 @@ typedef struct __PACKED __ALIGN(1)
     sdc_hci_le_adv_report_array_params_t reports[]; */
     uint8_t reports[];
 } sdc_hci_subevent_le_adv_report_t;
+
+/** @brief LE Connection Update Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.3
+ *
+ * This event is used to indicate that the Connection Update procedure has completed.
+ *
+ * This event shall be issued if the HCI_LE_Connection_Update command was issued
+ * by the Host or if the connection parameters are updated following a request from the
+ * peer device. If no parameters are updated following a request from the peer device or
+ * the parameters were changed using the Connection Subrate Update procedure or the
+ * Connection Rate Update procedure, then this event shall not be issued.
+ *
+ * If the Status parameter is zero and the connection interval has changed, then the Link
+ * Layer must have set the subrating factor to 1 and the continuation number to 0 (see [Vol
+ * 6] Part B, Section 5.1.1).
+ *
+ * Note: This event can be issued autonomously by the Central’s Controller if it decides to
+ * change the connection interval based on the range of allowable connection intervals for
+ * that connection.
+ *
+ * Note: The parameter values returned in this event may be different from the parameter
+ * values provided by the Host through the HCI_LE_Connection_Update command
+ * (Section 7.8.18) or the HCI_LE_Remote_Connection_Parameter_Request_Reply
+ * command (Section 7.8.31).
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint16_t conn_interval;
+    uint16_t peripheral_latency;
+    uint16_t supervision_timeout;
+} sdc_hci_subevent_le_conn_update_complete_t;
+
+/** @brief LE Read Remote Features Page 0 Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.4
+ *
+ * This event is used to indicate the completion of the process of the Controller obtaining
+ * page 0 of the features used on the connection and the features supported by the remote
+ * Bluetooth device specified by the Connection_Handle parameter.
+ *
+ * If page 0 is requested more than once while a connection exists between the two
+ * devices, then the second and subsequent requests may report a cached copy of page 0
+ * rather than fetching the feature mask again.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint64_t le_features;
+} sdc_hci_subevent_le_read_remote_features_page_0_complete_t;
+
+/** @brief LE Long Term Key Request.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.5
+ *
+ * This event indicates that the peer device, in the Central role, is attempting to encrypt or
+ * re-encrypt the link and is requesting the Long Term Key from the Host. (See [Vol 6] Part
+ * B, Section 5.1.3).
+ *
+ * This event shall only be generated when the local device’s role is Peripheral.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint64_t random_number;
+    uint16_t encrypted_diversifier;
+} sdc_hci_subevent_le_long_term_key_request_t;
+
+/** @brief LE Data Length Change.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.7
+ *
+ * This event notifies the Host of a change to either the maximum LL Data PDU Payload
+ * length or the maximum transmission time of packets containing LL Data PDUs in
+ * either direction. The values reported are the limits imposed on the connection by
+ * the Link Layer following the change (see [Vol 6] Part B, Section 4.5.10); the actual
+ * maximum used on the connection may be less for other reasons. This event shall not be
+ * generated if the values have not changed.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint16_t max_tx_octets;
+    uint16_t max_tx_time;
+    uint16_t max_rx_octets;
+    uint16_t max_rx_time;
+} sdc_hci_subevent_le_data_length_change_t;
+
+/** @brief LE Enhanced Connection Complete [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.10
+ *
+ * This event indicates to both of the Hosts forming the connection that a new connection
+ * has been created. Upon the creation of the connection a Connection_Handle shall
+ * be assigned by the Controller, and passed to the Host in this event. If the
+ * connection creation fails, this event shall be provided to the Host that had issued the
+ * HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection command.
+ * If this event is unmasked and the HCI_LE_Connection_Complete event is unmasked,
+ * only the HCI_LE_Enhanced_Connection_Complete event is sent when a new
+ * connection has been created.
+ *
+ * This event indicates to the Host that issued an HCI_LE_Create_Connection
+ * or HCI_LE_Extended_Create_Connection command and received an
+ * HCI_Command_Status event if the connection creation failed or was successful.
+ *
+ * The Peer_Address, Peer_Resolvable_Private_Address, and
+ * Local_Resolvable_Private_Address shall always reflect the most recent packet sent and
+ * received on air.
+ *
+ * The Central_Clock_Accuracy parameter is only valid for a Peripheral. On a Central, this
+ * parameter shall be set to 0x00.
+ *
+ * If the connection is established from periodic advertising with responses and Role is
+ * 0x00, then the Advertising_Handle parameter shall be set according to the periodic
+ * advertising train the connection was established from. If the connection is established
+ * from periodic advertising with responses and Role is 0x01, then the Sync_Handle
+ * parameter shall be set according to the periodic advertising train the connection was
+ * established from. In all other circumstances, Advertising_Handle and Sync_Handle shall
+ * be set to No Advertising_Handle and No Sync_Handle and shall be ignored by the Host.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t role;
+    uint8_t peer_address_type;
+    uint8_t peer_address[6];
+    uint8_t local_resolvable_private_address[6];
+    uint8_t peer_resolvable_private_address[6];
+    uint16_t conn_interval;
+    uint16_t peripheral_latency;
+    uint16_t supervision_timeout;
+    uint8_t central_clock_accuracy;
+} sdc_hci_subevent_le_enhanced_conn_complete_t;
 
 /** @brief LE Directed Advertising Report.
  *
@@ -779,6 +1037,28 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t num_reports;
     sdc_hci_le_directed_adv_report_array_params_t reports[];
 } sdc_hci_subevent_le_directed_adv_report_t;
+
+/** @brief LE PHY Update Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.12
+ *
+ * This event is used to indicate that the Controller has changed the transmitter PHY or
+ * receiver PHY in use.
+ *
+ * If the Controller changes the transmitter PHY, the receiver PHY, or both PHYs, this
+ * event shall be issued.
+ *
+ * If an HCI_LE_Set_PHY command was sent and the Controller determines that neither
+ * PHY will change as a result, it issues this event immediately.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t tx_phy;
+    uint8_t rx_phy;
+} sdc_hci_subevent_le_phy_update_complete_t;
 
 /** @brief LE Extended Advertising Report.
  *
@@ -874,6 +1154,244 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t reports[];
 } sdc_hci_subevent_le_ext_adv_report_t;
 
+/** @brief LE Periodic Advertising Sync Established [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.14
+ *
+ * This event indicates that the Controller has received the first periodic advertising packet
+ * from an advertiser after the HCI_LE_Periodic_Advertising_Create_Sync command has
+ * been sent to the Controller.
+ *
+ * The Sync_Handle parameter identifies the periodic advertising train in subsequent
+ * commands and events and shall be assigned by the Controller.
+ *
+ * The Advertising_SID parameter is set to the value of the Advertising SID subfield in the
+ * ADI field of the advertising PDU referring to the periodic advertising train.
+ *
+ * The Advertiser_Address_Type and Advertiser_Address parameters specify the address
+ * of the periodic advertiser.
+ * The Advertiser_PHY parameter specifies the PHY used for the periodic advertising.
+ *
+ * The Periodic_Advertising_Interval parameter specifies the interval between the periodic
+ * advertising events.
+ *
+ * The Advertiser_Clock_Accuracy parameter specifies the accuracy of the periodic
+ * advertiser's clock.
+ *
+ * If the periodic advertising is with responses, then the Num_Subevents,
+ * Subevent_Interval, Response_Slot_Delay, and Response_Slot_Spacing specify the
+ * parameters for these subevents. If the periodic advertising is without responses, then
+ * these parameters shall be set to 0x00.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t sync_handle;
+    uint8_t adv_sid;
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_phy;
+    uint16_t periodic_adv_interval;
+    uint8_t adv_clock_accuracy;
+} sdc_hci_subevent_le_periodic_adv_sync_established_t;
+
+/** @brief LE Periodic Advertising Report [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.15
+ *
+ * This event indicates that the Controller has received a periodic advertisement or has
+ * failed to receive an AUX_SYNC_SUBEVENT_IND PDU.
+ *
+ * The Sync_Handle parameter identifies the periodic advertising train that the report
+ * relates to.
+ *
+ * The RSSI parameter contains the RSSI value, ignoring any Constant Tone Extension.
+ * If the Controller supports the Connectionless CTE Receiver feature, RSSI shall not
+ * be set to 0x7F. When multiple advertising packets are used to complete a periodic
+ * advertising report (e.g., a packet containing an AUX_SYNC_IND PDU combined
+ * with one containing an AUX_CHAIN PDU), the RSSI parameter shall be set based
+ * on the last packet received and the TX_Power parameter shall be set based on
+ * the AUX_SYNC_IND PDU if that contains a TxPower field and shall be set to
+ * 0x7F otherwise. However, the second or subsequent events for the same periodic
+ * advertisement may instead have a TX_Power value of 0x7F.
+ *
+ * The Controller may split the data from a single periodic advertisement (whether one
+ * PDU or several) into several reports. If so, each report except the last shall have a
+ * Data_Status of "incomplete, more data to come", while the last shall have the value
+ * "complete". No further reports shall be sent for a given periodic advertisement after one
+ * with a Data_Status other than "incomplete, more data to come".
+ *
+ * A Data_Status of "incomplete, data truncated" indicates that the Controller attempted to
+ * receive an AUX_CHAIN_IND PDU but was not successful or received it but was unable
+ * to store the data.
+ *
+ * The CTE_Type parameter indicates the type of Constant Tone Extension in the periodic
+ * advertising packets.
+ *
+ * The Periodic_Event_Counter parameter indicates the periodic advertising event counter
+ * (paEventCounter) of the event that the periodic advertising packet was received in.
+ *
+ * The Subevent parameter indicates the Periodic Advertising with Responses subevent
+ * that the periodic advertising packet was received in. If the Periodic Advertising does not
+ * have subevents, then Subevent shall be set to 0xFF.
+ *
+ * If the Controller receives an AUX_CHAIN_IND PDU with no AdvData, it should send
+ * the report (or the last report if it has split the data) immediately without waiting for any
+ * subsequent AUX_CHAIN_IND PDUs.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t sync_handle;
+    int8_t tx_power;
+    int8_t rssi;
+    uint8_t cte_type;
+    uint8_t data_status;
+    uint8_t data_length;
+    uint8_t data[];
+} sdc_hci_subevent_le_periodic_adv_report_t;
+
+/** @brief LE Periodic Advertising Sync Lost.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.16
+ *
+ * This event indicates that the Controller has not received a Periodic Advertising packet
+ * from the train identified by Sync_Handle within the timeout period.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t sync_handle;
+} sdc_hci_subevent_le_periodic_adv_sync_lost_t;
+
+/** @brief LE Advertising Set Terminated.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.18
+ *
+ * This event indicates that the Controller has terminated advertising in the advertising
+ * sets specified by the Advertising_Handle parameter.
+ *
+ * This event shall be generated every time connectable advertising in an advertising
+ * set results in a connection being created or because the advertising duration or the
+ * maximum number of extended advertising events has been reached. It is generated for
+ * both legacy and extended advertising. It shall not be generated if the Host disables the
+ * advertising set.
+ *
+ * This event shall only be generated if advertising was enabled using the HCI_LE_Set_-
+ * Extended_Advertising_Enable command.
+ *
+ * The Connection_Handle parameter is only valid when advertising ends because a
+ * connection was created.
+ *
+ * If the Max_Extended_Advertising_Events parameter in the HCI_LE_Set_Extended_-
+ * Advertising_Enable command was non-zero, the Num_Completed_Extended_-
+ * Advertising_Events parameter shall be set to the number of completed extended
+ * advertising events the Controller had transmitted when either the duration elapsed or
+ * the maximum number of extended advertising events was reached; otherwise it shall be
+ * set to zero.
+ *
+ * If advertising has terminated as a result of the advertising duration elapsing, the Status
+ * parameter shall be set to the error code Advertising Timeout (0x3C).
+ *
+ * If advertising has terminated because the Max_Extended_Advertising_Events was
+ * reached, the Status parameter shall be set to the error code Limit Reached (0x43).
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint8_t adv_handle;
+    uint16_t conn_handle;
+    uint8_t num_completed_ext_adv_events;
+} sdc_hci_subevent_le_adv_set_terminated_t;
+
+/** @brief LE Scan Request Received.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.19
+ *
+ * This event indicates that a SCAN_REQ PDU or an AUX_SCAN_REQ PDU has been
+ * received by the advertiser. The request contains a device address from a scanner
+ * that is allowed by the advertising filter policy. The advertising set is identified by
+ * Advertising_Handle.
+ *
+ * This event shall only be generated if advertising was enabled using the
+ * HCI_LE_Set_Extended_Advertising_Enable command.
+ *
+ * The Scanner_Address_Type and Scanner_Address indicates the type of the address
+ * and the address of the scanner device.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t adv_handle;
+    uint8_t scanner_address_type;
+    uint8_t scanner_address[6];
+} sdc_hci_subevent_le_scan_request_received_t;
+
+/** @brief LE Channel Selection Algorithm.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.20
+ *
+ * The HCI_LE_Channel_Selection_Algorithm event indicates which channel selection
+ * algorithm is used on a data physical channel connection (see [Vol 6] Part B,
+ * Section 4.5.8).
+ *
+ * This event is only generated following an HCI_LE_Connection_Complete or
+ * HCI_LE_Enhanced_Connection_Complete event as specified in Section 7.8.12,
+ * Section 7.8.56, or Section 7.8.66.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t channel_selection_algorithm;
+} sdc_hci_subevent_le_channel_selection_algorithm_t;
+
+/** @brief LE Periodic Advertising Sync Transfer Received [v1].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.24
+ *
+ * This event is used by the Controller to report that it has received periodic advertising
+ * synchronization information from the device referred to by the Connection_Handle
+ * parameter and either successfully synchronized to the periodic advertising train or
+ * timed out while attempting to synchronize. The Status will be zero if it successfully
+ * synchronized and non-zero otherwise.
+ *
+ * The Service_Data value is provided by the Host of the device sending the information.
+ * The Sync_Handle identifies the periodic advertising in subsequent commands and
+ * events and shall be assigned by the Controller.
+ *
+ * The remaining parameters provide information about the periodic advertising (see
+ * Section 7.7.65.14). If the transfer used an LL_PERIODIC_SYNC_IND PDU and
+ * so the periodic advertising is without responses, then the Controller shall set the
+ * Num_Subevents parameter to zero and the Host shall ignore the Subevent_Interval,
+ * Response_Slot_Delay, and Response_Slot_Spacing parameters. If the transfer used an
+ * LL_PERIODIC_SYNC_WR_IND PDU and so the periodic advertising is with responses,
+ * then the Controller shall set Num_Subevents to a non-zero value. If Num_Subevents
+ * equals 1, then the Host shall ignore Subevent_Interval.
+ *
+ * If Status is non-zero, all parameter values are valid except Sync_Handle, which the
+ * Host shall ignore.
+ *
+ * Note: If the Controller is already synchronized to the periodic advertising train described
+ * in the received information, no event will be generated.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint16_t service_data;
+    uint16_t sync_handle;
+    uint8_t adv_sid;
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_phy;
+    uint16_t periodic_adv_interval;
+    uint8_t adv_clock_accuracy;
+} sdc_hci_subevent_le_periodic_adv_sync_transfer_received_t;
+
 /** @brief LE CIS Established.
  *
  * The description below is extracted from Core_v6.2,
@@ -927,6 +1445,315 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t iso_interval;
 } sdc_hci_subevent_le_cis_established_t;
 
+/** @brief LE CIS Request.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.26
+ *
+ * This event indicates that a Controller has received a request to establish a CIS. If the
+ * Controller receives such a request while the HCI_LE_CIS_Request event is masked
+ * away, it shall reject it. Otherwise the Controller shall assign a connection handle for the
+ * requested CIS and send the handle in the CIS_Connection_Handle parameter of the
+ * event.
+ *
+ * When the Host receives this event it shall respond with either an
+ * HCI_LE_Accept_CIS_Request command or an HCI_LE_Reject_CIS_Request
+ * command before the timer Connection_Accept_Timeout expires. If it does not, the
+ * Controller shall reject the request and generate an HCI_LE_CIS_Established event with
+ * the status Connection Accept Timeout Exceeded (0x10).
+ *
+ * The ACL_Connection_Handle is the connection handle of the ACL connection that is
+ * associated with the requested CIS.
+ *
+ * The CIG_ID parameter contains the identifier of the CIG that contains the requested
+ * CIS. This parameter is sent by the Central in the request to establish the CIS.
+ *
+ * The CIS_ID parameter contains the identifier of the requested CIS. This parameter is
+ * sent by the Central in the request to establish the CIS.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t acl_conn_handle;
+    uint16_t cis_conn_handle;
+    uint8_t cig_id;
+    uint8_t cis_id;
+} sdc_hci_subevent_le_cis_request_t;
+
+/** @brief LE Create BIG Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.27
+ *
+ * This event indicates that the HCI_LE_Create_BIG or HCI_LE_Create_BIG_Test
+ * command has completed and, if successful, the Link Layer has entered the Isochronous
+ * Broadcasting state.
+ *
+ * The BIG_Handle parameter shall be the same as the one specified in the command that
+ * has completed.
+ *
+ * The BIG_Sync_Delay parameter is the maximum time, in microseconds, for
+ * transmission of PDUs of all BISes in a BIG event (see [Vol 6] Part B, Section 4.4.6.4).
+ *
+ * The Transport_Latency_BIG parameter is the actual transport latency, in microseconds,
+ * as described in [Vol 6] Part G, Section 3.2.1 and [Vol 6] Part G, Section 3.2.2.
+ *
+ * The Num_BIS parameter is the total number of BISes in the BIG. This parameter shall
+ * be the same as the parameter that is provided by the Host in the command that has
+ * completed.
+ *
+ * The PHY parameter is the PHY used to create the BIG.
+ *
+ * The NSE, BN, PTO, IRC, Max_PDU, and ISO_Interval parameters are the
+ * corresponding parameters of the BIS (see [Vol 6] Part B, Section 4.4.6.3).
+ * The Connection_Handle arrayed parameter contains the connection handles of all the
+ * BIS in the BIG.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint8_t big_handle;
+    uint32_t big_sync_delay : 24;
+    uint32_t transport_latency_big : 24;
+    uint8_t phy;
+    uint8_t nse;
+    uint8_t bn;
+    uint8_t pto;
+    uint8_t irc;
+    uint16_t max_pdu;
+    uint16_t iso_interval;
+    uint8_t num_bis;
+    sdc_hci_le_create_big_complete_array_params_t conn_handles[];
+} sdc_hci_subevent_le_create_big_complete_t;
+
+/** @brief LE Terminate BIG Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.28
+ *
+ * This event indicates that the transmission of all the BISes in the BIG are terminated.
+ *
+ * The BIG_Handle parameter is used to identify the BIG that is terminated. This
+ * parameter is provided by the Host in the HCI_LE_Terminate_BIG command.
+ *
+ * If the BIG is terminated by the local Host, the Reason parameter shall be set to the error
+ * code Connection Terminated By Local Host (0x16).
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t big_handle;
+    uint8_t reason;
+} sdc_hci_subevent_le_terminate_big_complete_t;
+
+/** @brief LE BIG Sync Established.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.29
+ *
+ * This event indicates that the HCI_LE_BIG_Create_Sync command has completed.
+ *
+ * The BIG_Handle parameter is used to identify the BIG. This parameter is provided by
+ * the Host in the HCI_LE_BIG_Create_Sync command.
+ *
+ * The Transport_Latency_BIG parameter is the actual transport latency, in microseconds,
+ * as described in [Vol 6] Part G, Section 3.2.1 and [Vol 6] Part G, Section 3.2.2.
+ *
+ * The NSE, BN, PTO, IRC, Max_PDU, and ISO_Interval parameters are the
+ * corresponding parameters of the BIS (see [Vol 6] Part B, Section 4.4.6.3).
+ *
+ * The Num_BIS parameter indicates the number of BISes in the synchronized BIG
+ * specified by the HCI_LE_BIG_Create_Sync command. This parameter shall be the
+ * same as the parameter that is provided by the Host in the HCI_LE_BIG_Create_Sync
+ * command.
+ *
+ * The Connection_Handle arrayed parameter is the list of connection handle(s) of the
+ * BIS(es) that are requested in the HCI_LE_BIG_Create_Sync command. The order of
+ * the connection handle(s) shall correspond to the order of the BIS(s) that are requested
+ * in the BIS arrayed parameter field of the HCI_LE_BIG_Create_Sync command.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint8_t big_handle;
+    uint32_t transport_latency_big : 24;
+    uint8_t nse;
+    uint8_t bn;
+    uint8_t pto;
+    uint8_t irc;
+    uint16_t max_pdu;
+    uint16_t iso_interval;
+    uint8_t num_bis;
+    sdc_hci_le_big_sync_established_array_params_t bis[];
+} sdc_hci_subevent_le_big_sync_established_t;
+
+/** @brief LE BIG Sync Lost.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.30
+ *
+ * This event indicates that the Controller has not received any PDUs on a BIG within
+ * the timeout period BIG_Sync_Timeout or the BIG has been terminated by the remote
+ * device.
+ *
+ * The BIG_Handle parameter is used to identify the BIG. This parameter is provided by
+ * the Host in the HCI_LE_BIG_Create_Sync command.
+ *
+ * The Reason parameter is used to indicate the reason why the synchronization was lost
+ * or terminated. If synchronization was terminated due to the Broadcaster terminating the
+ * BIG, the Reason parameter shall be set to the error code Remote User Terminated
+ * Connection (0x13). If synchronization was terminated due to a timeout, the Reason
+ * parameter shall be set to the error code Connection Timeout (0x08). If synchronization
+ * was terminated due to a MIC failure, the Reason parameter shall be set to the error
+ * code Connection Terminated due to MIC Failure (0x3D).
+ *
+ * When the HCI_LE_BIG_Sync_Lost event occurs, the Controller shall remove the
+ * connection handle(s) and data paths of all BIS(s) in the BIG with which the Controller
+ * was synchronized.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t big_handle;
+    uint8_t reason;
+} sdc_hci_subevent_le_big_sync_lost_t;
+
+/** @brief LE Request Peer SCA Complete.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.31
+ *
+ * This event indicates that the HCI_LE_Request_Peer_SCA command has been
+ * completed.
+ *
+ * The Peer_Clock_Accuracy parameter contains the sleep clock accuracy of the peer.
+ *
+ * The Connection_Handle is the connection handle of the ACL connection in which the
+ * HCI_LE_Request_Peer_SCA command is issued.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t peer_clock_accuracy;
+} sdc_hci_subevent_le_request_peer_sca_complete_t;
+
+/** @brief LE Path Loss Threshold.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.32
+ *
+ * This event is used to report a path loss threshold crossing (see [Vol 6] Part B,
+ * Section 4.5.16) on the ACL connection identified by the Connection_Handle parameter.
+ *
+ * The Current_Path_Loss parameter indicates the current path loss value as calculated
+ * by the Controller.
+ *
+ * The Zone_Entered parameter indicates which zone was entered. If Current_Path_Loss
+ * is set to 0xFF then Zone_Entered shall be ignored.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t current_path_loss;
+    uint8_t zone_entered;
+} sdc_hci_subevent_le_path_loss_threshold_t;
+
+/** @brief LE Transmit Power Reporting.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.33
+ *
+ * This event is used to report the transmit power level on the ACL connection identified by
+ * the Connection_Handle parameter.
+ *
+ * The Reason parameter indicates why the event was sent and the device whose transmit
+ * power level is being reported.
+ *
+ * Whenever the transmit power changes and local reporting has been enabled by
+ * the HCI_LE_Set_Transmit_Power_Reporting_Enable command, the Controller shall
+ * generate this event with Reason set to 0x00. In this case, the PHY, TX_Power_Level,
+ * TX_Power_Level_Flag and Delta parameters shall refer to the local device and the
+ * Status parameter shall be ignored.
+ *
+ * Whenever the Controller becomes aware that the peer's transmitter power
+ * has changed other than through an HCI_LE_Read_Remote_Transmit_Power_Level
+ * command and remote reporting has been enabled by the
+ * HCI_LE_Set_Transmit_Power_Reporting_Enable command, the Controller shall
+ * generate this event with Reason set to 0x01. In this case, the PHY, TX_Power_Level,
+ * TX_Power_Level_Flag and Delta parameters shall refer to the remote device and the
+ * Status parameter shall be ignored.
+ *
+ * When the Reason is set to 0x02, this event indicates completion of an
+ * HCI_LE_Read_Remote_Transmit_Power_Level command. In this case, the PHY,
+ * TX_Power_Level, TX_Power_Level_Flag and Delta parameters shall refer to the
+ * remote device.
+ *
+ * The PHY parameter shall indicate the PHY involved (which might not be the current
+ * transmit PHY for the relevant device).
+ *
+ * The TX_Power_Level parameter shall indicate the transmit power level for the PHY.
+ * The TX_Power_Level_Flag parameter shall indicate whether the transmit power
+ * level that is being reported has reached its minimum and/or maximum level.
+ * TX_Power_Level_Flag shall be ignored if the TX_Power_Level parameter is set to 0x7E
+ * or 0x7F.
+ *
+ * The Delta parameter shall be set to the change in power level for the transmitter being
+ * reported, whenever it changes its transmit power level. When this event is generated
+ * with Reason set to 0x02, Delta shall be set to zero. Delta shall be ignored if the
+ * TX_Power_Level parameter is set to 0x7E.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t reason;
+    uint8_t phy;
+    int8_t tx_power_level;
+    uint8_t tx_power_level_flag;
+    int8_t delta;
+} sdc_hci_subevent_le_transmit_power_reporting_t;
+
+/** @brief LE BIGInfo Advertising Report.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.34
+ *
+ * This event indicates that the Controller has received an Advertising PDU that contained
+ * a BIGInfo field. If the Controller also generates an HCI_LE_Periodic_Advertising_Report
+ * event, the HCI_LE_BIGInfo_Advertising_Report event shall immediately follow that
+ * event.
+ *
+ * An HCI_LE_BIGInfo_Advertising_Report event shall be generated even if the Controller
+ * is already synchronized to the BIG.
+ *
+ * The Sync_Handle parameter shall identify the periodic advertising train containing
+ * the BIGInfo field and shall be the same as the corresponding field in the
+ * HCI_LE_Periodic_Advertising_Report event if one is generated.
+ *
+ * The Num_BIS, NSE, ISO_Interval, BN, PTO, IRC, Max_PDU, SDU_Interval, Max_SDU,
+ * and PHY parameters correspond to the associated fields in the BIGInfo field of
+ * the Advertising PDU. The Framing parameter corresponds to both the Framed and
+ * Framing_Mode fields in the BIGInfo field.
+ *
+ * If the BIGInfo field indicates that the corresponding BIG is encrypted, the Encryption
+ * parameter shall be set to 0x01. Otherwise, the Encryption parameter shall be set to
+ * 0x00.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t sync_handle;
+    uint8_t num_bis;
+    uint8_t nse;
+    uint16_t iso_interval;
+    uint8_t bn;
+    uint8_t pto;
+    uint8_t irc;
+    uint16_t max_pdu;
+    uint32_t sdu_interval : 24;
+    uint16_t max_sdu;
+    uint8_t phy;
+    uint8_t framing;
+    uint8_t encryption;
+} sdc_hci_subevent_le_big_info_adv_report_t;
+
 /** @brief LE Subrate Change.
  *
  * The description below is extracted from Core_v6.2,
@@ -950,6 +1777,267 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t continuation_number;
     uint16_t supervision_timeout;
 } sdc_hci_subevent_le_subrate_change_t;
+
+/** @brief LE Periodic Advertising Sync Established [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.14
+ *
+ * This event indicates that the Controller has received the first periodic advertising packet
+ * from an advertiser after the HCI_LE_Periodic_Advertising_Create_Sync command has
+ * been sent to the Controller.
+ *
+ * The Sync_Handle parameter identifies the periodic advertising train in subsequent
+ * commands and events and shall be assigned by the Controller.
+ *
+ * The Advertising_SID parameter is set to the value of the Advertising SID subfield in the
+ * ADI field of the advertising PDU referring to the periodic advertising train.
+ *
+ * The Advertiser_Address_Type and Advertiser_Address parameters specify the address
+ * of the periodic advertiser.
+ * The Advertiser_PHY parameter specifies the PHY used for the periodic advertising.
+ *
+ * The Periodic_Advertising_Interval parameter specifies the interval between the periodic
+ * advertising events.
+ *
+ * The Advertiser_Clock_Accuracy parameter specifies the accuracy of the periodic
+ * advertiser's clock.
+ *
+ * If the periodic advertising is with responses, then the Num_Subevents,
+ * Subevent_Interval, Response_Slot_Delay, and Response_Slot_Spacing specify the
+ * parameters for these subevents. If the periodic advertising is without responses, then
+ * these parameters shall be set to 0x00.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t sync_handle;
+    uint8_t adv_sid;
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_phy;
+    uint16_t periodic_adv_interval;
+    uint8_t adv_clock_accuracy;
+    uint8_t num_subevents;
+    uint8_t subevent_interval;
+    uint8_t response_slot_delay;
+    uint8_t response_slot_spacing;
+} sdc_hci_subevent_le_periodic_adv_sync_established_v2_t;
+
+/** @brief LE Periodic Advertising Report [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.15
+ *
+ * This event indicates that the Controller has received a periodic advertisement or has
+ * failed to receive an AUX_SYNC_SUBEVENT_IND PDU.
+ *
+ * The Sync_Handle parameter identifies the periodic advertising train that the report
+ * relates to.
+ *
+ * The RSSI parameter contains the RSSI value, ignoring any Constant Tone Extension.
+ * If the Controller supports the Connectionless CTE Receiver feature, RSSI shall not
+ * be set to 0x7F. When multiple advertising packets are used to complete a periodic
+ * advertising report (e.g., a packet containing an AUX_SYNC_IND PDU combined
+ * with one containing an AUX_CHAIN PDU), the RSSI parameter shall be set based
+ * on the last packet received and the TX_Power parameter shall be set based on
+ * the AUX_SYNC_IND PDU if that contains a TxPower field and shall be set to
+ * 0x7F otherwise. However, the second or subsequent events for the same periodic
+ * advertisement may instead have a TX_Power value of 0x7F.
+ *
+ * The Controller may split the data from a single periodic advertisement (whether one
+ * PDU or several) into several reports. If so, each report except the last shall have a
+ * Data_Status of "incomplete, more data to come", while the last shall have the value
+ * "complete". No further reports shall be sent for a given periodic advertisement after one
+ * with a Data_Status other than "incomplete, more data to come".
+ *
+ * A Data_Status of "incomplete, data truncated" indicates that the Controller attempted to
+ * receive an AUX_CHAIN_IND PDU but was not successful or received it but was unable
+ * to store the data.
+ *
+ * The CTE_Type parameter indicates the type of Constant Tone Extension in the periodic
+ * advertising packets.
+ *
+ * The Periodic_Event_Counter parameter indicates the periodic advertising event counter
+ * (paEventCounter) of the event that the periodic advertising packet was received in.
+ *
+ * The Subevent parameter indicates the Periodic Advertising with Responses subevent
+ * that the periodic advertising packet was received in. If the Periodic Advertising does not
+ * have subevents, then Subevent shall be set to 0xFF.
+ *
+ * If the Controller receives an AUX_CHAIN_IND PDU with no AdvData, it should send
+ * the report (or the last report if it has split the data) immediately without waiting for any
+ * subsequent AUX_CHAIN_IND PDUs.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t sync_handle;
+    int8_t tx_power;
+    int8_t rssi;
+    uint8_t cte_type;
+    uint16_t periodic_event_counter;
+    uint8_t subevent;
+    uint8_t data_status;
+    uint8_t data_length;
+    uint8_t data[];
+} sdc_hci_subevent_le_periodic_adv_report_v2_t;
+
+/** @brief LE Periodic Advertising Sync Transfer Received [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.24
+ *
+ * This event is used by the Controller to report that it has received periodic advertising
+ * synchronization information from the device referred to by the Connection_Handle
+ * parameter and either successfully synchronized to the periodic advertising train or
+ * timed out while attempting to synchronize. The Status will be zero if it successfully
+ * synchronized and non-zero otherwise.
+ *
+ * The Service_Data value is provided by the Host of the device sending the information.
+ * The Sync_Handle identifies the periodic advertising in subsequent commands and
+ * events and shall be assigned by the Controller.
+ *
+ * The remaining parameters provide information about the periodic advertising (see
+ * Section 7.7.65.14). If the transfer used an LL_PERIODIC_SYNC_IND PDU and
+ * so the periodic advertising is without responses, then the Controller shall set the
+ * Num_Subevents parameter to zero and the Host shall ignore the Subevent_Interval,
+ * Response_Slot_Delay, and Response_Slot_Spacing parameters. If the transfer used an
+ * LL_PERIODIC_SYNC_WR_IND PDU and so the periodic advertising is with responses,
+ * then the Controller shall set Num_Subevents to a non-zero value. If Num_Subevents
+ * equals 1, then the Host shall ignore Subevent_Interval.
+ *
+ * If Status is non-zero, all parameter values are valid except Sync_Handle, which the
+ * Host shall ignore.
+ *
+ * Note: If the Controller is already synchronized to the periodic advertising train described
+ * in the received information, no event will be generated.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint16_t service_data;
+    uint16_t sync_handle;
+    uint8_t adv_sid;
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_phy;
+    uint16_t periodic_adv_interval;
+    uint8_t adv_clock_accuracy;
+    uint8_t num_subevents;
+    uint8_t subevent_interval;
+    uint8_t response_slot_delay;
+    uint8_t response_slot_spacing;
+} sdc_hci_subevent_le_periodic_adv_sync_transfer_received_v2_t;
+
+/** @brief LE Periodic Advertising Subevent Data Request.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.36
+ *
+ * This event is used to allow the Controller to indicate that it is ready to transmit
+ * one or more subevents and is requesting the advertising data for these subevents.
+ * The Subevent_Data_Count parameter shall be less than or equal to the number of
+ * subevents. The Subevent_Start parameter is the first subevent being requested and
+ * the Subevent_Data_Count parameter determines the subsequent subevents being
+ * requested. The subevent numbers wrap from one less than the number of subevents to
+ * zero.
+ *
+ * This event should be sent from the Controller when it has no data for upcoming
+ * subevents. The Controller should request data for as many subevents as it has memory
+ * to accept to minimize the number of events generated by the Controller.
+ *
+ * The Controller shall not send this event more than once for the same subevent of the
+ * same periodic advertising event.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t adv_handle;
+    uint8_t subevent_start;
+    uint8_t subevent_data_count;
+} sdc_hci_subevent_le_periodic_adv_subevent_data_request_t;
+
+/** @brief LE Periodic Advertising Response Report.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.37
+ *
+ * This event indicates that one or more Bluetooth devices have responded to a
+ * periodic advertising subevent during a PAwR train. The Controller may queue
+ * these advertising reports and send information from multiple devices in one
+ * HCI_LE_Periodic_Advertising_Response_Report event. The Controller shall only send
+ * reports for response slots that the Host requested it listen to.
+ *
+ * The Controller may fail to transmit the synchronization packet required to enable the
+ * response packets to be sent. If this happens, the Controller shall report this to the Host
+ * using the TX_Status parameter.
+ *
+ * The Controller may split the data from a single response into several reports. If so, each
+ * report except the last shall have a Data_Status of "incomplete, more data to come",
+ * while the last shall have the value "complete". No further reports shall be sent for a
+ * given response slot after one with a Data_Status other than "incomplete, more data to
+ * come".
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t adv_handle;
+    uint8_t subevent;
+    uint8_t tx_status;
+    uint8_t num_responses;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_periodic_adv_response_report_array_params_t responses[]; */
+    uint8_t responses[];
+} sdc_hci_subevent_le_periodic_adv_response_report_t;
+
+/** @brief LE Enhanced Connection Complete [v2].
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65.10
+ *
+ * This event indicates to both of the Hosts forming the connection that a new connection
+ * has been created. Upon the creation of the connection a Connection_Handle shall
+ * be assigned by the Controller, and passed to the Host in this event. If the
+ * connection creation fails, this event shall be provided to the Host that had issued the
+ * HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection command.
+ * If this event is unmasked and the HCI_LE_Connection_Complete event is unmasked,
+ * only the HCI_LE_Enhanced_Connection_Complete event is sent when a new
+ * connection has been created.
+ *
+ * This event indicates to the Host that issued an HCI_LE_Create_Connection
+ * or HCI_LE_Extended_Create_Connection command and received an
+ * HCI_Command_Status event if the connection creation failed or was successful.
+ *
+ * The Peer_Address, Peer_Resolvable_Private_Address, and
+ * Local_Resolvable_Private_Address shall always reflect the most recent packet sent and
+ * received on air.
+ *
+ * The Central_Clock_Accuracy parameter is only valid for a Peripheral. On a Central, this
+ * parameter shall be set to 0x00.
+ *
+ * If the connection is established from periodic advertising with responses and Role is
+ * 0x00, then the Advertising_Handle parameter shall be set according to the periodic
+ * advertising train the connection was established from. If the connection is established
+ * from periodic advertising with responses and Role is 0x01, then the Sync_Handle
+ * parameter shall be set according to the periodic advertising train the connection was
+ * established from. In all other circumstances, Advertising_Handle and Sync_Handle shall
+ * be set to No Advertising_Handle and No Sync_Handle and shall be ignored by the Host.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t role;
+    uint8_t peer_address_type;
+    uint8_t peer_address[6];
+    uint8_t local_resolvable_private_address[6];
+    uint8_t peer_resolvable_private_address[6];
+    uint16_t conn_interval;
+    uint16_t peripheral_latency;
+    uint16_t supervision_timeout;
+    uint8_t central_clock_accuracy;
+    uint8_t adv_handle;
+    uint16_t sync_handle;
+} sdc_hci_subevent_le_enhanced_conn_complete_v2_t;
 
 /** @brief LE CIS Established [v2].
  *
