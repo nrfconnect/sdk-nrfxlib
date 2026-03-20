@@ -94,6 +94,17 @@ void nrf_802154_sl_timer_deinit(nrf_802154_sl_timer_t * p_timer)
 
 nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_add(nrf_802154_sl_timer_t * p_timer)
 {
+    if (p_timer == NULL)
+    {
+        return NRF_802154_SL_TIMER_RET_BAD_REQUEST;
+    }
+
+    if ((p_timer->action_type & NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK) &&
+        (p_timer->action.callback.callback == NULL))
+    {
+        return NRF_802154_SL_TIMER_RET_BAD_REQUEST;
+    }
+
     uint64_t now    = nrf_802154_sl_timer_current_time_get();
     int32_t  target = p_timer->trigger_time - now;
 
@@ -107,27 +118,27 @@ nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_add(nrf_802154_sl_timer_t * p_time
 
 nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_remove(nrf_802154_sl_timer_t * p_timer)
 {
-    nrf_802154_sl_timer_ret_t ret;
+    if (p_timer == NULL)
+    {
+        return NRF_802154_SL_TIMER_RET_BAD_REQUEST;
+    }
 
     if (k_timer_status_get(&timer) > 0)
     {
         /* Timer has expired. */
-        ret = NRF_802154_SL_TIMER_RET_INACTIVE;
+        return NRF_802154_SL_TIMER_RET_INACTIVE;
     }
-    else if (k_timer_remaining_get(&timer) == 0)
+
+    if (k_timer_remaining_get(&timer) == 0)
     {
         /* Timer was stopped (by someone else) before expiring. */
-        ret = NRF_802154_SL_TIMER_RET_INACTIVE;
-    }
-    else
-    {
-        /* Timer is still running. */
-        k_timer_stop(&timer);
-
-        ret = NRF_802154_SL_TIMER_RET_SUCCESS;
+        return NRF_802154_SL_TIMER_RET_INACTIVE;
     }
 
-    return ret;
+    /* Timer is still running. */
+    k_timer_stop(&timer);
+
+    return NRF_802154_SL_TIMER_RET_SUCCESS;
 }
 
 static void timeout_handler(struct k_timer * timer_id)
@@ -135,7 +146,15 @@ static void timeout_handler(struct k_timer * timer_id)
     nrf_802154_sl_timer_t * p_timer =
         (nrf_802154_sl_timer_t *)k_timer_user_data_get(timer_id);
 
-    p_timer->action.callback.callback(p_timer);
+    if (p_timer == NULL)
+    {
+        return;
+    }
+
+    if (p_timer->action_type & NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK)
+    {
+        p_timer->action.callback.callback(p_timer);
+    }
 }
 
 void nrf_802154_platform_sl_lp_timer_init(void)
