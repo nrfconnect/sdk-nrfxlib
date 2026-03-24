@@ -32,7 +32,7 @@ Changes
 Bug fixes
 =========
 
-* Fixed an issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+* Fixed two issues where the scanner would assert when performing extended active scanning. (DRGN-27065, DRGN-28050)
 * Fixed an issue where the controller acting as a central would send a packet on the wrong channel.
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
