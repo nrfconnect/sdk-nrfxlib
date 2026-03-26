@@ -1526,7 +1526,7 @@ struct nrf_wifi_cmd_gi_config {
 
 #define NRF_WIFI_LMAC_MAX_RX_BUFS 256
 
-
+#define HW_SLEEP_WITH_LP_RF 3
 #define HW_SLEEP_ENABLE 2
 #define SW_SLEEP_ENABLE 1
 #define SLEEP_DISABLE 0
@@ -1812,6 +1812,11 @@ enum nrf_wifi_rf_test_event {
 #define MAX_REGS_CONF 8
 #define MAX_MEM_CONF 8
 #define CAL_MEM_SIZE 2048
+
+#define NRF_WIFI_RF_TEST_RX_CAPTURE_MAX_SAMPLES 12256
+#define MIN_CAPTURE_LEN 0
+#define RX_CAPTURE_TIMEOUT_CONST 11
+#define CAPTURE_DURATION_IN_SEC 600
 
 /* Holds the RX capture related info */
 struct nrf_wifi_rf_test_capture_params {
@@ -3103,6 +3108,14 @@ struct lmac_tuning_params {
 	unsigned int  ppmError;
 	unsigned int reSyncTime; 
 	unsigned int syncTSF; 
+	unsigned int raw_tx_inactivity_timer;
+	unsigned int adjustEDCACW;
+	unsigned int setCWforAC;
+	unsigned int ftm_delay;
+	unsigned int connection_inactivity_timer;
+    int tod_offset;
+    int toa_offset;
+    unsigned int clock_mode;
 	/* reserved for patching */
 	unsigned int reserved[16];
 } __NRF_WIFI_PKD;
