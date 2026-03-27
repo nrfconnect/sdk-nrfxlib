@@ -776,6 +776,10 @@ struct rpu_conf_params {
 	unsigned short int capture_length;
 	/** Capture timeout in seconds */
 	unsigned short int capture_timeout;
+	/** ED threshold for OFDM dynamic capture (stored as 8-bit signed value) */
+	unsigned char ed_thresh_ofdm;
+	/** ED threshold for DSSS dynamic capture (stored as 8-bit signed value) */
+	unsigned char ed_thresh_dsss;
 	/** Configure WLAN to bypass regulatory */
 	unsigned char bypass_regulatory;
 	/** Two letter country code (00: Default for WORLD) */
@@ -1848,6 +1852,10 @@ struct nrf_wifi_rf_test_capture_params {
 	 * It supports 64dB range.The increment happens lineraly 2dB/step
 	 */
 	unsigned char bb_gain;
+
+	/* OFDM / DSSS ED thresholds in dBm for NRF_WIFI_RF_TEST_RX_DYN_PKT_CAP */
+	unsigned char ed_thresh_ofdm;
+	unsigned char ed_thresh_dsss;
 
 	/* address of the capture data */
 	unsigned int *capture_addr;
