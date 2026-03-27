@@ -18,6 +18,7 @@ Added
 
 * Experimental support for the nRF54LS device. (DRGN-26915)
 * Separate libraries for the nRF54LM and nRF54LV series devices. (DRGN-27252)
+* The :ref:`MPSL radio notification API <mpsl_radio_notification>` has been added back. (DRGN-27353)
 
 Changes
 =======
