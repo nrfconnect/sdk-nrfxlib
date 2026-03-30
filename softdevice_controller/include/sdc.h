@@ -159,7 +159,7 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    798
 #define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 907
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
