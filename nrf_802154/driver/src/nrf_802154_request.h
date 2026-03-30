@@ -68,6 +68,21 @@ void nrf_802154_request_init(void);
  */
 bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl);
 
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+/**
+ * @brief Requests entering the @ref RADIO_STATE_SLEEP state with the CSMA-CA backoff procedure
+ *        cancelled from the SWI priority.
+ *
+ * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.
+ *
+ * @retval  true   The driver will enter sleep state.
+ * @retval  false  The driver cannot enter the sleep state due to an ongoing operation.
+ */
+bool nrf_802154_request_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl);
+
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
+
 /**
  * @brief Requests entering the @ref RADIO_STATE_RX state for the driver.
  *
@@ -152,7 +167,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl);
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
                                           const uint8_t   * p_data);
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
 /**
  * @brief Requests the driver to free the given buffer.
@@ -261,7 +276,7 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id);
  */
 bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id);
 
-#endif // NRF_802154_DELAYED_TRX_ENABLED
+#endif /* NRF_802154_DELAYED_TRX_ENABLED */
 
 /**
  * @brief Requests CSMA-CA procedure for the transmission of a given frame.
@@ -269,6 +284,10 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id);
  * @param[in]  p_frame     Pointer to a frame data structure.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit.
+ *
+ * @retval  NRF_802154_TX_ERROR_NONE             The procedure started successfully.
+ * @retval  NRF_802154_TX_ERROR_TIMESLOT_DENIED  The transmission did not start due to a denied
+ *                                               timeslot request.
  */
 nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
     const nrf_802154_frame_t                     * p_frame,
@@ -282,4 +301,4 @@ nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
 }
 #endif
 
-#endif // NRF_802154_REQUEST_H__
+#endif /* NRF_802154_REQUEST_H__ */

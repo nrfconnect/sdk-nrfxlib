@@ -150,23 +150,94 @@ void nrf_802154_temperature_changed(void)
 
 void nrf_802154_pan_id_set(const uint8_t * p_pan_id)
 {
-    nrf_802154_pib_pan_id_set(p_pan_id);
+    if (p_pan_id)
+    {
+        nrf_802154_pib_pan_id_set(p_pan_id);
+    }
 }
+
+#if NRF_802154_PAN_ID_GET_ENABLED
+
+bool nrf_802154_pan_id_get(uint8_t * p_pan_id)
+{
+    if (p_pan_id)
+    {
+        memcpy(p_pan_id, nrf_802154_pib_pan_id_get(), PAN_ID_SIZE);
+        return true;
+    }
+
+    return false;
+}
+
+#endif /* NRF_802154_PAN_ID_GET_ENABLED */
 
 void nrf_802154_extended_address_set(const uint8_t * p_extended_address)
 {
-    nrf_802154_pib_extended_address_set(p_extended_address);
+    if (p_extended_address)
+    {
+        nrf_802154_pib_extended_address_set(p_extended_address);
+    }
 }
+
+#if NRF_802154_EXTENDED_ADDRESS_GET_ENABLED
+
+bool nrf_802154_extended_address_get(uint8_t * p_extended_address)
+{
+    if (p_extended_address)
+    {
+        memcpy(p_extended_address, nrf_802154_pib_extended_address_get(), EXTENDED_ADDRESS_SIZE);
+        return true;
+    }
+
+    return false;
+}
+
+#endif /* NRF_802154_EXTENDED_ADDRESS_GET_ENABLED */
 
 void nrf_802154_short_address_set(const uint8_t * p_short_address)
 {
-    nrf_802154_pib_short_address_set(p_short_address);
+    if (p_short_address)
+    {
+        nrf_802154_pib_short_address_set(p_short_address);
+    }
 }
+
+#if NRF_802154_SHORT_ADDRESS_GET_ENABLED
+
+bool nrf_802154_short_address_get(uint8_t * p_short_address)
+{
+    if (p_short_address)
+    {
+        memcpy(p_short_address, nrf_802154_pib_short_address_get(), SHORT_ADDRESS_SIZE);
+        return true;
+    }
+
+    return false;
+}
+
+#endif /* NRF_802154_SHORT_ADDRESS_GET_ENABLED */
 
 void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address)
 {
     nrf_802154_pib_alternate_short_address_set(p_short_address);
 }
+
+#if NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED
+
+bool nrf_802154_alternate_short_address_get(uint8_t * p_short_address)
+{
+    const uint8_t * alternate_address = nrf_802154_pib_alternate_short_address_get();
+
+    if (alternate_address && p_short_address)
+    {
+        memcpy(p_short_address, alternate_address, SHORT_ADDRESS_SIZE);
+        return true;
+    }
+
+    return false;
+}
+
+#endif /* NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED */
 
 void nrf_802154_init(void)
 {
@@ -196,11 +267,71 @@ void nrf_802154_init(void)
     nrf_802154_timer_coord_init();
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_init();
-#endif
+#endif /* NRF_802154_ACK_TIMEOUT_ENABLED */
 #if NRF_802154_DELAYED_TRX_ENABLED
     nrf_802154_delayed_trx_init();
-#endif
+#endif /* NRF_802154_DELAYED_TRX_ENABLED */
 }
+
+#if NRF_802154_DRV_REINIT_ENABLED
+
+/* Missing modules cause errors if not enabled */
+#if !NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+#error "Notification queue flush is not enabled. Please enable it in the configuration."
+#endif // !NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+#if NRF_802154_DELAYED_TRX_ENABLED && !NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+#error "Delayed receive cancellation all is not enabled. Please enable it in the configuration."
+#endif // NRF_802154_DELAYED_TRX_ENABLED && !NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+
+#if NRF_802154_CSMA_CA_ENABLED && !NRF_802154_CSMA_CA_CANCEL_ENABLED
+#error "CSMA-CA cancel is not enabled. Please enable it in the configuration."
+#endif // NRF_802154_CSMA_CA_ENABLED && !NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+bool nrf_802154_reinit(void)
+{
+    bool result = false;
+
+    /* Cancel the delayed transmit and receive operations. */
+#if NRF_802154_DELAYED_TRX_ENABLED
+    (void)nrf_802154_delayed_trx_transmit_cancel();
+    nrf_802154_delayed_trx_receive_cancel_all();
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
+    nrf_802154_notification_block_all_notifications();
+
+#if NRF_802154_CSMA_CA_ENABLED
+    /* Put the radio into sleep mode and cancel the CSMA-CA procedure. */
+    result = nrf_802154_request_sleep_with_cancel_csma_ca(NRF_802154_TERM_802154);
+#else // NRF_802154_CSMA_CA_ENABLED
+    /* Put the radio into sleep mode. */
+    result = nrf_802154_request_sleep(NRF_802154_TERM_802154);
+#endif // NRF_802154_CSMA_CA_ENABLED
+
+    if (!result)
+    {
+        nrf_802154_notification_unblock_notifications();
+        return result;
+    }
+
+    /* Drain the notification queue without involving the upper layer. */
+    nrf_802154_notification_queue_flush();
+
+    /* Reset the security global frame counter */
+    nrf_802154_security_global_frame_counter_set(0);
+
+    /* Reinitialize the driver */
+    nrf_802154_ack_data_init();
+    nrf_802154_pib_init();
+    nrf_802154_security_key_remove_all();
+    nrf_802154_rx_buffer_init();
+
+    nrf_802154_notification_unblock_notifications();
+
+    return result;
+}
+
+#endif /* NRF_802154_DRV_REINIT_ENABLED */
 
 void nrf_802154_deinit(void)
 {

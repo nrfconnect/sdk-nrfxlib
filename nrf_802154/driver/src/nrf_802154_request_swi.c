@@ -76,6 +76,7 @@
 typedef enum
 {
     REQ_TYPE_SLEEP,
+    REQ_TYPE_SLEEP_WITH_CANCEL_CSMA_CA,
     REQ_TYPE_RECEIVE,
     REQ_TYPE_TRANSMIT,
     REQ_TYPE_ACK_TIMEOUT_HANDLE,
@@ -232,7 +233,7 @@ typedef struct
             const nrf_802154_frame_t                     * p_frame;
             const nrf_802154_transmit_csma_ca_metadata_t * p_metadata;
             nrf_802154_tx_error_t                        * p_result;
-        } csma_ca_start; ///< Antenna update request details.
+        } csma_ca_start; ///< CSMA-CA start request details.
 
     } data;              ///< Request data depending on its type.
 } nrf_802154_req_data_t;
@@ -342,6 +343,28 @@ static void swi_sleep(nrf_802154_term_t term_lvl, bool * p_result)
 
     req_exit();
 }
+
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+/**
+ * @brief Requests entering the @ref RADIO_STATE_SLEEP state with the CSMA-CA backoff procedure
+ *        cancelled from the SWI priority.
+ *
+ * @param[in]   term_lvl  Termination level of this request. Selects procedures to abort.
+ * @param[out]  p_result  Result of entering the sleep state.
+ */
+static void swi_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl, bool * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                = REQ_TYPE_SLEEP_WITH_CANCEL_CSMA_CA;
+    p_slot->data.sleep.term_lvl = term_lvl;
+    p_slot->data.sleep.p_result = p_result;
+
+    req_exit();
+}
+
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 
 /**
  * @brief Requests entering the @ref RADIO_STATE_RX state from the SWI priority.
@@ -674,6 +697,7 @@ static void swi_csma_ca_start(const nrf_802154_frame_t                     * p_f
     p_slot->data.csma_ca_start.p_frame    = p_frame;
     p_slot->data.csma_ca_start.p_metadata = p_metadata;
     p_slot->data.csma_ca_start.p_result   = p_result;
+
     req_exit();
 }
 
@@ -691,6 +715,18 @@ bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)
 {
     REQUEST_FUNCTION(nrf_802154_core_sleep, swi_sleep, bool, term_lvl)
 }
+
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+bool nrf_802154_request_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl)
+{
+    REQUEST_FUNCTION(nrf_802154_core_sleep_with_cancel_csma_ca,
+                     swi_sleep_with_cancel_csma_ca,
+                     bool,
+                     term_lvl)
+}
+
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                                 req_originator_t               req_orig,
@@ -741,6 +777,7 @@ bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
 }
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
     REQUEST_FUNCTION(nrf_802154_core_continuous_carrier,
@@ -795,6 +832,7 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED
+
 nrf_802154_tx_error_t nrf_802154_request_transmit_raw_at(
     const nrf_802154_frame_t                * p_frame,
     uint64_t                                  tx_time,
@@ -840,6 +878,8 @@ bool nrf_802154_request_receive_at_scheduled_cancel(uint32_t id)
                      id);
 }
 
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
 nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
     const nrf_802154_frame_t                     * p_frame,
     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
@@ -850,8 +890,6 @@ nrf_802154_tx_error_t nrf_802154_request_csma_ca_start(
                      p_frame,
                      p_metadata);
 }
-
-#endif // NRF_802154_DELAYED_TRX_ENABLED
 
 /**@brief Handles REQ_EVENT on NRF_802154_EGU_INSTANCE */
 static void irq_handler_req_event(void)
@@ -867,6 +905,15 @@ static void irq_handler_req_event(void)
                 *(p_slot->data.sleep.p_result) =
                     nrf_802154_core_sleep(p_slot->data.sleep.term_lvl);
                 break;
+
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+            case REQ_TYPE_SLEEP_WITH_CANCEL_CSMA_CA:
+                *(p_slot->data.sleep.p_result) =
+                    nrf_802154_core_sleep_with_cancel_csma_ca(p_slot->data.sleep.term_lvl);
+                break;
+
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 
             case REQ_TYPE_RECEIVE:
                 *(p_slot->data.receive.p_result) =
@@ -944,6 +991,7 @@ static void irq_handler_req_event(void)
                 break;
 
 #if NRF_802154_DELAYED_TRX_ENABLED
+
             case REQ_TYPE_TRANSMIT_AT:
                 *(p_slot->data.transmit_at.p_result) =
                     nrf_802154_delayed_trx_transmit(p_slot->data.transmit_at.p_frame,
@@ -975,12 +1023,13 @@ static void irq_handler_req_event(void)
                         p_slot->data.receive_at_cancel.id);
                 break;
 
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
             case REQ_TYPE_CSMA_CA_START:
                 *(p_slot->data.csma_ca_start.p_result) =
                     nrf_802154_csma_ca_start(p_slot->data.csma_ca_start.p_frame,
                                              p_slot->data.csma_ca_start.p_metadata);
                 break;
-#endif // NRF_802154_DELAYED_TRX_ENABLED
 
             default:
                 NRF_802154_ASSERT(false);

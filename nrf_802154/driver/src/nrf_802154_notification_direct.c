@@ -142,4 +142,23 @@ void nrf_802154_notify_cca_failed(nrf_802154_cca_error_t error)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+void nrf_802154_notification_queue_flush(void)
+{
+    /* No SWI queue in direct notification mode. */
+}
+
+void nrf_802154_notification_block_all_notifications(void)
+{
+    /* Intentionally empty */
+}
+
+void nrf_802154_notification_unblock_notifications(void)
+{
+    /* Intentionally empty */
+}
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
 #endif /* NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_DIRECT */
