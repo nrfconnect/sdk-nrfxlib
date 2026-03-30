@@ -73,6 +73,9 @@
 #include "hal/nrf_radio.h"
 #include "mac_features/nrf_802154_filter.h"
 #include "mac_features/nrf_802154_frame_parser.h"
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+#include "mac_features/nrf_802154_csma_ca.h"
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 #include "mac_features/ack_generator/nrf_802154_ack_generator.h"
 #include "rsch/nrf_802154_rsch.h"
 #include "rsch/nrf_802154_rsch_crit_sect.h"
@@ -2684,6 +2687,36 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl)
 
     return result;
 }
+
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED
+
+bool nrf_802154_core_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = nrf_802154_critical_section_enter();
+
+    if (result)
+    {
+        if ((m_state != RADIO_STATE_SLEEP) && (m_state != RADIO_STATE_FALLING_ASLEEP))
+        {
+            result = core_sleep(term_lvl, REQ_ORIG_CORE, true);
+        }
+
+        if (result)
+        {
+            nrf_802154_csma_ca_cancel();
+        }
+
+        nrf_802154_critical_section_exit();
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return result;
+}
+
+#endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 
 static bool core_receive(nrf_802154_term_t term_lvl,
                          req_originator_t  req_orig,

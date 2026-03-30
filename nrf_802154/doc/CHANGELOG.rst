@@ -13,10 +13,37 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Added
+=====
+
+* The following optional API functions:
+
+  * :c:func:`nrf_802154_pan_id_get` for reading the current PAN ID.
+    Enable this feature with the :c:macro:`NRF_802154_PAN_ID_GET_ENABLED` configuration macro.
+  * :c:func:`nrf_802154_short_address_get` for reading the current short address.
+    Enable this feature with the :c:macro:`NRF_802154_SHORT_ADDRESS_GET_ENABLED` configuration macro.
+  * :c:func:`nrf_802154_alternate_short_address_get` for reading the current alternate short address.
+    Enable this feature with the :c:macro:`NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED` configuration macro.
+  * :c:func:`nrf_802154_extended_address_get` for reading the current extended address.
+    Enable this feature with the :c:macro:`NRF_802154_EXTENDED_ADDRESS_GET_ENABLED` configuration macro.
+  * The :c:func:`nrf_802154_reinit` function to allow reinitialization of the driver.
+    This experimental feature is disabled by default.
+    It is available only for the non-serialized driver. (KRKNWK-21633)
+    To enable this feature, set the :c:macro:`NRF_802154_DRV_REINIT_ENABLED` configuration macro to ``1``.
+
 Minor changes
 =============
 
 * Removed ``min`` and ``max`` macros from the :file:`nrf_802154_sl_utils.h`. (KRKNWK-21347)
+
+Other changes
+=============
+
+* Added guards against NULL pointer use in the following functions, where NULL pointer is not a valid argument:
+
+  * :c:func:`nrf_802154_pan_id_set`
+  * :c:func:`nrf_802154_short_address_set`
+  * :c:func:`nrf_802154_extended_address_set`
 
 nRF Connect SDK v3.2.0 - nRF 802.15.4 Radio Driver
 **************************************************

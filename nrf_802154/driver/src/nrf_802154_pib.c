@@ -185,6 +185,7 @@ void nrf_802154_pib_init(void)
     m_data.auto_ack        = true;
     m_data.pan_coord       = false;
     m_data.channel         = 11;
+    m_data.tx_power        = 0;
 
     memset(m_data.pan_id, 0xff, sizeof(m_data.pan_id));
     m_data.short_addr[0] = 0xfe;
