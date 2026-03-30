@@ -100,6 +100,31 @@ Limited access to some of these peripherals is provided through the following AP
 
 On the nRF54L Series, the CPU clock frequency must be 128 MHz.
 
+.. _mpsl_lib_nrf54l_callbacks:
+
+nRF54L Series platform callbacks
+********************************
+
+On the nRF54L Series only, :file:`mpsl.h` declares low-latency hooks that your integration must define.
+MPSL calls them around time-critical scheduler or radio work so the platform can switch CPU power profile (including constant-latency / CONSTLAT when needed) and non-volatile memory (NVM / RRAM) latency settings in step.
+
+Use this single pair together:
+
+* :c:func:`mpsl_low_latency_acquire_callback` enter a low-latency window before MPSL runs time-critical code (for example by enabling NVM low-latency mode and related settings).
+* :c:func:`mpsl_low_latency_release_callback` leave that window when MPSL no longer needs low-latency operation.
+
+When time-critical events are scheduled back-to-back, MPSL may skip :c:func:`mpsl_low_latency_release_callback` between events and only call release after the last event in the sequence.
+Otherwise, each call to :c:func:`mpsl_low_latency_acquire_callback` is followed by a matching release when that piece of work no longer needs low-latency operation.
+Integrations must tolerate skipped intermediate releases (for example by counting acquires).
+
+.. note::
+   In the |NCS|, the MPSL subsystem provides default implementations of these callbacks for Zephyr-based builds.
+   You need your own definitions only if you integrate the MPSL library without that glue code (for example a bare-metal or fully custom port), or if you intentionally replace the default behavior.
+
+.. note::
+   To coordinate constant-latency (CONSTLAT) with MPSL through :file:`nrf_sys_event`, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT` in the application configuration where that behavior is required.
+   To coordinate NVM latency with MPSL through :file:`nrf_sys_event`, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT_IRQ_LATENCY` in the application configuration where that behavior is required.
+
 Thread and interrupt safety
 ***************************
 

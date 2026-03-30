@@ -19,6 +19,9 @@ Added
 * Experimental support for the nRF54LS device. (DRGN-26915)
 * Separate libraries for the nRF54LM and nRF54LV series devices. (DRGN-27252)
 * The :ref:`MPSL radio notification API <mpsl_radio_notification>` has been added back. (DRGN-27353)
+* On the nRF54L Series, added :c:func:`mpsl_low_latency_acquire_callback` and :c:func:`mpsl_low_latency_release_callback`.
+  They replace ``mpsl_constlat_request_callback()``, ``mpsl_lowpower_request_callback()``, so a single acquire/release pair covers CPU constant-latency / power profile and NVM (RRAM) low-latency around time-critical MPSL work.
+  To coordinate constant-latency (CONSTLAT) with MPSL through ``nrf_sys_event``, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT`; to coordinate NVM latency the same way, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT_IRQ_LATENCY` where required. (DRGN-27788)
 
 Changes
 =======

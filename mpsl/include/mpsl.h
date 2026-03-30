@@ -176,6 +176,39 @@ void mpsl_constlat_request_callback(void);
  * It only only calls the function on nRF54L Series devices.
  */
 void mpsl_lowpower_request_callback(void);
+
+/**
+ * @defgroup mpsl_low_latency_callbacks MPSL low-latency callbacks
+ *
+ * Application-implemented callbacks invoked by MPSL on nRF54L Series devices.
+ * Use @ref mpsl_low_latency_acquire_callback before time-critical MPSL work
+ * (for example around radio activity) and @ref mpsl_low_latency_release_callback
+ * when that work is finished so the platform can relax NVM latency and related
+ * settings.
+ *
+ * When time-critical events are back-to-back, MPSL may skip release between
+ * events and only call release after the last event; implementations must
+ * tolerate skipped intermediate releases (for example by counting acquires).
+ *
+ * @{
+ */
+
+/** @brief Acquire low-latency settings to the system.
+ *
+ * Prepare the system for time-critical execution (for example by placing
+ * the NVM controller in low-latency mode). Called by MPSL; do not call
+ * from application code.
+ */
+ void mpsl_low_latency_acquire_callback(void);
+
+ /** @brief Release low-latency settings from the system.
+  *
+  * Release the low-latency settings from the system when low-latency operation
+  * is no longer required. Called by MPSL; do not call from application code.
+  */
+ void mpsl_low_latency_release_callback(void);
+ /** @} */
+
 #ifdef __cplusplus
 }
 #endif
