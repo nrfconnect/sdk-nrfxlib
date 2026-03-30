@@ -153,6 +153,7 @@ const uint8_t * nrf_802154_pib_pan_id_get(void);
  * @brief Sets the PAN ID used by this device.
  *
  * @param[in]  p_pan_id  Pointer to the PAN ID (2 bytes, little-endian).
+ *                       Must not be NULL.
  *
  * This function makes a copy of the PAN ID.
  */
@@ -169,6 +170,7 @@ const uint8_t * nrf_802154_pib_extended_address_get(void);
  * @brief Sets the extended address of this device.
  *
  * @param[in]  p_extended_address  Pointer to extended address (8 bytes, little-endian).
+ *                                 Must not be NULL.
  *
  * This function makes a copy of the address.
  */
@@ -185,6 +187,7 @@ const uint8_t * nrf_802154_pib_short_address_get(void);
  * @brief Sets the short address of this device.
  *
  * @param[in]  p_short_address  Pointer to the short address (2 bytes, little-endian).
+ *                              Must not be NULL.
  *
  * This function makes a copy of the address.
  */

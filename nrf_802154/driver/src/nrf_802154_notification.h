@@ -147,6 +147,45 @@ void nrf_802154_notify_cca(bool is_free);
  */
 void nrf_802154_notify_cca_failed(nrf_802154_cca_error_t error);
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED || defined(__DOXYGEN__)
+
+/**
+ * @brief Flushes the notification queue.
+ *
+ * The function drains the queue without calling @c nrf_802154_co_* functions.
+ * For @c NTF_TYPE_RECEIVED, it frees the RX frame buffer via @ref nrf_802154_buffer_free_raw.
+ * For @c NTF_TYPE_TRANSMITTED, it frees the ACK buffer when one is present, also via
+ * @ref nrf_802154_buffer_free_raw. Other notification types are discarded from the notification queue.
+ * Call this function after @ref nrf_802154_notification_block_all_notifications to avoid enqueuing
+ * new notifications in parallel with the flush.
+ *
+ * @note The function should be called when the driver is being reinitialized or deinitialized.
+ *       Typically after sleep succeeds, before @ref nrf_802154_rx_buffer_init.
+ */
+void nrf_802154_notification_queue_flush(void);
+
+/**
+ * @brief Blocks enqueuing new notifications.
+ *
+ * The function prevents enqueuing new notifications into the notification queue.
+ *
+ * @note The function should be called when the driver is being reinitialized or deinitialized.
+ *       Typically the function should be called before @ref nrf_802154_notification_queue_flush.
+ */
+void nrf_802154_notification_block_all_notifications(void);
+
+/**
+ * @brief Unblocks enqueuing of new notifications.
+ *
+ * The function allows enqueuing new notifications into the notification queue again.
+ *
+ * @note The function should be called at the end of the driver reinitialization or
+ *       deinitialization.
+ */
+void nrf_802154_notification_unblock_notifications(void);
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
 /**
  *@}
  **/

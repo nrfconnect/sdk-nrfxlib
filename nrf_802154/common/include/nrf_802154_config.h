@@ -60,6 +60,21 @@ extern "C" {
  */
 
 /**
+ * @def NRF_802154_DRV_REINIT_ENABLED
+ *
+ * Enables the driver reinitialization feature.
+ * This is an experimental feature.
+ * 
+ * @note This option implies the following options to be enabled:
+ *       - NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+ *       - NRF_802154_CSMA_CA_CANCEL_ENABLED
+ *       - NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+ */
+#ifndef NRF_802154_DRV_REINIT_ENABLED
+#define NRF_802154_DRV_REINIT_ENABLED 0
+#endif
+
+/**
  * @def NRF_802154_CCA_MODE_DEFAULT
  *
  * CCA mode used by the driver.
@@ -262,6 +277,18 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+ *
+ * When @ref NRF_802154_DELAYED_TRX_ENABLED is set to 1, this option can be set to 1
+ * to enable the @ref nrf_802154_delayed_trx_receive_cancel_all() function.
+ */
+#if NRF_802154_DELAYED_TRX_ENABLED
+#ifndef NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+#define NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED NRF_802154_DRV_REINIT_ENABLED
+#endif
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
+/**
  * @def NRF_802154_TEST_MODES_ENABLED
  *
  * Enables test modes. Test modes are normally disabled in end products.
@@ -284,6 +311,42 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_PAN_ID_GET_ENABLED
+ *
+ * Enables the @ref nrf_802154_pan_id_get function.
+ */
+#ifndef NRF_802154_PAN_ID_GET_ENABLED
+#define NRF_802154_PAN_ID_GET_ENABLED 0
+#endif
+
+/**
+ * @def NRF_802154_SHORT_ADDRESS_GET_ENABLED
+ *
+ * Enables the @ref nrf_802154_short_address_get function.
+ */
+#ifndef NRF_802154_SHORT_ADDRESS_GET_ENABLED
+#define NRF_802154_SHORT_ADDRESS_GET_ENABLED 0
+#endif
+
+/**
+ * @def NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED
+ *
+ * Enables the @ref nrf_802154_alternate_short_address_get function.
+ */
+#ifndef NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED
+#define NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED 0
+#endif
+
+/**
+ * @def NRF_802154_EXTENDED_ADDRESS_GET_ENABLED
+ *
+ * Enables the @ref nrf_802154_extended_address_get function.
+ */
+#ifndef NRF_802154_EXTENDED_ADDRESS_GET_ENABLED
+#define NRF_802154_EXTENDED_ADDRESS_GET_ENABLED 0
+#endif
+
+/**
  * @}
  * @defgroup nrf_802154_config_csma CSMA/CA procedure configuration
  * @{
@@ -301,6 +364,21 @@ extern "C" {
 #define NRF_802154_CSMA_CA_ENABLED 1
 #endif
 #endif
+
+/**
+ * @def NRF_802154_CSMA_CA_CANCEL_ENABLED
+ *
+ * Indicates whether the CSMA-CA cancel feature is to be enabled in the driver.
+ * When @ref NRF_802154_CSMA_CA_ENABLED is set to 1, this option can be set to 1
+ * to enable the @ref nrf_802154_csma_ca_cancel() function.
+ * This is an experimental feature.
+ *
+ */
+#if NRF_802154_CSMA_CA_ENABLED
+#ifndef NRF_802154_CSMA_CA_CANCEL_ENABLED
+#define NRF_802154_CSMA_CA_CANCEL_ENABLED NRF_802154_DRV_REINIT_ENABLED
+#endif
+#endif // NRF_802154_CSMA_CA_ENABLED
 
 /**
  * @def NRF_802154_CSMA_CA_MIN_BE_DEFAULT
@@ -542,6 +620,16 @@ extern "C" {
  * See @ref NRF_802154_NOTIFICATION_IMPL.
  */
 #define NRF_802154_NOTIFICATION_IMPL_SWI  1
+
+/**
+ * @def NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+ *
+ * Enables the notification queue flush feature.
+ * This is an experimental feature.
+ */
+#ifndef NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+#define NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED NRF_802154_DRV_REINIT_ENABLED
+#endif
 
 /**
  * @def NRF_802154_NOTIFICATION_IMPL

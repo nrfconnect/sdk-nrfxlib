@@ -117,6 +117,24 @@ radio_state_t nrf_802154_core_state_get(void);
  */
 bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl);
 
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED || defined(__DOXYGEN__)
+
+/**
+ * @brief Requests the transition to the @ref RADIO_STATE_SLEEP state with the CSMA-CA procedure
+ *        cancelled.
+ *
+ * The function puts the driver into the sleep state and cancels the CSMA-CA backoff procedure in
+ * a single critical section (atomic operation).
+ *
+ * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.
+ *
+ * @retval  true   Entering the sleep state succeeded.
+ * @retval  false  Entering the sleep state failed (the driver is performing other procedure).
+ */
+bool nrf_802154_core_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl);
+
+#endif // NRF_802154_CSMA_CA_CANCEL_ENABLED
+
 /**
  * @brief Requests the transition to the @ref RADIO_STATE_RX state.
  *
@@ -142,7 +160,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  p_params         Pointer to transmission parameters.
  *
- * @retval  NRF_802154_TX_ERROR_NONE  The request was succesful.
+ * @retval  NRF_802154_TX_ERROR_NONE  The request was successful.
  *
  * @returns The request error that prevented the frame from being transmitted.
  */

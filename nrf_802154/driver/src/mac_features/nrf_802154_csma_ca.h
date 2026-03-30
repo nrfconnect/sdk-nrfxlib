@@ -61,11 +61,35 @@
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit.
  *
- * @retval true   The function always returns true for compatibility reasons
+ * @retval  NRF_802154_TX_ERROR_NONE             The procedure started successfully.
+ * @retval  NRF_802154_TX_ERROR_TIMESLOT_DENIED  The transmission did not start due to a denied
+ *                                               timeslot request.
  */
 nrf_802154_tx_error_t nrf_802154_csma_ca_start(
     const nrf_802154_frame_t                     * p_frame,
     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
+
+#if NRF_802154_CSMA_CA_CANCEL_ENABLED || defined(__DOXYGEN__)
+
+/**
+ * @brief Cancels the CSMA-CA procedure.
+ *
+ * Cancels the scheduled CSMA-CA delayed timeslot (backoff) and resets the CSMA-CA state machine to
+ * its initial (idle) state. This does not request termination of a frame transmission that is
+ * already in progress from this procedure.
+ *
+ * @note If no transmit attempt is active, the upper layer will not receive transmit success or
+ *       failure callbacks for the cancelled procedure.
+ *       If a transmit is already in progress (or completes after this call), the upper layer still
+ *       receives the usual notifications (either @ref nrf_802154_transmitted_raw or
+ *       @ref nrf_802154_transmit_failed) so that the frame outcome and metadata (for example ACK-related
+ *       data) are reported and buffers can be released. However there is one exception to this rule.
+ *       When CSMA-CA procedure is failed due to busy channel, the notification is sent to the user
+ *       immediately and next random backoff should not be started.
+ */
+void nrf_802154_csma_ca_cancel(void);
+
+#endif // NRF_802154_CSMA_CA_CANCEL_ENABLED
 
 /**
  *@}

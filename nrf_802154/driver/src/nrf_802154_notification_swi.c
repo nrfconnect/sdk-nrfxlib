@@ -63,6 +63,31 @@
 #define RAW_PAYLOAD_OFFSET 1
 #define RAW_LENGTH_OFFSET  0
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+#define NOTIFY_ASSERT(notified)         \
+    do                                  \
+    {                                   \
+        if (!m_notifications_blocked)   \
+        {                               \
+            NRF_802154_ASSERT(notified);\
+        }                               \
+        (void)notified;                 \
+    }                                   \
+    while (0)
+
+#else // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+#define NOTIFY_ASSERT(notified)     \
+    do                              \
+    {                               \
+        NRF_802154_ASSERT(notified);\
+        (void)notified;             \
+    }                               \
+    while (0)
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
 /** @brief Size of pool of slots for notifications that must not be lost.
  *
  * The pool needs to contain slots for:
@@ -203,6 +228,13 @@ static nrf_802154_queue_entry_t m_notifications_queue_memory[NTF_QUEUE_SIZE];
 
 static volatile nrf_802154_mcu_critical_state_t m_mcu_cs;
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+/** @brief Flag indicating if notifications are blocked. */
+static volatile bool m_notifications_blocked = false;
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
 #if (NRF_802154_MAX_PENDING_NOTIFICATIONS + 1) != (NTF_QUEUE_SIZE)
 #error "Mismatching sizes of notification queue and maximum number of pending notifications"
 #endif
@@ -216,6 +248,16 @@ static volatile nrf_802154_mcu_critical_state_t m_mcu_cs;
  */
 static uint8_t ntf_slot_alloc(nrf_802154_ntf_data_t * p_pool, size_t pool_len)
 {
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+    if (m_notifications_blocked)
+    {
+        /* Enqueue disabled (e.g. driver reinit). */
+        return NTF_INVALID_SLOT_ID;
+    }
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
     // Linear search for a free slot
     for (size_t i = 0; i < pool_len; i++)
     {
@@ -300,6 +342,40 @@ static void ntf_push(uint8_t slot_id)
     p_entry->id = slot_id;
     ntf_exit();
 }
+
+/** @brief Pop a notification from the queue and return the pointer to the data slot.
+ *
+ * @param[in]  p_queue  Pointer to the queue to pop from.
+ *
+ * @return Pointer to the data slot in the pool.
+ */
+static nrf_802154_ntf_data_t * ntf_queue_pop_and_get_data_slot(const nrf_802154_queue_t * p_queue)
+{
+    nrf_802154_queue_entry_t * p_entry =
+        (nrf_802154_queue_entry_t *)nrf_802154_queue_pop_begin(p_queue);
+
+    uint8_t slot_id = p_entry->id & (~NTF_POOL_ID_MASK);
+
+    return (p_entry->id & NTF_POOL_ID_MASK) ? &m_primary_ntf_pool[slot_id] :
+           &m_secondary_ntf_pool[slot_id];
+}
+
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+/**
+ * Free the ACK buffer if it is present in the metadata.
+ *
+ * @param[in]  p_metadata  Pointer to the metadata structure.
+ */
+static void free_ack_buffer(const nrf_802154_transmit_done_metadata_t * p_metadata)
+{
+    if (p_metadata->data.transmitted.p_ack != NULL)
+    {
+        nrf_802154_buffer_free_raw(p_metadata->data.transmitted.p_ack);
+    }
+}
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
 
 /**
  * @brief Notifies the next higher layer that a frame was received.
@@ -586,9 +662,17 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
 
     bool notified = swi_notify_received(p_data, power, lqi);
 
-    // It should always be possible to notify a successful reception
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+    if (!notified && m_notifications_blocked)
+    {
+        /* Notifications are blocked and failed is expected, free the buffer. */
+        nrf_802154_buffer_free_raw(p_data);
+    }
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -611,9 +695,17 @@ void nrf_802154_notify_transmitted(uint8_t                                   * p
 
     bool notified = swi_notify_transmitted(p_frame, p_metadata);
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+    if (!notified && m_notifications_blocked)
+    {
+        free_ack_buffer(p_metadata);
+    }
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
     // It should always be possible to notify transmission result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -627,8 +719,7 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
     bool notified = swi_notify_transmit_failed(p_frame, error, p_metadata);
 
     // It should always be possible to notify transmission result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -640,8 +731,7 @@ void nrf_802154_notify_energy_detected(const nrf_802154_energy_detected_t * p_re
     bool notified = swi_notify_energy_detected(p_result);
 
     // It should always be possible to notify energy detection result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -653,8 +743,7 @@ void nrf_802154_notify_energy_detection_failed(nrf_802154_ed_error_t error)
     bool notified = swi_notify_energy_detection_failed(error);
 
     // It should always be possible to notify energy detection result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -666,8 +755,7 @@ void nrf_802154_notify_cca(bool is_free)
     bool notified = swi_notify_cca(is_free);
 
     // It should always be possible to notify CCA result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -679,8 +767,7 @@ void nrf_802154_notify_cca_failed(nrf_802154_cca_error_t error)
     bool notified = swi_notify_cca_failed(error);
 
     // It should always be possible to notify CCA result
-    NRF_802154_ASSERT(notified);
-    (void)notified;
+    NOTIFY_ASSERT(notified);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -692,14 +779,26 @@ static void irq_handler_ntf_event(void)
 
     while (!nrf_802154_queue_is_empty(&m_notifications_queue))
     {
-        nrf_802154_queue_entry_t * p_entry =
-            (nrf_802154_queue_entry_t *)nrf_802154_queue_pop_begin(&m_notifications_queue);
+        nrf_802154_ntf_data_t * p_slot = ntf_queue_pop_and_get_data_slot(&m_notifications_queue);
 
-        uint8_t slot_id = p_entry->id & (~NTF_POOL_ID_MASK);
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+        if (m_notifications_blocked)
+        {
+            if (p_slot->type == NTF_TYPE_RECEIVED)
+            {
+                nrf_802154_buffer_free_raw(p_slot->data.received.p_data);
+            }
+            else if (p_slot->type == NTF_TYPE_TRANSMITTED)
+            {
+                free_ack_buffer(&p_slot->data.transmitted.metadata);
+            }
 
-        nrf_802154_ntf_data_t * p_slot =
-            (p_entry->id & NTF_POOL_ID_MASK) ? &m_primary_ntf_pool[slot_id] :
-            &m_secondary_ntf_pool[slot_id];
+            nrf_802154_queue_pop_commit(&m_notifications_queue);
+            ntf_slot_free(p_slot);
+
+            break;
+        }
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
 
         switch (p_slot->type)
         {
@@ -753,6 +852,63 @@ static void irq_handler_ntf_event(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
+void nrf_802154_notification_queue_flush(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    nrf_802154_mcu_critical_state_t mcu_cs = nrf_802154_mcu_critical_enter();
+
+    while (!nrf_802154_queue_is_empty(&m_notifications_queue))
+    {
+        nrf_802154_ntf_data_t * p_slot =
+            ntf_queue_pop_and_get_data_slot(&m_notifications_queue);
+
+        if (p_slot->type == NTF_TYPE_RECEIVED)
+        {
+            nrf_802154_buffer_free_raw(p_slot->data.received.p_data);
+        }
+        else if (p_slot->type == NTF_TYPE_TRANSMITTED)
+        {
+            free_ack_buffer(&p_slot->data.transmitted.metadata);
+        }
+
+        nrf_802154_queue_pop_commit(&m_notifications_queue);
+        ntf_slot_free(p_slot);
+    }
+
+    nrf_802154_mcu_critical_exit(mcu_cs);
+
+    /* Clear any pending event if it is set */
+    if (nrf_egu_event_check(NRF_802154_EGU_INSTANCE, NTF_EVENT))
+    {
+        nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, NTF_EVENT);
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+void nrf_802154_notification_block_all_notifications(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    m_notifications_blocked = true;
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+void nrf_802154_notification_unblock_notifications(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    m_notifications_blocked = false;
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+
 void nrf_802154_notification_swi_irq_handler(void)
 {
     if (nrf_egu_event_check(NRF_802154_EGU_INSTANCE, NTF_EVENT))
@@ -769,6 +925,9 @@ void nrf_802154_notification_swi_module_reset(void)
     m_mcu_cs = 0UL;
     memset(&m_notifications_queue_memory, 0U, sizeof(m_notifications_queue_memory));
     memset(&m_notifications_queue, 0U, sizeof(m_notifications_queue));
+#if NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
+    m_notifications_blocked = false;
+#endif // NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
 }
 
 #endif // defined(TEST)

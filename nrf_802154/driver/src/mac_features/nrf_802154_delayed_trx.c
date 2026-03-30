@@ -201,7 +201,7 @@ static dly_op_data_t * dly_rx_data_by_id_search(rsch_dly_ts_id_t id)
 {
     dly_op_data_t * p_dly_op_data = NULL;
 
-    for (uint32_t i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         if (m_dly_rx_data[i].id == id)
         {
@@ -329,9 +329,7 @@ static dly_op_data_t * available_dly_ts_slot_from_pool_get(
  */
 static dly_op_data_t * available_dly_tx_slot_get(void)
 {
-    return available_dly_ts_slot_from_pool_get(
-        m_dly_tx_data,
-        sizeof(m_dly_tx_data) / sizeof(m_dly_tx_data[0]));
+    return available_dly_ts_slot_from_pool_get(m_dly_tx_data, NUMELTS(m_dly_tx_data));
 }
 
 /**
@@ -341,9 +339,7 @@ static dly_op_data_t * available_dly_tx_slot_get(void)
  */
 static dly_op_data_t * available_dly_rx_slot_get(void)
 {
-    return available_dly_ts_slot_from_pool_get(
-        m_dly_rx_data,
-        sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]));
+    return available_dly_ts_slot_from_pool_get(m_dly_rx_data, NUMELTS(m_dly_rx_data));
 }
 
 /**
@@ -355,7 +351,7 @@ static dly_op_data_t * ongoing_dly_rx_slot_get(void)
 {
     dly_op_data_t * p_dly_op_data = NULL;
 
-    for (uint32_t i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         if (m_dly_rx_data[i].state == DELAYED_TRX_OP_STATE_ONGOING)
         {
@@ -583,7 +579,7 @@ static void dly_rx_all_ongoing_abort(void)
     dly_op_data_t           * p_dly_op_data;
     bool                      result;
 
-    for (int i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         p_dly_op_data = &m_dly_rx_data[i];
 
@@ -822,14 +818,14 @@ void nrf_802154_delayed_trx_init(void)
                           sizeof(m_dly_rx_id_q_mem),
                           sizeof(m_dly_rx_id_q_mem[0]));
 
-    for (uint32_t i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         m_dly_rx_data[i].state = DELAYED_TRX_OP_STATE_STOPPED;
         m_dly_rx_data[i].id    = NRF_802154_RESERVED_INVALID_ID;
         nrf_802154_sl_timer_init(&m_dly_rx_data[i].rx.timeout_timer);
     }
 
-    for (uint32_t i = 0; i < sizeof(m_dly_tx_data) / sizeof(m_dly_tx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_tx_data); i++)
     {
         m_dly_tx_data[i].state                = DELAYED_TRX_OP_STATE_STOPPED;
         m_dly_tx_data[i].id                   = NRF_802154_RESERVED_INVALID_ID;
@@ -839,7 +835,7 @@ void nrf_802154_delayed_trx_init(void)
 
 void nrf_802154_delayed_trx_deinit(void)
 {
-    for (uint32_t i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         nrf_802154_sl_timer_deinit(&m_dly_rx_data[i].rx.timeout_timer);
     }
@@ -1032,6 +1028,31 @@ bool nrf_802154_delayed_trx_receive_scheduled_cancel(uint32_t id)
     return result;
 }
 
+#if NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+
+void nrf_802154_delayed_trx_receive_cancel_all(void)
+{
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
+    {
+        dly_op_data_t  * p_dly_op_data = &m_dly_rx_data[i];
+        rsch_dly_ts_id_t id            = p_dly_op_data->id;
+
+        if (id == NRF_802154_RESERVED_INVALID_ID)
+        {
+            continue;
+        }
+
+        (void)nrf_802154_rsch_delayed_timeslot_cancel(id, false);
+        (void)nrf_802154_sl_timer_remove(&p_dly_op_data->rx.timeout_timer);
+
+        p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
+        nrf_802154_sl_atomic_store_u8((uint8_t *)&p_dly_op_data->state,
+                                      DELAYED_TRX_OP_STATE_STOPPED);
+    }
+}
+
+#endif // NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
+
 bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -1078,7 +1099,7 @@ bool nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(uint32_t * p_drx_ti
     uint32_t drx_time_to_midpoint;
     uint32_t drx_window_duration_time;
 
-    for (int i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
+    for (uint32_t i = 0; i < NUMELTS(m_dly_rx_data); i++)
     {
         if (m_dly_rx_data[i].state != DELAYED_TRX_OP_STATE_PENDING)
         {

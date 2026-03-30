@@ -110,6 +110,28 @@ extern "C" {
  */
 void nrf_802154_init(void);
 
+#if (!NRF_802154_SERIALIZATION_HOST && NRF_802154_DRV_REINIT_ENABLED) || defined(DOXYGEN)
+
+/**
+ * @brief Reinitializes the 802.15.4 driver.
+ *
+ * This function reinitializes the driver by moving the RADIO peripheral to
+ * @ref RADIO_STATE_SLEEP and restoring driver-managed state to defaults. All ongoing and
+ * delayed operations are cancelled. The configuration, counters, and security keys revert
+ * to their default values.
+ *
+ * @note Call this function only when the application or transport protocol is in idle state,
+ *       i.e. not transmitting nor receiving frames. This is required to keep the radio in the
+ *       @ref RADIO_STATE_SLEEP state and prevent to use the driver during the reinitialization.
+ *
+ * @retval true  Reinitialization was successful.
+ * @retval false Reinitialization failed because the radio was busy and could not be put to sleep.
+ *               Call this function again when the radio can be placed in sleep.
+ */
+bool nrf_802154_reinit(void);
+
+#endif // !NRF_802154_SERIALIZATION_HOST && NRF_802154_DRV_REINIT_ENABLED
+
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 /**
  * @brief Deinitializes the 802.15.4 driver.
@@ -333,28 +355,76 @@ uint64_t nrf_802154_time_get(void);
  * @brief Sets the PAN ID used by the device.
  *
  * @param[in]  p_pan_id  Pointer to the PAN ID (2 bytes, little-endian).
+ *                       Must not be NULL.
  *
  * This function makes a copy of the PAN ID.
  */
 void nrf_802154_pan_id_set(const uint8_t * p_pan_id);
 
+#if (!NRF_802154_SERIALIZATION_HOST && NRF_802154_PAN_ID_GET_ENABLED) || defined(DOXYGEN)
+
+/**
+ * @brief Gets the PAN ID used by the device.
+ *
+ * @param[out] p_pan_id  Pointer to the buffer where the PAN ID value will be
+ *                       stored (2 bytes, little-endian).
+ *
+ * @retval true  The PAN ID was retrieved successfully.
+ * @retval false The PAN ID could not be retrieved or the pointer is NULL.
+ */
+bool nrf_802154_pan_id_get(uint8_t * p_pan_id);
+
+#endif // !NRF_802154_SERIALIZATION_HOST && NRF_802154_PAN_ID_GET_ENABLED
+
 /**
  * @brief Sets the extended address of the device.
  *
  * @param[in]  p_extended_address  Pointer to the extended address (8 bytes, little-endian).
+ *                                 Must not be NULL.
  *
  * This function makes a copy of the address.
  */
 void nrf_802154_extended_address_set(const uint8_t * p_extended_address);
 
+#if (!NRF_802154_SERIALIZATION_HOST && NRF_802154_EXTENDED_ADDRESS_GET_ENABLED) || defined(DOXYGEN)
+
+/**
+ * @brief Gets the extended address of the device.
+ *
+ * @param[out] p_extended_address  Pointer to the buffer where the extended address will be
+ *                                 stored (8 bytes, little-endian).
+ *
+ * @retval true  The extended address was retrieved successfully.
+ * @retval false The extended address could not be retrieved or the pointer is NULL.
+ */
+bool nrf_802154_extended_address_get(uint8_t * p_extended_address);
+
+#endif // !NRF_802154_SERIALIZATION_HOST && NRF_802154_EXTENDED_ADDRESS_GET_ENABLED
+
 /**
  * @brief Sets the short address of the device.
  *
  * @param[in]  p_short_address  Pointer to the short address (2 bytes, little-endian).
+ *                              Must not be NULL.
  *
  * This function makes a copy of the address.
  */
 void nrf_802154_short_address_set(const uint8_t * p_short_address);
+
+#if (!NRF_802154_SERIALIZATION_HOST && NRF_802154_SHORT_ADDRESS_GET_ENABLED) || defined(DOXYGEN)
+
+/**
+ * @brief Gets the short address of the device.
+ *
+ * @param[out] p_short_address  Pointer to the buffer where the short address will be
+ *                              stored (2 bytes, little-endian).
+ *
+ * @retval true  The short address was retrieved successfully.
+ * @retval false The short address could not be retrieved or the pointer is NULL.
+ */
+bool nrf_802154_short_address_get(uint8_t * p_short_address);
+
+#endif // !NRF_802154_SERIALIZATION_HOST && NRF_802154_SHORT_ADDRESS_GET_ENABLED
 
 /**
  * @brief Sets the alternate short address of the device.
@@ -378,6 +448,22 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address);
  * This function makes a copy of the address.
  */
 void nrf_802154_alternate_short_address_set(const uint8_t * p_short_address);
+
+#if (!NRF_802154_SERIALIZATION_HOST && NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED) || defined(DOXYGEN)
+
+/**
+ * @brief Gets the alternate short address of the device.
+ *
+ * @param[out] p_short_address  Pointer to the buffer where the alternate short address will be
+ *                              stored (2 bytes, little-endian).
+ *
+ * @retval true  The alternate short address was retrieved successfully.
+ * @retval false The alternate short address is not set or could not be retrieved.
+ *               Function returns false also if the pointer is NULL.
+ */
+bool nrf_802154_alternate_short_address_get(uint8_t * p_short_address);
+
+#endif // !NRF_802154_SERIALIZATION_HOST && NRF_802154_ALTERNATE_SHORT_ADDRESS_GET_ENABLED
 
 /**
  * @}
