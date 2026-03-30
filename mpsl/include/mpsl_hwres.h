@@ -43,6 +43,8 @@
     defined(NRF54LM20A_ENGA_XXAA) || \
     defined(NRF54LM20A_XXAA) || \
     defined(NRF54LM20B_XXAA) || \
+    defined(NRF54LS05A_ENGA_XXAA) || \
+    defined(NRF54LS05A_XXAA) || \
     defined(NRF54LS05B_ENGA_XXAA) || \
     defined(NRF54LS05B_XXAA) || \
     defined(NRF7120_ENGA_XXAA)
