@@ -31,6 +31,9 @@ Added
     It is available only for the non-serialized driver. (KRKNWK-21633)
     To enable this feature, set the :c:macro:`NRF_802154_DRV_REINIT_ENABLED` configuration macro to ``1``.
 
+* The :kconfig:option:`CONFIG_NRF_802154_DRV_REINIT_ENABLED` Kconfig option for the |NCS| build system.
+  When this option is enabled, the build defines :c:macro:`NRF_802154_DRV_REINIT_ENABLED` as ``1``, which enables :c:func:`nrf_802154_reinit`. (KRKNWK-21684)
+
 Minor changes
 =============
 
