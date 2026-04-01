@@ -72,21 +72,21 @@ static frame_version_t frame_version_is_2015_or_above(
 
 void nrf_802154_ack_generator_init(void)
 {
-    // Both generators are initialized to enable sending both Imm-Acks and Enh-Acks.
+    /* Both generators are initialized to enable sending both Imm-Acks and Enh-Acks. */
     nrf_802154_imm_ack_generator_init();
     nrf_802154_enh_ack_generator_init();
 }
 
 void nrf_802154_ack_generator_reset(void)
 {
-    // Both generators are reset to enable sending both Imm-Ack and Enh-Ack.
+    /* Both generators are reset to enable sending both Imm-Ack and Enh-Ack. */
     nrf_802154_imm_ack_generator_reset();
     nrf_802154_enh_ack_generator_reset();
 }
 
 uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t * p_frame_data)
 {
-    // This function should not be called if ACK is not requested.
+    /* This function should not be called if ACK is not requested. */
     NRF_802154_ASSERT(nrf_802154_frame_ar_bit_is_set(p_frame_data));
 
     switch (frame_version_is_2015_or_above(p_frame_data))

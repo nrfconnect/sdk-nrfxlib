@@ -48,7 +48,7 @@
 #include "mac_features/nrf_802154_frame.h"
 
 /**
- * @brief Initializes the ACK data generator module.
+ * @brief Initialize the ACK data generator module.
  */
 void nrf_802154_ack_data_init(void);
 
@@ -60,7 +60,7 @@ void nrf_802154_ack_data_init(void);
 void nrf_802154_ack_data_enable(bool enabled);
 
 /**
- * @brief Adds an address to the ACK data list.
+ * @brief Add an address to the ACK data list.
  *
  * ACK frames sent in response to frames with the source address matching any address from the ACK data list
  * will have the appropriate data set. If the source address does not match any of the addresses in the
@@ -82,7 +82,7 @@ bool nrf_802154_ack_data_for_addr_set(const uint8_t       * p_addr,
                                       uint8_t               data_len);
 
 /**
- * @brief Removes an address from the ACK data list.
+ * @brief Remove an address from the ACK data list.
  *
  * ACK frames sent in response to frames with the source address matching any address from
  * the ACK data list will have the appropriate data set. If the source address does not match
@@ -100,7 +100,7 @@ bool nrf_802154_ack_data_for_addr_clear(const uint8_t       * p_addr,
                                         nrf_802154_ack_data_t data_type);
 
 /**
- * @brief Removes all addresses of a given length from the ACK data list.
+ * @brief Remove all addresses of a given length from the ACK data list.
  *
  * @param[in]  extended  Indication if all extended addresses or all short addresses are
  *                       to be removed from the list.
@@ -122,7 +122,7 @@ void nrf_802154_ack_data_reset(bool extended, nrf_802154_ack_data_t data_type);
 void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_method);
 
 /**
- * @brief Checks if a pending bit is to be set in the ACK frame sent in response to a given frame.
+ * @brief Check if a pending bit is to be set in the ACK frame sent in response to a given frame.
  *
  * @param[in]  p_frame_data  Pointer to the frame parser data for which the ACK frame is being prepared.
  *
@@ -133,7 +133,7 @@ bool nrf_802154_ack_data_pending_bit_should_be_set(
     const nrf_802154_frame_t * p_frame_data);
 
 /**
- * @brief Gets the IE data stored in the list for the source address of the provided frame.
+ * @brief Get the IE data stored in the list for the source address of the provided frame.
  *
  * @param[in]  p_src_addr    Pointer to the source address to search for in the list.
  * @param[in]  src_addr_ext  If the source address is extended.
@@ -145,4 +145,4 @@ const uint8_t * nrf_802154_ack_data_ie_get(const uint8_t * p_src_addr,
                                            bool            src_addr_ext,
                                            uint8_t       * p_ie_length);
 
-#endif // NRF_802154_ACK_DATA_H
+#endif /* NRF_802154_ACK_DATA_H */
