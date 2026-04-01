@@ -91,18 +91,15 @@
 #include "NRF_AES_ECB.h"
 #endif
 
-/// Delay before first check of received frame: 24 bits is PHY header and MAC Frame Control field.
-#define BCC_INIT                    (3 * 8)
+#define BCC_INIT                    (3 * 8)      /**< Delay before first check of received frame: 24 bits is PHY header and MAC Frame Control field. */
 
-/// Duration of single iteration of Energy Detection procedure
-#define ED_ITER_DURATION            128U
-/// Overhead of hardware preparation for ED procedure (aTurnaroundTime) [number of iterations]
-#define ED_ITERS_OVERHEAD           2U
+#define ED_ITER_DURATION            128U         /**< Duration of single iteration of Energy Detection procedure. */
+#define ED_ITERS_OVERHEAD           2U           /**< Overhead of hardware preparation for ED procedure (aTurnaroundTime) [number of iterations]. */
 
-#define MAX_CRIT_SECT_TIME          60           ///< Maximal time that the driver spends in single critical section.
+#define MAX_CRIT_SECT_TIME          60U          /**< Maximal time that the driver spends in single critical section. */
 
-#define LQI_VALUE_FACTOR            ED_RSSISCALE ///< Factor needed to calculate LQI value based on data from RADIO peripheral
-#define LQI_MAX                     0xff         ///< Maximal LQI value
+#define LQI_VALUE_FACTOR            ED_RSSISCALE /**< Factor needed to calculate LQI value based on data from RADIO peripheral. */
+#define LQI_MAX                     0xff         /**< Maximal LQI value. */
 
 /** Get LQI of given received packet. If CRC is calculated by hardware LQI is included instead of CRC
  *  in the frame. Length is stored in byte with index 0; CRC is 2 last bytes.
@@ -114,38 +111,39 @@
  */
 #define PRESTARTED_TIMER_TIMEOUT_US (160U)
 
-static rx_buffer_t * mp_current_rx_buffer;         /// Pointer to currently used receive buffer.
-static uint8_t * mp_ack;                           ///< Pointer to Ack frame buffer.
-static uint32_t  m_ed_time_left;                   ///< Remaining time of the current energy detection procedure [us].
-static int8_t    m_ed_result;                      ///< Result of the current energy detection procedure.
-static uint8_t   m_last_lqi;                       ///< LQI of the last received non-ACK frame, corrected for the temperature.
-static int8_t    m_last_rssi;                      ///< RSSI of the last received non-ACK frame, corrected for the temperature.
-static uint8_t   m_no_rx_buffer_notified;          ///< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified.
+static rx_buffer_t * mp_current_rx_buffer;         /**< Pointer to currently used receive buffer. */
+static uint8_t * mp_ack;                           /**< Pointer to Ack frame buffer. */
+static uint32_t  m_ed_time_left;                   /**< Remaining time of the current energy detection procedure [us]. */
+static int8_t    m_ed_result;                      /**< Result of the current energy detection procedure. */
+static uint8_t   m_last_lqi;                       /**< LQI of the last received non-ACK frame, corrected for the temperature. */
+static int8_t    m_last_rssi;                      /**< RSSI of the last received non-ACK frame, corrected for the temperature. */
+static uint8_t   m_no_rx_buffer_notified;          /**< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified. */
 
-static nrf_802154_frame_t m_current_rx_frame_data; ///< RX frame parser data.
+static nrf_802154_frame_t m_current_rx_frame_data; /**< RX frame parser data. */
 
 static nrf_802154_transmit_params_t m_tx;
 
-static volatile radio_state_t m_state; ///< State of the radio driver.
+static volatile radio_state_t m_state; /**< State of the radio driver. */
 
 typedef struct
 {
-    bool frame_filtered        : 1; ///< If frame being received passed filtering operation.
-    bool frame_parsed          : 1; ///< If frame being received has been parsed
-    bool rx_timeslot_requested : 1; ///< If timeslot for the frame being received is already requested.
-    bool tx_with_cca           : 1; ///< If currently transmitted frame is transmitted with cca.
-    bool tx_diminished_prio    : 1; ///< If priority of the current transmission should be diminished.
+    bool frame_filtered        : 1; /**< If frame being received passed filtering operation. */
+    bool frame_parsed          : 1; /**< If frame being received has been parsed. */
+    bool rx_timeslot_requested : 1; /**< If timeslot for the frame being received is already requested. */
+    bool tx_with_cca           : 1; /**< If currently transmitted frame is transmitted with cca. */
+    bool tx_diminished_prio    : 1; /**< If priority of the current transmission should be diminished. */
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-    bool tx_started_notify     : 1; ///< If higher layer should be notified that transmission started.
 
-#endif
+    bool tx_started_notify : 1; /**< If higher layer should be notified that transmission started. */
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
 } nrf_802154_flags_t;
 
-static nrf_802154_flags_t m_flags;                            ///< Flags used to store the current driver state.
+static nrf_802154_flags_t m_flags;                            /**< Flags used to store the current driver state. */
 
-static volatile bool        m_rsch_timeslot_is_granted;       ///< State of the RSCH timeslot.
-static volatile rsch_prio_t m_rsch_priority = RSCH_PRIO_IDLE; ///< Last notified RSCH priority.
+static volatile bool        m_rsch_timeslot_is_granted;       /**< State of the RSCH timeslot. */
+static volatile rsch_prio_t m_rsch_priority = RSCH_PRIO_IDLE; /**< Last notified RSCH priority. */
 
 /** @brief Value of argument @c notifications_mask to @ref nrf_802154_trx_receive_frame */
 static nrf_802154_trx_receive_notifications_t m_trx_receive_frame_notifications_mask;
@@ -175,7 +173,8 @@ static void request_preconditions_for_state(radio_state_t state)
     nrf_802154_rsch_crit_sect_prio_request(min_required_rsch_prio(state));
 }
 
-/** Set driver state.
+/**
+ * @brief Set driver state.
  *
  * @param[in]  state  Driver state to set.
  */
@@ -190,7 +189,8 @@ static void state_set(radio_state_t state)
     request_preconditions_for_state(state);
 }
 
-/** Specifies what ramp up trigger mode to use when handling RX or TX operation request.
+/**
+ * @brief Specify the ramp up trigger mode to use when handling RX or TX operation request.
  *
  * It is assumed that the DELAYED_TRX module always requests HW mode both RX and TX,
  * while in all other cases SW mode is required.
@@ -203,7 +203,9 @@ static nrf_802154_trx_ramp_up_trigger_mode_t ramp_up_mode_choose(req_originator_
            TRX_RAMP_UP_HW_TRIGGER : TRX_RAMP_UP_SW_TRIGGER;
 }
 
-/** Clear RX frame data. */
+/**
+ * @brief Clear RX frame data.
+ */
 static void rx_data_clear(void)
 {
     (void)nrf_802154_frame_parser_data_init(mp_current_rx_buffer->data,
@@ -215,7 +217,9 @@ static void rx_data_clear(void)
     mp_ack = NULL;
 }
 
-/** Clear flags describing frame being received. */
+/**
+ * @brief Clear flags describing frame being received.
+ */
 static void rx_flags_clear(void)
 {
     m_flags.frame_filtered        = false;
@@ -223,17 +227,21 @@ static void rx_flags_clear(void)
     m_flags.frame_parsed          = false;
 }
 
-/** Wait for the RSSI measurement. */
+/**
+ * @brief Wait for the RSSI measurement.
+ */
 static void rssi_measurement_wait(void)
 {
     while (!nrf_802154_trx_rssi_sample_is_available())
     {
-        // Intentionally empty: This function is called from a critical section.
-        // WFE would not be waken up by a RADIO event.
+        /* Intentionally empty: This function is called from a critical section.
+         * WFE would not be waken up by a RADIO event.
+         */
     }
 }
 
-/** Get the result of the last RSSI measurement.
+/**
+ * @brief Get the result of the last RSSI measurement.
  *
  * @returns  Result of the last RSSI measurement in dBm.
  */
@@ -242,7 +250,8 @@ static int8_t rssi_last_measurement_get(void)
     return nrf_802154_trx_rssi_last_sample_get();
 }
 
-/** Get LQI of a received frame.
+/**
+ * @brief Get LQI of a received frame.
  *
  * @param[in]  p_data  Pointer to buffer containing PHR and PSDU of received frame
  *
@@ -263,7 +272,8 @@ static uint8_t lqi_get(const uint8_t * p_data)
     return (uint8_t)lqi;
 }
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
 /**
  * @brief Get timestamp made by timer coordinator.
  *
@@ -288,20 +298,27 @@ static uint64_t timer_coord_timestamp_get(void)
     }
     else
     {
-        // Return timestamp without correction
+        /* Return timestamp without correction */
     }
 
     return timestamp;
 }
 
-#endif
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 
+/**
+ * @brief Notify MAC layer that a frame was received.
+ *
+ * @param[in]  p_data  Pointer to the received frame.
+ */
 static void received_frame_notify(uint8_t * p_data)
 {
     nrf_802154_notify_received(p_data, m_last_rssi, m_last_lqi);
 }
 
-/** Allow nesting critical sections and notify MAC layer that a frame was received. */
+/**
+ * @brief Allow nesting critical sections and notify MAC layer that a frame was received.
+ */
 static void received_frame_notify_and_nesting_allow(uint8_t * p_data)
 {
     nrf_802154_critical_section_nesting_allow();
@@ -311,32 +328,44 @@ static void received_frame_notify_and_nesting_allow(uint8_t * p_data)
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Notify MAC layer that receive procedure failed. */
+/**
+ * @brief Notify MAC layer that receive procedure failed.
+ *
+ * @param[in]  error  Error code.
+ */
 static void receive_failed_notify(nrf_802154_rx_error_t error)
 {
     nrf_802154_critical_section_nesting_allow();
 
-    // Don't care about the result - if the notification cannot be performed
-    // no impact on the device's operation is expected
+    /* Don't care about the result - if the notification cannot be performed
+     * no impact on the device's operation is expected
+     */
     (void)nrf_802154_notify_receive_failed(error, m_rx_window_id, true);
 
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Notify MAC layer that transmission of ACK frame has started. */
+/**
+ * @brief Notify MAC layer that transmission of ACK frame has started.
+ */
 static void transmit_ack_started_notify()
 {
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+
     nrf_802154_core_hooks_tx_ack_started(mp_ack);
-#else
-    /**
-     * Otherwise this was already called immediately after setting up the transmission.
-     */
-#endif
+
+#else /* CONFIG_SOC_SERIES_BSIM_NRFXX */
+
+    /* Otherwise this was already called immediately after setting up the transmission. */
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
+
     nrf_802154_tx_ack_started(mp_ack);
 }
 
-/** Notify that reception of a frame has started. */
+/**
+ * @brief Notify that reception of a frame has started.
+ */
 static void receive_started_notify(void)
 {
     nrf_802154_core_hooks_rx_started(&m_current_rx_frame_data);
@@ -394,7 +423,9 @@ static void tx_client_transmitted_notify(nrf_802154_frame_t                     
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-/** Notify MAC layer that transmission of requested frame has started. */
+/**
+ * @brief Notify MAC layer that transmission of requested frame has started.
+ */
 static void transmit_started_notify(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -411,7 +442,13 @@ static void transmit_started_notify(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-/** Notify MAC layer that a frame was transmitted. */
+/**
+ * @brief Notify MAC layer that a frame was transmitted.
+ *
+ * @param[in]  p_ack   Pointer to the ACK frame.
+ * @param[in]  power   Power of the transmitted frame.
+ * @param[in]  lqi     LQI of the transmitted frame.
+ */
 static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -432,7 +469,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
         metadata.data.transmitted.time   = nrf_802154_stat_timestamp_read_last_ack_end_timestamp();
     }
 
-    // Update the transmitted frame contents and update frame status flags
+    /* Update the transmitted frame contents and update frame status flags */
     nrf_802154_tx_work_buffer_original_frame_update(m_tx.frame.p_frame,
                                                     &metadata.frame_props);
 
@@ -447,7 +484,12 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-/** Notify MAC layer that transmission procedure failed. */
+/**
+ * @brief Notify MAC layer that transmission procedure failed.
+ *
+ * @param[in]  error   Error code.
+ * @param[in]  p_meta  Pointer to the transmission done metadata.
+ */
 static void transmit_failed_notify(nrf_802154_tx_error_t                       error,
                                    const nrf_802154_transmit_done_metadata_t * p_meta)
 {
@@ -459,7 +501,12 @@ static void transmit_failed_notify(nrf_802154_tx_error_t                       e
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-/** Allow nesting critical sections and notify MAC layer that transmission procedure failed. */
+/**
+ * @brief Allow nesting critical sections and notify MAC layer that transmission procedure failed.
+ *
+ * @param[in]  error   Error code.
+ * @param[in]  p_meta  Pointer to the transmission done metadata.
+ */
 static void transmit_failed_notify_and_nesting_allow(
     nrf_802154_tx_error_t                       error,
     const nrf_802154_transmit_done_metadata_t * p_meta)
@@ -471,7 +518,11 @@ static void transmit_failed_notify_and_nesting_allow(
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Notify MAC layer that energy detection procedure ended. */
+/**
+ * @brief Notify MAC layer that energy detection procedure ended.
+ *
+ * @param[in]  p_result  Pointer to the energy detection result.
+ */
 static void energy_detected_notify(const nrf_802154_energy_detected_t * p_result)
 {
     nrf_802154_critical_section_nesting_allow();
@@ -481,7 +532,11 @@ static void energy_detected_notify(const nrf_802154_energy_detected_t * p_result
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Notify MAC layer that CCA procedure ended. */
+/**
+ * @brief Notify MAC layer that CCA procedure ended.
+ *
+ * @param[in]  result  Result of the CCA procedure.
+ */
 static void cca_notify(bool result)
 {
     nrf_802154_critical_section_nesting_allow();
@@ -491,7 +546,8 @@ static void cca_notify(bool result)
     nrf_802154_critical_section_nesting_deny();
 }
 
-/** Check if timeslot is currently granted.
+/**
+ * @brief Check if timeslot is currently granted.
  *
  * @retval true   The timeslot is granted.
  * @retval false  The timeslot is not granted.
@@ -511,7 +567,8 @@ static bool antenna_diversity_is_enabled(void)
  * @section RX buffer management
  **************************************************************************************************/
 
-/** Set currently used rx buffer to given address.
+/**
+ * @brief Set currently used rx buffer to given address.
  *
  * @param[in]  p_rx_buffer  Pointer to receive buffer that should be used now.
  */
@@ -520,7 +577,8 @@ static void rx_buffer_in_use_set(rx_buffer_t * p_rx_buffer)
     mp_current_rx_buffer = p_rx_buffer;
 }
 
-/** Check if currently there is available rx buffer.
+/**
+ * @brief Check if currently there is available rx buffer.
  *
  * @retval true   There is available rx buffer.
  * @retval false  Currently there is no available rx buffer.
@@ -530,7 +588,8 @@ static bool rx_buffer_is_available(void)
     return (mp_current_rx_buffer != NULL) && (mp_current_rx_buffer->free);
 }
 
-/** Get pointer to available rx buffer.
+/**
+ * @brief Get pointer to available rx buffer.
  *
  * @returns Pointer to available rx buffer or NULL if rx buffer is not available.
  */
@@ -543,7 +602,8 @@ static uint8_t * rx_buffer_get(void)
  * @section ACK transmission management
  **************************************************************************************************/
 
-/** Check if ACK is requested in the given frame to be transmitted.
+/**
+ * @brief Check if ACK is requested in the given frame to be transmitted.
  *
  * @param[in]  p_frame  Pointer to a TX frame to check.
  *
@@ -554,13 +614,13 @@ static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
 {
     if (nrf_802154_frame_parse_level_get(p_frame) < PARSE_LEVEL_FCF_OFFSETS)
     {
-        // The frame is badly formatted.
+        /* The frame is badly formatted. */
         return false;
     }
 
     if (nrf_802154_frame_type_get(p_frame) == FRAME_TYPE_MULTIPURPOSE)
     {
-        // Multipurpose frame parsing is not implemented, so assume AR is not set.
+        /* Multipurpose frame parsing is not implemented, so assume AR is not set. */
         return false;
     }
 
@@ -571,7 +631,8 @@ static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
  * @section Energy detection management
  **************************************************************************************************/
 
-/** Setup next iteration of energy detection procedure.
+/**
+ * @brief Set up the next iteration of energy detection procedure.
  *
  *  Energy detection procedure is performed in iterations to make sure it is performed for requested
  *  time regardless radio arbitration.
@@ -638,9 +699,12 @@ static rsch_prio_t min_required_rsch_prio(radio_state_t state)
         case RADIO_STATE_TX:
         case RADIO_STATE_TX_ACK:
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
+
             return RSCH_PRIO_TX;
 
         case RADIO_STATE_CCA_TX:
@@ -694,13 +758,16 @@ static int_fast8_t action_needed(rsch_prio_t old_prio, rsch_prio_t new_prio, rad
     return result;
 }
 
-/** Check if time remaining in the timeslot is long enough to process whole critical section. */
+/**
+ * @brief Check if time remaining in the timeslot is long enough to process whole critical section.
+ */
 static bool remaining_timeslot_time_is_enough_for_crit_sect(void)
 {
     return nrf_802154_rsch_timeslot_us_left_get() >= MAX_CRIT_SECT_TIME;
 }
 
-/** Check if critical section can be processed at the moment.
+/**
+ * @brief Check if critical section can be processed at the moment.
  *
  * @note This function returns valid result only inside critical section.
  *
@@ -712,7 +779,9 @@ static bool critical_section_can_be_processed_now(void)
     return !timeslot_is_granted() || remaining_timeslot_time_is_enough_for_crit_sect();
 }
 
-/** Enter critical section and verify if there is enough time to complete operations within. */
+/**
+ * @brief Enter critical section and verify if there is enough time to complete operations within.
+ */
 static bool critical_section_enter_and_verify_timeslot_length(void)
 {
     bool result = nrf_802154_critical_section_enter();
@@ -738,9 +807,11 @@ static bool can_terminate_current_operation(radio_state_t     state,
         case RADIO_STATE_SLEEP:
         case RADIO_STATE_FALLING_ASLEEP:
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
             result = true;
             break;
 
@@ -770,17 +841,21 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
     {
         case RADIO_STATE_SLEEP:
         case RADIO_STATE_FALLING_ASLEEP:
+
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
             break;
 
         case RADIO_STATE_RX:
             if (receiving_psdu_now)
             {
-                // Don't care about the result - if the notification cannot be performed
-                // no impact on the device's operation is expected
+                /* Don't care about the result - if the notification cannot be performed
+                 * no impact on the device's operation is expected.
+                 */
                 (void)nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_ABORTED,
                                                        m_rx_window_id,
                                                        true);
@@ -828,7 +903,8 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
     }
 }
 
-/** Terminate ongoing operation.
+/**
+ * @brief Terminate ongoing operation.
  *
  * This function is called when MAC layer requests transition to another operation.
  *
@@ -871,7 +947,8 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
             if (m_state == RADIO_STATE_RX)
             {
                 /* When in rx mode, nrf_802154_trx_receive_frame_prestarted handler might
-                 * have already been called. We need to stop counting timeout. */
+                 * have already been called. We need to stop counting timeout.
+                 */
                 m_rx_prestarted_trig_count = 0;
                 (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
 
@@ -881,7 +958,8 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
                 /* We might have boosted preconditions (to support coex) above level
                  * normally requested for current state by request_preconditions_for_state(m_state).
                  * When current operation is terminated we request preconditions back
-                 * thus ceasing to request to coex. */
+                 * thus ceasing to request to coex.
+                 */
                 request_preconditions_for_state(m_state);
             }
 
@@ -901,12 +979,14 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
     return result;
 }
 
-/** Initialize Falling Asleep operation. */
+/**
+ * @brief Initialize Falling Asleep operation.
+ */
 static void falling_asleep_init(void)
 {
     if (nrf_802154_trx_go_idle())
     {
-        // There will be nrf_802154_trx_in_idle call, where we will continue processing
+        /* There will be nrf_802154_trx_in_idle call, where we will continue processing */
     }
     else
     {
@@ -914,7 +994,9 @@ static void falling_asleep_init(void)
     }
 }
 
-/**@brief Makes value to be passed to @ref nrf_802154_trx_receive_frame as @c notifications_mask parameter */
+/**
+ * @brief Make value to be passed to @ref nrf_802154_trx_receive_frame as @c notifications_mask parameter
+ */
 static nrf_802154_trx_receive_notifications_t make_trx_frame_receive_notification_mask(void)
 {
     nrf_802154_trx_receive_notifications_t result = TRX_RECEIVE_NOTIFICATION_NONE;
@@ -932,13 +1014,15 @@ static nrf_802154_trx_receive_notifications_t make_trx_frame_receive_notificatio
         {
             case NRF_802154_COEX_RX_REQUEST_MODE_DESTINED:
                 /* Coex requesting handled through nrf_802154_trx_receive_frame_bcmatched handler.
-                 * No additional notifications required. */
+                 * No additional notifications required.
+                 */
                 break;
 
             case NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION:
                 result |= TRX_RECEIVE_NOTIFICATION_PRESTARTED | TRX_RECEIVE_NOTIFICATION_STARTED;
-                // Note: TRX_RECEIVE_NOTIFICATION_STARTED is required for stopping counting timeout for
-                // activity triggered by nrf_802154_trx_receive_frame_prestarted.
+                /* Note: TRX_RECEIVE_NOTIFICATION_STARTED is required for stopping counting timeout for
+                 * activity triggered by nrf_802154_trx_receive_frame_prestarted.
+                 */
                 break;
 
             case NRF_802154_COEX_RX_REQUEST_MODE_PREAMBLE:
@@ -953,10 +1037,11 @@ static nrf_802154_trx_receive_notifications_t make_trx_frame_receive_notificatio
     return result;
 }
 
-/**@brief Makes value to be passed to @ref nrf_802154_trx_transmit_frame as @c notifications_mask parameter
+/**
+ * @brief Make value to be passed to @ref nrf_802154_trx_transmit_frame as @c notifications_mask parameter
  *
- * @param[in] cca   Pass true, if cca operation it to be performed before transmit.
- *                  Pass false otherwise.
+ * @param[in] cca   Pass true, if cca operation is to be performed before transmit,
+ *                  pass false otherwise.
  */
 static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notification_mask(bool cca)
 {
@@ -1005,7 +1090,7 @@ static void rx_init_free_buffer_find_and_update(bool free_buffer)
 {
     if (!free_buffer)
     {
-        // If no buffer was available, then find a new one.
+        /* If no buffer was available, then find a new one. */
         rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
 
         uint8_t * rx_buffer = rx_buffer_get();
@@ -1020,7 +1105,7 @@ static void rx_init_free_buffer_find_and_update(bool free_buffer)
 }
 
 /**
- * @brief Initializes RX operation
+ * @brief Initialize RX operation.
  *
  * @param[in]  ru_tr_mode            Desired trigger mode for radio ramp up.
  * @param[out] p_abort_shall_follow  It is set to `true` when initialization fails and the trx
@@ -1045,11 +1130,11 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
         return;
     }
 
-    // Find available RX buffer
+    /* Find available RX buffer */
     free_buffer = rx_buffer_is_available();
     rx_init_free_buffer_find_and_update(free_buffer);
 
-    // Clear receive flags and data
+    /* Clear receive flags and data */
     rx_flags_clear();
     rx_data_clear();
 
@@ -1081,13 +1166,22 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
         }
     }
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-    // Configure the timer coordinator to get a timestamp of the CRCOK event.
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
+    /* Configure the timer coordinator to get a timestamp of the CRCOK event. */
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
-#endif
+
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 }
 
-/** Initialize TX operation. */
+/**
+ * @brief Initialize TX operation.
+ *
+ * @param[in]  rampup_trigg_mode  Trigger mode for radio ramp up.
+ *
+ * @retval true  TX operation initialized successfully.
+ * @retval false TX operation initialization failed.
+ */
 static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 {
     uint8_t cca_attempts = m_tx.cca ? (1 + m_tx.extra_cca_attempts) : 0;
@@ -1113,20 +1207,23 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
         return false;
     }
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
     if (cca)
     {
-        // Configure the timer coordinator to get a time stamp of the READY event.
-        // Note: This event triggers CCASTART, so the time stamp of READY event
-        // is the time stamp when CCA started.
+        /* Configure the timer coordinator to get a time stamp of the READY event.
+         * Note: This event triggers CCASTART, so the time stamp of READY event
+         * is the time stamp when CCA started.
+         */
         nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_ready_event_handle_get());
     }
     else
     {
-        // Configure the timer coordinator to get a time stamp of the PHYEND event.
+        /* Configure the timer coordinator to get a time stamp of the PHYEND event. */
         nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
     }
-#endif
+
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 
     nrf_802154_trx_channel_set(m_tx.channel);
     m_flags.tx_with_cca = cca;
@@ -1135,7 +1232,9 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
                                   cca_attempts,
                                   &m_tx.tx_power,
                                   m_trx_transmit_frame_notifications_mask);
+
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+
     /**
      * In simulation the frame contents are latched when the first bit of the preamble is
      * "transmitted" by the simulated radio. Any modifications performed after that (for example in
@@ -1155,7 +1254,7 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 
     if (cca)
     {
-        // Assume that the first CCA succeeds
+        /* Assume that the first CCA succeeds */
         adjustments.tx_started.time_to_radio_address_us +=
             RX_RAMP_UP_TIME + CCA_TIME + RX_TX_TURNAROUND_TIME;
     }
@@ -1175,7 +1274,8 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
     nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
 
     nrf_802154_bsim_utils_core_hooks_adjustments_set(&zeroes);
-#endif
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
 
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
@@ -1195,7 +1295,9 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
     return true;
 }
 
-/** Initialize ED operation */
+/**
+ * @brief Initialize ED operation.
+ */
 static void ed_init(void)
 {
     if (!timeslot_is_granted())
@@ -1210,20 +1312,23 @@ static void ed_init(void)
 
     uint32_t trx_ed_count = 0U;
 
-    // Notify antenna diversity about energy detection request. Antenna diversity state
-    // will be updated, and m_ed_time_left reduced accordingly.
+    /* Notify antenna diversity about energy detection request. Antenna diversity state
+     * will be updated, and m_ed_time_left reduced accordingly.
+     */
     nrf_802154_sl_ant_div_energy_detection_requested_notify(&m_ed_time_left);
 
     if (!ed_iter_setup(&m_ed_time_left, &trx_ed_count))
     {
-        // Just wait for next timeslot if there is not enough time in this one.
+        /* Just wait for next timeslot if there is not enough time in this one. */
         return;
     }
 
     nrf_802154_trx_energy_detection(trx_ed_count);
 }
 
-/** Initialize CCA operation. */
+/**
+ * @brief Initialize CCA operation.
+ */
 static void cca_init(void)
 {
     if (!timeslot_is_granted())
@@ -1246,7 +1351,9 @@ static void cca_init(void)
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-/** Initialize Continuous Carrier operation. */
+/**
+ * @brief Initialize Continuous Carrier operation.
+ */
 static void continuous_carrier_init(void)
 {
     if (!timeslot_is_granted())
@@ -1265,7 +1372,9 @@ static void continuous_carrier_init(void)
     nrf_802154_trx_continuous_carrier(&split_power);
 }
 
-/** Initialize Modulated Carrier operation. */
+/**
+ * @brief Initialize Modulated Carrier operation.
+ */
 static void modulated_carrier_init(const uint8_t * p_data)
 {
     if (!timeslot_is_granted())
@@ -1285,9 +1394,11 @@ static void modulated_carrier_init(const uint8_t * p_data)
     nrf_802154_trx_modulated_carrier(p_data, &split_power);
 }
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
-/** Switches to idle state: rx or sleep depending on RxOnWhenIdle mode */
+/**
+ * @brief Switch to idle state: rx or sleep depending on RxOnWhenIdle mode.
+ */
 static void switch_to_idle(void)
 {
     if (!nrf_802154_pib_rx_on_when_idle_get())
@@ -1389,12 +1500,16 @@ static void on_timeslot_ended(void)
 
             case RADIO_STATE_ED:
             case RADIO_STATE_CCA:
+
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
             case RADIO_STATE_CONTINUOUS_CARRIER:
             case RADIO_STATE_MODULATED_CARRIER:
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
+
             case RADIO_STATE_SLEEP:
-                // Intentionally empty.
+                /* Intentionally empty. */
                 break;
 
             default:
@@ -1427,7 +1542,7 @@ static void on_preconditions_denied(radio_state_t state)
     switch (state)
     {
         case RADIO_STATE_FALLING_ASLEEP:
-            // There should be on_timeslot_ended event
+            /* There should be on_timeslot_ended event */
             break;
 
         case RADIO_STATE_RX:
@@ -1453,12 +1568,16 @@ static void on_preconditions_denied(radio_state_t state)
 
         case RADIO_STATE_ED:
         case RADIO_STATE_CCA:
+
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
+
         case RADIO_STATE_SLEEP:
-            // Intentionally empty.
+            /* Intentionally empty. */
             break;
 
         default:
@@ -1479,7 +1598,7 @@ static void on_preconditions_approved(radio_state_t state)
     switch (state)
     {
         case RADIO_STATE_SLEEP:
-            // Intentionally empty. Appropriate action will be performed on state change.
+            /* Intentionally empty. Appropriate action will be performed on state change. */
             break;
 
         case RADIO_STATE_RX:
@@ -1503,6 +1622,7 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
         case RADIO_STATE_CONTINUOUS_CARRIER:
             continuous_carrier_init();
             break;
@@ -1510,7 +1630,8 @@ static void on_preconditions_approved(radio_state_t state)
         case RADIO_STATE_MODULATED_CARRIER:
             modulated_carrier_init(m_tx.frame.p_frame);
             break;
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
         default:
             NRF_802154_ASSERT(false);
@@ -1530,13 +1651,15 @@ static void on_timeslot_started(void)
     nrf_802154_timer_coord_start();
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+
     /**
      * In simulation no time passes while the CPU is executing code and the radio ramp-up is shorter
      * than the time needed by the ECB peripheral to encrypt the longest possible 802.15.4 frame.
      * Speed up the ECB to guarantee that encryption completes before transmission starts.
      */
     nrf_aes_ecb_cheat_set_t_ecb(1);
-#endif
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -1544,11 +1667,12 @@ static void on_timeslot_started(void)
 static bool preconditions_approved_should_be_ignored(rsch_prio_t previously_approved_prio,
                                                      rsch_prio_t currently_approved_prio)
 {
-    // Approved preconditions should only be ignored only all the following conditions are met:
-    // * all preconditions apart from Coex had already been approved;
-    // * the call is a result of Coex becoming approved at the highest priority;
-    // * currently performed operation is transmission with CCA;
-    // * Coex for transmission is requested after CCA reports idle channel
+    /* Approved preconditions should only be ignored if all the following conditions are met:
+     * * all preconditions apart from Coex had already been approved;
+     * * the call is a result of Coex becoming approved at the highest priority;
+     * * currently performed operation is transmission with CCA;
+     * * Coex for transmission is requested after CCA reports idle channel
+     */
     bool only_coex_was_unapproved       = (previously_approved_prio == RSCH_PRIO_RX);
     bool all_preconditions_are_approved = (currently_approved_prio == RSCH_PRIO_MAX);
     bool current_state_is_cca_tx        = (m_state == RADIO_STATE_CCA_TX);
@@ -1569,26 +1693,27 @@ void nrf_802154_rsch_crit_sect_prio_changed(rsch_prio_t prio)
 
     if ((old_prio == RSCH_PRIO_IDLE) && (prio != RSCH_PRIO_IDLE))
     {
-        // We have just got a timeslot.
+        /* We have just got a timeslot. */
         on_timeslot_started();
     }
     else if ((old_prio != RSCH_PRIO_IDLE) && (prio == RSCH_PRIO_IDLE))
     {
-        // We are giving back timeslot.
+        /* We are giving back timeslot. */
         on_timeslot_ended();
         return;
     }
     else if (prio == RSCH_PRIO_IDLE)
     {
-        // It might happen that even though IDLE has already been notified, this function is called
-        // again as a result of preemptions caused by unexpected timeslot change (e.g. the application
-        // requested transition to sleep while out of timeslot and RAAL notified timeslot start
-        // in the middle of that sleep request). The following block makes RAAL finish its processing.
+        /* It might happen that even though IDLE has already been notified, this function is called
+         * again as a result of preemptions caused by unexpected timeslot change (e.g. the application
+         * requested transition to sleep while out of timeslot and RAAL notified timeslot start
+         * in the middle of that sleep request). The following block makes RAAL finish its processing.
+         */
         nrf_802154_rsch_continuous_ended();
     }
     else
     {
-        // Intentionally empty
+        /* Intentionally empty */
     }
 
     int_fast8_t transition = action_needed(old_prio, prio, m_state);
@@ -1601,10 +1726,11 @@ void nrf_802154_rsch_crit_sect_prio_changed(rsch_prio_t prio)
     {
         on_preconditions_denied(m_state);
 
-        // After denying preconditions, TRX is disabled. However, it is possible that the existing
-        // preconditions are enough for the new state (entered due to denied preconditions) and TRX
-        // could be enabled for the new state. If this is the case, on_preconditions_approved() is
-        // called to fully switch to the new state.
+        /* After denying preconditions, TRX is disabled. However, it is possible that the existing
+         * preconditions are enough for the new state (entered due to denied preconditions) and TRX
+         * could be enabled for the new state. If this is the case, on_preconditions_approved() is
+         * called to fully switch to the new state.
+         */
         radio_state_t new_state = m_state;
 
         if (is_state_allowed_for_prio(prio, new_state))
@@ -1727,14 +1853,14 @@ void nrf_802154_trx_receive_frame_prestarted(void)
 
     if (!antenna_diversity_is_enabled())
     {
-        // Only assert if notifications mask would not allow for calling this function.
+        /* Only assert if notifications mask would not allow for calling this function. */
         NRF_802154_ASSERT((m_trx_receive_frame_notifications_mask &
                            TRX_RECEIVE_NOTIFICATION_PRESTARTED) !=
                           0U);
     }
     else
     {
-        // Antenna diversity uses this function for detecting possible preamble on air.
+        /* Antenna diversity uses this function for detecting possible preamble on air. */
     }
 
     NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
@@ -1745,15 +1871,15 @@ void nrf_802154_trx_receive_frame_prestarted(void)
 
     nrf_802154_sl_ant_div_rx_preamble_detected_notify();
 
-    // Antenna diversity module should be notified if framestart doesn't come.
+    /* Antenna diversity module should be notified if framestart doesn't come. */
     bool rx_timeout_should_be_started = antenna_diversity_is_enabled();
 
     if (nrf_802154_pib_coex_rx_request_mode_get() ==
         NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION)
     {
-        // Request boosted preconditions for receive
+        /* Request boosted preconditions for receive */
         nrf_802154_rsch_crit_sect_prio_request(RSCH_PRIO_RX);
-        // Boosted preconditions should be reverted if the framestart doesn't come.
+        /* Boosted preconditions should be reverted if the framestart doesn't come. */
         rx_timeout_should_be_started = true;
     }
 
@@ -1795,8 +1921,10 @@ void nrf_802154_trx_receive_frame_started(void)
         (m_trx_receive_frame_notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U);
 
 #if (NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES)
+
     nrf_802154_stat_counter_increment_received_preambles();
-#endif
+
+#endif /* NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES */
 
     switch (nrf_802154_pib_coex_rx_request_mode_get())
     {
@@ -1816,8 +1944,9 @@ void nrf_802154_trx_receive_frame_started(void)
 
     if (antenna_diversity_is_enabled())
     {
-        // If antenna diversity is enabled, rx_prestarted_timer would be started even
-        // in different coex rx request modes than NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION
+        /* If antenna diversity is enabled, rx_prestarted_timer would be started even
+         * in different coex rx request modes than NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION
+         */
         m_rx_prestarted_trig_count = 0;
         (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
         nrf_802154_sl_ant_div_rx_frame_started_notify();
@@ -1965,16 +2094,18 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
         }
         else
         {
-            // Disable receiver and wait for a new timeslot.
+            /* Disable receiver and wait for a new timeslot. */
             nrf_802154_trx_abort();
 
-            // We should not leave trx in temporary state, let's receive then.
-            // We avoid hard reset of radio during TX ACK phase due to timeslot end,
-            // which could result in spurious RF emission.
+            /* We should not leave trx in temporary state, let's receive then. */
+            /* We avoid hard reset of radio during TX ACK phase due to timeslot end,
+             * which could result in spurious RF emission.
+             */
             rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
-            // Don't care about the result - if the notification cannot be performed
-            // no impact on the device's operation is expected
+            /* Don't care about the result - if the notification cannot be performed
+             * no impact on the device's operation is expected
+             */
             (void)nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_TIMESLOT_ENDED,
                                                    m_rx_window_id,
                                                    true);
@@ -2012,7 +2143,7 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     rx_flags_clear();
     rx_data_clear();
 
-    // We don't change receive buffer, receive will go to the same that was already used
+    /* We don't change receive buffer, receive will go to the same that was already used */
     request_preconditions_for_state(m_state);
 
     nrf_802154_fal_tx_power_split_t split_power = {0};
@@ -2025,8 +2156,10 @@ void nrf_802154_trx_receive_frame_crcerror(void)
                                  &split_power);
 
 #if NRF_802154_NOTIFY_CRCERROR
+
     receive_failed_notify(NRF_802154_RX_ERROR_INVALID_FCS);
-#endif // NRF_802154_NOTIFY_CRCERROR
+
+#endif /* NRF_802154_NOTIFY_CRCERROR */
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -2049,7 +2182,7 @@ void nrf_802154_trx_receive_frame_received(void)
     uint8_t             * p_received_data = mp_current_rx_buffer->data;
     nrf_802154_rx_error_t filter_result   = NRF_802154_RX_ERROR_RUNTIME;
 
-    // Latch RSSI and LQI values before sending ACK
+    /* Latch RSSI and LQI values before sending ACK */
     m_last_rssi = rssi_last_measurement_get();
     m_last_lqi  = lqi_get(p_received_data);
 
@@ -2118,8 +2251,9 @@ void nrf_802154_trx_receive_frame_received(void)
             {
                 if (nrf_802154_trx_transmit_ack(nrf_802154_tx_work_buffer_get(mp_ack), ACK_IFS))
                 {
-                    // Intentionally empty: transmitting ack, because we can
+                    /* Intentionally empty: transmitting ack, because we can. */
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+
                     /**
                      * In simulation the frame contents are latched when the first bit of the
                      * preamble is "transmitted" by the simulated radio. Any modifications performed
@@ -2145,7 +2279,9 @@ void nrf_802154_trx_receive_frame_received(void)
                     nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
 
                     nrf_802154_bsim_utils_core_hooks_adjustments_set(&zeroes);
-#endif /* defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
+
                 }
                 else
                 {
@@ -2174,11 +2310,11 @@ void nrf_802154_trx_receive_frame_received(void)
         else
         {
             request_preconditions_for_state(m_state);
-            // Filter out received ACK frame if promiscuous mode is disabled.
+            /* Filter out received ACK frame if promiscuous mode is disabled. */
             if (((p_received_data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) != FRAME_TYPE_ACK) ||
                 nrf_802154_pib_promiscuous_get())
             {
-                // Current buffer will be passed to the application
+                /* Current buffer will be passed to the application. */
                 mp_current_rx_buffer->free = false;
 
                 switch_to_idle();
@@ -2187,16 +2323,17 @@ void nrf_802154_trx_receive_frame_received(void)
             }
             else
             {
-                // Receive to the same buffer
+                /* Receive to the same buffer. */
                 rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
             }
         }
     }
     else
     {
-        // CRC is OK, but filtering operation did not end - it is invalid frame with valid CRC
-        // or problem due to software latency (i.e. handled BCMATCH, CRCERROR, CRCOK from two
-        // consecutively received frames).
+        /* CRC is OK, but filtering operation did not end - it is invalid frame with valid CRC
+         * or problem due to software latency (i.e. handled BCMATCH, CRCERROR, CRCOK from two
+         * consecutively received frames).
+         */
         request_preconditions_for_state(m_state);
         rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
@@ -2279,7 +2416,7 @@ void nrf_802154_trx_transmit_ack_transmitted(void)
 
     uint8_t * p_received_data = mp_current_rx_buffer->data;
 
-    // Current buffer used for receive operation will be passed to the application
+    /* Current buffer used for receive operation will be passed to the application. */
     mp_current_rx_buffer->free = false;
 
     switch_to_idle();
@@ -2293,17 +2430,18 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
     uint64_t ts = timer_coord_timestamp_get();
 
-    // ts holds now timestamp of the PHYEND event
+    /* ts holds now timestamp of the PHYEND event. */
     nrf_802154_stat_timestamp_write_last_tx_end_timestamp(ts);
 
     if (m_flags.tx_with_cca)
     {
         m_flags.tx_diminished_prio = false;
 
-        // We calculate the timestamp when ccaidle must happened.
+        /* We calculate the timestamp when ccaidle must happened. */
         ts -= nrf_802154_frame_duration_get(m_tx.frame.p_frame[0],
                                             true,
                                             true) + RX_TX_TURNAROUND_TIME;
@@ -2311,7 +2449,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
         nrf_802154_stat_timestamp_write_last_cca_idle_timestamp(ts);
     }
 
-#endif
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 
     if (tx_frame_ack_is_requested(&m_tx.frame))
     {
@@ -2321,10 +2459,12 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 
         nrf_802154_trx_receive_buffer_set(rx_buffer_get());
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-        // Configure the timer coordinator to get a timestamp of the CRCOK event.
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
+        /* Configure the timer coordinator to get a timestamp of the CRCOK event. */
         nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
-#endif
+
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 
         nrf_802154_trx_receive_ack();
 
@@ -2343,15 +2483,15 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 static bool ack_match_check_version_not_2(const nrf_802154_frame_t * p_tx_frame,
                                           const nrf_802154_frame_t * p_ack_frame)
 {
-    // Frame Version != 2
+    /* Frame Version != 2 */
 
-    // Check: Phy length
+    /* Check: Phy length */
     if (nrf_802154_frame_length_get(p_ack_frame) != IMM_ACK_LENGTH)
     {
         return false;
     }
 
-    // Check if Frame version is 0 or 1.
+    /* Check if Frame version is 0 or 1. */
     switch (nrf_802154_frame_version_get(p_ack_frame))
     {
         case FRAME_VERSION_0:
@@ -2362,7 +2502,7 @@ static bool ack_match_check_version_not_2(const nrf_802154_frame_t * p_tx_frame,
             return false;
     }
 
-    // Check: Sequence number match
+    /* Check: Sequence number match */
     if (p_ack_frame->p_frame[DSN_OFFSET] != p_tx_frame->p_frame[DSN_OFFSET])
     {
         return false;
@@ -2384,10 +2524,10 @@ static bool ack_match_check_version_2(const nrf_802154_frame_t * p_tx_frame,
         return false;
     }
 
-    // Transmitted frame was Version 2
-    // For frame version 2 sequence number bit may be suppressed and its check fails.
-    // Verify ACK frame using its destination address.
-
+    /* Transmitted frame was Version 2.
+     * For frame version 2 sequence number bit may be suppressed and its check fails.
+     * Verify ACK frame using its destination address.
+     */
     const uint8_t * p_tx_src_addr     = nrf_802154_frame_src_addr_get(p_tx_frame);
     const uint8_t * p_ack_dst_addr    = nrf_802154_frame_dst_addr_get(p_ack_frame);
     uint8_t         tx_src_addr_size  = nrf_802154_frame_src_addr_size_get(p_tx_frame);
@@ -2400,7 +2540,7 @@ static bool ack_match_check_version_2(const nrf_802154_frame_t * p_tx_frame,
                      p_ack_dst_addr,
                      tx_src_addr_size)))
     {
-        // Mismatch
+        /* Mismatch */
         return false;
     }
 
@@ -2415,13 +2555,14 @@ static bool ack_match_check(const nrf_802154_frame_t * p_tx_frame,
         return false;
     }
 
-    // Check: Frame Control Field -> Frame type
+    /* Check: Frame Control Field -> Frame type */
     if (nrf_802154_frame_type_get(p_ack_frame) != FRAME_TYPE_ACK)
     {
-        return false; // This is not an ACK frame
+        /* This is not an ACK frame */
+        return false;
     }
 
-    // Check: Frame Control Field -> Frame version
+    /* Check: Frame Control Field -> Frame version */
     if (nrf_802154_frame_version_get(p_tx_frame) == FRAME_VERSION_2)
     {
         return ack_match_check_version_2(p_tx_frame, p_ack_frame);
@@ -2434,7 +2575,7 @@ static void on_bad_ack(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    // We received either a frame with incorrect CRC or not an ACK frame or not matching ACK
+    /* We received either a frame with incorrect CRC or not an ACK frame or not matching ACK. */
     switch_to_idle();
 
     nrf_802154_transmit_done_metadata_t metadata = {};
@@ -2449,7 +2590,7 @@ void nrf_802154_trx_receive_ack_received(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    // CRC of received frame is correct
+    /* CRC of received frame is correct. */
     uint8_t * p_ack_data = mp_current_rx_buffer->data;
 
     bool result = nrf_802154_frame_parser_data_init(p_ack_data,
@@ -2469,7 +2610,7 @@ void nrf_802154_trx_receive_ack_received(void)
 
         mp_current_rx_buffer->free = false;
 
-        // Detect Frame Pending field set to one on Ack frame received after a Data Request Command
+        /* Detect Frame Pending field set to one on Ack frame received after a Data Request Command. */
         bool should_receive = false;
 
         if (nrf_802154_frame_type_get(&m_tx.frame) == FRAME_TYPE_COMMAND)
@@ -2493,9 +2634,9 @@ void nrf_802154_trx_receive_ack_received(void)
             switch_to_idle();
         }
 
-        transmitted_frame_notify(p_ack_buffer->data,           // phr + psdu
-                                 rssi_last_measurement_get(),  // rssi
-                                 lqi_get(p_ack_buffer->data)); // lqi;
+        transmitted_frame_notify(p_ack_buffer->data,           /* phr + psdu */
+                                 rssi_last_measurement_get(),  /* rssi */
+                                 lqi_get(p_ack_buffer->data)); /* lqi */
     }
     else
     {
@@ -2518,8 +2659,9 @@ void nrf_802154_trx_standalone_cca_finished(bool channel_was_idle)
 
 void nrf_802154_trx_transmit_frame_ccastarted(void)
 {
-    // This handler provided by trx is never called because parameter notifications_mask
-    // of the nrf_802154_trx_transmit_frame does not contain TRX_TRANSMIT_NOTIFICATION_CCASTARTED.
+    /* This handler provided by trx is never called because parameter notifications_mask
+     * of the nrf_802154_trx_transmit_frame does not contain TRX_TRANSMIT_NOTIFICATION_CCASTARTED.
+     */
     NRF_802154_ASSERT(false);
 }
 
@@ -2530,15 +2672,17 @@ void nrf_802154_trx_transmit_frame_ccaidle(void)
     NRF_802154_ASSERT(m_state == RADIO_STATE_CCA_TX);
     NRF_802154_ASSERT(m_trx_transmit_frame_notifications_mask & TRX_TRANSMIT_NOTIFICATION_CCAIDLE);
 
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
+#if NRF_802154_FRAME_TIMESTAMP_ENABLED
+
     uint64_t ts = timer_coord_timestamp_get();
 
-    // Configure the timer coordinator to get a timestamp of the PHYEND event.
+    /* Configure the timer coordinator to get a timestamp of the PHYEND event. */
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
 
-    // Update stat timestamp of CCASTART event
+    /* Update stat timestamp of CCASTART event. */
     nrf_802154_stat_timestamp_write_last_cca_start_timestamp(ts);
-#endif
+
+#endif /* NRF_802154_FRAME_TIMESTAMP_ENABLED */
 
     if (m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE)
     {
@@ -2582,7 +2726,8 @@ void nrf_802154_trx_energy_detection_finished(int8_t ed_sample_dbm)
         else
         {
             /* There is too little time in current timeslot, just wait for timeslot end.
-             * Operation will be resumed in next timeslot */
+             * Operation will be resumed in next timeslot.
+             */
         }
     }
     else if (nrf_802154_sl_ant_div_energy_detection_finished_notify())
@@ -2652,7 +2797,7 @@ static bool core_sleep(nrf_802154_term_t term_lvl, req_originator_t req_orig, bo
 
     if (result)
     {
-        // The order of calls in the following blocks is inverted to avoid RAAL races.
+        /* The order of calls in the following blocks is inverted to avoid RAAL races. */
         if (timeslot_is_granted())
         {
             state_set(RADIO_STATE_FALLING_ASLEEP);
@@ -2741,8 +2886,9 @@ static bool core_receive(nrf_802154_term_t term_lvl,
         {
             nrf_802154_trx_abort();
 
-            // HW triggering failed, fallback is SW trigger.
-            // (fallback immunizes against the rare case of spurious lptimer firing)
+            /* HW triggering failed, fallback is SW trigger.
+             * (fallback immunizes against the rare case of spurious lptimer firing)
+             */
             rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
         }
     }
@@ -2837,7 +2983,6 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
         state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
         m_tx = *p_params;
 
-        // coverity[check_return]
         result = tx_init(ramp_up_mode_choose(req_orig));
 
         if (p_params->immediate && !result)
@@ -3018,7 +3163,7 @@ bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
     return result;
 }
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
 bool nrf_802154_core_notify_buffer_free(uint8_t * p_data)
 {
@@ -3069,6 +3214,7 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
                 break;
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
             case RADIO_STATE_CONTINUOUS_CARRIER:
                 if (timeslot_is_granted())
                 {
@@ -3083,9 +3229,10 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
                 }
                 break;
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
+
             default:
-                // Don't perform any additional action in any other state.
+                /* Don't perform any additional action in any other state. */
                 break;
         }
 
@@ -3158,7 +3305,7 @@ bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi)
 
     if (rssi_started && in_crit_sect && timeslot_is_granted())
     {
-        // Checking if a timeslot is granted is valid only in a critical section
+        /* Checking if a timeslot is granted is valid only in a critical section */
         rssi_started = nrf_802154_trx_rssi_measure_is_started();
         if (rssi_started)
         {
@@ -3213,13 +3360,14 @@ int8_t nrf_802154_sl_ant_div_rssi_measure_get(void)
 {
     int8_t result = NRF_802154_RSSI_INVALID;
 
-    // This function is supposed to be called after detecting frame prestarted event, but before
-    // detecting valid frame address. This means that we're currently in critical section, but the
-    // timeslot is not yet extended due to detecting valid frame. To avoid invalid timeslot extension
-    // due to blocking rssi measurements, antenna check can be aborted here if timeslot is about to end.
-    // Antenna switching takes 200 ns (250 ns with safety margin), while rssi measurement - 250,
-    // which gives total time of 750 ns.
-    // 750 ns is less than safety margin, so timeslot us left different than 0 is sufficient.
+    /* This function is supposed to be called after detecting frame prestarted event, but before
+     * detecting valid frame address. This means that we're currently in critical section, but the
+     * timeslot is not yet extended due to detecting valid frame. To avoid invalid timeslot extension
+     * due to blocking rssi measurements, antenna check can be aborted here if timeslot is about to end.
+     * Antenna switching takes 200 ns (250 ns with safety margin), while rssi measurement - 250,
+     * which gives total time of 750 ns.
+     * 750 ns is less than safety margin, so timeslot us left different than 0 is sufficient.
+     */
     if (!nrf_802154_rsch_timeslot_us_left_get())
     {
         return result;
@@ -3231,8 +3379,9 @@ int8_t nrf_802154_sl_ant_div_rssi_measure_get(void)
     {
         while (!nrf_802154_trx_rssi_sample_is_available())
         {
-            // Intentionally empty: This function is called from a critical section.
-            // WFE would not be waken up by a RADIO event.
+            /* Intentionally empty: This function is called from a critical section.
+             * WFE would not be waken up by a RADIO event.
+             */
         }
 
         uint8_t rssi_sample = nrf_802154_trx_rssi_last_sample_get();

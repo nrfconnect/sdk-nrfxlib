@@ -61,24 +61,27 @@ void nrf_802154_imm_ack_generator_init(void)
 
 void nrf_802154_imm_ack_generator_reset(void)
 {
-    // Intentionally empty
+    /* Intentionally empty */
 }
 
 uint8_t * nrf_802154_imm_ack_generator_create(
     const nrf_802154_frame_t * p_frame_data)
 {
     #if NRF_802154_IE_WRITER_ENABLED
-    // The IE writer module can be in the IE_WRITER_PREPARE state if
-    // the previous transmission failed at an early stage.
-    // Reset it, to avoid data corruption in when this ACK is transmitted.
-    // Otherwise, the IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
-    // regardless if writing of IE elements is needed or not.
+
+    /* The IE writer module can be in the IE_WRITER_PREPARE state if
+     * the previous transmission failed at an early stage.
+     * Reset it, to avoid data corruption when this ACK is transmitted.
+     * Otherwise, the IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
+     * regardless of whether writing of IE elements is needed or not.
+     */
     nrf_802154_ie_writer_reset();
-    #endif
+
+    #endif /* NRF_802154_IE_WRITER_ENABLED */
 
     if (nrf_802154_frame_parse_level_get(p_frame_data) < PARSE_LEVEL_FULL)
     {
-        // The entire frame being acknowledged is necessary to correctly generate Ack
+        /* The entire frame being acknowledged is necessary to correctly generate Ack */
         return NULL;
     }
 
@@ -89,10 +92,10 @@ uint8_t * nrf_802154_imm_ack_generator_create(
         return NULL;
     }
 
-    // Set valid sequence number in ACK frame.
+    /* Set valid sequence number in ACK frame. */
     m_ack_data[DSN_OFFSET] = *frame_dsn;
 
-    // Set pending bit in ACK frame.
+    /* Set pending bit in ACK frame. */
     if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data))
     {
         m_ack_data[FRAME_PENDING_OFFSET] = ACK_HEADER_WITH_PENDING;

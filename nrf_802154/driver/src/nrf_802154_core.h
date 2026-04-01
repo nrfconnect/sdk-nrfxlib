@@ -57,47 +57,49 @@ extern "C" {
  */
 typedef enum
 {
-    // Sleep
-    RADIO_STATE_SLEEP,          ///< Low power mode (disabled) - the only state in which all radio preconditions are not requested.
-    RADIO_STATE_FALLING_ASLEEP, ///< Before entering the sleep state, all radio preconditions are requested.
+    /* Sleep */
+    RADIO_STATE_SLEEP,          /**< Low power mode (disabled) - the only state in which all radio preconditions are not requested. */
+    RADIO_STATE_FALLING_ASLEEP, /**< Before entering the sleep state, all radio preconditions are requested. */
 
-    // Receive
-    RADIO_STATE_RX,             ///< The receiver is enabled and it is receiving frames.
-    RADIO_STATE_TX_ACK,         ///< The frame is received and the ACK is being transmitted.
+    /* Receive */
+    RADIO_STATE_RX,             /**< The receiver is enabled and it is receiving frames. */
+    RADIO_STATE_TX_ACK,         /**< The frame is received and the ACK is being transmitted. */
 
-    // Transmit
-    RADIO_STATE_CCA_TX,         ///< Performing CCA followed by the frame transmission.
-    RADIO_STATE_TX,             ///< Transmitting data frame (or beacon).
-    RADIO_STATE_RX_ACK,         ///< Receiving ACK after the transmitted frame.
+    /* Transmit */
+    RADIO_STATE_CCA_TX,         /**< Performing CCA followed by the frame transmission. */
+    RADIO_STATE_TX,             /**< Transmitting data frame (or beacon). */
+    RADIO_STATE_RX_ACK,         /**< Receiving ACK after the transmitted frame. */
 
-    // Energy Detection
-    RADIO_STATE_ED,             ///< Performing the energy detection procedure.
+    /* Energy Detection */
+    RADIO_STATE_ED,             /**< Performing the energy detection procedure. */
 
-    // CCA
-    RADIO_STATE_CCA,            ///< Performing the CCA procedure.
+    /* CCA */
+    RADIO_STATE_CCA,            /**< Performing the CCA procedure. */
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
-    // Continuous carrier
-    RADIO_STATE_CONTINUOUS_CARRIER, ///< Emitting the continuous carrier wave.
 
-    // Modulated carrier
-    RADIO_STATE_MODULATED_CARRIER   ///< Emitting the modulated carrier signal.
-#endif  // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+    /* Continuous carrier */
+    RADIO_STATE_CONTINUOUS_CARRIER, /**< Emitting the continuous carrier wave. */
+
+    /* Modulated carrier */
+    RADIO_STATE_MODULATED_CARRIER   /**< Emitting the modulated carrier signal. */
+
+#endif  /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
 } radio_state_t;
 
 /**
- * @brief Initializes the 802.15.4 driver core.
+ * @brief Initialize the 802.15.4 driver core.
  */
 void nrf_802154_core_init(void);
 
 /**
- * @brief Deinitializes the 802.15.4 driver core.
+ * @brief Deinitialize the 802.15.4 driver core.
  */
 void nrf_802154_core_deinit(void);
 
 /**
- * @brief Gets the current state of the nRF 802.15.4 driver.
+ * @brief Get the current state of the nRF 802.15.4 driver.
  *
  * @returns  Current state of the 802.15.4 driver.
  */
@@ -108,7 +110,7 @@ radio_state_t nrf_802154_core_state_get(void);
  **************************************************************************************************/
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_SLEEP state.
+ * @brief Request the transition to the @ref RADIO_STATE_SLEEP state.
  *
  * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.
  *
@@ -120,7 +122,7 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl);
 #if NRF_802154_CSMA_CA_CANCEL_ENABLED || defined(__DOXYGEN__)
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_SLEEP state with the CSMA-CA procedure
+ * @brief Request the transition to the @ref RADIO_STATE_SLEEP state with the CSMA-CA procedure
  *        cancelled.
  *
  * The function puts the driver into the sleep state and cancels the CSMA-CA backoff procedure in
@@ -136,7 +138,7 @@ bool nrf_802154_core_sleep_with_cancel_csma_ca(nrf_802154_term_t term_lvl);
 #endif /* NRF_802154_CSMA_CA_CANCEL_ENABLED */
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_RX state.
+ * @brief Request the transition to the @ref RADIO_STATE_RX state.
  *
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
@@ -154,7 +156,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                              uint32_t                       id);
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_TX state.
+ * @brief Request the transition to the @ref RADIO_STATE_TX state.
  *
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
@@ -169,7 +171,7 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
                                                nrf_802154_transmit_params_t * p_params);
 
 /**
- * @brief Requests end of waiting for an ACK by the core.
+ * @brief Request end of waiting for an ACK by the core.
  *
  * @param[in] p_param   Pointer to the notification parameters;
  *
@@ -179,7 +181,7 @@ nrf_802154_tx_error_t nrf_802154_core_transmit(nrf_802154_term_t              te
 bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param);
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_ED state.
+ * @brief Request the transition to the @ref RADIO_STATE_ED state.
  *
  * When the energy detection procedure is finished, the driver transitions
  * to the @ref RADIO_STATE_RX state.
@@ -194,7 +196,7 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
 bool nrf_802154_core_energy_detection(nrf_802154_term_t term_lvl, uint32_t time_us);
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_CCA state.
+ * @brief Request the transition to the @ref RADIO_STATE_CCA state.
  *
  * When the CCA procedure is finished, the driver transitions to the @ref RADIO_STATE_RX state.
  *
@@ -208,7 +210,7 @@ bool nrf_802154_core_cca(nrf_802154_term_t term_lvl);
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_CONTINUOUS_CARRIER state.
+ * @brief Request the transition to the @ref RADIO_STATE_CONTINUOUS_CARRIER state.
  *
  * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.
  *
@@ -219,7 +221,7 @@ bool nrf_802154_core_cca(nrf_802154_term_t term_lvl);
 bool nrf_802154_core_continuous_carrier(nrf_802154_term_t term_lvl);
 
 /**
- * @brief Requests the transition to the @ref RADIO_STATE_MODULATED_CARRIER state.
+ * @brief Request the transition to the @ref RADIO_STATE_MODULATED_CARRIER state.
  *
  * @param[in] term_lvl  Termination level of this request. Selects procedures to abort.
  * @param[in] p_data    Data buffer to modulate the carrier with.
@@ -231,14 +233,14 @@ bool nrf_802154_core_continuous_carrier(nrf_802154_term_t term_lvl);
 bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
                                        const uint8_t   * p_data);
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 
 /***************************************************************************************************
  * @section State machine notifications
  **************************************************************************************************/
 
 /**
- * @brief Notifies the core module that a higher layer freed a frame buffer.
+ * @brief Notify the core module that a higher layer freed a frame buffer.
  *
  * When there are no free buffers available, the core does not start the receiver.
  * If the core receives this notification, it changes the internal state to make sure
@@ -249,7 +251,7 @@ bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
 bool nrf_802154_core_notify_buffer_free(uint8_t * p_data);
 
 /**
- * @brief Notifies the core module that the next higher layer requested the change of the channel.
+ * @brief Notify the core module that the next higher layer requested the change of the channel.
  *
  * The core is expected to update the frequency register of the peripheral and, if it is
  * in the @c RADIO_STATE_RX, in the @c RADIO_STATE_CONTINUOUS_CARRIER
@@ -261,25 +263,25 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data);
 bool nrf_802154_core_channel_update(req_originator_t req_orig);
 
 /**
- * @brief Notifies the core module that the next higher layer requested the change
+ * @brief Notify the core module that the next higher layer requested the change
  * of the CCA configuration.
  */
 bool nrf_802154_core_cca_cfg_update(void);
 
 /**
- * @brief Notifies the core module that the next higher layer requested the RSSI measurement.
+ * @brief Notify the core module that the next higher layer requested the RSSI measurement.
  */
 bool nrf_802154_core_rssi_measure(void);
 
 /**
- * @brief Gets the last RSSI measurement.
+ * @brief Get the last RSSI measurement.
  *
  * @param[out]  p_rssi  RSSI measurement value in dBm.
  */
 bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi);
 
 /**
- * Get RSSI of the last received non-ACK frame.
+ * @brief Get RSSI of the last received non-ACK frame.
  *
  * Returns 0 if no frame was received yet.
  *
@@ -288,7 +290,7 @@ bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi);
 int8_t nrf_802154_core_last_frame_rssi_get(void);
 
 /**
- * Get LQI of the last received non-ACK frame.
+ * @brief Get LQI of the last received non-ACK frame.
  *
  * Returns 0 if no frame was received yet.
  *
@@ -297,16 +299,18 @@ int8_t nrf_802154_core_last_frame_rssi_get(void);
 uint8_t nrf_802154_core_last_frame_lqi_get(void);
 
 /**
- * @brief Notifies the core module that the next higher layer requested the change of the antenna.
+ * @brief Notify the core module that the next higher layer requested the change of the antenna.
  */
 bool nrf_802154_core_antenna_update(void);
 
 #if !NRF_802154_INTERNAL_IRQ_HANDLING
+
 /**
- * @brief Notifies the core module that there is a pending IRQ to be handled.
+ * @brief Notify the core module that there is a pending IRQ to be handled.
  */
 void nrf_802154_core_irq_handler(void);
-#endif // !NRF_802154_INTERNAL_IRQ_HANDLING
+
+#endif /* !NRF_802154_INTERNAL_IRQ_HANDLING */
 
 #ifdef __cplusplus
 }
