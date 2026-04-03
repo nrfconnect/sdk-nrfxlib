@@ -44,17 +44,21 @@
 
 #include "mac_features/nrf_802154_frame.h"
 
-/** Initializes the ACK generator module. */
+/**
+ * @brief Initialize the ACK generator module.
+ */
 void nrf_802154_ack_generator_init(void);
 
-/** @brief Resets the ACK generator module.
+/**
+ * @brief Reset the ACK generator module.
  *
  * @note This function should be called for every received frame to be acknowledged before
  *       @ref nrf_802154_ack_generator_create is called for that frame.
  */
 void nrf_802154_ack_generator_reset(void);
 
-/** @brief Creates an ACK in response to the provided frame and inserts it into a radio buffer.
+/**
+ * @brief Create an ACK in response to the provided frame and insert it into a radio buffer.
  *
  * @note Only those contents of the frame being acknowledged marked by @p p_frame_data as valid
  * are used for ACK generation. If any data necessary to generate an ACK is missing or marked as
@@ -68,7 +72,6 @@ void nrf_802154_ack_generator_reset(void);
  * @returns  Either pointer to a constant buffer that contains PHR and PSDU
  *           of the created ACK frame, or NULL when the response cannot be created.
  */
-uint8_t * nrf_802154_ack_generator_create(
-    const nrf_802154_frame_t * p_frame_data);
+uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t * p_frame_data);
 
-#endif // NRF_802154_ACK_GENERATOR_H
+#endif /* NRF_802154_ACK_GENERATOR_H */
