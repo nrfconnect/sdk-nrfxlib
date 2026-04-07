@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nrf_modem
-*********
+nrf_modem 3.3.0
+***************
 
 The library is now released in three variants, with different feature sets and support for different variants of the nRF91 Series firmware.
 

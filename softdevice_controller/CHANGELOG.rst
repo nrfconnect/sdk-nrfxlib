@@ -9,8 +9,8 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v3.3.0
+**********************
 
 Added
 =====
@@ -42,6 +42,7 @@ Bug fixes
 * Fixed an issue where the controller could generate one too many HCI LE CS Subevent Result events for a CS procedure. (DRGN-27538)
 
   The issue would only happen if all the following conditions are met:
+
     * The CS procedure terminates due to running out of channels, based on the configured channel map and channel map repetition.
     * The configured duration of the last CS subevent in the CS procedure is just enough to fit all the remaining CS steps.
 
