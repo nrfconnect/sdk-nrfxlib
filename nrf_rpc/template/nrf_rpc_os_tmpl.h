@@ -97,6 +97,12 @@ void nrf_rpc_os_event_set(struct nrf_rpc_os_event *event);
  */
 int nrf_rpc_os_event_wait(struct nrf_rpc_os_event *event, int32_t timeout);
 
+/** @brief Reset an event.
+ *
+ * @param event Event to set.
+ */
+void nrf_rpc_os_event_reset(struct nrf_rpc_os_event *event);
+
 /** @brief Initialize mutex structure.
  *
  * @param mutex Pointer to mutex structure.
