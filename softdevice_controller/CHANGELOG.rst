@@ -28,6 +28,8 @@ Changes
 * The Quality of Service (QoS) channel survey feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-26264)
 * The :c:func:`sdc_hci_cmd_le_set_adv_data` and :c:func:`sdc_hci_cmd_le_set_scan_response_data` functions now return the error code ``0x12`` if the data length is more than 31 bytes.
   Previously, the extra data was truncated. (DRGN-27247)
+* The controller acting as a central will now schedule continuation events only if it has received a packet from the peer device in the previous subrated connection event or in any subsequent continuation events.
+  This change improves scheduling performance with multiple links. (DRGN-27952)
 
 Bug fixes
 =========
