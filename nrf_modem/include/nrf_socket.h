@@ -228,6 +228,10 @@ extern "C" {
  * See @ref nrf_socket_sec_peer_verify_options for a list of allowed values.
  *
  * The default value is @ref NRF_SO_SEC_PEER_VERIFY_OPTIONAL (optional).
+ *
+ * @note If a TLS/DTLS protocol is used, there must be at least one root CA in the modem credential
+ *       storage, regardless if the @ref NRF_SO_SEC_PEER_VERIFY value is
+ *       @ref NRF_SO_SEC_PEER_VERIFY_NONE or @ref NRF_SO_SEC_PEER_VERIFY_OPTIONAL.
  */
 #define NRF_SO_SEC_PEER_VERIFY 5
 
