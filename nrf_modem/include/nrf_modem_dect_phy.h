@@ -610,9 +610,11 @@ struct nrf_modem_dect_phy_rx_params {
 	/**
 	 * @brief Operation start time as modem time.
 	 *
-	 * If zero, the operation will be executed immediately.
+	 * This indicates the time at which the operation becomes active on the radio. Any
+	 * scheduling related transition latencies occur before this time.
 	 *
-	 * This kind of scheduling can only be done when the modem is idle.
+	 * If zero, the operation will be executed immediately. This kind of scheduling can only be
+	 * done when the modem is idle.
 	 */
 	uint64_t start_time;
 	/**
@@ -682,9 +684,11 @@ struct nrf_modem_dect_phy_tx_params {
 	/**
 	 * @brief Operation start time as modem time.
 	 *
-	 * If zero, the operation will be executed immediately.
+	 * This indicates the time at which the operation becomes active on the radio. Any
+	 * scheduling related transition latencies occur before this time.
 	 *
-	 * This kind of scheduling can only be done when the modem is idle.
+	 * If zero, the operation will be executed immediately. This kind of scheduling can only be
+	 * done when the modem is idle.
 	 */
 	uint64_t start_time;
 	/**
@@ -736,10 +740,14 @@ struct nrf_modem_dect_phy_tx_params {
 	/**
 	 * @brief Listen before talk period in modem time units.
 	 *
-	 * This is the required duration for the channel to be assessed as "free" or "available"
-	 * before starting transmission. This duration is divided into as many as 64 separate
-	 * integration periods, with each period being a multiple of the symbol duration.
-	 * Each integration period is of equal length, up to a maximum of 7 symbols.
+	 * This is the required time during which the channel must be assessed as “free” or
+	 * “available” before transmission begins. The assessment is completed prior to the
+	 * transmission start time, which is fixed and independent of the assessment duration.
+	 *
+	 * The duration is divided into a maximum of 64 separate integration periods, with each
+	 * period being a multiple of the symbol duration. Each integration period is of equal
+	 * length, up to a maximum of 7 symbols.
+	 *
 	 * The maximum number of integration periods is utilized. For instance, LBT durations of
 	 * up to 64 symbols are divided into integration periods of one symbol each, and
 	 * LBT durations of 65-128 symbols are divided into two-symbol integration periods.
@@ -803,9 +811,11 @@ struct nrf_modem_dect_phy_rssi_params {
 	/**
 	 * @brief Operation start time as modem time.
 	 *
-	 * If zero, the operation will be executed immediately.
+	 * This indicates the time at which the operation becomes active on the radio. Any
+	 * scheduling related transition latencies occur before this time.
 	 *
-	 * This kind of scheduling can only be done when the modem is idle.
+	 * If zero, the operation will be executed immediately. This kind of scheduling can only be
+	 * done when the modem is idle.
 	 */
 	uint64_t start_time;
 	/**
@@ -878,9 +888,8 @@ struct nrf_modem_dect_phy_radio_config_params {
 	/**
 	 * @brief Operation start time as modem time.
 	 *
-	 * If zero, the operation will be executed immediately.
-	 *
-	 * This kind of scheduling can only be done when the modem is idle.
+	 * If zero, the operation will be executed immediately. This kind of scheduling can only be
+	 * done when the modem is idle.
 	 */
 	uint64_t start_time;
 	/**
