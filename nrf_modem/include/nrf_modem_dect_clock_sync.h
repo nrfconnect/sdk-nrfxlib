@@ -260,7 +260,9 @@ enum nrf_modem_dect_clock_sync_pulse_direction {
  * ensuring that exactly NRF_MODEM_DECT_MODEM_TIME_TICK_RATE_KHZ clock cycles occur
  * between consecutive external clock pulses.
  *
- * Synchronization accuracy (jitter) is 0.001 ppm (parts per million).
+ * Reference signal tracking precision can be up to 0.05 ppm (parts per million).
+ * The actual tracking precision depends on the quality of the external clock source
+ * and environmental conditions.
  *
  * This operation is performed asynchronously.
  * Completion of this operation is indicated by the @ref NRF_MODEM_DECT_CLOCK_SYNC_EVT_ENABLE
