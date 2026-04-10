@@ -21,8 +21,19 @@ The library is now released in three variants, with different feature sets and s
 DECT NR+
 ========
 
-* Added new interface for the DECT NR+ firmware.
+* Added:
+
+  * A new interface for the DECT NR+ firmware.
+  * Clarifications concerning the operation start times in the :file:`nrf_modem_dect_phy.h` header file.
+  * Clarifications concerning the reference signal tracking precision in the :file:`nrf_modem_dect_clock_sync.h` header file.
+
 * Updated the radio modes section of the :ref:`nrf_modem_dect_phy` documentation to include detailed descriptions of the radio states and their associated latencies.
+
+Sockets
+=======
+
+* Updated the :file:`nrf_socket.h` header file with more detailed descriptions of the supported socket options.
+
 
 nrf_modem 3.2.0
 ***************
