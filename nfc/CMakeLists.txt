@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+if(CONFIG_NFC_LIBRARY_SOURCE_NRFXLIB)
+
 nrfxlib_calculate_lib_path(lib_path)
 
 nrfxlib_calculate_lib_path(NFC_LIB_DIR
@@ -33,4 +35,6 @@ endif()
 
 if (NOT CONFIG_NFC_T2T_NRFXLIB AND NOT CONFIG_NFC_T4T_NRFXLIB)
 	message(WARNING "One of CONFIG_NFC_T2T_NRFXLIB or CONFIG_NFC_T4T_NRFXLIB must be specified.")
+endif()
+
 endif()

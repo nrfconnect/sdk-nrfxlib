@@ -4,6 +4,18 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+choice NFC_LIBRARY_SOURCE
+	prompt "Source of the NFC Type 2 / Type 4 tag libraries"
+	default NFC_LIBRARY_SOURCE_NRFXLIB
+	help
+	  Prebuilt archives come from sdk-nrfxlib. Internal builds compile the same
+	  API from the nfc-library repository (Zephyr integration).
+
+config NFC_LIBRARY_SOURCE_NRFXLIB
+	bool "Prebuilt (sdk-nrfxlib)"
+
+endchoice
+
 config NFC_T2T_NRFXLIB
 	bool "NFC Type 2 Tag library"
 
