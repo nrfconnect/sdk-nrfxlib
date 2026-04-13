@@ -9,48 +9,6 @@ Changelog - nrf_cc3xx_mbedcrypto
 
 All notable changes to this project are documented in this file.
 
-nrf_cc3xx_mbedcrypto - 0.9.20
-*****************************
-
-New version of the runtime library with the following bug fixes and improvements:
-
-* Fixed key generation error codes for Edwards and Montgomery curves to consistently return ``PSA_ERROR_NOT_SUPPORTED``.
-* Removed support for generating symmetric keys with the PSA Crypto driver.
-  The Oberon PSA Crypto core now provides this functionality using randomness from CryptoCell.
-* Fixed an issue in the PSA MAC APIs where truncated MACs were not handled correctly.
-* Made the PSA key generation and asymmetric signing implementations open source.
-
-Library built against Mbed TLS version 3.5.2.
-
-This version depends on the ``nrf_cc310_platform`` or ``nrf_cc312_platform`` library for low-level system initialization and proper RTOS integration.
-
-Added
-=====
-
-Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF91 Series, nRF52840, and nRF5340.
-
-.. note::
-
-   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
-
-* nrf_cc312_mbedcrypto, nRF5340 variants:
-
-  * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_legacy_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_core_0.9.20.a`
-
-* nrf_cc310_mbedcrypto, nRF91 Series variants:
-
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_psa_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_legacy_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_core_0.9.20.a`
-
-* nrf_cc310_mbedcrypto, nRF52840 variants:
-
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_psa_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_legacy_crypto_0.9.20.a`
-  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_core_0.9.20.a`
-
 nrf_cc3xx_mbedcrypto - 0.9.19
 *****************************
 

@@ -35,10 +35,6 @@ extern "C"
  */
 #define NRF_CC3XX_PLATFORM_USE_COUNT_MAX                        (10)
 
-/** @brief Definition of number of TRNG words
- */
-#define NRF_CC3XX_PLATFORM_TRNG_WORDS                           (6)
-
 #define NRF_CC3XX_PLATFORM_SUCCESS                              (0)
 #define NRF_CC3XX_PLATFORM_TRUE                                 (1)
 #define NRF_CC3XX_PLATFORM_FALSE                                (0)
