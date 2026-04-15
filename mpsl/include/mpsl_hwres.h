@@ -44,10 +44,15 @@
     defined(NRF54LM20A_XXAA) || \
     defined(NRF54LM20B_XXAA) || \
     defined(NRF54LS05B_ENGA_XXAA) || \
-    defined(NRF54LS05B_XXAA) || \
-    defined(NRF7120_ENGA_XXAA)
-    #ifndef LUMOS_XXAA
-        #define LUMOS_XXAA
+    defined(NRF54LS05B_XXAA)
+    #ifndef NRF54L_SERIES
+        #define NRF54L_SERIES
+    #endif
+#endif
+
+#if defined(NRF7120_ENGA_XXAA)
+    #ifndef NRF71_SERIES
+        #define NRF71_SERIES
     #endif
 #endif
 
@@ -70,7 +75,7 @@ extern "C" {
     #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
     /* This corresponds to the DPPI channels 0, 1, and 2. */
     #define MPSL_DPPIC_CHANNELS_USED_MASK (0x00000007)
-#elif defined(LUMOS_XXAA)
+#elif defined(NRF54L_SERIES) || defined(NRF7120_ENGA_XXAA)
     #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
     #define MPSL_DPPIC10_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
@@ -89,7 +94,7 @@ extern "C" {
     #define MPSL_TIMER0 NRF_TIMER0
 #elif defined(NRF53_SERIES)
     #define MPSL_TIMER0 NRF_TIMER0_NS
-#elif defined(LUMOS_XXAA)
+#elif defined(NRF54L_SERIES) || defined(NRF7120_ENGA_XXAA)
     #define MPSL_TIMER0 NRF_TIMER10
 #else
     #define MPSL_TIMER0 NRF_TIMER020
