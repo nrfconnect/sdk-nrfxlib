@@ -28,8 +28,6 @@ extern "C" {
  * This function will block until the temperature measurement is done.
  * It takes around 50 us from call to return.
  *
- * @note This function must be executed in the same execution priority as @ref mpsl_low_priority_process.
- *
  * @return Result of temperature measurement. Die temperature in 0.25 degrees Celsius.
  */
 int32_t mpsl_temperature_get(void);

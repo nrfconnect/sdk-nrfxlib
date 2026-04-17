@@ -22,7 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stddef.h>
+#include <stdlib.h>
 
 #include "protocol/mpsl_cx_protocol_api.h"
 

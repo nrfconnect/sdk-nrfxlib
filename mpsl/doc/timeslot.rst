@@ -56,6 +56,7 @@ The length of the timeslot is specified by the application.
 Longer continuous timeslots can be achieved by requesting to extend the current timeslot.
 A timeslot can be extended multiple times.
 However, if there are other concurrent protocol activities, the extension might fail.
+The maximum timeslot length is 128 seconds.
 
 Scheduling
 **********
@@ -76,11 +77,6 @@ However, a timeslot that has already started cannot be interrupted or canceled.
 If the timeslot is requested as earliest possible, it is scheduled at any available free time.
 Therefore, there is less probability of collision with the earliest possible request.
 
-.. note::
-   Radio Notification signals behave the same way for timeslots requested through the timeslot interface as for other activities.
-   See :ref:`mpsl_radio_notification` for more information.
-   If radio notifications are enabled, timeslots will be notified.
-
 High-frequency clock configuration
 **********************************
 The application can request the MPSL to guarantee that the HFCLK source is set to the external crystal and that it is ramped up and stable before the start of the timeslot.
@@ -91,8 +87,6 @@ In such case, the MPSL leaves the crystal running.
 
 If the application does not request the MPSL to have the external high-frequency crystal ready by the start of the timeslot,
 then the high-frequency clock might or might not be running during the timeslot.
-Note that if the application will use the radio peripheral in timeslots with this configuration, it must ensure that the crystal is running and stable before starting the radio.
-On nRF54H Series SoCs the crystal is also needed to use any peripheral in RADIO_PD, including timers.
 
 Performance considerations
 **************************
@@ -124,7 +118,6 @@ The recommended practice is to set up a timer interrupt that expires before the 
 Such a timer interrupt can also be used to request an extension of the timeslot, but there must still be enough time to clean up if the extension is not granted.
 
 .. note::
-
    The scheduler uses the LFCLK source for time calculations when scheduling events.
    If the application uses a TIMER (sourced from the current HFCLK source) to calculate and signal the end of a timeslot, it must account for the possible clock drift between the HFCLK source and the LFCLK source.
 
@@ -135,14 +128,8 @@ Depending on the signal type, a signal arrives at interrupt priority level 0, or
 Therefore, in order to invoke MPSL APIs inside the signal handler, thread safety must be taken into account.
 
 .. note::
-
    Processing of high priority signals cannot exceed the granted time of the timeslot.
    If it does, the behavior is undefined and the MPSL might malfunction.
-
-.. note::
-
-   If the MPSL is integrated with an operating system, the use of kernel APIs in the signal handler may not be allowed.
-   In such a case, the behavior is undefined, and the MPSL might malfunction.
 
 API usage scenarios
 ===================
@@ -183,7 +170,6 @@ Blocked scenario
 Timeslot requests might be blocked due to an overlap with activities already scheduled by the MPSL.
 
 .. note::
-
    It is possible to issue a timeslot request when getting blocked.
    However, it is likely that the new request will get blocked as well.
    This may cause the CPU to become less available for other processing.
