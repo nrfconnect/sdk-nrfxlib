@@ -22,11 +22,10 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrfx.h"
+#include "nrf.h"
+#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 #include "mpsl_clock.h"
-#include "mpsl_hwres.h"
-#include "mpsl_hwres_ppi.h"
 
 /** @brief High IRQ priority
  *
@@ -38,19 +37,20 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define MPSL_BUILD_REVISION_SIZE 20
 
+/** @brief Bitmask of (D)PPI channels reserved for MPSL. */
+#if defined(PPI_PRESENT)
+#define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
+#elif defined(GRTC_PRESENT)
+#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
+#elif defined(DPPIC_PRESENT)
+#define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
+#else
+#error Unknown NRF series.
+#endif
+
 /** @brief    Function prototype for the assert handler.
  *
- * The assertion handler will be called whenever MPSL detects
- * an internal error it cannot recover from.
- * The assertion handler may be called from any execution context,
- * including interrupt context.
- *
- * The application may log the assertion information and provide the
- * information to Nordic Semiconductor for analysis.
- *
- * MPSL will disable all interrupts prior to calling the
- * assertion handler. MPSL will reset the chip if the
- * application returns from this function.
+ * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
  *
  * @param[in] file   The filename where the assertion occurred.
  * @param[in] line   The line number where the assertion occurred.
@@ -63,7 +63,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
                                  If NULL the LF clock will be configured as an RC source with rc_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_CTIV, .rc_temp_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_TEMP_CTIV, and .accuracy_ppm = @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.
-                                 The parameter is not used when external clock driver is registered @ref mpsl_clock_ctrl_source_register().
  * @param[in]  low_prio_irq      IRQ to pend when low priority processing should be executed. The application
  *                               shall call @ref mpsl_low_priority_process after this IRQ has occurred.
  * @param[in]  p_assert_handler  Pointer to MPSL assert handler.
@@ -72,10 +71,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *       never modify the SEVONPEND flag in the SCR register,
  *       while this function is executing.
  *       Doing so might lead to a deadlock.
- *
- * @note For nRF54h SoC series the function always waits for LFCLK to be ready. The LFCLK is handled by system controller
- *       so response must arrive from other domain. That shall be done in non-blocking context. To do not change
- *       requirements for other MPSL APIs delayed wait for LFCLK is not allowed for the nRF54h SoC series.
  *
  * @note If only Front End Module functionality is needed, @ref mpsl_fem_init can be called instead.
  *
@@ -121,17 +116,12 @@ void MPSL_IRQ_RADIO_Handler(void);
 
 /** @brief      RTC0 interrupt handler
  *
- * For nRF52 and nRF53 series the RTC timer is NRF_RTC0.
- * For nRF54 series devices, the RTC timer corresponds to NRF_GRTC.
- *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0
  */
 void MPSL_IRQ_RTC0_Handler(void);
 
 /** @brief      TIMER0 interrupt handler.
- *
- * The timer being used is defined by @ref MPSL_TIMER0.
  *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0
@@ -161,53 +151,20 @@ void mpsl_low_priority_process(void);
  */
 void mpsl_calibration_timer_handle(void);
 
-/** @brief MPSL requesting CONSTLAT to be on.
+/** @brief RFU
  *
- * The application needs to implement this function.
- * MPSL will call the function when it needs CONSTLAT to be on.
- * It only calls the function on nRF54L Series devices.
+ * RFU
  */
-void mpsl_constlat_request_callback(void);
+void mpsl_pan_rfu(void);
 
-/** @brief De-request CONSTLAT to be on.
+/** @brief Relax real-time requirements.
  *
- * The application needs to implement this function.
- * MPSL will call the function when it no longer needs CONSTLAT to be on.
- * It only only calls the function on nRF54L Series devices.
+ * When enabled, MPSL will not trigger assertions when real-time deadlines are missed.
+ * Such deadlines can be missed when interrupts are disabled for longer periods of time.
+ *
+ * @param[in] enable Set to true enable relaxed real-time mode
  */
-void mpsl_lowpower_request_callback(void);
-
-/**
- * @defgroup mpsl_low_latency_callbacks MPSL low-latency callbacks
- *
- * Application-implemented callbacks invoked by MPSL on nRF54L Series devices.
- * Use @ref mpsl_low_latency_acquire_callback before time-critical MPSL work
- * (for example around radio activity) and @ref mpsl_low_latency_release_callback
- * when that work is finished so the platform can relax NVM latency and related
- * settings.
- *
- * When time-critical events are back-to-back, MPSL may skip release between
- * events and only call release after the last event; implementations must
- * tolerate skipped intermediate releases (for example by counting acquires).
- *
- * @{
- */
-
-/** @brief Acquire low-latency settings to the system.
- *
- * Prepare the system for time-critical execution (for example by placing
- * the NVM controller in low-latency mode). Called by MPSL; do not call
- * from application code.
- */
- void mpsl_low_latency_acquire_callback(void);
-
- /** @brief Release low-latency settings from the system.
-  *
-  * Release the low-latency settings from the system when low-latency operation
-  * is no longer required. Called by MPSL; do not call from application code.
-  */
- void mpsl_low_latency_release_callback(void);
- /** @} */
+void mpsl_relaxed_real_time_set(bool enable);
 
 #ifdef __cplusplus
 }

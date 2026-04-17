@@ -24,7 +24,6 @@
 #include <stdbool.h>
 
 #include "mpsl_fem_types.h"
-#include "mpsl_tx_power.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,14 +37,8 @@ typedef struct
     /** SoC power in dBm. When returned by a model, this field is expected to contain value
      *  supported by the SoC that can safely be applied directly to RADIO registers. */
     int8_t          soc_pwr;
-
-    /** PA power control to be applied to the FEM.
-     *
-     * This value is FEM type-dependent. The produced value is to be passed to the
-     * call to @ref mpsl_fem_pa_power_control_set.
-     */
-    mpsl_fem_pa_power_control_t fem_pa_power_control;
-
+    /** Front-End Module gain. */
+    mpsl_fem_gain_t fem;
     /** Achieved power on the antenna in dBm. */
     int8_t          achieved_pwr;
 } mpsl_fem_power_model_output_t;
@@ -57,7 +50,6 @@ typedef struct
  *          Failing to meet this requirement will lead to undefined behavior of the protocol stacks.
  *
  * @param[in]   requested_power   Requested power on the antenna in dBm.
- * @param[in]   phy               PHY for which output is to be retrieved.
  * @param[in]   freq_mhz          Frequency in MHz.
  * @param[out]  p_output          Output of the model. For details, refer to
  *                                @ref mpsl_fem_power_model_output_t.
@@ -65,7 +57,6 @@ typedef struct
  */
 typedef void (*mpsl_fem_power_model_output_fetch_t)(
     int8_t                          requested_power,
-    mpsl_phy_t                      phy,
     uint16_t                        freq_mhz,
     mpsl_fem_power_model_output_t * p_output,
     bool                            tx_power_ceiling);

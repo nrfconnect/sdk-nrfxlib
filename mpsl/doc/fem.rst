@@ -131,7 +131,8 @@ nRF21540 usage
 **************
 
 In the nRF21540 implementation, the PDN pin is used to power down the FEM internal circuits.
-The FEM is powered up by a call to the :c:func:`mpsl_fem_enable` function and powered down by a call to the :c:func:`mpsl_fem_disable` function.
+The FEM can be powered down on an explicit application request.
+The FEM is powered back up automatically before PA or LNA are activated.
 
 The following example controls LNA and PDN during an RX operation, using the following parameters:
 
@@ -140,23 +141,18 @@ The following example controls LNA and PDN during an RX operation, using the fol
 * PDN settle time - 18 us
 * LNA deactivation event - ``rx_end``
 * PDN deactivation event - ``software``
-* LNA activation timer - ``TIMER0``
+* LNA activation timer - ``TIMER1``
 
 The *RX ramp-up time* is the total time scheduled by the application.
 
 The steps needed to properly configure LNA and PDN in this example are the following:
 
-1. The application calls the :c:func:`mpsl_fem_enable` function to power up the FEM.
-#. The application calls the :c:func:`mpsl_fem_lna_configuration_set` function, that configures the LNA (RX_EN pin) to be activated by the timer event, with the start time set to 0 µs and the end time set to 40 µs.
-#. The application provides the ``rx_end`` event as the LNA (RX_EN pin) deactivation event.
-#. The FEM module reads the scheduled time and sets ``TIMER0`` compare channel to 27 µs (40-13).
+1. The application configures the power-down passing ``rx_end`` as the activation event.
+#. The application configures LNA to be activated by the timer event, with the start time set to 0 us and the end time set to 40 us.
+#. The application provides the ``rx_end`` event as the LNA deactivation event.
+#. The FEM module reads the scheduled time and sets ``TIMER1`` compare channels to 27 us (40-13) and 9 us (27-18).
 #. The application starts the RX operation.
-#. The application starts ``TIMER0``.
-
-The steps needed to properly deconfigure the LNA (RX_EN pin) and PDN in this example are the following:
-
-1. The application calls the :c:func:`mpsl_fem_lna_configuration_clear` function.
-#. The application calls the :c:func:`mpsl_fem_disable` function to power down the FEM.
+#. The application starts ``TIMER1``.
 
 The following picture illustrates the timing in this scenario:
 

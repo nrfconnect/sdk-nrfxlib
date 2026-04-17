@@ -49,10 +49,10 @@ For the nRF53 Series:
 For the nRF54H Series:
   Interrupts:
 
-  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_2_IRQn``
+  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_0_IRQn``
   * ``TIMER020``
   * ``TIMER021``
-  * ``ECB031``
+  * ``ECB030``
 
   No interrupts:
 
@@ -65,13 +65,7 @@ For the nRF54H Series:
 For the nRF54L Series:
   Interrupts:
 
-  * ``GRTC`` channels ``7`` to ``11``, interrupt ``GRTC_3_IRQn``
-
-    .. note::
-       The ``GRTC`` must be started by the application before calling :c:func:`mpsl_init` function.
-       Additionally, the ``SYSCOUNTER`` must be enabled in the ``MODE`` register.
-       This is done automatically when using the |NCS|.
-
+  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_3_IRQn``
   * ``TIMER10``
   * ``TIMER20``
   * ``ECB00``
@@ -82,7 +76,6 @@ For the nRF54L Series:
   * ``CLOCK``
   * ``TEMP``
   * ``DPPIC10`` channel ``0``
-  * ``DPPIC20`` channel ``0``
   * ``PPIB21`` channel ``0``
   * ``PPIB11`` channel ``0``
 
@@ -90,40 +83,7 @@ For the nRF54L Series:
    These peripherals can be used freely when MPSL is not initialized.
    Additional peripheral requirements may be set by the protocol stacks in use.
 
-The mentioned resources related to ``RADIO`` and ``TIMER`` can be accessed directly using the :ref:`mpsl_timeslot` feature.
-Limited access to some of these peripherals is provided through the following APIs:
-
-  * ``ECB`` through :file:`mpsl_ecb.h`
-  * ``CLOCK`` through :file:`mpsl_clock.h`
-  * ``TEMP`` through :file:`mpsl_temp.h`
-
-
-On the nRF54L Series, the CPU clock frequency must be 128 MHz.
-
-.. _mpsl_lib_nrf54l_callbacks:
-
-nRF54L Series platform callbacks
-********************************
-
-On the nRF54L Series only, :file:`mpsl.h` declares low-latency hooks that your integration must define.
-MPSL calls them around time-critical scheduler or radio work so the platform can switch CPU power profile (including constant-latency / CONSTLAT when needed) and non-volatile memory (NVM / RRAM) latency settings in step.
-
-Use this single pair together:
-
-* :c:func:`mpsl_low_latency_acquire_callback` enter a low-latency window before MPSL runs time-critical code (for example by enabling NVM low-latency mode and related settings).
-* :c:func:`mpsl_low_latency_release_callback` leave that window when MPSL no longer needs low-latency operation.
-
-When time-critical events are scheduled back-to-back, MPSL may skip :c:func:`mpsl_low_latency_release_callback` between events and only call release after the last event in the sequence.
-Otherwise, each call to :c:func:`mpsl_low_latency_acquire_callback` is followed by a matching release when that piece of work no longer needs low-latency operation.
-Integrations must tolerate skipped intermediate releases (for example by counting acquires).
-
-.. note::
-   In the |NCS|, the MPSL subsystem provides default implementations of these callbacks for Zephyr-based builds.
-   You need your own definitions only if you integrate the MPSL library without that glue code (for example a bare-metal or fully custom port), or if you intentionally replace the default behavior.
-
-.. note::
-   To coordinate constant-latency (CONSTLAT) with MPSL through :file:`nrf_sys_event`, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT` in the application configuration where that behavior is required.
-   To coordinate NVM latency with MPSL through :file:`nrf_sys_event`, enable :kconfig:option:`CONFIG_NRF_SYS_EVENT_IRQ_LATENCY` in the application configuration where that behavior is required.
+Limited access to these peripherals is provided through the MPSL Timeslot module and other MPSL APIs.
 
 Thread and interrupt safety
 ***************************
@@ -155,9 +115,6 @@ The following interrupts do not have real-time requirements:
    The interrupt is enabled with :c:func:`mpsl_init` and disabled with :c:func:`mpsl_uninit` by MPSL.
    The interrupt is selected using the :kconfig:option:`CONFIG_MPSL_LOW_PRIO_IRQN` Kconfig option.
    This Kconfig option can be used to resolve conflicts with other software modules and should be left to the default value if possible.
-
-The reserved interrupt handlers for the ``RADIO``, ``GRTC``, ``RTC``, and ``TIMER`` peripheral instances must not be reconfigured while MPSL is enabled.
-In the |NCS|, it is possible to reconfigure these interrupt handlers when MPSL is disabled using the :kconfig:option:`CONFIG_MPSL_DYNAMIC_INTERRUPTS` Kconfig option.
 
 .. _mpsl_lib_scheduling:
 

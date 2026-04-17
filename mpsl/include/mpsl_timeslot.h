@@ -25,7 +25,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "nrfx.h"
+#include "nrf.h"
+#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 
 /** @brief The shortest allowed timeslot event in microseconds. */
@@ -58,7 +59,7 @@ extern "C" {
 #define MPSL_TIMESLOT_EXTENSION_MARGIN_MIN_US          (87UL)
 
 /** @brief Size of a single timeslot context. */
-#define MPSL_TIMESLOT_CONTEXT_SIZE                     (96U)
+#define MPSL_TIMESLOT_CONTEXT_SIZE                     (48)
 
 /** @brief Maximum number of timeslot sessions. */
 #define MPSL_TIMESLOT_CONTEXT_COUNT_MAX                (8)
@@ -74,9 +75,7 @@ enum MPSL_TIMESLOT_SIGNAL
                                                 @ref MPSL_IRQ_TIMER0_Handler. */
     MPSL_TIMESLOT_SIGNAL_TIMER0           = 1,  /**< This signal indicates the TIMER0 interrupt.
                                                 The signal will be executed in the same context as
-                                                @ref MPSL_IRQ_TIMER0_Handler.
-                                                The timer being used is defined by
-                                                @ref MPSL_TIMER0. */
+                                                @ref MPSL_IRQ_TIMER0_Handler. */
     MPSL_TIMESLOT_SIGNAL_RADIO            = 2,  /**< This signal indicates the RADIO interrupt.
                                                 The signal will be executed in the same context as
                                                 @ref MPSL_IRQ_RADIO_Handler. */
@@ -154,9 +153,7 @@ enum MPSL_TIMESLOT_HFCLK_CFG
                                                  @note If the application will use the radio peripheral
                                                  in timeslots with this configuration, it must ensure
                                                  that the crystal is running and stable before
-                                                 starting the radio. On nRF54H series chips the crystal
-                                                 is also needed to use any peripheral in RADIO_PD,
-                                                 including timers. */
+                                                 starting the radio. */
 };
 
 /** @brief Timeslot event priorities. */
@@ -174,10 +171,7 @@ enum MPSL_TIMESLOT_REQUEST_TYPE
                                                  in a session.
                                                  @note It is not permitted to request an earliest
                                                  timeslot from within a timeslot. */
-    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request.
-                                                 This may not be used for the first request of a
-                                                 session as there is no previous timeslot to
-                                                 schedule the start time against. */
+    MPSL_TIMESLOT_REQ_TYPE_NORMAL      = 1,      /**< Normal timeslot request. */
 };
 
 /** @brief Parameters for a request for a timeslot as early as possible. */
@@ -246,9 +240,6 @@ typedef struct
  *       @ref MPSL_TIMESLOT_SIGNAL_INVALID_RETURN event will be sent.
  * @note The returned struct pointer must remain valid after the signal callback
  *       function returns. For instance, this means that it must not point to a stack variable.
- * @note The signal callback is executed from high priority context. It is not advised to use
- *       blocking operations in it. Use of kernel APIs may be also disallowed. Please check your
- *       operating system documentation.
  *
  * @param[in] session_id Session id as returned by @ref mpsl_timeslot_session_open.
  * @param[in] signal     Type of signal, see @ref MPSL_TIMESLOT_SIGNAL.
@@ -314,27 +305,15 @@ int32_t mpsl_timeslot_session_close(mpsl_timeslot_session_id_t session_id);
 
 /** @brief Requests a timeslot.
  *
- * Successful requests will result in mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START).
- * Unsuccessful requests will result in a @ref MPSL_TIMESLOT_SIGNAL_BLOCKED event.
- *
- * Once the timeslot has started, the application is responsible for keeping track of timing within
- * the timeslot and for ensuring that the application’s use of the peripherals does not last for longer
- * than the granted timeslot length.
- * The recommended practice is to set up a timer interrupt that expires before the timeslot expires,
- * with enough time left for the timeslot to do any clean-up actions before the timeslot ends.
- * Such a timer interrupt can also be used to request an extension of the timeslot,
- * but there must still be enough time to clean up if the extension is not granted.
- *
  * @note The first request in a session must always be of type @ref MPSL_TIMESLOT_REQ_TYPE_EARLIEST.
+
+ * @note Successful requests will result in mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START).
+ *       Unsuccessful requests will result in a @ref MPSL_TIMESLOT_SIGNAL_BLOCKED event.
  * @note The jitter in the start time of the timeslots is +/- @ref MPSL_TIMESLOT_START_JITTER_US us.
  * @note The mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START) call has a latency relative to the
  *       specified timeslot start, but this does not affect the actual start time of the timeslot.
- * @note TIMER0 is reset when @ref MPSL_TIMESLOT_SIGNAL_START triggers.
- *       and is clocked at 1MHz from the high frequency (16 MHz) clock source.
- *       The scheduler uses the LFCLK source for time calculations when scheduling events.
- *       If the application uses a TIMER (sourced from the current HFCLK source) to calculate and
- *       signal the end of a timeslot, it must account for the possible clock drift between the
- *       HFCLK source and the LFCLK source.
+ * @note TIMER0 is reset at the start of the timeslot, and is clocked at 1MHz from the high frequency
+ *       (16 MHz) clock source
  * @note No stack will neither access the RADIO peripheral nor the TIMER0 peripheral
  *       during the timeslot.
  *
@@ -344,7 +323,7 @@ int32_t mpsl_timeslot_session_close(mpsl_timeslot_session_id_t session_id);
  * @retval 0              Success
  * @retval  -NRF_EINVAL   The parameters of p_request are not valid
  * @retval  -NRF_ENOENT   The session is not open.
- * @retval  -NRF_EAGAIN   The session is not IDLE, or the first request in a session was a @ref MPSL_TIMESLOT_REQ_TYPE_NORMAL
+ * @retval  -NRF_EAGAIN   The session is not IDLE.
  */
 int32_t mpsl_timeslot_request(mpsl_timeslot_session_id_t session_id, mpsl_timeslot_request_t const * p_request);
 
