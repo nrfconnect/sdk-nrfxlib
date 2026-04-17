@@ -9,6 +9,15 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.9.3
+**********************
+
+Bug fixes
+=========
+
+* Fixed a rare issue where the controller could assert when calling the ``LE Create Connection Cancel`` HCI command. (DRGN-25326)
+* Fixed an assert that could happen when the application disables interrupts while using a coexistence interface. (DRGN-28225)
+
 nRF Connect SDK v2.9.2
 **********************
 
