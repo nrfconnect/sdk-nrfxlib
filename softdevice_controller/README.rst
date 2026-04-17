@@ -3,11 +3,13 @@
 SoftDevice Controller
 #####################
 
-The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor devices that support Bluetooth.
+The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
+It supports Bluetooth 5.
 The library utilizes services provided by the :ref:`mpsl`.
 
 The |controller| is distributed in different variants containing different features.
-The libraries are available as soft-float, softfp-float, and hard-float builds for the nRF52, nRF54H and nRF54L Series, and as a soft-float build for the nRF53 Series.
+Variants for the Arm Cortex-M4 processor are available as soft-float, softfp-float, and hard-float.
+Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
 |BLE| feature support:
 
@@ -18,11 +20,11 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Advertiser                     | X               |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Peripheral                     | X               |              | X         |
+| Slave                          | X               |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Scanner                        |                 | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Central                        |                 | X            | X         |
+| Master                         |                 | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Data Length Extensions         | X               | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
@@ -37,8 +39,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 | Coded PHY (Long Range)         |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | LE Power Control Request       | X               | X            | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| LE Path Loss Monitoring        | X               | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Periodic Advertising Sync      |                 |              | X         |
 | Transfer - Sender              |                 |              |           |
@@ -64,18 +64,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Synchronized Receiver          |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Connection Subrating           |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Channel Sounding               |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| LL Extended Feature Set        |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Frame Space Update             |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Shorter Connection Intervals   |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| LE Flushable ACL Data          |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -83,18 +71,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
-   * For the LE Flushable ACL Data feature, the support is experimental.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
-   * For the nRF54L Series devices, the SoftDevice Controller in non-secure mode is experimental.
-   * Channel Sounding is not supported on the nRF52 and nRF53 Series devices.
-   * For the Shorter Connection Intervals feature, the minimum connection interval can be achieved using the lowest supported ACL frame space, 2 Mbps PHY, and 27-byte data length.
-
-     The minimum supported connection intervals for each device family are as follows:
-
-     * nRF52 Series: 875 μs
-     * nRF53 Series: 875 μs
-     * nRF54L Series: 750 μs
-     * nRF54H Series: 875 μs
 
 .. _sdc_proprietary_feature_support:
 
@@ -109,7 +86,7 @@ Proprietary feature support:
 |                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 | QoS Channel Survey       |                 | X            | X         | Provides measurements of the energy levels on the Bluetooth LE channels.    |
-|                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
+| (experimental support)   |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 
@@ -124,7 +101,6 @@ Proprietary feature support:
    doc/softdevice_controller
    doc/scheduling
    doc/isochronous_channels
-   doc/channel_sounding
    limitations
    CHANGELOG
    doc/api

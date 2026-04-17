@@ -39,11 +39,22 @@ DRGN-11297: Maximum connection interval of 10 ms before entering LLPM-mode
   * A first update to 10 ms connection interval.
   * A second update to 1 ms connection interval.
 
+DRGN-10305: Scan window is limited to 16 seconds
+  If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds.
+
 DRGN-8569: SEVONPEND flag must not be modified
   Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6), as this can lead to undefined behavior.
 
 DRGN-6362: Synthesized low frequency clock source not tested
   Synthesized low frequency clock source is not tested or intended for use with the SoftDevice Controller.
+
+DRGN-12259: HCI Receiver and Transmitter Test commands not available
+  The HCI Receiver and Transmitter Test commands are not available.
+
+  **Workaround:** To perform a radio test, use a DTM application:
+
+  * For nRF52, use the DTM application in the nRF5 SDK.
+  * For nRF53, use :ref:`direct_test_mode`.
 
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.
@@ -51,7 +62,11 @@ DRGN-15989: In some cases, the SDC can connect to the peer it is already connect
 DRGN-17724: The AoA transmitter is not supported in LLPM-mode
   The AoA transmitter can show unspecified behavior when being used in LLPM-mode.
 
-DRGN-25316: Sending and receiving ISO SDUs larger than 1255 bytes is not supported.
+DRGN-20655: ISO SDUs in Host to Controller direction should not be split into multiple HCI ISO Data packets
+  If the Host provides an SDU that has been split into multiple HCI ISO Data packets without a timestamp, the SDC can assign a wrong timestamp to it.
+  As a result, this SDU can be never transmitted.
+
+DRGN-20336: Receiving ISO SDUs larger than 247 bytes is not supported.
 
 DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
   The following parameters to the LE Set CIG Parameters command are not supported when framed PDUs are requested:
@@ -59,6 +74,7 @@ DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
   * Unequal ``SDU_Interval_C_To_P`` and ``SDU_Interval_P_To_C``.
     This applies only when the data transfer is bidirectional.
   * An ``SDU_Interval`` lower than 5000 µs.
+  * A ``Max_SDU`` larger than 246 bytes.
 
   Note that framed PDUs will be enforced if neither of the following conditions are met:
 
@@ -73,10 +89,8 @@ DRGN-21246: Unsupported BIG parameters
   The following parameters are not supported when the HCI LE Create BIG command is used:
 
   * An ``SDU_Interval`` shorter than 1250 µs.
+  * A ``Max_SDU`` larger than 247 bytes.
   * An ``SDU_Interval`` shorter than 5000 µs when using framed PDUs.
+  * A ``Max_SDU`` larger than 246 bytes when using framed PDUs.
 
   Note that framed PDUs will be enforced if ``SDU_Interval`` is not an integer multiple of 1250 µs.
-
-DRGN-26820: On nRF54H20, SDC memory pool must not be located in global RAM
-  Accessing memory in global RAM is costly from performance and power perspective.
-  Also, the radio and CCM DMA cannot access global RAM.
