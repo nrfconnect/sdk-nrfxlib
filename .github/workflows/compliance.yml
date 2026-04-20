@@ -20,8 +20,8 @@ jobs:
         # TODO: add yamllint to scripts/requirements-fixed.txt
         pip3 install -U yamllint
         pip3 install lxml
-        pip3 install -U python-magic junitparser==2.8.0 gitlint pylint pykwalify
-        pip3 install -U unidiff
+        pip3 install -U python-magic junitparser==2.8.0 gitlint pylint pykwalify dotenv
+        pip3 install -U unidiff reuse tabulate
         pip3 install --user -U west
         pip3 show -f west
 
