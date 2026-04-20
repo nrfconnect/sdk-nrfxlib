@@ -192,9 +192,6 @@ typedef  struct
         memory, that is accessible to the CryptoCell DMA. This pointer should
         be allocated and assigned before calling CC_LibInit(). */
        void *   rndState;
-       /*! A pointer to the entropy context. Note: This pointer should be
-       allocated and assigned before calling CC_LibInit(). */
-       void *   entropyCtx;
        /*! A pointer to the user-given function for generation a random
        vector. */
        CCRndGenerateVectWorkFunc_t rndGenerateVectFunc;
