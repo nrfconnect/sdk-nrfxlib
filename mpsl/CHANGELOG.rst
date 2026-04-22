@@ -7,6 +7,16 @@ Changelog
    :local:
    :depth: 2
 
+nRF Connect SDK v2.6.6
+**********************
+
+All the notable changes included in the |NCS| v2.6.6 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where a bug in MPSL could cause higher layers to assert (DRGN-23412).
+
 nRF Connect SDK v2.6.5
 **********************
 
