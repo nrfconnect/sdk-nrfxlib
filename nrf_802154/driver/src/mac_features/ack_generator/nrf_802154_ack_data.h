@@ -53,7 +53,7 @@
 void nrf_802154_ack_data_init(void);
 
 /**
- * @brief Enables or disables the ACK data generator module.
+ * @brief Enable or disable the ACK data generator module.
  *
  * @param[in]  enabled  True if the module is to be enabled. False otherwise.
  */
@@ -129,8 +129,7 @@ void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_
  * @retval true   Pending bit is to be set.
  * @retval false  Pending bit is to be cleared.
  */
-bool nrf_802154_ack_data_pending_bit_should_be_set(
-    const nrf_802154_frame_t * p_frame_data);
+bool nrf_802154_ack_data_pending_bit_should_be_set(const nrf_802154_frame_t * p_frame_data);
 
 /**
  * @brief Get the IE data stored in the list for the source address of the provided frame.

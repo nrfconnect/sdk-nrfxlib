@@ -180,8 +180,8 @@ typedef struct
  */
 typedef uint8_t nrf_802154_ack_data_t;
 
-#define NRF_802154_ACK_DATA_PENDING_BIT 0x00 /**< Frame Pending bit should be set in the Ack. */
-#define NRF_802154_ACK_DATA_IE          0x01 /**< Header Information Element should be set in the Ack. */
+#define NRF_802154_ACK_DATA_PENDING_BIT 0x00 /**< Frame Pending bit should be set in the ACK. */
+#define NRF_802154_ACK_DATA_IE          0x01 /**< Header Information Element should be set in the ACK. */
 
 /**
  * @brief Methods of source address matching.
