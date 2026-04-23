@@ -10,6 +10,14 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Added
+=====
+
+* Added experimental support for the nRF54LC10A SoC (CPU application, secure and non-secure).
+
 nRF Connect SDK v3.3.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
