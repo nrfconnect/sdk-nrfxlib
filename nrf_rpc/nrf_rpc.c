@@ -14,6 +14,10 @@
 #include "nrf_rpc_tr.h"
 #include "nrf_rpc_os.h"
 
+#ifdef nrf_rpc_err
+#undef nrf_rpc_err
+#endif
+
 #if defined(__GNUC__)
 /* Content of "NRF_RPC_AUTO_ARR" arrays are added by the linker script,
  * so the compiler should ignore any out of bounds warnings.
@@ -1360,10 +1364,12 @@ void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 				  rsp_len);
 }
 
-/** Report an error that cannot be reported as a function return value */
-void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
+/** Report an error that cannot be reported as a function return value
+ This function is used to report errors with debug information.
+*/
+void nrf_rpc_err_impl(int code, enum nrf_rpc_err_src src,
 		 const struct nrf_rpc_group *group, uint8_t id,
-		 uint8_t packet_type)
+		 uint8_t packet_type, const char *file, int line, const char *func)
 {
 	struct nrf_rpc_err_report report;
 	uint8_t src_group_id = (group != NULL) ? group->data->src_group_id :
@@ -1376,6 +1382,9 @@ void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 		    (src == NRF_RPC_ERR_SRC_SEND) ? "on send" : "from remote",
 		    code, (group != NULL) ? group->strid : "unknown", id,
 		    packet_type);
+	if (file != NULL) {
+		NRF_RPC_ERR("at %s:%d (%s)", file, line, func);
+	}
 
 	if ((src == NRF_RPC_ERR_SRC_RECV) && group) {
 		simple_send(group, packet_type, NRF_RPC_PACKET_TYPE_ERR, id, src_group_id,
@@ -1387,6 +1396,9 @@ void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 	report.group = group;
 	report.id = id;
 	report.packet_type = packet_type;
+	report.file = file;
+	report.line = line;
+	report.func = func;
 
 	if (group != NULL && group->err_handler != NULL) {
 		group->err_handler(&report);
@@ -1395,6 +1407,14 @@ void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 	if (global_err_handler != NULL) {
 		global_err_handler(&report);
 	}
+}
+
+/** Report an error that cannot be reported as a function return value */
+void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
+		 const struct nrf_rpc_group *group, uint8_t id,
+		 uint8_t packet_type)
+{
+	nrf_rpc_err_impl(code, src, group, id, packet_type, NULL, 0, NULL);
 }
 
 void nrf_rpc_alloc_tx_buf(const struct nrf_rpc_group *group, uint8_t **buf, size_t len)

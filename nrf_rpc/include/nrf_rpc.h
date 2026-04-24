@@ -169,6 +169,15 @@ struct nrf_rpc_err_report {
 	 * if packet is malformed.
 	 */
 	enum nrf_rpc_packet_type packet_type;
+
+	/** @brief File where the error was reported. */
+	const char *file;
+
+	/** @brief Line number where the error was reported. */
+	int line;
+
+	/** @brief Function where the error was reported. */
+	const char *func;
 };
 
 /** @brief Cleanup procedure list element.
@@ -613,6 +622,29 @@ void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *pac
 void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 		 const struct nrf_rpc_group *group, uint8_t id,
 		 uint8_t packet_type);
+
+/** @brief Report an error to nRF RPC error handler.
+ *
+ * This function includes additional debug data.
+ *
+ * @param code        Negative error code.
+ * @param src         Source of error.
+ * @param group       Group where error happens or NULL if unknown.
+ * @param id          Command or event id which caused the error or
+ *                    @ref NRF_RPC_ID_UNKNOWN if unknown.
+ * @param packet_type Type of packet related to this error.
+ * @param file        File where error happens.
+ * @param line        Line number where error happens.
+ * @param func        Function where error happens.
+ */
+void nrf_rpc_err_impl(int code, enum nrf_rpc_err_src src,
+	const struct nrf_rpc_group *group, uint8_t id,
+	uint8_t packet_type, const char *file, int line, const char *func);
+
+#ifdef CONFIG_NRF_RPC_DETAILED_ERROR_REPORTING
+#define nrf_rpc_err(_code, _src, _group, _id, _packet_type) \
+	nrf_rpc_err_impl(_code, _src, _group, _id, _packet_type, __FILE__, __LINE__, __func__)
+#endif
 
 /** @brief Allocates buffer for a packet.
  *
