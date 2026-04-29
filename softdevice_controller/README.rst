@@ -91,7 +91,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 
      The minimum supported connection intervals for each device family are as follows:
 
-     * nRF52 Series: 875 μs
+     * nRF52 Series: 750 μs
      * nRF53 Series: 875 μs
      * nRF54L Series: 750 μs
      * nRF54H Series: 875 μs

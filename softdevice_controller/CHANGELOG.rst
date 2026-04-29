@@ -9,6 +9,28 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* The functions :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` have been deprecated.
+
+  Applications can now reduce the NVM usage of Channel Sounding by enabling support only for the required roles using the following functions:
+
+    * :c:func:`sdc_support_channel_sounding_initiator_role_central`
+    * :c:func:`sdc_support_channel_sounding_initiator_role_peripheral`
+    * :c:func:`sdc_support_channel_sounding_reflector_role_central`
+    * :c:func:`sdc_support_channel_sounding_reflector_role_peripheral`
+
+  This change does not affect applications developed in the |NCS| context. (DRGN-28206)
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
+
 nRF Connect SDK v3.3.0
 **********************
 
