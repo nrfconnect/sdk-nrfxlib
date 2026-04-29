@@ -17,6 +17,9 @@
 #ifndef MPSL_HWRES_H__
 #define MPSL_HWRES_H__
 
+/* Symbols passed to nrfx-based MDK. */
+#include <mdk_config.h>
+
 /*  The xx_SERIES macros are defined here to keep this file independent
     of the MDK. This allows the header file to be used in nrfx without
     creating circular dependencies. */
