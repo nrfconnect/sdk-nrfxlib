@@ -10,6 +10,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Added
+=====
+
+* Experimental support for the nRF54LS05A device. (DRGN-28121)
+
 nRF Connect SDK v3.3.0
 **********************
 
