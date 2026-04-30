@@ -47,8 +47,12 @@ enum sdc_hci_event
     SDC_HCI_EVENT_DATA_BUFFER_OVERFLOW = 0x1a,
     /** @brief Encryption Key Refresh Complete. */
     SDC_HCI_EVENT_ENCRYPTION_KEY_REFRESH_COMPLETE = 0x30,
+    /** @brief LE Meta. */
+    SDC_HCI_EVENT_LE_META = 0x3e,
     /** @brief Authenticated Payload Timeout Expired. */
     SDC_HCI_EVENT_AUTHENTICATED_PAYLOAD_TIMEOUT_EXPIRED = 0x57,
+    /** @brief VS Meta. */
+    SDC_HCI_EVENT_VS_META = 0xff,
 };
 
 /** @brief Number Of Completed Packets array parameters. */
@@ -273,6 +277,23 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t conn_handle;
 } sdc_hci_event_encryption_key_refresh_complete_t;
 
+/** @brief LE Meta.
+ *
+ * The description below is extracted from Core_v6.2,
+ * Vol 4, Part E, Section 7.7.65
+ *
+ * The LE Meta event is used to encapsulate all LE Controller specific events. The Event
+ * Code of all LE Meta events shall be 0x3E. The Subevent_Code is the first octet of the
+ * event parameters. The Subevent_Code shall be set to one of the valid Subevent_Codes
+ * from an LE specific event. All other parameters are defined in the LE Controller specific
+ * events.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t subevent_code;
+    uint8_t params[];
+} sdc_hci_event_le_meta_t;
+
 /** @brief Authenticated Payload Timeout Expired.
  *
  * The description below is extracted from Core_v6.2,
@@ -289,6 +310,20 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_event_authenticated_payload_timeout_expired_t;
+
+/** @brief VS Meta.
+ *
+ * The VS Meta event is used to encapsulate all vendor-specific events. The Event
+ * Code of all VS Meta events shall be 0xFF. The Subevent_Code is the first octet of the
+ * event parameters. The Subevent_Code shall be set to one of the valid Subevent_Codes
+ * from a vendor-specific event. All other parameters are defined in the vendor-specific
+ * events.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t subevent_code;
+    uint8_t params[];
+} sdc_hci_event_vs_meta_t;
 
 /** @} end of HCI_EVENTS */
 
