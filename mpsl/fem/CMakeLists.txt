@@ -12,14 +12,23 @@ function(mpsl_fem_append_lib fem_lib_name)
     endif()
 endfunction()
 
-FILE(GLOB subdirlist RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
-
-# call mpsl_fem_append_lib for each subdirectory
-FOREACH(subdir ${subdirlist})
-  IF((IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}) AND NOT (${subdir} STREQUAL "include"))
-    mpsl_fem_append_lib(${subdir})
-  ENDIF()
-ENDFOREACH()
-
 zephyr_include_directories(include)
 zephyr_include_directories(include/protocol)
+
+mpsl_fem_append_lib(common)
+
+if (CONFIG_MPSL_FEM_NRF21540_GPIO)
+  mpsl_fem_append_lib(nrf21540_gpio)
+elseif (CONFIG_MPSL_FEM_NRF21540_GPIO_SPI)
+  mpsl_fem_append_lib(nrf21540_gpio_spi)
+elseif (CONFIG_MPSL_FEM_SIMPLE_GPIO)
+  mpsl_fem_append_lib(simple_gpio)
+elseif (CONFIG_MPSL_FEM_NRF2220)
+  mpsl_fem_append_lib(nrf2220)
+  mpsl_fem_append_lib(nrf22xx)
+elseif (CONFIG_MPSL_FEM_NRF2240)
+  mpsl_fem_append_lib(nrf2240)
+  mpsl_fem_append_lib(nrf22xx)
+else()
+  message(FATAL_ERROR "No FEM library selected")
+endif()
