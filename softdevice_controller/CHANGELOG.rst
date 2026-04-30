@@ -9,13 +9,28 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.2.x
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the scanner would assert when performing extended scanning. (DRGN-28050)
+* Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
+
+Changes
+=======
+
+* The controller acting as a central will now schedule continuation events only if it has received a packet from the peer device in the previous subrated connection event or in any subsequent continuation events.
+  This change improves scheduling performance with multiple links. (DRGN-27952)
+
 nRF Connect SDK v3.2.4
 **********************
 
 Bug fixes
 =========
 
-* Fixed an issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+* Fixed two issues where the scanner would assert when performing extended active scanning. (DRGN-27065, DRGN-28050)
 * Fixed an issue where the controller acting as a central would send a packet on the wrong channel.
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
