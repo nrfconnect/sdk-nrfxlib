@@ -36,7 +36,7 @@ extern "C"
  * cc_mbedtls_entropy_context and mbedtls_ctr_drbg_context in Arm CryptoCell
  * code base which is sized differently than in vanilla mbed TLS software.
  */
-#define NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS (111)
+#define NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS (78)
 
 /**@brief Opaque type for the context required for ctr_drbg generation
  *
@@ -45,8 +45,9 @@ extern "C"
  */
 typedef struct nrf_cc3xx_platform_ctr_drbg_context_t
 {
-    uint32_t        is_initialized;									//!< Mask indicating if the ctr_drbg context has been initialized.
-    uint32_t 		buffer[NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS];	//!< Internal buffer for the built-in entropy and ctrl_drbg contexts.
+    uint32_t is_initialized;                                //!< Mask indicating if the ctr_drbg context has been initialized.
+    uint32_t buffer[NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS]; //!< Internal buffer for the built-in entropy and ctrl_drbg contexts.
+    uint32_t reseed_interval;                               //!< The reseed interval.
 } nrf_cc3xx_platform_ctr_drbg_context_t;
 
 

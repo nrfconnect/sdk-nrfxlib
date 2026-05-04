@@ -9,6 +9,38 @@ Changelog - nrf_cc3xx_platform
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_platform - 0.9.21
+***************************
+
+New version of the library with the following features:
+
+ * Restructured the code for `CTR_DRBG`` and `HMAC_DRBG`` and entropy to remove internal dependency on legacy Mbed TLS crypto toolbox APIs.
+ * Restructured the code for key derivation to remove internal dependency on legacy Mbed TLS crypto toolbox APIs.
+
+Library built against Mbed TLS version 3.5.2.
+
+Added
+=====
+
+Added a new build of nrf_cc3xx_platform libraries for nRF91 Series, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
+
+* nrf_cc312_platform, nRF5340 variants
+
+  * :file:`/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.21.a`
+
+* nrf_cc310_platform, nRF91 Series variants
+
+  * :file:`/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.21.a`
+
+* nrf_cc310_platform, nRF52840 variants
+
+  * :file:`/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.21.a`
+
+
 nrf_cc3xx_platform - 0.9.17
 ***************************
 
