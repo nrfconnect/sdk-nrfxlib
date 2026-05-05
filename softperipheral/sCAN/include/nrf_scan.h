@@ -125,8 +125,9 @@ typedef struct
  * ,*/
 typedef struct
 {
-    uint32_t id;   ///< ID, can be standard or extended
-    uint32_t mask; ///< Filter mask
+    uint32_t id;       ///< ID, can be standard or extended
+    uint32_t mask;     ///< Filter mask, must match width of ID
+    bool     extended; ///< True: Use an extended ID, False: Use a standard ID
 } nrf_scan_rx_filter_t;
 
 /**
@@ -190,6 +191,13 @@ nrf_scan_status_t nrf_scan_get_status(nrf_scan_t const * p_scan);
  * @retval NRF_SCAN_ERROR_INVALID_PARAM Invalid or NULL parameter provided.
  * @retval NRF_SCAN_ERROR_INVALID_STATE nrfx driver state is invalid.
  * @retval NRF_SCAN_ERROR_BUSY        sCAN driver is busy
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_scan_dppi_role_map_set or @ref nrf_scan_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
 nrf_scan_error_t nrf_scan_init(nrf_scan_t const *       p_scan,
                                nrf_scan_event_handler_t handler,
@@ -205,6 +213,13 @@ nrf_scan_error_t nrf_scan_init(nrf_scan_t const *       p_scan,
  * states restrictions related to VPR.
  *
  * @param[in] p_scan Identifier of the sCAN instance to uninitialize.
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_scan_dppi_role_map_set or @ref nrf_scan_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
 void nrf_scan_uninit(nrf_scan_t const * p_scan);
 
@@ -219,6 +234,63 @@ void nrf_scan_uninit(nrf_scan_t const * p_scan);
  * @retval NRF_SCAN_ERROR_INVALID_STATE nrfx driver state is invalid.
  */
 nrf_scan_error_t nrf_scan_enable(nrf_scan_t const * p_scan);
+
+/**
+ * @brief Bind the soft peripheral's tasks to handler roles, as one map.
+ *
+ * Tasks are addressed as entries: entries 0 to SP_DPPI_SLOT_COUNT-1 are the DPPI slots, where slot
+ * n is channel n of the SoC's DPPI instance, and the remaining entries are tasks with no DPPI path
+ * at all. @p p_roles holds one SP_DPPI_ROLE_* per entry, so the whole map changes in one step and
+ * no intermediate map is ever in force - a role that is being moved is never briefly unassigned.
+ *
+ * A role must appear at most once: both a task register write and a DPPI event for a role reach the
+ * same handler, so it has to resolve to a single task. Moving a role moves everything that reaches
+ * it, including the barrier this driver raises for it.
+ *
+ * This does not enable anything - use @ref nrf_scan_dppi_subscribe_enable per slot for that, and
+ * note that the permissions already in force are preserved. Call once after initialization and
+ * before the first request: publishing reprograms interrupt state for every task whose binding
+ * moves, so it is rejected while a request is in flight.
+ *
+ * @param[in] p_scan Driver instance.
+ * @param[in] p_roles Array of SP_TASK_ENTRY_COUNT roles, indexed by task entry.
+ *
+ * @retval NRF_SCAN_SUCCESS             Map published to the soft peripheral.
+ * @retval NRF_SCAN_ERROR_INVALID_PARAM A role is out of range or claimed by two entries.
+ * @retval NRF_SCAN_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SCAN_ERROR_BUSY          A request is in progress or prepared; nothing was published.
+ */
+nrf_scan_error_t nrf_scan_dppi_role_map_set(nrf_scan_t const * p_scan,
+                                            const uint8_t *    p_roles);
+
+/**
+ * @brief Permit or forbid the soft peripheral to subscribe a DPPI slot.
+ *
+ * Nothing is permitted by default, so an unmodified application is never driven from the DPPI
+ * fabric and is unaffected by traffic other subsystems (for example MPSL/SDC) generate on the same
+ * DPPI instance. Permission is per slot and independent of the role binding.
+ *
+ * Permission is necessary but not sufficient: the soft peripheral connects a permitted slot only
+ * in the states where that subscription is meaningful, and disconnects it again afterwards. The
+ * task itself stays triggerable through its task register regardless of this setting.
+ *
+ * Like @ref nrf_scan_dppi_role_map_set, this publishes over a configuration barrier and is rejected
+ * while a request is in flight. Note also that permitting the slot carrying the start role does not
+ * connect it immediately: the soft peripheral arms that channel when it next reaches the state where
+ * the subscription is meaningful.
+ *
+ * @param[in] p_scan Driver instance.
+ * @param[in] slot   Slot index, less than @ref SP_DPPI_SLOT_COUNT.
+ * @param[in] enable True to permit the subscription, false to revoke it.
+ *
+ * @retval NRF_SCAN_SUCCESS             Permission published to the soft peripheral.
+ * @retval NRF_SCAN_ERROR_INVALID_PARAM Slot out of range.
+ * @retval NRF_SCAN_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SCAN_ERROR_BUSY          A request is in progress or prepared; nothing was published.
+ */
+nrf_scan_error_t nrf_scan_dppi_subscribe_enable(nrf_scan_t const * p_scan,
+                                                uint8_t            slot,
+                                                bool               enable);
 
 /**
  * @brief Explicitly power down the controller.

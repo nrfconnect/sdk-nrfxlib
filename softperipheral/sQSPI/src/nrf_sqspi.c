@@ -118,7 +118,17 @@ NRF_STATIC_INLINE uint32_t sp_handshake_get(void * p_reg, uint8_t idx)
     return nrf_qspi2_handshake_get((NRF_QSPI2_Type const *)p_reg, idx);
 }
 
-nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_config)
+NRF_STATIC_INLINE uint32_t sp_dppi_map_get(void * p_reg)
+{
+    return ((NRF_QSPI2_Type *)p_reg)->SPSYNC.DPPIMAP;
+}
+
+NRF_STATIC_INLINE void sp_dppi_map_set(void * p_reg, uint32_t map_word)
+{
+    ((NRF_QSPI2_Type *)p_reg)->SPSYNC.DPPIMAP = map_word;
+}
+
+nrf_sqspi_error_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_config)
 {
     NRFX_ASSERT(p_qspi);
     NRFX_ASSERT(p_config);
@@ -127,11 +137,14 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
 
     if (p_cb->state != NRFX_DRV_STATE_UNINITIALIZED)
     {
-        return NRFX_ERROR_ALREADY;
+        return NRF_SQSPI_ERROR_INVALID_STATE;
     }
 
     p_cb->transfer_in_progress = false;
     p_cb->prepared_pending     = false;
+
+    /* Back to the reset role map, matching the service. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
 
     //Formatting default values
     p_cb->conf.format.pixels   = 0;
@@ -193,7 +206,7 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
         }
         else
         {
-            return NRFX_ERROR_INVALID_PARAM; // We need SCK.
+            return NRF_SQSPI_ERROR_INVALID_PARAM; // We need SCK.
         }
 
         for (int i = 0; i < NRF_SQSPI_MAX_NUM_DATA_LINES; i++)
@@ -223,7 +236,7 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
         }
         else
         {
-            return NRFX_ERROR_INVALID_PARAM; // We need SCK.
+            return NRF_SQSPI_ERROR_INVALID_PARAM; // We need SCK.
         }
         for (int i = 0; i < NRF_SQSPI_MAX_NUM_DATA_LINES; i++)
         {
@@ -256,7 +269,7 @@ nrfx_err_t nrf_sqspi_init(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_
 
     p_cb->state = NRFX_DRV_STATE_INITIALIZED;
 
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
 bool nrf_sqspi_init_check(const nrf_sqspi_t * p_qspi)
@@ -266,11 +279,12 @@ bool nrf_sqspi_init_check(const nrf_sqspi_t * p_qspi)
     return (p_cb->state != NRFX_DRV_STATE_UNINITIALIZED);
 }
 
-nrfx_err_t nrf_sqspi_reconfigure(const nrf_sqspi_t * p_qspi, const nrf_sqspi_cfg_t * p_config)
+nrf_sqspi_error_t nrf_sqspi_reconfigure(const nrf_sqspi_t *     p_qspi,
+                                        const nrf_sqspi_cfg_t * p_config)
 {
     (void)p_qspi;
     (void)p_config;
-    return NRFX_ERROR_NOT_SUPPORTED;
+    return NRF_SQSPI_ERROR_UNSUPPORTED;
 }
 
 void nrf_sqspi_uninit(const nrf_sqspi_t * p_qspi)
@@ -317,19 +331,23 @@ void nrf_sqspi_uninit(const nrf_sqspi_t * p_qspi)
                                         VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled
                                         << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
 
+    /* Only now that the service is stopped: the teardown above still talks to it over the
+     * barriers, which have to reach the tasks of the map that is still in force. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
+
     p_cb->state = NRFX_DRV_STATE_UNINITIALIZED;
 }
 
-nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
-                             const nrf_sqspi_dev_cfg_t * p_config,
-                             nrf_sqspi_callback_t        callback,
-                             void *                      p_context)
+nrf_sqspi_error_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
+                                    const nrf_sqspi_dev_cfg_t * p_config,
+                                    nrf_sqspi_callback_t        callback,
+                                    void *                      p_context)
 {
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
 
     if (p_cb->state == NRFX_DRV_STATE_UNINITIALIZED)
     {
-        return NRFX_ERROR_INVALID_STATE;
+        return NRF_SQSPI_ERROR_INVALID_STATE;
     }
 
     p_cb->handler           = callback;
@@ -364,7 +382,7 @@ nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
         }
         else
         {
-            return NRFX_ERROR_INVALID_PARAM;
+            return NRF_SQSPI_ERROR_INVALID_PARAM;
         }
     }
 
@@ -382,7 +400,7 @@ nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
         }
         else
         {
-            return NRFX_ERROR_INVALID_PARAM;
+            return NRF_SQSPI_ERROR_INVALID_PARAM;
         }
     }
 
@@ -396,7 +414,7 @@ nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
     }
     else
     {
-        return NRFX_ERROR_NOT_SUPPORTED;
+        return NRF_SQSPI_ERROR_UNSUPPORTED;
     }
 
     if (p_config->sample_sync == NRF_SQSPI_SAMPLE_SYNC_DELAY)
@@ -452,28 +470,28 @@ nrfx_err_t nrf_sqspi_dev_cfg(const nrf_sqspi_t *         p_qspi,
     }
     else
     {
-        return NRFX_ERROR_INVALID_PARAM;
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
     }
 
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
-nrfx_err_t nrf_sqspi_dev_data_fmt_set(const nrf_sqspi_t *    p_qspi,
-                                      nrf_sqspi_data_fmt_t * p_data_fmt)
+nrf_sqspi_error_t nrf_sqspi_dev_data_fmt_set(const nrf_sqspi_t *    p_qspi,
+                                             nrf_sqspi_data_fmt_t * p_data_fmt)
 {
     if (p_data_fmt->addr_bit_order != p_data_fmt->cmd_bit_order)
     {
-        return NRFX_ERROR_INVALID_PARAM;
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
     }
     if (p_data_fmt->data_bit_reorder_unit != p_data_fmt->data_swap_unit)
     {
-        return NRFX_ERROR_INVALID_PARAM;
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
     }
     if (p_data_fmt->data_padding != 0)
     {
         if (p_data_fmt->data_container + p_data_fmt->data_padding != 32)
         {
-            return NRFX_ERROR_INVALID_PARAM;
+            return NRF_SQSPI_ERROR_INVALID_PARAM;
         }
     }
 
@@ -492,16 +510,79 @@ nrfx_err_t nrf_sqspi_dev_data_fmt_set(const nrf_sqspi_t *    p_qspi,
     nrf_qspi2_format_bpp(p_qspi->p_reg, p_data_fmt->data_swap_unit);
 
     p_cb->conf.ctrlr0.dfs = (uint8_t)((p_data_fmt->data_container - 1) & 0x1F);
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
-nrfx_err_t nrf_sqspi_activate(const nrf_sqspi_t * p_qspi)
+static nrf_sqspi_error_t sqspi_dppi_map_publish(const nrf_sqspi_t * p_qspi, uint32_t word)
+{
+    qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
+
+    if (p_cb->state == NRFX_DRV_STATE_UNINITIALIZED)
+    {
+        return NRF_SQSPI_ERROR_INVALID_STATE;
+    }
+
+    /* Not under traffic. Applying a map reprograms the CLIC priority, interrupt enable, dispatch
+     * callback and subscription of every task whose binding moved, so doing it while a transfer is in
+     * flight could rewire the very task that transfer depends on. Publish after activate and before
+     * the first transfer. */
+    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
+    {
+        return NRF_SQSPI_ERROR_BUSY;
+    }
+
+    sp_dppi_map_set(p_qspi->p_reg, word);
+
+    /* Order matters. The barrier below has to be raised on the task that carries the config role
+     * *now*, because the soft peripheral only learns the new map while servicing it. Refreshing the
+     * host-side lookup first would aim this barrier at a task that does not dispatch config yet, and
+     * the wait for the echo would never end. */
+    __CSB(p_qspi->p_reg);
+
+    /* Applied now, so later barriers go to wherever the roles ended up. */
+    sp_dppi_role_task_update(word);
+
+    return NRF_SQSPI_SUCCESS;
+}
+
+nrf_sqspi_error_t nrf_sqspi_dppi_role_map_set(const nrf_sqspi_t * p_qspi,
+                                              const uint8_t *     p_roles)
+{
+    NRFX_ASSERT(p_qspi);
+    NRFX_ASSERT(p_roles);
+    uint32_t word = sp_dppi_map_get(p_qspi->p_reg);
+
+    if (!sp_dppi_role_map_pack(&word, p_roles))
+    {
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
+    }
+
+    return sqspi_dppi_map_publish(p_qspi, word);
+}
+
+nrf_sqspi_error_t nrf_sqspi_dppi_subscribe_enable(const nrf_sqspi_t * p_qspi,
+                                                  uint8_t             slot,
+                                                  bool                enable)
+{
+    NRFX_ASSERT(p_qspi);
+
+    if (slot >= SP_DPPI_SLOT_COUNT)
+    {
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
+    }
+
+    uint32_t word = sp_dppi_map_get(p_qspi->p_reg);
+
+    return sqspi_dppi_map_publish(p_qspi, sp_dppi_map_permit_set(word, slot, enable));
+}
+
+nrf_sqspi_error_t nrf_sqspi_activate(const nrf_sqspi_t * p_qspi)
 {
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
 
     if (p_cb->state != NRFX_DRV_STATE_INITIALIZED)
     {
-        return NRFX_ERROR_INVALID_STATE;
+        return NRF_SQSPI_ERROR_INVALID_STATE;
     }
 
     nrf_qspi2_enable(p_qspi->p_reg);
@@ -516,16 +597,16 @@ nrfx_err_t nrf_sqspi_activate(const nrf_sqspi_t * p_qspi)
 
     p_cb->state = NRFX_DRV_STATE_POWERED_ON;
 
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
-nrfx_err_t nrf_sqspi_deactivate(const nrf_sqspi_t * p_qspi)
+nrf_sqspi_error_t nrf_sqspi_deactivate(const nrf_sqspi_t * p_qspi)
 {
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
 
     if (p_cb->state != NRFX_DRV_STATE_POWERED_ON)
     {
-        return NRFX_ERROR_INVALID_STATE;
+        return NRF_SQSPI_ERROR_INVALID_STATE;
     }
 
     p_cb->prepared_pending = false;
@@ -547,22 +628,22 @@ nrfx_err_t nrf_sqspi_deactivate(const nrf_sqspi_t * p_qspi)
 
     p_cb->state = NRFX_DRV_STATE_INITIALIZED;
 
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
-static nrfx_err_t xfer_common(qspi2_control_block_t *  p_cb,
-                              const nrf_sqspi_t *      p_qspi,
-                              nrf_sqspi_xfer_t const * p_xfer,
-                              size_t                   xfer_count)
+static nrf_sqspi_error_t xfer_common(qspi2_control_block_t *  p_cb,
+                                     const nrf_sqspi_t *      p_qspi,
+                                     nrf_sqspi_xfer_t const * p_xfer,
+                                     size_t                   xfer_count)
 {
     if (xfer_count > NRF_SQSPI_TRANSFERS_PER_REQUEST)
     {
-        return NRFX_ERROR_NOT_SUPPORTED;
+        return NRF_SQSPI_ERROR_UNSUPPORTED;
     }
 
     if (p_cb->state != NRFX_DRV_STATE_POWERED_ON)
     {
-        return NRFX_ERROR_INVALID_STATE;
+        return NRF_SQSPI_ERROR_INVALID_STATE;
     }
 
     // Set addrl
@@ -575,7 +656,7 @@ static nrfx_err_t xfer_common(qspi2_control_block_t *  p_cb,
     }
     else
     {
-        return NRFX_ERROR_INVALID_PARAM;
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
     }
 
     // Set instl
@@ -591,7 +672,7 @@ static nrfx_err_t xfer_common(qspi2_control_block_t *  p_cb,
     }
     else
     {
-        return NRFX_ERROR_INVALID_PARAM;
+        return NRF_SQSPI_ERROR_INVALID_PARAM;
     }
 
 #pragma GCC diagnostic push
@@ -668,13 +749,13 @@ static nrfx_err_t xfer_common(qspi2_control_block_t *  p_cb,
         m_current_xfer.dest_len = p_xfer->data_length;
     }
 
-    return NRFX_SUCCESS;
+    return NRF_SQSPI_SUCCESS;
 }
 
-nrfx_err_t nrf_sqspi_xfer(const nrf_sqspi_t *      p_qspi,
-                          const nrf_sqspi_xfer_t * p_xfer,
-                          size_t                   xfer_count,
-                          uint32_t                 flags)
+nrf_sqspi_error_t nrf_sqspi_xfer(const nrf_sqspi_t *      p_qspi,
+                                 const nrf_sqspi_xfer_t * p_xfer,
+                                 size_t                   xfer_count,
+                                 uint32_t                 flags)
 {
     if (flags == NRF_SQSPI_FLAG_HOLD_XFER)
     {
@@ -685,14 +766,14 @@ nrfx_err_t nrf_sqspi_xfer(const nrf_sqspi_t *      p_qspi,
 
     if (p_cb->transfer_in_progress || p_cb->prepared_pending)
     {
-        return NRFX_ERROR_BUSY;
+        return NRF_SQSPI_ERROR_BUSY;
     }
 
-    nrfx_err_t retval;
+    nrf_sqspi_error_t retval;
 
     retval = xfer_common(p_cb, p_qspi, p_xfer, xfer_count);
 
-    if (retval == NRFX_SUCCESS)
+    if (retval == NRF_SQSPI_SUCCESS)
     {
         nrf_qspi2_core_enable(p_qspi->p_reg);
         __ASB(p_qspi->p_reg);
@@ -700,28 +781,29 @@ nrfx_err_t nrf_sqspi_xfer(const nrf_sqspi_t *      p_qspi,
         p_cb->transfer_in_progress = true;
 
         nrf_vpr_task_trigger(NRF_VPR,
-                             offsetof(NRF_VPR_Type, TASKS_TRIGGER[SP_VPR_TASK_DPPI_0_IDX]));
+                             offsetof(NRF_VPR_Type, TASKS_TRIGGER[0]) +
+                             (4u * m_sp_role_task[SP_DPPI_ROLE_DPPI_0]));
     }
 
     return retval;
 }
 
-nrfx_err_t nrf_sqspi_xfer_prepare(const nrf_sqspi_t *      p_qspi,
-                                  nrf_sqspi_xfer_t const * p_xfer,
-                                  size_t                   xfer_count)
+nrf_sqspi_error_t nrf_sqspi_xfer_prepare(const nrf_sqspi_t *      p_qspi,
+                                         nrf_sqspi_xfer_t const * p_xfer,
+                                         size_t                   xfer_count)
 {
     qspi2_control_block_t * p_cb = &m_cb[p_qspi->drv_inst_idx];
 
     if (p_cb->prepared_pending)
     {
-        return NRFX_ERROR_BUSY;
+        return NRF_SQSPI_ERROR_BUSY;
     }
 
-    nrfx_err_t retval;
+    nrf_sqspi_error_t retval;
 
     retval = xfer_common(p_cb, p_qspi, p_xfer, xfer_count);
 
-    if (retval == NRFX_SUCCESS)
+    if (retval == NRF_SQSPI_SUCCESS)
     {
         p_cb->prepared_pending = true;
         nrf_qspi2_core_enable(p_cb->qspi.p_reg);
@@ -804,9 +886,11 @@ uint32_t * nrf_sqspi_start_task_address_get(nrf_sqspi_t const * p_qspi)
 {
     (void)p_qspi;
     return (uint32_t *)(nrf_vpr_task_address_get(NRF_VPR,
-                                                 (nrf_vpr_task_t)offsetof(NRF_VPR_Type,
-                                                                          TASKS_TRIGGER[
-                                                                              SP_VPR_TASK_DPPI_0_IDX])));
+                                                 (nrf_vpr_task_t)(offsetof(NRF_VPR_Type,
+                                                                           TASKS_TRIGGER[0]) +
+                                                                  (4u *
+                                                                   m_sp_role_task[
+                                                                       SP_DPPI_ROLE_DPPI_0]))));
 }
 
 #endif // NRFX_CHECK(NRF_SQSPI_ENABLED)

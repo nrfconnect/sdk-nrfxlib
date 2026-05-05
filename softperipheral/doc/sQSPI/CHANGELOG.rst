@@ -10,6 +10,20 @@ sQSPI changelog
 All the notable changes to sQSPI are documented on this page.
 Refer to :ref:`intro_soft_peripherals_platform_support` for supported devices for each version.
 
+v2.0.0
+******
+
+See the list of changes for the current release.
+
+.. note::
+   This release introduces a change in the API, changing the error types from nrfx generic ``nrfx_err_t`` to internal ``nrf_sqspi_error_t`` prefix, which breaks backward compatibility.
+
+* Updated:
+
+  * For the nRF54L Series devices and nRF54H20 device:
+  
+    * Error types in API change to sQSPI internal ones to remove dependency on legacy nrfx error types (no functional changes).
+   
 v1.2.1
 ******
 
