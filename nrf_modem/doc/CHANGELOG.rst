@@ -9,6 +9,28 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Core library
+============
+
+* Added the ``NRF_ECOMM`` error code to indicate a communication error on send.
+
+Sockets
+=======
+
+* Updated:
+
+  * The :c:func:`nrf_send` and :c:func:`nrf_sendto` functions to set ``errno`` to ``NRF_ECOMM`` when data transmission with the :c:macro:`NRF_MSG_WAITACK` flag fails.
+  * The :c:macro:`NRF_SO_SENDCB` callback to report ``NRF_ECOMM`` as the status when data transmission fails.
+
+DECT NR+
+========
+
+* Added the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_REJECT` enumeration value to indicate rejected operations.
+
+
 nrf_modem 3.3.0
 ***************
 
