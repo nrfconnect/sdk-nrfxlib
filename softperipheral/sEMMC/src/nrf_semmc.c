@@ -79,6 +79,16 @@ NRF_STATIC_INLINE uint32_t sp_handshake_get(void * p_reg, uint8_t idx)
     return nrf_emmc_handshake_get((NRF_EMMC_Type const *)p_reg, idx);
 }
 
+NRF_STATIC_INLINE uint32_t sp_dppi_map_get(void * p_reg)
+{
+    return ((NRF_EMMC_Type *)p_reg)->SPSYNC.DPPIMAP;
+}
+
+NRF_STATIC_INLINE void sp_dppi_map_set(void * p_reg, uint32_t map_word)
+{
+    ((NRF_EMMC_Type *)p_reg)->SPSYNC.DPPIMAP = map_word;
+}
+
 nrf_semmc_error_t nrf_semmc_init(nrf_semmc_t const *       p_semmc,
                                  nrf_semmc_event_handler_t handler,
                                  void *                    p_context)
@@ -94,6 +104,9 @@ nrf_semmc_error_t nrf_semmc_init(nrf_semmc_t const *       p_semmc,
 
     p_cb->transfer_in_progress = false;
     p_cb->prepared_pending     = false;
+
+    /* Back to the reset role map, matching the service. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
 
     const softperipheral_metadata_t * meta = (const softperipheral_metadata_t *)nvm_fw_addr;
 #ifndef UNIT_TEST
@@ -177,6 +190,10 @@ void nrf_semmc_uninit(nrf_semmc_t const * p_semmc)
         NRF_VPR, (VPR_DEBUGIF_DMCONTROL_NDMRESET_Inactive << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
                   VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
 
+    /* Only now that the service is stopped: the teardown above still talks to it over the
+     * barriers, which have to reach the tasks of the map that is still in force. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
+
     p_cb->state = NRFX_DRV_STATE_UNINITIALIZED;
 }
 
@@ -203,6 +220,70 @@ nrf_semmc_error_t nrf_semmc_enable(nrf_semmc_t const * p_semmc)
     p_cb->state = NRFX_DRV_STATE_POWERED_ON;
 
     return NRF_SEMMC_SUCCESS;
+}
+
+static nrf_semmc_error_t semmc_dppi_map_publish(emmc_control_block_t * p_cb, uint32_t word)
+{
+    if (p_cb->state == NRFX_DRV_STATE_UNINITIALIZED)
+    {
+        return NRF_SEMMC_ERROR_INVALID_STATE;
+    }
+
+    /* Not under traffic. Applying a map reprograms the CLIC priority, interrupt enable, dispatch
+     * callback and subscription of every task whose binding moved, so doing it while a transfer is in
+     * flight could rewire the very task that transfer depends on. Publish after init and before the
+     * first transfer. */
+    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
+    {
+        return NRF_SEMMC_ERROR_BUSY;
+    }
+
+    sp_dppi_map_set(p_cb->p_hw_instance, word);
+
+    /* Order matters. The barrier below has to be raised on the task that carries the config role
+     * *now*, because the soft peripheral only learns the new map while servicing it. Refreshing the
+     * host-side lookup first would aim this barrier at a task that does not dispatch config yet, and
+     * the wait for the echo would never end. */
+    __CSB(p_cb->p_hw_instance);
+
+    /* Applied now, so later barriers go to wherever the roles ended up. */
+    sp_dppi_role_task_update(word);
+
+    return NRF_SEMMC_SUCCESS;
+}
+
+nrf_semmc_error_t nrf_semmc_dppi_role_map_set(nrf_semmc_t const * p_semmc,
+                                              const uint8_t *     p_roles)
+{
+    NRFX_ASSERT(p_semmc);
+    NRFX_ASSERT(p_roles);
+    emmc_control_block_t * p_cb = &m_cb[p_semmc->drv_inst_idx];
+
+    uint32_t word = sp_dppi_map_get(p_cb->p_hw_instance);
+
+    if (!sp_dppi_role_map_pack(&word, p_roles))
+    {
+        return NRF_SEMMC_ERROR_INVALID_PARAM;
+    }
+
+    return semmc_dppi_map_publish(p_cb, word);
+}
+
+nrf_semmc_error_t nrf_semmc_dppi_subscribe_enable(nrf_semmc_t const * p_semmc,
+                                                  uint8_t             slot,
+                                                  bool                enable)
+{
+    NRFX_ASSERT(p_semmc);
+    emmc_control_block_t * p_cb = &m_cb[p_semmc->drv_inst_idx];
+
+    if (slot >= SP_DPPI_SLOT_COUNT)
+    {
+        return NRF_SEMMC_ERROR_INVALID_PARAM;
+    }
+
+    uint32_t word = sp_dppi_map_get(p_cb->p_hw_instance);
+
+    return semmc_dppi_map_publish(p_cb, sp_dppi_map_permit_set(word, slot, enable));
 }
 
 nrf_semmc_error_t nrf_semmc_abort(nrf_semmc_t const * p_semmc)
@@ -276,10 +357,6 @@ nrf_semmc_error_t nrf_semmc_cmd_common(emmc_control_block_t *      p_cb,
     {
         return NRF_SEMMC_ERROR_INVALID_PARAM;
     }
-    if (!p_transfer)
-    {
-        return NRF_SEMMC_ERROR_INVALID_PARAM;
-    }
 
     // sEMMC config
     uint32_t clkdiv = (uint32_t)SP_VPR_BASE_FREQ_HZ / p_config->clk_freq_hz;
@@ -325,6 +402,10 @@ nrf_semmc_error_t nrf_semmc_cmd_common(emmc_control_block_t *      p_cb,
         case NRF_SEMMC_RESP_R1B: emmc_cmd.resp_type  = NRF_EMMC_RESPONSE_R1B; break;
         case NRF_SEMMC_RESP_R2: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R2; break;
         case NRF_SEMMC_RESP_R3: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R3; break;
+        case NRF_SEMMC_RESP_R4: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R4; break;
+        case NRF_SEMMC_RESP_R5: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R5; break;
+        case NRF_SEMMC_RESP_R6: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R6; break;
+        case NRF_SEMMC_RESP_R7: emmc_cmd.resp_type   = NRF_EMMC_RESPONSE_R7; break;
         default: return NRF_SEMMC_ERROR_INVALID_PARAM;
     }
 
@@ -334,9 +415,15 @@ nrf_semmc_error_t nrf_semmc_cmd_common(emmc_control_block_t *      p_cb,
     nrf_emmc_command_set((NRF_EMMC_Type *)p_cb->p_hw_instance, &emmc_cmd);
 
     nrf_emmc_data_t emmc_data = {0};
-    emmc_data.buffer_addr = (uint32_t)p_transfer->buffer;
-    emmc_data.block_size  = p_transfer->block_size;
-    emmc_data.block_num   = p_transfer->num_blocks;
+    if (p_transfer != NULL)
+    {
+        emmc_data.buffer_addr = (uint32_t)p_transfer->buffer;
+        emmc_data.block_size  = p_transfer->block_size;
+        emmc_data.block_num   = p_transfer->num_blocks;
+        emmc_data.blocks_done = 0;
+        emmc_data.direction   = p_transfer->transfer_direction;
+        emmc_data.skipdatacrc = p_transfer->skip_data_crc_check;
+    }
 
     // Set data configuration in hardware
     nrf_emmc_data_set((NRF_EMMC_Type *)p_cb->p_hw_instance, &emmc_data);
@@ -370,18 +457,12 @@ nrf_semmc_error_t nrf_semmc_cmd(nrf_semmc_t const *         p_semmc,
     {
         return NRF_SEMMC_ERROR_INVALID_PARAM;
     }
-    if ((p_cb->transfer_in_progress || p_cb->prepared_pending) &&
-        (p_cmd->cmd != NRF_SEMMC_CMD12_STOP_TRANSMISSION))
+    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
     {
         return NRF_SEMMC_ERROR_BUSY;
     }
 
     if (!p_config)
-    {
-        return NRF_SEMMC_ERROR_INVALID_PARAM;
-    }
-
-    if (!p_transfer)
     {
         return NRF_SEMMC_ERROR_INVALID_PARAM;
     }
@@ -396,7 +477,8 @@ nrf_semmc_error_t nrf_semmc_cmd(nrf_semmc_t const *         p_semmc,
         p_cb->transfer_in_progress = true;
 
         nrf_vpr_task_trigger(NRF_VPR,
-                             offsetof(NRF_VPR_Type, TASKS_TRIGGER[SP_VPR_TASK_DPPI_0_IDX]));
+                             offsetof(NRF_VPR_Type, TASKS_TRIGGER[0]) +
+                             (4u * m_sp_role_task[SP_DPPI_ROLE_DPPI_0]));
     }
 
     return retval;
@@ -421,11 +503,6 @@ nrf_semmc_error_t nrf_semmc_cmd_prepare(nrf_semmc_t const *         p_semmc,
     }
 
     if (!p_config)
-    {
-        return NRF_SEMMC_ERROR_INVALID_PARAM;
-    }
-
-    if (!p_transfer)
     {
         return NRF_SEMMC_ERROR_INVALID_PARAM;
     }
@@ -549,9 +626,6 @@ void nrf_semmc_irq_handler(void)
             p_cb->evt.data.xfer_done = NRF_SEMMC_RESULT_OK;
 
             nrf_semmc_get_status_response_after_xfer(p_cb->p_hw_instance, m_current_xfer.p_cmd);
-            nrf_emmc_data_t emmc_data = {0};
-            nrf_emmc_get_num_blocks(p_cb->p_hw_instance, &emmc_data);
-            m_current_xfer.p_transfer->num_blocks = emmc_data.block_num;
 
             p_cb->handler(&p_cb->evt, p_cb->p_context);
         }
@@ -575,10 +649,6 @@ void nrf_semmc_irq_handler(void)
             m_current_xfer.p_cmd->err = p_cb->xfer_err;
             nrf_emmc_command_get_response(p_cb->p_hw_instance, m_current_xfer.p_cmd->response);
 
-            nrf_emmc_data_t emmc_data = {0};
-            nrf_emmc_get_num_blocks(p_cb->p_hw_instance, &emmc_data);
-            m_current_xfer.p_transfer->num_blocks = emmc_data.block_num;
-
             p_cb->handler(&p_cb->evt, p_cb->p_context);
         }
     }
@@ -588,9 +658,32 @@ uint32_t * nrf_semmc_start_task_address_get(nrf_semmc_t const * p_semmc)
 {
     (void)p_semmc;
     return (uint32_t *)(nrf_vpr_task_address_get(NRF_VPR,
-                                                 (nrf_vpr_task_t)offsetof(NRF_VPR_Type,
-                                                                          TASKS_TRIGGER[
-                                                                              SP_VPR_TASK_DPPI_0_IDX])));
+                                                 (nrf_vpr_task_t)(offsetof(NRF_VPR_Type,
+                                                                           TASKS_TRIGGER[0]) +
+                                                                  (4u *
+                                                                   m_sp_role_task[
+                                                                       SP_DPPI_ROLE_DPPI_0]))));
+}
+
+nrf_semmc_error_t nrf_semmc_dat0_busy_poll(nrf_semmc_t const * p_semmc, uint32_t timeout_us)
+{
+    NRFX_ASSERT(p_semmc);
+    emmc_control_block_t * p_cb = &m_cb[p_semmc->drv_inst_idx];
+    nrf_emmc_polling_set(p_cb->p_hw_instance, timeout_us);
+
+    __CSB(p_cb->p_hw_instance);
+
+    nrf_emmc_polling_clear(p_cb->p_hw_instance);
+
+    return nrf_semmc_status_to_err(p_semmc);
+}
+
+uint32_t nrf_semmc_blocks_done_get(nrf_semmc_t const * p_semmc)
+{
+    NRFX_ASSERT(p_semmc);
+    emmc_control_block_t * p_cb = &m_cb[p_semmc->drv_inst_idx];
+
+    return nrf_emmc_get_num_blocks_done(p_cb->p_hw_instance);
 }
 
 #endif // NRFX_CHECK(NRF_SEMMC_ENABLED)
