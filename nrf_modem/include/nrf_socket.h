@@ -76,16 +76,16 @@ extern "C" {
 /** @brief Network to host byte-orders on full word. */
 #define NRF_NTOHL(x) NRF_HTONL(x)
 
-/** Convert byte order from host to network (short). */
+/** @brief Convert byte order from host to network (short). */
 #define nrf_htons(x) NRF_HTONS(x)
 
-/** Convert byte order from host to network (long). */
+/** @brief Convert byte order from host to network (long). */
 #define nrf_htonl(x) NRF_HTONL(x)
 
-/** Convert byte order from network to host (short). */
+/** @brief Convert byte order from network to host (short). */
 #define nrf_ntohs(x) NRF_NTOHS(x)
 
-/** Convert byte order from network to host (long). */
+/** @brief Convert byte order from network to host (long). */
 #define nrf_ntohl(x) NRF_NTOHL(x)
 
 /** @brief Maximum length of IPv4 in string form, including null-termination character. */
@@ -97,13 +97,13 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_api_enumerators Socket enumerators.
+ * @defgroup nrf_socket_api_enumerators Socket enumerators
  * @brief Enumerated values that is used as input arguments to multiple socket functions.
  * @{
  */
 
 /**
- * @defgroup nrf_socket_families Socket family.
+ * @defgroup nrf_socket_families Socket family
  * @{
  */
 /** Unspecified address family */
@@ -117,7 +117,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_types Socket type.
+ * @defgroup nrf_socket_types Socket type
  * @{
  */
 /** TCP socket type. */
@@ -129,7 +129,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_protocols Socket protocols.
+ * @defgroup nrf_socket_protocols Socket protocols
  * @{
  * @brief Protocol numbers from IANA/BSD.
  */
@@ -162,38 +162,59 @@ extern "C" {
  * @{
  */
 
-/** @brief
- * Maximum TLS message size in bytes.
+/**
+ * @brief Maximum TLS message size in bytes.
  */
 #define NRF_SOCKET_TLS_MAX_MESSAGE_SIZE 2048
 
-/** @brief
- * Maximum number of security tags that can be associated with a socket.
+/**
+ * @brief Maximum number of security tags that can be associated with a socket.
  */
 #define NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE  7
 
-/** @brief
- * Socket option to select the security tags to be used.
- * This option accepts a list of @sa nrf_sec_tag_t.
+/**
+ * @brief Select an array of security tags to use for credentials when connecting.
+ *
+ * This option accepts a list of @ref nrf_sec_tag_t values.
+ * The option length is the size in bytes of the array of security tags.
+ * Passing @c NULL as an option value and @c 0 as an option length removes all security
+ * tags associated with a socket.
+ *
+ * By default, no security tags are associated with a socket.
+ * The maximum number of security tags is given by the @ref NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE
+ * macro.
  */
 #define NRF_SO_SEC_TAG_LIST 1
 
-/** @brief
- * Socket option to set the hostname used for peer verification.
- * This option accepts a string containing the hostname, and its length.
- * The length may be set to zero to disable hostname verification.
+/**
+ * @brief Configure the hostname used for peer verification.
+ *
+ * Configure a hostname to check against during TLS handshakes.
+ *
+ * The option value is a null-terminated string containing the host name to verify against.
+ * Passing @c NULL as an option value and @c 0 as an option length disables peer hostname
+ * verification.
+ *
+ * By default, peer hostname verification is disabled.
  */
 #define NRF_SO_SEC_HOSTNAME 2
 
-/** @brief
- * Socket option to select which ciphersuites to use.
- * This option accepts a prioritized array of selected cipher suites.
- * See @ref nrf_socket_tls_cipher_suites for a list of allowed values.
+/**
+ * @brief Select which cipher suites are allowed to be used during the TLS handshake.
+ *
+ * This option accepts a prioritized array of selected cipher suites. The cipher suites are
+ * identified by their IANA assigned values. See @ref nrf_socket_tls_cipher_suites for a list of
+ * allowed values. By default, all supported cipher suites are allowed.
+ *
+ * For more information, see the release notes for the respective modem firmware products available
+ * in the downloads sections, for example, the [nRF9151 downloads section]
+ * (https://www.nordicsemi.com/Products/nRF9151/Download?lang=en#infotabs)
+ *
  */
 #define NRF_SO_SEC_CIPHERSUITE_LIST 3
 
-/** @brief
- * Read-only socket option to retrieve the cipher suite used during the TLS/DTLS handshake.
+/**
+ * @brief Retrieve the cipher suite used during the TLS/DTLS handshake (Read-only).
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1
@@ -201,39 +222,64 @@ extern "C" {
  */
 #define NRF_SO_SEC_CIPHERSUITE_USED 4
 
-/** @brief
- * Socket option to set peer verification level.
+/**
+ * @brief Configure peer verification level.
+ *
  * See @ref nrf_socket_sec_peer_verify_options for a list of allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_PEER_VERIFY_OPTIONAL (optional).
+ *
+ * @note If a TLS/DTLS protocol is used, there must be at least one root CA in the modem credential
+ *       storage, regardless if the @ref NRF_SO_SEC_PEER_VERIFY value is
+ *       @ref NRF_SO_SEC_PEER_VERIFY_NONE or @ref NRF_SO_SEC_PEER_VERIFY_OPTIONAL.
  */
 #define NRF_SO_SEC_PEER_VERIFY 5
 
-/** @brief
- * Socket option to set role for the connection.
+/**
+ * @brief Configure the role for the connection.
+ *
  * See @ref nrf_socket_sec_roles for a list of allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_ROLE_CLIENT (client).
  */
 #define NRF_SO_SEC_ROLE 6
 
-/** @brief
- * Socket option to control TLS session caching.
+/**
+ * @brief Enable/disable TLS session caching.
+ *
  * See @ref nrf_socket_session_cache_options for a list of allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_SESSION_CACHE_DISABLED (disabled)
+ *
+ * @note Session cache may not be used if the peer does not support it.
  */
 #define NRF_SO_SEC_SESSION_CACHE 12
 
-/** @brief
- * Write-only socket option to purge session cache immediately.
- * This option accepts any value.
+/**
+ * @brief Purge TLS session cache (write-only).
+ *
+ * This socket option accepts any value and immediately deletes the TLS session cache.
  */
 #define NRF_SO_SEC_SESSION_CACHE_PURGE 13
 
-/** @brief
- * Socket option to set DTLS handshake timeout value.
+/**
+ * @brief Configure the DTLS handshake timeout value.
+ *
  * See @ref nrf_socket_so_sec_handshake_timeouts for allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_NONE (no timeout).
  */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO 14
 
-/** @brief
- * Socket option to enable/disable the connection ID.
+/**
+ * @brief Enable/disable the DTLS connection ID.
+ *
+ * This socket option decides whether the modem requests or accepts a DTLS connection ID when
+ * performing the server handshake.
+ *
  * See @ref nrf_so_sec_dtls_cid_settings for allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_DTLS_CID_DISABLED (disabled).
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf9160 v1.3.5 or later
@@ -242,8 +288,12 @@ extern "C" {
  */
 #define NRF_SO_SEC_DTLS_CID 15
 
-/** @brief
- * Read-only socket option to get the connection ID status.
+/**
+ * @brief Get the DTLS connection ID status (read-only).
+ *
+ * The status tells whether the connection ID is used in the current connection and in which
+ * direction it is used.
+ *
  * See @ref nrf_so_sec_dtls_cid_statuses for allowed values.
  *
  * @note This is only supported by the following modem firmware:
@@ -253,11 +303,38 @@ extern "C" {
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS 16
 
-/** @brief
- * Write-only socket option to save DTLS connection.
+/**
+ * @brief Save DTLS connection (Write-only).
  *
- * Serializes the socket and compresses it. After the socket option is successfully called, you must
- * call @c NRF_SO_SEC_DTLS_CONN_LOAD before continuing to communicate on the socket.
+ * You can use this socket option to pause a session that is not frequently used by the
+ * application. Saving the session frees up memory in the modem (the modem serializes and
+ * compresses the socket). This frees up memory that can be used for other connections.
+ *
+ * If the socket is closed, the saved DTLS data is cleaned, and the connection with the server is
+ * lost.
+ *
+ * This option requires a DTLS v1.2 connection with renegotiation disabled.
+ *
+ * After the socket option is successfully called, you must call @ref NRF_SO_SEC_DTLS_CONN_LOAD
+ * before continuing to communicate on the socket.
+ *
+ * This option can fail with different errno values:
+ *
+ * | errno         | Condition                               | Notes                               |
+ * |---------------|-----------------------------------------|-------------------------------------|
+ * | @c NRF_EAGAIN | Error during SSL context serialization. | The SSL context is still present    |
+ * |               | This can happen if the modem cannot     | in the socket, so data sending      |
+ * |               | allocate enough memory or if the socket | is still possible.                  |
+ * |               | is busy sending or receiving data.      |                                     |
+ * |               |                                         |                                     |
+ * | @c NRF_EINVAL | The socket option is not supported      | Examples: DTLS handshake not        |
+ * |               | with the current configuration.         | completed; connection is not a      |
+ * |               |                                         | DTLS 1.2 connection with            |
+ * |               |                                         | renegotiation disabled; or          |
+ * |               |                                         | connection does not use an AEAD     |
+ * |               |                                         | cipher suite (AES-CCM or AES-GCM).  |
+ * | @c NRF_ENOMEM | The number of saved connections         |                                     |
+ * |               | exceeds four.                           |                                     |
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf9160 v1.3.5 or later
@@ -266,8 +343,18 @@ extern "C" {
  */
 #define NRF_SO_SEC_DTLS_CONN_SAVE 17
 
-/** @brief
- * Write-only socket option to load DTLS connection.
+/**
+ * @brief load DTLS connection (Write-only)
+ *
+ * This socket option can fail with different errno values:
+ *
+ * | errno         | Condition                                 | Notes                             |
+ * |---------------|-------------------------------------------|-----------------------------------|
+ * | @c NRF_EAGAIN | Error during SSL context deserialization. | This can happen if the modem      |
+ * |               |                                           | cannot allocate enough memory     |
+ * |               |                                           | or the connection is not saved.   |
+ * | @c NRF_EINVAL | The socket option is not supported with   |                                   |
+ * |               | the current configuration.                |                                   |
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf9160 v1.3.5 or later
@@ -276,9 +363,12 @@ extern "C" {
  */
 #define NRF_SO_SEC_DTLS_CONN_LOAD 18
 
-/** @brief
- * Read-only socket option to get end status of last completed TLS/DTLS handshake procedure.
+/**
+ * @brief Get the end status of the last completed TLS/DTLS handshake procedure (Read-only).
+ *
  * See @ref nrf_so_sec_handshake_statuses for allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_HANDSHAKE_STATUS_FULL (full handshake).
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1
@@ -286,12 +376,16 @@ extern "C" {
  */
 #define NRF_SO_SEC_HANDSHAKE_STATUS 19
 
-/** @brief
- * Socket option to enable/disable the DTLS fragmentation extension.
+/**
+ * @brief Enable/disable the DTLS fragmentation extension.
+ *
  * See @ref nrf_so_sec_dtls_frag_ext_options for allowed values.
+ *
+ * The default value is @ref NRF_SO_SEC_DTLS_FRAG_EXT_DISABLED (disabled).
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1 v2.0.4 or later
+ *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT 20
 /** @} */
@@ -302,55 +396,212 @@ extern "C" {
  * @ingroup nrf_socket
  * @{
  */
-/** Enable reuse of server addresses (write-only). */
+
+/**
+ * @brief Enable reuse of server addresses (write-only).
+ *
+ * This socket option permits the reuse of local addresses by using the @ref nrf_bind function
+ * (protocol-specific).
+ *
+ * Set to any non-zero value to enable, or to @c 0 to disable.
+ * The default value is @c 0 (OFF).
+ */
 #define NRF_SO_REUSEADDR 2
-/** Read and clear socket error status (read-only). */
+
+/**
+ * @brief Request and clear pending error information on the socket (read-only).
+ *
+ * When this option is specified, @ref nrf_getsockopt returns any pending errors on the socket and
+ * clears the error status.
+ * It returns a @c 0 value if there is no pending error.
+ *
+ * This option can be used to check for asynchronous errors on connected connectionless-mode
+ * sockets or for other types of asynchronous errors.
+ *
+ * This option has no default value.
+ */
 #define NRF_SO_ERROR 4
-/** Receive timeout. */
+
+/**
+ * @brief Timeout value for a socket receive and accept operations.
+ *
+ * Set a timeout value for the @ref nrf_recv, @ref nrf_recvfrom and @ref nrf_accept operations.
+ * This option accepts an @ref nrf_timeval structure with a number of seconds and microseconds
+ * specifying the limit on how long to wait for an input operation to complete.
+ *
+ * If a receive operation has blocked for this much time without receiving additional data, it
+ * returns with a partial count, or @c errno is set to @ref NRF_EAGAIN or @ref NRF_EWOULDBLOCK if
+ * no data were received.
+ *
+ * If an accept operation has blocked for this much time without receiving an incoming connection,
+ * it returns @c -1 and @c errno is set to @ref NRF_EAGAIN.
+ *
+ * The default value is @c 0 (no timeout).
+ *
+ * @note The minimum supported resolution is 1 millisecond.
+ */
 #define NRF_SO_RCVTIMEO 20
-/** Send timeout. */
+
+/**
+ * @brief Timeout value for a socket send operation.
+ *
+ * Set a timeout value for the @ref nrf_send, @ref nrf_sendto and @ref nrf_accept operations.
+ * This option accepts an @ref nrf_timeval structure with a number of seconds and microseconds
+ * specifying the limit on how long to wait for an input operation to complete.
+ *
+ * If a send operation has blocked for this much time without sending additional data, it returns
+ * with a partial count, or @c errno is set to @ref NRF_EAGAIN or @ref NRF_EWOULDBLOCK if no data
+ * was sent.
+ *
+ * The default value is @c 0 (no timeout).
+ *
+ * @note The minimum supported resolution is 1 millisecond.
+ */
 #define NRF_SO_SNDTIMEO 21
-/** Disable ICMP echo replies on both IPv4 and IPv6.
- *  Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
+
+/**
+ * @brief Disable ICMP echo replies on both IPv4 and IPv6.
+ *
+ * Set to @c 1 to enable, or to @c 0 to disable.
+ *
+ * The default value is @c 0 (OFF).
  */
 #define NRF_SO_SILENCE_ALL 30
-/** Enable ICMP echo reply. Set to 1 to enable, or to 0 to disable. Default is 1, enabled. */
+
+/**
+ * @brief Enable ICMP echo replies on IPv4.
+ *
+ * Set to @c 1 to enable, or to @c 0 to disable.
+ *
+ * The default is @c 1 (ON).
+ */
 #define NRF_SO_IP_ECHO_REPLY 31
-/** Enable ICMPv6 echo reply. Set to 1 to enable, or to 0 to disable. Default is 1, enabled. */
+
+/**
+ * @brief Enable ICMP echo replies on IPv6.
+ *
+ * Set to @c 1 to enable, or to @c 0 to disable.
+ *
+ * The default is @c 1 (ON).
+ */
 #define NRF_SO_IPV6_ECHO_REPLY 32
-/** Send data related to an exceptional event. */
+/**
+ * @brief Send data on a socket as part of an exceptional event.
+ *
+ * Before using this socket option, the PDN associated with the socket must be configured to
+ * allow exceptional events by using the @c AT%EXCEPTIONALDATA AT command.
+ * For more information about the @c AT%EXCEPTIONALDATA AT command, see the
+ * [nRF91x1 AT Commands Reference Guide]
+ * (https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1).
+ *
+ * @note Exceptional events are described in the 3GPP Release 14 specification. This feature
+ *       requires network support.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - mfw_nrf91x1
+ *       - mfw_nrf9151-ntn
+ */
 #define NRF_SO_EXCEPTIONAL_DATA 33
-/** Keep socket open when its PDN connection is lost.
+/**
+ * @brief Keep the socket open when its PDN connection is lost, or the device is set to flight
+ *        mode.
+ *
+ * This option keeps a socket from being closed upon PDN disconnection or reactivation events,
+ * or when the device is set to flight mode (@c +CFUN=4). Until the PDN connection is
+ * reestablished, the socket is not functional.
+ *
+ * Output operations, such as the functions @ref nrf_send and @ref nrf_connect return an error and
+ * set @c errno to @ref NRF_ENETUNREACH.
+ *
+ * Input operations, such as the functions @ref nrf_recv and @ref nrf_accept block, since no data
+ * can be received, or return an error if the socket or the operation is non-blocking.
+ *
+ * Upon PDN connection reestablishment, the socket behavior depends on the socket type and protocol
+ * and on the IP address of the socket's newly established PDN connection, as shown in the
+ * following table:
+ *
+ * | Socket type     | Socket protocol      | Socket is functional (no errors)                     |
+ * |-----------------|----------------------|------------------------------------------------------|
+ * | NRF_SOCK_DGRAM  | NRF_IPPROTO_UDP      | Always                                               |
+ * | NRF_SOCK_DGRAM  | NRF_SPROTO_DTLS1v2   | If using DTLS connection ID                          |
+ * | NRF_SOCK_STREAM | NRF_IPPROTO_TCP      | If the socket PDN IP address has not changed         |
+ * | NRF_SOCK_STREAM | NRF_SPROTO_TLS1v2    | If the socket PDN IP address has not changed         |
+ * | NRF_SOCK_RAW    | Any                  | Always                                               |
+ *
+ * If the conditions to keep the socket open after PDN connection reestablishment are not met, the
+ * socket will report an error (and set @c errno to @ref NRF_ENETDOWN), and must be closed by the
+ * application. Otherwise, the socket is functional, and the application can use it.
+ *
+ * @note Putting the device into functional mode @c 0 (@c +CFUN=0) always forces all sockets to be
+ *       closed, regardless of the @ref NRF_SO_KEEPOPEN socket option.
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1 v2.0.1 or later
  *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_KEEPOPEN 34
-/** Bind a socket to a Packet Data Network ID (write-only). */
+
+/**
+ * @brief Bind a socket to a Packet Data Network (PDN) ID (write-only)
+ *
+ * The passed option is an integer specifying the PDN ID.
+ * If a socket is bound to an interface, only packets received from that particular interface are
+ * processed by the socket.
+ */
 #define NRF_SO_BINDTOPDN 40
-/** Configurable TCP server session timeout in minutes.
- *  Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
+
+/**
+ * @brief Configure the TCP server session inactivity timeout for a socket.
+ *
+ *  The timeout value is specified in minutes.
+ *  The allowed range is @c 0 (no timeout) to @c 135 (2 h 15 min).
+ *
+ *  The default value is @c 0 (no timeout).
+ *
+ * @note This option must be set on the listening socket, but it can be overridden on the accepting
+ *       socket afterwards.
  */
 #define NRF_SO_TCP_SRV_SESSTIMEO 55
-/** Set a callback for poll events (write-only).
- *  See @ref nrf_modem_pollcb_t for the callback function type.
+
+/**
+ * @brief Set a callback for @ref nrf_poll events on sockets (write-only).
  *
- * @note The callback is executed in an interrupt context.
- *	 Take care to offload any processing as appropriate.
+ * Set a callback for events occurring on this socket such as @ref NRF_POLLIN and @ref NRF_POLLOUT.
+ * The @ref nrf_modem_pollcb::callback function is invoked every time any of the events specified
+ * by the @ref nrf_modem_pollcb::events bitmask field occurs.
+ *
+ * In addition, the @ref NRF_POLLHUP and @ref NRF_POLLERR events will also trigger the callback,
+ * regardless of whether they are set in the @ref nrf_modem_pollcb::events bitmask field.
+ * The callback receives a @ref nrf_pollfd structure, populated in the same way as it would be
+ * populated by the @ref nrf_poll function.
+ *
+ * If the @ref nrf_modem_pollcb::oneshot field is set to @c true, the callback will be invoked only
+ * once, and it is automatically unset afterwards.
+ *
+ * @note The callback is executed in an interrupt context. Take care to offload any processing as
+ *       appropriate.
  */
 #define NRF_SO_POLLCB 60
-/** Release Assistance Indication (RAI) (write-only).
+
+/**
+ * @brief Release Assistance Indication (RAI) (write-only).
+ *
  *  See @ref nrf_socket_options_rai for allowed values.
  */
 #define NRF_SO_RAI 61
-/** Delay IPv6 address refresh during power saving mode.
+
+/**
+ * @brief Delay IPv6 address refresh during power saving mode.
  *
- * If the lifetime of an IPv6 address expires during PSM or eDRX sleep, the device will
- * wake up solely to refresh the address. If this option is enabled, the IPv6 address refresh
+ * By default, if the lifetime of an IPv6 address expires during power saving mode (PSM) or eDRX
+ * sleep, the device wakes up solely to refresh the address.
+ *
+ * If this option is enabled, the IPv6 address refresh
  * is delayed until the next time the device wakes up from PSM or eDRX sleep.
+ * This avoids unnecessary wake-ups and optimizes the power usage.
+ * The option value is an integer, a @c 1 value enables delayed IPv6 address refresh on IPv6.
  *
- * Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
+ * The default value is @c 0 (OFF).
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf9160 v1.3.7 or later
@@ -358,7 +609,10 @@ extern "C" {
  *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_IPV6_DELAYED_ADDR_REFRESH 62
+
 /**
+ * @brief Callback to be called when a send request is acknowledged.
+ *
  * Set a callback to be called when a send request is acknowledged by the network and
  * the data has been acknowledged by the peer, if required by the network protocol, or until the
  * timeout, given by the @ref NRF_SO_SNDTIMEO socket option, is reached. Valid timeout values are
@@ -366,7 +620,7 @@ extern "C" {
  * See @ref nrf_modem_sendcb_t for the callback function type.
  *
  * @note The callback is executed in an interrupt context.
- *	 Take care to offload any processing as appropriate.
+ *	     Take care to offload any processing as appropriate.
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf9151-ntn
@@ -377,7 +631,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup nrf_socket_options_sendcb_params Socket send callback option parameters.
+ * @defgroup nrf_socket_options_sendcb_params Socket send callback option parameters
  * @ingroup nrf_socket
  * @{
  */
@@ -392,6 +646,7 @@ struct nrf_modem_sendcb_params {
 	 *  - [NRF_EAGAIN] The socket's @ref NRF_SO_SNDTIMEO timeout was exceeded.
 	 *  - [NRF_EBADF] The socket argument is not a valid file descriptor.
 	 *  - [NRF_ECONNRESET] A connection was forcibly closed by a peer.
+	 *  - [NRF_ECOMM] Data transmission failed. Sending may be retried.
 	 */
 	int status;
 	/** Number of bytes that was sent. */
@@ -418,22 +673,75 @@ struct nrf_modem_sendcb {
 /** @} */
 
 /**
- * @defgroup nrf_socket_send_recv_flags Socket send/recv flags.
+ * @defgroup nrf_socket_send_recv_flags Socket send/recv flags
  * @ingroup nrf_socket_api_enumerators
  * @{
  */
-/** Return data from the beginning of receive queue without removing data from the queue. */
+/**
+ * @brief Return data from the beginning of receive queue without removing data from the input
+ *        queue.
+ *
+ * This flag is only supported for the @ref nrf_recv and @ref nrf_recvfrom functions.
+ * When this flag is used, the data is copied into the provided buffer but remains in the socket's
+ * input queue for future reads. Subsequent calls to @ref nrf_recv or @ref nrf_recvfrom returns
+ * the same data until it is read without the @ref NRF_MSG_PEEK flag. This flag is useful when an
+ * application needs to inspect incoming data without consuming it, allowing for multiple reads of
+ * the same data. The default behavior is to remove the data from the input queue after it has been
+ * read.
+ */
 #define NRF_MSG_PEEK 0x02
-/** Enables non-blocking operation. */
+
+/**
+ * @brief Enables non-blocking operation for this specific function call.
+ *
+ * If the operation blocks, the function returns immediately with @c -1 and sets @c errno to
+ * @ref NRF_EAGAIN or @ref NRF_EWOULDBLOCK. This flag has no effect if the socket is already set to
+ * non-blocking mode using @ref nrf_fcntl. This flag is useful when an application wants to perform
+ * a single non-blocking operation on a socket that is otherwise in blocking mode. The default
+ * behavior is to follow the socket's blocking mode.
+ */
 #define NRF_MSG_DONTWAIT 0x40
-/** Request a blocking read operation until the request is satisfied. */
+
+/**
+ * @brief Requests that the function blocks read operation until the full amount of data requested
+ *        has been received.
+ *
+ * This flag is only supported for the @ref nrf_recv and @ref nrf_recvfrom functions.
+ *
+ * This flag is not valid for datagram sockets.
+ *
+ * If this flag is used, the function continues to block and wait for more data until either the
+ * requested number of bytes has been received or an error occurs. If the connection is closed
+ * before all requested data is received, the function returns the number of bytes that were
+ * actually received.
+ *
+ * This flag is useful when an application needs to ensure that it receives a complete message or
+ * data block in a single operation. The default behavior is to return as soon as any data is
+ * available, even if it is less than the requested amount.
+ */
 #define NRF_MSG_WAITALL 0x100
-/** Request a blocking send operation until the request is acknowledged.
- *  When used in @c nrf_send() or @c nrf_sendto(), the operation is blocked until the data has been
- *  sent on-air and acknowledged by the peer, if required by the network protocol, or until the
- *  timeout, given by the @ref NRF_SO_SNDTIMEO socket option, is reached. Valid timeout values are
- *  1 to 600 seconds.
- *  This send flag cannot be used along with the @ref NRF_SO_SENDCB socket option.
+
+/**
+ * @brief Request a blocking send operation until the request is acknowledged.
+ *
+ * @note This flag is only supported for the @ref nrf_send and @ref nrf_sendto functions.
+ *
+ * When this flag is used, write operations on datagram sockets are blocked until the data has
+ * been sent on-air, and write operations on stream sockets are blocked until data reception is
+ * acknowledged by the peer.
+ *
+ * The operation timeout can be configured using the @ref NRF_SO_SNDTIMEO socket option. The
+ * valid timeout values are 1 to 600 seconds.
+ *
+ * For the @ref NRF_SOCK_STREAM socket type, the operation is blocked until the data is
+ * acknowledged by the peer, and for the @ref NRF_SOCK_DGRAM socket type, until the data is sent
+ * on-air by the modem. This flag is useful in scenarios where confirmation of receipt is critical.
+ *
+ * The default behavior is to return immediately after queuing the data for sending, without
+ * waiting for acknowledgment.
+ *
+ * @note This send flag cannot be used along with the @ref NRF_SO_SENDCB socket option.
+ *
  *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1
@@ -443,7 +751,7 @@ struct nrf_modem_sendcb {
 /** @} */
 
 /**
- * @defgroup nrf_fcnt_commands File descriptor control option commands.
+ * @defgroup nrf_fcnt_commands File descriptor control option commands
  * @brief API commands used to control the behaviour of IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
@@ -455,7 +763,7 @@ struct nrf_modem_sendcb {
 /** @} */
 
 /**
- * @defgroup nrf_fcnt_flags File descriptor control option flags.
+ * @defgroup nrf_fcnt_flags File descriptor control option flags
  * @brief Flags used to control the behaviour of IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
@@ -466,76 +774,94 @@ struct nrf_modem_sendcb {
 
 /**
  * @defgroup nrf_socket_options_rai Socket option values for RAI
- * @brief Release Assistance Indication (RAI).
+ * @brief Release Assistance Indication (RAI) @ref NRF_SO_RAI.
  * @ingroup nrf_socket
  * @{
  */
-/** Indicate that the application does not intend to send more data.
- *  This applies immediately and lets the modem exit connected mode more
- *  quickly.
+/**
+ * @brief Indicate that the application does not intend to send more data.
  *
- *  @note This requires the socket to be connected.
+ * This applies immediately and lets the modem exit connected mode more quickly.
+ * (Immediately enter RRC idle mode for this socket. Does not require a following output
+ * operation).
+ *
+ * @note This requires the socket to be connected.
  */
 #define NRF_RAI_NO_DATA 1
-/** Indicate that the application does not intend to send more data
- *  after the next call to send() or sendto().
- *  This lets the modem exit connected mode more quickly after sending the data.
+/**
+ * @brief Indicate that the application does not intend to send more data after the next call to
+ *        @ref nrf_send() or @ref nrf_sendto().
+ *
+ * This lets the modem exit connected mode more quickly after sending the data.
+ * (Enter RRC idle mode after the next output operation on this socket is complete).
  */
 #define NRF_RAI_LAST 2
-/** Indicate that the application is expecting to receive just one data packet
- *  after the next call to send() or sendto().
- *  This lets the modem exit connected mode more quickly after having received the data.
+/**
+ * @brief Indicate that the application is expecting to receive just one data packet
+ *        after the next call to @ref nrf_send() or @ref nrf_sendto().
+ *
+ * This lets the modem exit connected mode more quickly after having received the data. (After the
+ * next output operation is complete, wait for one more packet to be received from the network on
+ * this socket before entering RRC idle mode).
  */
 #define NRF_RAI_ONE_RESP 3
-/** Indicate that the socket is in active use by a client application.
- *  This lets the modem stay in connected mode longer.
+/**
+ * @brief Indicate that the socket is in active use by a client application.
+ *
+ * This lets the modem stay in connected mode longer (Keep RRC in connected mode after the next
+ * output operation on this socket (client side)).
  */
 #define NRF_RAI_ONGOING 4
-/** Indicate that the socket is in active use by a server application.
- *  This lets the modem stay in connected mode longer.
+/**
+ * @brief Indicate that the socket is in active use by a server application.
+ *
+ * This lets the modem stay in connected mode longer (Keep RRC in connected mode after the next
+ * output operation on this socket (server side)).
  */
 #define NRF_RAI_WAIT_MORE 5
 /** @} */
 
 /**
  * @defgroup nrf_socket_sec_peer_verify_options TLS peer verification options
- * @brief Allowed TLS peer verification options. By default, peer verification is optional.
+ * @brief Allowed TLS peer verification options @ref NRF_SO_SEC_PEER_VERIFY.
  *
  * @ingroup nrf_socket_tls
  * @{
  */
-/** None */
+/** No peer verification */
 #define NRF_SO_SEC_PEER_VERIFY_NONE 0
-/** Optional */
+/** Optional peer verification */
 #define NRF_SO_SEC_PEER_VERIFY_OPTIONAL 1
-/** Required */
+/** Peer verification is required */
 #define NRF_SO_SEC_PEER_VERIFY_REQUIRED 2
 /** @} */
 
 /**
  * @defgroup nrf_socket_sec_roles Role for the socket connection
- * @brief Allowed roles for the socket connection.
+ * @brief Allowed roles for the socket connection @ref NRF_SO_SEC_ROLE.
+ *
+ * For TLS, the choice is implicit from the usage of @ref nrf_listen, @ref nrf_accept, and
+ * @ref nrf_connect.
  *
  * @ingroup nrf_socket_tls
  * @{
  */
-/** Client */
+/** Client role */
 #define NRF_SO_SEC_ROLE_CLIENT 0
-/** Server */
+/** Server role */
 #define NRF_SO_SEC_ROLE_SERVER 1
 /** @} */
 
 /**
  * @defgroup nrf_socket_session_cache_options TLS session cache options
- * @brief Allowed options for the TLS session cache. By default, the session cache is enabled.
- * @note Session cache may not be used if the peer does not support it.
+ * @brief Allowed options for the TLS session cache @ref NRF_SO_SEC_SESSION_CACHE.
  *
  * @ingroup nrf_socket_tls
  * @{
  */
-/** Disabled */
+/** Disable TLS session caching. */
 #define NRF_SO_SEC_SESSION_CACHE_DISABLED 0
-/** Enabled */
+/** Enable TLS session caching. */
 #define NRF_SO_SEC_SESSION_CACHE_ENABLED 1
 /** @} */
 
@@ -544,6 +870,7 @@ struct nrf_modem_sendcb {
  * @brief Allowed timeout values for DTLS handshake timeout socket option according
  *        to RFC6347 section 4.2.4.1. Default is 123 seconds.
  *        (https://tools.ietf.org/html/rfc6347#section-4.2.4.1)
+ *
  * @ingroup nrf_socket_tls
  * @{
  */
@@ -551,17 +878,17 @@ struct nrf_modem_sendcb {
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_NONE 0
 /** 1 second */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S 1
-/** 1s + 2s */
+/** 3 seconds (1s + 2s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S 3
-/** 1s + 2s + 4s */
+/** 7 seconds (1s + 2s + 4s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S 7
-/** 1s + 2s + 4s + 8s */
+/** 15 seconds (1s + 2s + 4s + 8s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S 15
-/** 1s + 2s + 4s + 8s + 16s */
+/** 31 seconds (1s + 2s + 4s + 8s + 16s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S 31
-/** 1s + 2s + 4s + 8s + 16s + 32s */
+/** 63 seconds (1s + 2s + 4s + 8s + 16s + 32s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S 63
-/** 1s + 2s + 4s + 8s + 16s + 32s + 60s */
+/** 123 seconds (1s + 2s + 4s + 8s + 16s + 32s + 60s) */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S 123
 /** @} */
 
@@ -590,86 +917,104 @@ struct nrf_modem_sendcb {
 
 /**
  * @defgroup nrf_so_sec_dtls_cid_settings DTLS Connection ID settings
- * @brief Allowed values for DTLS connection ID setting socket option.
+ * @brief Allowed values for DTLS connection ID setting socket option @ref NRF_SO_SEC_DTLS_CID.
+ *
  * @ingroup nrf_socket_tls
  * @{
  */
 
 /**
- * Disabled - The connection ID extension is not included in the Client Hello, so the
- * DTLS connection ID is not used.
+ * @brief Disabled - The connection ID extension is not included in the Client Hello, so the
+ *        DTLS connection ID is not used.
  */
 #define NRF_SO_SEC_DTLS_CID_DISABLED 0
 /**
- * Supported - The connection ID extension with a zero-length CID is included in the Client Hello,
- * so the modem will accept a DTLS connection ID from the server.
+ * @brief Supported - The connection ID extension with a zero-length CID is included in the
+ *        Client Hello, so the modem will accept a DTLS connection ID from the server.
  */
 #define NRF_SO_SEC_DTLS_CID_SUPPORTED 1
 /**
- * Enabled - The connection ID extension with a valid CID is included in the Client Hello, so the
- * modem will request DTLS connection ID support.
+ * @brief Enabled - The connection ID extension with a valid CID is included in the Client Hello,
+ *        so the modem will request DTLS connection ID support.
  */
 #define NRF_SO_SEC_DTLS_CID_ENABLED 2
 /** @} */
 
 /**
  * @defgroup nrf_so_sec_dtls_cid_statuses DTLS Connection ID statuses
- * @brief Allowed values for DTLS connection ID status socket option.
+ * @brief Allowed values for DTLS connection ID status socket option
+ *        @ref NRF_SO_SEC_DTLS_CID_STATUS.
  * @ingroup nrf_socket_tls
  * @{
  */
 
 /**
- * Disabled - The DTLS connection ID is not included in DTLS records sent to and from the modem.
- * This status is returned before the DTLS handshake is complete.
+ * @brief Disabled - The DTLS connection ID is not included in DTLS records sent to and from the
+ *        modem. This status is returned before the DTLS handshake is complete.
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS_DISABLED 0
 /**
- * Downlink - The DTLS connection ID is included only in DTLS records sent to the modem.
+ * @brief Downlink - The DTLS connection ID is included only in DTLS records sent to the modem.
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK 1
 /**
- * Uplink - The DTLS connection ID is included only in DTLS records sent from the modem.
+ * @brief Uplink - The DTLS connection ID is included only in DTLS records sent from the modem.
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS_UPLINK 2
 /**
- * Bidirectional - The DTLS connection ID is included in DTLS records sent to and from the modem.
+ * @brief Bidirectional - The DTLS connection ID is included in DTLS records sent to and from the
+ *        modem.
  */
 #define NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL 3
 /** @} */
 
 /**
  * @defgroup nrf_so_sec_handshake_statuses TLS/DTLS Handshake statuses
- * @brief Allowed values for TLS/DTLS Handshake status socket option.
+ * @brief Allowed values for TLS/DTLS handshake status socket option
+ *        @ref NRF_SO_SEC_HANDSHAKE_STATUS.
+ *
  * @ingroup nrf_socket_tls
  * @{
  */
-/** full */
+/**
+ * @brief Full handshake
+ *
+ * TLS/DTLS attach/negotiation procedure was made with a full handshake, and session cache data was
+ * not used or it was not accepted by the server.
+ */
 #define NRF_SO_SEC_HANDSHAKE_STATUS_FULL 0
-/** cached */
+/** Cached handshake
+ *
+ * @brief The latest TLS/DTLS attach negotiation was completed successfully with cached session
+ *        data.
+ */
 #define NRF_SO_SEC_HANDSHAKE_STATUS_CACHED 1
 /** @} */
 
 /**
- * @defgroup nrf_so_sec_dtls_frag_ext_options DTLS Fragmentation extension options.
- * @brief Allowed values for DTLS Fragmentation extension socket option.
+ * @defgroup nrf_so_sec_dtls_frag_ext_options DTLS Fragmentation extension options
+ * @brief Allowed values for DTLS Fragmentation extension socket option
+ *        @ref NRF_SO_SEC_DTLS_FRAG_EXT.
+ *
  * @ingroup nrf_socket_tls
  * @{
  */
 /**
- * Disabled - The DTLS fragmentation extension is not included in the Client Hello.
+ * @brief Disabled - The DTLS fragmentation extension is not included in the Client Hello.
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT_DISABLED 0
+
 /**
- * Enabled - The DTLS fragmentation extension is included in the Client Hello with the fragment
- * size of 512 bytes.
+ * @brief Enabled - The DTLS fragmentation extension is included in the Client Hello with the
+ *        fragment size of 512 bytes.
  *
  * @note The user data size in send requests also becomes limited to a maximum of 512 bytes.
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT_512_ENABLED 1
+
 /**
- * Enabled - The DTLS fragmentation extension is included in the Client Hello with the fragment
- * size of 1024 bytes.
+ * @brief Enabled - The DTLS fragmentation extension is included in the Client Hello with the
+ *        fragment size of 1024 bytes.
  *
  * @note The user data size in send requests also becomes limited to a maximum of 1024 bytes.
  */
@@ -752,7 +1097,7 @@ typedef uint16_t nrf_in_port_t;
 /**
  * @brief Socket families.
  *
- * @details For a list of valid values, refer to nrf_socket_families.
+ * @details For a list of valid values, refer to @ref nrf_socket_families.
  */
 typedef unsigned short int nrf_sa_family_t;
 
@@ -845,7 +1190,9 @@ struct nrf_sockaddr {
  */
 #define NRF_AI_PDNSERV 0x1000
 
-/** @brief Address information. */
+/**
+ * @brief Address information.
+ */
 struct nrf_addrinfo {
 	/** Input flags. */
 	int ai_flags;
@@ -865,7 +1212,9 @@ struct nrf_addrinfo {
 	struct nrf_addrinfo *ai_next;
 };
 
-/** @brief Interface address information. */
+/**
+ * @brief Interface address information.
+ */
 struct nrf_ifaddrs {
 	/* Pointer to next struct */
 	struct nrf_ifaddrs *ifa_next;
@@ -892,8 +1241,8 @@ struct nrf_ifaddrs {
  * @{
  */
 
-/** @brief
- * Security tags used on the TLS socket.
+/**
+ * @brief Security tags used on the TLS socket.
  *
  * More than one security tag may be used on a socket.
  * If more than one tag is used on the socket, pass an array of security tags.
@@ -912,7 +1261,6 @@ typedef uint32_t nrf_sec_tag_t;
 /**
  * @brief Create a network socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -924,7 +1272,6 @@ int nrf_socket(int family, int type, int protocol);
 /**
  * @brief Close a network socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/close.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -936,7 +1283,6 @@ int nrf_close(int fildes);
 /**
  * @brief Function for controlling file descriptor options.
  *
- * @details
  * Set or get file descriptor options or flags.
  * For a list of supported commands, refer to @ref nrf_fcnt_commands.
  * For a list of supported flags, refer to @ref nrf_fcnt_flags.
@@ -955,7 +1301,6 @@ int nrf_fcntl(int fd, int cmd, int flags);
 /**
  * @brief Connect a socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -970,7 +1315,6 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
 /**
  * @brief Send a message on a connected socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -981,13 +1325,14 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
  *               ongoing.
+ * - [NRF_ECOMM] Data transmission with the @ref NRF_MSG_WAITACK flag failed. Sending may be
+ *               retried.
  */
 ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
 
 /**
  * @brief Send a message on a socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -998,6 +1343,8 @@ ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
  * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  * - [NRF_EBUSY] Earlier send request with the @ref NRF_SO_SENDCB socket option set is still
  *               ongoing.
+ * - [NRF_ECOMM] Data transmission with the @ref NRF_MSG_WAITACK flag failed. Sending may be
+ *               retried.
  */
 ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
 		   const struct nrf_sockaddr *dest_addr, nrf_socklen_t dest_len);
@@ -1005,7 +1352,6 @@ ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
 /**
  * @brief Receive a message from a connected socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1018,7 +1364,6 @@ ssize_t nrf_recv(int socket, void *buffer, size_t length, int flags);
 /**
  * @brief Receive a message from a socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1049,15 +1394,15 @@ struct nrf_pollfd {
 	short revents;
 };
 
-/** Data other than high-priority data may be read without blocking */
+/** @brief Data other than high-priority data may be read without blocking */
 #define NRF_POLLIN 0x1
-/** Data may be written without blocking */
+/** @brief Data may be written without blocking */
 #define NRF_POLLOUT 0x4
-/** An error has occurred (revents only) */
+/** @brief An error has occurred (revents only) */
 #define NRF_POLLERR 0x8
-/** Device has been disconnected (revents only) */
+/** @brief Device has been disconnected (revents only) */
 #define NRF_POLLHUP 0x10
-/** Invalid fd member (revents only) */
+/** @brief Invalid fd member (revents only) */
 #define NRF_POLLNVAL 0x20
 
 /** Callback for poll events */
@@ -1085,7 +1430,6 @@ struct nrf_modem_pollcb {
 /**
  * @brief Poll multiple sockets for events.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/poll.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1097,7 +1441,6 @@ int nrf_poll(struct nrf_pollfd fds[], nrf_nfds_t nfds, int timeout);
 /**
  * @brief Set the socket options.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/setsockopt.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1117,7 +1460,6 @@ int nrf_setsockopt(int socket, int level, int option_name,
 /**
  * @brief Get the socket options.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockopt.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1130,7 +1472,6 @@ int nrf_getsockopt(int socket, int level, int option_name,
 /**
  * @brief Bind a name to a socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1142,7 +1483,6 @@ int nrf_bind(int socket, const struct nrf_sockaddr *address, nrf_socklen_t addre
 /**
  * @brief Listen for socket connections and limit the queue of incoming connections.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1154,7 +1494,6 @@ int nrf_listen(int sock, int backlog);
 /**
  * @brief Accept a new connection a socket.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1177,7 +1516,6 @@ int nrf_accept(int socket, struct nrf_sockaddr *restrict address,
 /**
  * @brief Convert IPv4 and IPv6 addresses between binary and text form.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/inet_pton.html">
  * POSIX.1-2017 article</a> for normative description.
  */
@@ -1186,7 +1524,6 @@ int nrf_inet_pton(int af, const char *restrict src, void *restrict dst);
 /**
  * @brief Convert IPv4 and IPv6 addresses between binary and text form.
  *
- * @details
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/inet_ntop.html">
  * POSIX.1-2017 article</a> for normative description.
  */
@@ -1195,7 +1532,6 @@ const char *nrf_inet_ntop(int af, const void *restrict src, char *restrict dst, 
 /**
  * @brief Get address information.
  *
- * @details
  * See <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">
  * POSIX.1-2017 article</a> for normative description.
  *
@@ -1225,7 +1561,6 @@ void nrf_freeaddrinfo(struct nrf_addrinfo *ai);
 /**
  * @brief Get interface address information.
  *
- * @details
  * Create a linked list of nrf_ifaddrs structures describing the network interfaces
  * and store the address of the first item of the list in @p *ifa.
  *
@@ -1242,7 +1577,6 @@ int nrf_getifaddrs(struct nrf_ifaddrs **ifa);
 /**
  * @brief Free address information returned by @ref nrf_getifaddrs().
  *
- * @details
  * Free a linked list of nrf_ifaddrs structures.
  *
  * @param ifa First item in the linked list of interface addresses.
@@ -1252,7 +1586,6 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
 /**
  * @brief Set or unset a fallback DNS address.
  *
- * @details
  * The fallback DNS address is used only when the network-provided DNS addresses are
  * missing or unreachable. The fallback DNS does not override the network-provided DNS.
  *
@@ -1277,7 +1610,6 @@ int nrf_setdnsaddr(int family, const void *in_addr, nrf_socklen_t in_size);
 /**
  * @brief Enable or disable data traffic through the socket interface.
  *
- * @details
  * This function can be used to disable all data traffic through the socket interface.
  *
  * When enabled is set to false, all sockets are closed and no new sockets can be opened.
@@ -1294,7 +1626,6 @@ int nrf_socket_data_enabled_set(bool enabled);
 /**
  * @brief Get the current data enabled state.
  *
- * @details
  * This function is used to get the current data enabled state.
  *
  * @retval true if data is enabled.
