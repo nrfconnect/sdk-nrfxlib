@@ -11,7 +11,9 @@ This documentation outlines the sEMMC Soft Peripheral.
 It covers setup, integration, and operational guidelines for using sEMMC through the nrfx driver API, alongside detailed descriptions of limitations and performance considerations.
 
 .. note::
-   The current version of sEMMC is based on JEDEC Standard No. 84-B51A.
+   The current version of sEMMC (EMMC) is based on JEDEC Standard No. 84-B51A.
+
+   The current version of sEMMC (SDCARD) is based on SD Specifications Part 1 Physical Layer Specification Version 9.10 and SD Specifications Part A2 SD Host Controller Standard Specification Version 7.00.
 
 .. toctree::
    :maxdepth: 1
