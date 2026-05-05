@@ -192,6 +192,16 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 			     nrf_rpc_cbor_handler_t handler,
 			     void *handler_data);
 
+void nrf_rpc_cbor_cmd_no_err_impl(const struct nrf_rpc_group *group, uint8_t cmd,
+			     struct nrf_rpc_cbor_ctx *ctx,
+			     nrf_rpc_cbor_handler_t handler,
+			     void *handler_data, const char *file, int line, const char *func);
+
+#ifdef CONFIG_NRF_RPC_DETAILED_ERROR_REPORTING
+#define nrf_rpc_cbor_cmd_no_err(_group, _cmd, _ctx, _handler, _handler_data) \
+	nrf_rpc_cbor_cmd_no_err_impl(_group, _cmd, _ctx, _handler, _handler_data, __FILE__, __LINE__, __func__)
+#endif
+
 /** @brief Send a command, get response as an output parameter and pass any
  * error to an error handler.
  *
@@ -204,6 +214,15 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
  */
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group,
 				 uint8_t cmd, struct nrf_rpc_cbor_ctx *ctx);
+
+void nrf_rpc_cbor_cmd_rsp_no_err_impl(const struct nrf_rpc_group *group,
+				 uint8_t cmd, struct nrf_rpc_cbor_ctx *ctx,
+				 const char *file, int line, const char *func);
+
+#ifdef CONFIG_NRF_RPC_DETAILED_ERROR_REPORTING
+#define nrf_rpc_cbor_cmd_rsp_no_err(_group, _cmd, _ctx) \
+	nrf_rpc_cbor_cmd_rsp_no_err_impl(_group, _cmd, _ctx, __FILE__, __LINE__, __func__)
+#endif
 
 /** @brief Send an event.
  *
@@ -230,6 +249,15 @@ int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 void nrf_rpc_cbor_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
 			     struct nrf_rpc_cbor_ctx *ctx);
 
+void nrf_rpc_cbor_evt_no_err_impl(const struct nrf_rpc_group *group, uint8_t evt,
+			     struct nrf_rpc_cbor_ctx *ctx,
+			     const char *file, int line, const char *func);
+
+#ifdef CONFIG_NRF_RPC_DETAILED_ERROR_REPORTING
+#define nrf_rpc_cbor_evt_no_err(_group, _evt, _ctx) \
+	nrf_rpc_cbor_evt_no_err_impl(_group, _evt, _ctx, __FILE__, __LINE__, __func__)
+#endif
+
 /** @brief Send a response.
  *
  * @param group  Group that response belongs to.
@@ -250,6 +278,14 @@ int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx 
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  */
 void nrf_rpc_cbor_rsp_no_err(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx);
+
+void nrf_rpc_cbor_rsp_no_err_impl(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx,
+			     const char *file, int line, const char *func);
+
+#ifdef CONFIG_NRF_RPC_DETAILED_ERROR_REPORTING
+#define nrf_rpc_cbor_rsp_no_err(_group, _ctx) \
+	nrf_rpc_cbor_rsp_no_err_impl(_group, _ctx, __FILE__, __LINE__, __func__)
+#endif
 
 /** @brief Indicate that decoding of the input packet is done.
  *
