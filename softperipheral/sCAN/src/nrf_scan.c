@@ -85,6 +85,16 @@ NRF_STATIC_INLINE uint32_t sp_handshake_get(void * p_reg, uint8_t idx)
     return nrf_can_handshake_get((NRF_CAN_Type const *)p_reg, idx);
 }
 
+NRF_STATIC_INLINE uint32_t sp_dppi_map_get(void * p_reg)
+{
+    return ((NRF_CAN_Type *)p_reg)->SPSYNC.DPPIMAP;
+}
+
+NRF_STATIC_INLINE void sp_dppi_map_set(void * p_reg, uint32_t map_word)
+{
+    ((NRF_CAN_Type *)p_reg)->SPSYNC.DPPIMAP = map_word;
+}
+
 nrf_scan_error_t nrf_scan_init(nrf_scan_t const *       p_scan,
                                nrf_scan_event_handler_t handler,
                                void *                   p_context)
@@ -100,6 +110,9 @@ nrf_scan_error_t nrf_scan_init(nrf_scan_t const *       p_scan,
 
     p_cb->transfer_in_progress = false;
     p_cb->prepared_pending     = false;
+
+    /* Back to the reset role map, matching the service. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
 
     const softperipheral_metadata_t * meta = (const softperipheral_metadata_t *)nvm_fw_addr;
 #ifndef UNIT_TEST
@@ -183,6 +196,70 @@ nrf_scan_error_t nrf_scan_enable(nrf_scan_t const * p_scan)
     return NRF_SCAN_SUCCESS;
 }
 
+static nrf_scan_error_t scan_dppi_map_publish(can_control_block_t * p_cb, uint32_t word)
+{
+    if (p_cb->state == NRFX_DRV_STATE_UNINITIALIZED)
+    {
+        return NRF_SCAN_ERROR_INVALID_STATE;
+    }
+
+    /* Not under traffic. Applying a map reprograms the CLIC priority, interrupt enable, dispatch
+     * callback and subscription of every task whose binding moved, so doing it while a request is in
+     * flight could rewire the very task that request depends on. Publish after init and before the
+     * first request. */
+    if (p_cb->transfer_in_progress || p_cb->prepared_pending)
+    {
+        return NRF_SCAN_ERROR_BUSY;
+    }
+
+    sp_dppi_map_set(p_cb->p_hw_instance, word);
+
+    /* Order matters. The barrier below has to be raised on the task that carries the config role
+     * *now*, because the soft peripheral only learns the new map while servicing it. Refreshing the
+     * host-side lookup first would aim this barrier at a task that does not dispatch config yet, and
+     * the wait for the echo would never end. */
+    __CSB(p_cb->p_hw_instance);
+
+    /* Applied now, so later barriers go to wherever the roles ended up. */
+    sp_dppi_role_task_update(word);
+
+    return NRF_SCAN_SUCCESS;
+}
+
+nrf_scan_error_t nrf_scan_dppi_role_map_set(nrf_scan_t const * p_scan,
+                                            const uint8_t *    p_roles)
+{
+    NRFX_ASSERT(p_scan);
+    NRFX_ASSERT(p_roles);
+    can_control_block_t * p_cb = &m_cb[p_scan->drv_inst_idx];
+
+    uint32_t word = sp_dppi_map_get(p_cb->p_hw_instance);
+
+    if (!sp_dppi_role_map_pack(&word, p_roles))
+    {
+        return NRF_SCAN_ERROR_INVALID_PARAM;
+    }
+
+    return scan_dppi_map_publish(p_cb, word);
+}
+
+nrf_scan_error_t nrf_scan_dppi_subscribe_enable(nrf_scan_t const * p_scan,
+                                                uint8_t            slot,
+                                                bool               enable)
+{
+    NRFX_ASSERT(p_scan);
+    can_control_block_t * p_cb = &m_cb[p_scan->drv_inst_idx];
+
+    if (slot >= SP_DPPI_SLOT_COUNT)
+    {
+        return NRF_SCAN_ERROR_INVALID_PARAM;
+    }
+
+    uint32_t word = sp_dppi_map_get(p_cb->p_hw_instance);
+
+    return scan_dppi_map_publish(p_cb, sp_dppi_map_permit_set(word, slot, enable));
+}
+
 nrf_scan_error_t nrf_scan_abort(nrf_scan_t const * p_scan)
 {
     NRFX_ASSERT(p_scan);
@@ -255,6 +332,10 @@ void nrf_scan_uninit(nrf_scan_t const * p_scan)
         NRF_VPR, (VPR_DEBUGIF_DMCONTROL_NDMRESET_Inactive << VPR_DEBUGIF_DMCONTROL_NDMRESET_Pos |
                   VPR_DEBUGIF_DMCONTROL_DMACTIVE_Disabled << VPR_DEBUGIF_DMCONTROL_DMACTIVE_Pos));
 
+    /* Only now that the service is stopped: the teardown above still talks to it over the
+     * barriers, which have to reach the tasks of the map that is still in force. See the header. */
+    sp_dppi_role_task_update(SP_DPPI_MAP_DEFAULT);
+
     p_cb->state = NRFX_DRV_STATE_UNINITIALIZED;
 }
 
@@ -276,8 +357,8 @@ void nrf_scan_uninit(nrf_scan_t const * p_scan)
   })
 #endif
 
-#define TIMING_PACK(prescaler, phase_seg1, phase_seg2, rsync_jw)                                    \
-    (((uint32_t)(prescaler) << 24) | ((uint32_t)(phase_seg2) << 16) | ((uint32_t)(phase_seg1) << 8) \
+#define TIMING_PACK(prescaler, phase_seg1, phase_seg2, rsync_jw)                                   \
+    (((uint32_t)(prescaler) << 16) | ((uint32_t)(phase_seg2) << 8) | ((uint32_t)(phase_seg1) << 3) \
      | ((uint32_t)(rsync_jw)))
 
 nrf_scan_error_t nrf_scan_timing(nrf_scan_t const *        p_scan,
@@ -303,14 +384,16 @@ nrf_scan_error_t nrf_scan_timing(nrf_scan_t const *        p_scan,
     {
         return NRF_SCAN_ERROR_INVALID_PARAM;
     }
-
-    uint16_t ts1 = p_timing->prop_seg + p_timing->phase_seg1;
-    uint16_t ts2 = p_timing->phase_seg2;
-    if ((ts1 < 2) || (ts2 < 1) || (ts1 > 16) || (ts2 > p_timing->phase_seg1))
+    if ((p_timing->prop_seg < 1) || (p_timing->prop_seg > 8) ||
+        (p_timing->phase_seg1 < 1) || (p_timing->phase_seg1 > 8) ||
+        (p_timing->phase_seg2 < 1) || (p_timing->phase_seg2 > p_timing->phase_seg1) ||
+        ((p_timing->prop_seg + p_timing->phase_seg1 + p_timing->phase_seg2) < 7))
     {
         return NRF_SCAN_ERROR_INVALID_PARAM;
     }
-    if ((p_timing->sjw < 4) || (p_timing->sjw > MIN(ts1, ts2)))
+    uint16_t ts1 = p_timing->prop_seg + p_timing->phase_seg1;
+    uint16_t ts2 = p_timing->phase_seg2;
+    if ((p_timing->sjw < 1) || (p_timing->sjw > MIN(p_timing->phase_seg1, 4)))
     {
         return NRF_SCAN_ERROR_INVALID_PARAM;
     }
@@ -378,8 +461,10 @@ nrf_scan_error_t nrf_scan_set_rx_filter(nrf_scan_t const *           p_scan,
     m_scan_rx_mailbox[index].rx_filter = *p_rxfilter;
 
     nrf_can_rxfilter_t rxfilter;
-    rxfilter.filter  = p_rxfilter->id;
-    rxfilter.id_mask = p_rxfilter->mask;
+    rxfilter.filter      = p_rxfilter->id;
+    rxfilter.id_mask     = p_rxfilter->mask;
+    rxfilter.filterwidth = p_rxfilter->extended ? SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Extended
+                                                : SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Standard;
 
     //Write to regif
     nrf_can_rxfilter_set((NRF_CAN_Type *)p_cb->p_hw_instance, &rxfilter, index);
@@ -529,7 +614,8 @@ nrf_scan_error_t nrf_scan_send(nrf_scan_t const * p_scan,
 
     p_cb->transfer_in_progress = true;
 
-    nrf_vpr_task_trigger(NRF_VPR, offsetof(NRF_VPR_Type, TASKS_TRIGGER[SP_VPR_TASK_DPPI_0_IDX]));
+    nrf_vpr_task_trigger(NRF_VPR, offsetof(NRF_VPR_Type, TASKS_TRIGGER[0]) +
+                         (4u * m_sp_role_task[SP_DPPI_ROLE_DPPI_0]));
 
     return NRF_SCAN_SUCCESS;
 }
