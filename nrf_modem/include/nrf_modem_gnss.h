@@ -34,8 +34,8 @@ extern "C" {
  */
 #define NRF_MODEM_GNSS_MAX_SIGNALS 4
 
-/** @brief Maximum number of satellites that can be tracked at the same time. */
-#define NRF_MODEM_GNSS_MAX_SATELLITES 12
+/** @brief Maximum number of satellites reported in the PVT data frame. */
+#define NRF_MODEM_GNSS_MAX_SATELLITES 22
 
 /** The number of GPS satellites. */
 #define NRF_MODEM_GNSS_NUM_GPS_SATELLITES 32
@@ -51,6 +51,8 @@ extern "C" {
 #define NRF_MODEM_GNSS_SYSTEM_GPS     1
 /** @brief QZSS. */
 #define NRF_MODEM_GNSS_SYSTEM_QZSS    3
+/** @brief Galileo. */
+#define NRF_MODEM_GNSS_SYSTEM_GAL     4
 /** @} */
 
 /** @defgroup nrf_modem_gnss_signal_id GNSS signal IDs
@@ -64,6 +66,8 @@ extern "C" {
 #define NRF_MODEM_GNSS_SIGNAL_GPS_L1_CA  1
 /** @brief QZSS L1 C/A. */
 #define NRF_MODEM_GNSS_SIGNAL_QZSS_L1_CA 3
+/** @brief Galileo E1 OS. */
+#define NRF_MODEM_GNSS_SIGNAL_GAL_E1_OS  4
 /** @} */
 
 /** @defgroup nrf_modem_gnss_signal_bitmask GNSS signal bitmask values
@@ -81,6 +85,8 @@ extern "C" {
 #define NRF_MODEM_GNSS_SYSTEM_GPS_L1_CA_MASK  0x01
 /** @brief Quasi-Zenith Satellite System (QZSS) L1 C/A. */
 #define NRF_MODEM_GNSS_SYSTEM_QZSS_L1_CA_MASK 0x04
+/** Galileo E1 OS. */
+#define NRF_MODEM_GNSS_SYSTEM_GAL_E1_OS_MASK  0x08
 /** @} */
 
 /** @defgroup nrf_modem_gnss_nmea_string_bitmask NMEA string bitmask values
@@ -101,6 +107,23 @@ extern "C" {
 #define NRF_MODEM_GNSS_NMEA_GSV_MASK 0x08
 /** @brief Enables Recommended minimum specific GPS/Transit data. */
 #define NRF_MODEM_GNSS_NMEA_RMC_MASK 0x10
+/** @} */
+
+/** @defgroup nrf_modem_gnss_nmea_talker_modes NMEA talker mode enumerator
+ *
+ * @brief Use these values to select the used NMEA talker mode.
+ * @{
+ */
+/** @brief Standard NMEA talker mode.
+ *
+ * Use GP, GA, GN, and so on NMEA talker IDs.
+ */
+#define NRF_MODEM_GNSS_NMEA_TALKER_MODE_STANDARD 0
+/** @brief GP only NMEA talker mode.
+ *
+ * NMEA strings are only output using the GP talker ID. No NMEA output for other systems.
+ */
+#define NRF_MODEM_GNSS_NMEA_TALKER_MODE_GP_ONLY  1
 /** @} */
 
 /** @defgroup nrf_modem_gnss_power_save_modes Power save mode enumerator
@@ -271,6 +294,28 @@ extern "C" {
  *       - mfw_nrf9151-ntn
  */
 #define NRF_MODEM_GNSS_AGNSS_INTEGRITY                        9
+/** @brief Galileo ephemeris assistance A-GNSS parameters.
+ *
+ * @details Data model #nrf_modem_gnss_agnss_gal_data_ephemeris.
+ *
+ * @note This type is only supported by devices with Galileo support.
+ */
+#define NRF_MODEM_GNSS_AGNSS_GAL_EPHEMERIDES                  10
+/** @brief Galileo almanac assistance A-GNSS parameters.
+ *
+ * @details Data model #nrf_modem_gnss_agnss_gal_data_almanac.
+ *
+ * @note This type is only supported by devices with Galileo support.
+ */
+#define NRF_MODEM_GNSS_AGNSS_GAL_ALMANAC                      11
+/** @brief GPS-to-Galileo Time Offset (GGTO) assistance A-GNSS parameters.
+ *
+ * @details Data model #nrf_modem_gnss_agnss_data_ggto.
+ *
+ * @note This type is only supported by devices with Galileo support.
+ */
+#define NRF_MODEM_GNSS_AGNSS_GGTO                             12
+
 /** @} */
 
 /** @defgroup nrf_modem_gnss_event_type Event type enumerator
@@ -373,26 +418,27 @@ extern "C" {
 
 /** @brief Configuration for the #nrf_modem_gnss_1pps_enable function. */
 struct nrf_modem_gnss_1pps_config {
-	/** @brief Pulse interval in seconds. Range 0...1800s. Value 0 denotes one-time pulse mode.
+	/** @brief Pulse interval in seconds. Range [0 .. 1800]. Value 0 denotes one-time
+	 *         pulse mode.
 	 */
 	uint16_t pulse_interval;
-	/** @brief Pulse width in milliseconds. Range 1...500ms. */
+	/** @brief Pulse width in milliseconds. Range [1 .. 500]. */
 	uint16_t pulse_width;
 	/** @brief If true, pulses are started at given start time. If false, the date and time
 	 *         fields are ignored.
 	 */
 	bool apply_start_time;
-	/** @brief Gregorian year. Range 0...4000. */
+	/** @brief Gregorian year. Range [0 .. 4000]. */
 	uint16_t year;
-	/** @brief Month of the year. Range 1...12. */
+	/** @brief Month of the year. Range [1 .. 12]. */
 	uint8_t month;
-	/** @brief Day of the month. Range 1...31. */
+	/** @brief Day of the month. Range [1 .. 31]. */
 	uint8_t day;
-	/** @brief Hour of the day. Range 0...23. */
+	/** @brief Hour of the day. Range [0 .. 23]. */
 	uint8_t hour;
-	/** @brief Minute of the hour. Range 0...59. */
+	/** @brief Minute of the hour. Range [0 .. 59]. */
 	uint8_t minute;
-	/** @brief Second of the minute. Range 0...59. */
+	/** @brief Second of the minute. Range [0 .. 59]. */
 	uint8_t second;
 };
 
@@ -426,7 +472,7 @@ struct nrf_modem_gnss_1pps_config {
 #define NRF_MODEM_GNSS_QZSS_NMEA_MODE_STANDARD 0
 /** @brief Custom NMEA reporting with QZSS satellites.
  *
- * @details QZSS satellites reported in GPGSA and GPGSV sentences using satellite IDs 193...202.
+ * @details QZSS satellites reported in GPGSA and GPGSV sentences using satellite IDs [193 .. 202].
  */
 #define NRF_MODEM_GNSS_QZSS_NMEA_MODE_CUSTOM   1
 /** @} */
@@ -435,25 +481,28 @@ struct nrf_modem_gnss_1pps_config {
 struct nrf_modem_gnss_datetime {
 	/** 4-digit representation (Gregorian calendar). */
 	uint16_t year;
-	/** 1...12 */
+	/** [1 .. 12] */
 	uint8_t month;
-	/** 1...31 */
+	/** [1 .. 31] */
 	uint8_t day;
-	/** 0...23 */
+	/** [0 .. 23] */
 	uint8_t hour;
-	/** 0...59 */
+	/** [0 .. 59] */
 	uint8_t minute;
-	/** 0...59 */
+	/** [0 .. 59] */
 	uint8_t seconds;
-	/** 0...999 */
+	/** [0 .. 999] */
 	uint16_t ms;
 };
 
 /** @brief Space Vehicle (SV) information. */
 struct nrf_modem_gnss_sv {
 	/** Satellite ID.
-	 *  1...32 for GPS
-	 *  193...202 for QZSS.
+	 *
+	 *  0 for invalid data.
+	 *  [1 .. 32] for GPS.
+	 *  [193 .. 202] for QZSS.
+	 *  [1 .. 36] for Galileo.
 	 */
 	uint16_t sv;
 	/** Signal type, see @ref nrf_modem_gnss_signal_id. */
@@ -504,7 +553,7 @@ struct nrf_modem_gnss_pvt_data_frame {
 	float tdop;
 	/** See @ref nrf_modem_gnss_pvt_flag_bitmask. */
 	uint8_t flags;
-	/** Describes up to 12 of the satellites used for the measurement. */
+	/** Details for tracked satellites. */
 	struct nrf_modem_gnss_sv sv[NRF_MODEM_GNSS_MAX_SATELLITES];
 	/** Cumulative GNSS execution time since last start in milliseconds. */
 	uint32_t execution_time;
@@ -524,18 +573,20 @@ struct nrf_modem_gnss_nmea_data_frame {
  * @brief Bitmask values for the data_flags member in the #nrf_modem_gnss_agnss_data_frame.
  * @{
  */
-/** @brief GPS UTC parameters assistance data. */
+/** @brief GPS UTC assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_GPS_UTC_REQUEST			0x01
-/** @brief Klobuchar ionospheric correction parameters assistance data. */
+/** @brief Klobuchar ionospheric correction assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_KLOBUCHAR_REQUEST			0x02
-/** @brief NeQuick ionospheric correction parameters assistance data. */
+/** @brief NeQuick ionospheric correction assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_NEQUICK_REQUEST			0x04
-/** @brief GPS system time and SV TOWs assistance data. */
+/** @brief GPS system time and SV TOW assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_GPS_SYS_TIME_AND_SV_TOW_REQUEST	0x08
-/** @brief Position assistance parameters assistance data */
+/** @brief Position assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_POSITION_REQUEST			0x10
-/** @brief Integrity assistance parameters assistance data */
+/** @brief Integrity assistance data. */
 #define NRF_MODEM_GNSS_AGNSS_INTEGRITY_REQUEST			0x20
+/** @brief GPS-to-Galileo Time Offset (GGTO) assistance data. */
+#define NRF_MODEM_GNSS_AGNSS_GGTO_REQUEST			0x40
 /** @} */
 
 /** @brief Ephemeris and almanac data need for a system. */
@@ -606,6 +657,8 @@ struct nrf_modem_gnss_agnss_expiry {
 	uint16_t integrity_expiry;
 	/** @brief Position assistance expiry time. */
 	uint16_t position_expiry;
+	/** @brief GPS-to-Galileo Time Offset (GGTO) assistance expiry time. */
+	uint16_t ggto_expiry;
 	/** @brief Number of satellites for which expiry times are given. */
 	uint8_t sv_count;
 	/** @brief Ephemeris and almanac expiry times for satellites. */
@@ -615,12 +668,12 @@ struct nrf_modem_gnss_agnss_expiry {
 /** @brief A-GNSS GPS UTC parameters. */
 struct nrf_modem_gnss_agnss_gps_data_utc {
 	/** First order term of polynomial (sec/sec). Scale factor 2^-50.
-	 *  Range -8388608...8388607 (25 bits).
+	 *  Range [-8388608 .. 8388607] (25 bits).
 	 */
 	int32_t a1;
 	/** Constant term of polynomial (sec). Scale factor 2^-30. */
 	int32_t a0;
-	/** UTC reference GPS time-of-week (sec). Scale factor 2^12. Range 0..147. */
+	/** UTC reference GPS time-of-week (sec). Scale factor 2^12. Range [0 .. 147]. */
 	uint8_t tot;
 	/** UTC reference GPS week number modulo 256. */
 	uint8_t wn_t;
@@ -628,7 +681,7 @@ struct nrf_modem_gnss_agnss_gps_data_utc {
 	int8_t delta_tls;
 	/** Leap second reference GPS week number modulo 256. */
 	uint8_t wn_lsf;
-	/** Leap second reference GPS day-of-week (day). Range 1...7. */
+	/** Leap second reference GPS day-of-week (day). Range [1 .. 7]. */
 	int8_t dn;
 	/** Current or future leap second count (sec) (total size
 	 *  of the type-specific assistance data).
@@ -639,30 +692,32 @@ struct nrf_modem_gnss_agnss_gps_data_utc {
 /** @brief A-GNSS GPS/QZSS ephemeris data. */
 struct nrf_modem_gnss_agnss_gps_data_ephemeris {
 	/** Satellite ID (dimensionless).
-	 *  1...32: GPS
-	 *  193...202: QZSS
+	 *  [1 .. 32]: GPS
+	 *  [193 .. 202]: QZSS
 	 */
 	uint8_t sv_id;
 	/** Satellite health (dimensionless). */
 	uint8_t health;
-	/** Issue of data, clock parameters (dimensionless). Range 0...2047 (11 bits). */
+	/** Issue of data, clock parameters (dimensionless). Range [0 .. 2047] (11 bits). */
 	uint16_t iodc;
-	/** Clock parameters reference GPS time-of-week (sec). Scale factor 2^4. Range 0...37799. */
+	/** Clock parameters reference GPS time-of-week (sec). Scale factor 2^4.
+	 *  Range [0 .. 37799].
+	 */
 	uint16_t toc;
 	/** Clock drift rate (sec/sec2). Scale factor 2^-55. */
 	int8_t af2;
 	/** Clock drift (sec/sec). Scale factor 2^-43. */
 	int16_t af1;
-	/** Clock bias (sec). Scale factor 2^-31. Range -2097152...2097151 (22 bit) */
+	/** Clock bias (sec). Scale factor 2^-31. Range [-2097152 .. 2097151] (22 bit) */
 	int32_t af0;
 	/** Group delay (sec). Scale factor 2^-31. */
 	int8_t tgd;
-	/** URA index (dimensionless). Range 0...15. */
+	/** URA index (dimensionless). Range [0 .. 15]. */
 	uint8_t ura;
-	/** Curve fit interval indication. Range 0...1. */
+	/** Curve fit interval indication. Range [0 .. 1]. */
 	uint8_t fit_int;
 	/** Ephemeris parameters reference GPS time-of-week (sec).
-	 *  Scale factor 2^4. Range 0...37799.
+	 *  Scale factor 2^4. Range [0 .. 37799].
 	 */
 	uint16_t toe;
 	/** Argument of perigee (semi-circle). Scale factor 2^-31. */
@@ -672,13 +727,13 @@ struct nrf_modem_gnss_agnss_gps_data_ephemeris {
 	/** Mean anomaly at reference time (semi-circle). Scale factor 2^-31. */
 	int32_t m0;
 	/** Rate of right ascension (semi-circle/sec). Scale factor 2^-43.
-	 *  Range -8388608...8388607 (24 bits).
+	 *  Range [-8388608 .. 8388607] (24 bits).
 	 */
 	int32_t omega_dot;
 	/** Eccentricity (dimensionless). Scale factor 2^-33. */
 	uint32_t e;
 	/** Rate of inclination angle (semi-circle/sec). Scale factor 2-43.
-	 *  Range -8192...8191 (14 bits).
+	 *  Range [-8192 .. 8191] (14 bits).
 	 */
 	int16_t idot;
 	/** Square root of semi-major axis (m). Scale factor 2^-19. */
@@ -704,15 +759,15 @@ struct nrf_modem_gnss_agnss_gps_data_ephemeris {
 /** @brief A-GNSS GPS/QZSS almanac data. */
 struct nrf_modem_gnss_agnss_gps_data_almanac {
 	/** Satellite ID (dimensionless).
-	 *  1...32: GPS
-	 *  193...202: QZSS
+	 *  [1 .. 32]: GPS
+	 *  [193 .. 202]: QZSS
 	 */
 	uint8_t sv_id;
 	/** Almanac reference GPS week number modulo 256. */
 	uint8_t wn;
-	/** Almanac reference GPS time-of-week (sec). Scale factor 2^12. Range 0...147. */
+	/** Almanac reference GPS time-of-week (sec). Scale factor 2^12. Range [0 .. 147]. */
 	uint8_t toa;
-	/** Issue of data, almanac (dimensionless). Range 0...3  (2 bits). */
+	/** Issue of data, almanac (dimensionless). Range [0 .. 3]  (2 bits). */
 	uint8_t ioda;
 	/** Eccentricity (dimensionless). Scale factor 2^-21. */
 	uint16_t e;
@@ -723,22 +778,22 @@ struct nrf_modem_gnss_agnss_gps_data_almanac {
 	/** Satellite health (dimensionless) */
 	uint8_t sv_health;
 	/** Square root of semi-major axis (m^(1/2)).
-	 *  Scale factor 2^-11. Range 0...16777215 (24 bit).
+	 *  Scale factor 2^-11. Range [0 .. 16777215] (24 bit).
 	 */
 	uint32_t sqrt_a;
 	/** Longitude of ascending node at weekly epoch (semi-circle).
-	 *  Scale factor 2^-23. Range -8388608...8388607  (24 bits).
+	 *  Scale factor 2^-23. Range [-8388608 .. 8388607]  (24 bits).
 	 */
 	int32_t omega0;
 	/** Argument of perigee (semi-circle). Scale factor 2^-23. */
 	int32_t w;
 	/** Mean anomaly at reference time (semi-circle).
-	 *  Scale factor 2^-23. Range -8388608...8388608 (24 bits).
+	 *  Scale factor 2^-23. Range [-8388608 .. 8388608] (24 bits).
 	 */
 	int32_t m0;
-	/** Clock bias (sec). Scale factor 2^-20. Range -1024...1023 (11 bits). */
+	/** Clock bias (sec). Scale factor 2^-20. Range [-1024 .. 1023] (11 bits). */
 	int16_t af0;
-	/** Clock drift (sec/sec). Scale factor 2^-38. Range -1024...1023  (11 bits). */
+	/** Clock drift (sec/sec). Scale factor 2^-38. Range [-1024 .. 1023]  (11 bits). */
 	int16_t af1;
 };
 
@@ -765,15 +820,15 @@ struct nrf_modem_gnss_agnss_data_klobuchar {
 /** @brief A-GNSS NeQuick ionospheric correction data. */
 struct nrf_modem_gnss_agnss_data_nequick {
 	/** Effective ionisation level 1st order parameter (SFU).
-	 * Scale factor 2^-2. Range 0...2047  (11 bits).
+	 * Scale factor 2^-2. Range [0 .. 2047] (11 bits).
 	 */
 	int16_t ai0;
 	/** Effective ionisation level 2nd order parameter (SFU/deg). Scale factor 2^-8.
-	 *  Range -1024...1023 (11 bits).
+	 *  Range [-1024 .. 1023] (11 bits).
 	 */
 	int16_t ai1;
 	/** Effective ionisation level 3rd order parameter (SFU/deg^2). Scale factor 2^-15.
-	 *  Range -8192...8191  (14 bits).
+	 *  Range [-8192 .. 8191] (14 bits).
 	 */
 	int16_t ai2;
 	/** Storm condition bit mask indicating the ionospheric
@@ -807,9 +862,9 @@ struct nrf_modem_gnss_agnss_gps_data_tow_element {
 struct nrf_modem_gnss_agnss_gps_data_system_time_and_sv_tow {
 	/** Day number since Jan 6th, 1980 00:00:00 UTC (USNO). */
 	uint16_t date_day;
-	/** Full seconds part of time-of-day (s). Range 0...86399. */
+	/** Full seconds part of time-of-day (s). Range [0 .. 86399]. */
 	uint32_t time_full_s;
-	/** Fraction of a second part of time-of-day (ms). Range 0...999. */
+	/** Fraction of a second part of time-of-day (ms). Range [0 .. 999]. */
 	uint16_t time_frac_ms;
 	/** Bit mask indicating the satellite PRNs for which the satellite-specific TOW
 	 *  assistance data is valid.
@@ -822,54 +877,57 @@ struct nrf_modem_gnss_agnss_gps_data_system_time_and_sv_tow {
 
 /** @brief A-GNSS location data. */
 struct nrf_modem_gnss_agnss_data_location {
-	/** Geodetic latitude in WGS-84. Range -8388607...8388607.
+	/** Geodetic latitude in WGS-84. Range [-8388607 .. 8388607].
 	 *  The relation between the coded number N and the latitude
 	 *  range X (in degrees) is as follows: N <= (2^23/90) * X < N + 1.
 	 *  For N = 2^23 - 1, the range is extended to include N+1.
-	 *  Range of X (in degrees) -90...90.
+	 *  Range of X (in degrees) [-90.0, 90.0].
 	 */
 	int32_t latitude;
 
-	/** Geodetic longitude in WGS-84. Range -8388607..8388607.
+	/** Geodetic longitude in WGS-84. Range [-8388607 .. 8388607].
 	 *  The relation between the coded number N and the longitude range
 	 *  X (in degrees) is as follows: N <= (2^24/360) * X < N + 1.
-	 *  Range of X (in degrees) -180...180.
+	 *  Range of X (in degrees) [-180.0, 180.0].
 	 */
 	int32_t longitude;
 
 	/** Altitude. Above (positive value) or below (negative value) WGS-84
-	 *  ellipsoid surface. Range -32767...32767.
+	 *  ellipsoid surface. Range [-32767 .. 32767].
 	 *  The relation between the coded number N and the altitude range a
 	 *  (in meters) is as follows: N <= a < N + 1.
 	 *  For N = 2^15 - 1 the range is extended to include all greater values of a.
 	 */
 	int16_t altitude;
 
-	/** Uncertainty, semi-major. Range 0...127 or 255 for missing latitude and longitude.
+	/** Uncertainty, semi-major. Range [0 .. 127] or 255 for missing latitude and longitude.
 	 *  The uncertainty (in meters) is mapped from the coded number K with following formula:
-	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
+	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0.1.
+	 *  Range of r (in kilometers) [0.0, 1800.0].
 	 */
 	uint8_t unc_semimajor;
 
-	/** Uncertainty, semi-minor. Range 0...127 or 255 for missing latitude and longitude.
+	/** Uncertainty, semi-minor. Range [0 .. 127] or 255 for missing latitude and longitude.
 	 *  The uncertainty (in meters) is mapped from the coded number K with following formula:
-	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
+	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0.1.
+	 *  Range of r (in kilometers) [0.0, 1800.0].
 	 */
 	uint8_t unc_semiminor;
 
-	/** Orientation angle between the major axis and north. Range in degrees 0...179. */
+	/** Orientation angle between the major axis and north. Range in degrees [0 .. 179]. */
 	uint8_t orientation_major;
 
-	/** Uncertainty, altitude. Range 0...127 or 255 for missing altitude. The uncertainty in
+	/** Uncertainty, altitude. Range [0 .. 127] or 255 for missing altitude. The uncertainty in
 	 *  altitude h (in meters) is mapped from the coded number K with following formula:
-	 *  h = C * ((1 + x)^K - 1), where C = 45 and x = 0,025. Range of h (in meters) 0...990,5.
+	 *  h = C * ((1 + x)^K - 1), where C = 45 and x = 0.025.
+	 *  Range of h (in meters) [0.0, 990.5].
 	 */
 	uint8_t unc_altitude;
 
 	/** The confidence level (expressed as a percentage) with which
 	 *  the position of a target entity is included within the uncertainty ellipsoid.
-	 *  Range 0...128. '0' indicates 'no information'.
-	 *  Values 101..128  should be treated as '0'.
+	 *  Range [0 .. 128]. '0' indicates 'no information'.
+	 *  Values [101 .. 128] are treated as '0'.
 	 */
 	uint8_t confidence;
 };
@@ -888,8 +946,9 @@ struct nrf_modem_gnss_agnss_data_signal_integrity {
 	uint8_t signal_id;
 	/** Bit mask indicating the unhealthy satellite numbers for the signal. When a mask bit is
 	 *  set, the corresponding satellite is unhealthy.
-	 *  GPS: 32 LSBs correspond to PRN 1 .. 32
-	 *  QZSS: 10 LSBs correspond to PRN 193 .. 202
+	 *  GPS: 32 LSBs correspond to PRNs [1 .. 32]
+	 *  QZSS: 10 LSBs correspond to PRNs [193 .. 202]
+	 *  Galileo: 36 LSBs correspond to PRNs [1 .. 36]
 	 */
 	uint64_t integrity_mask;
 };
@@ -900,6 +959,119 @@ struct nrf_modem_gnss_agnss_data_integrity {
 	uint8_t signal_count;
 	/** Satellite integrity mask for each signal. */
 	struct nrf_modem_gnss_agnss_data_signal_integrity signal[NRF_MODEM_GNSS_MAX_SIGNALS];
+};
+
+/** @brief A-GNSS Galileo ephemeris data. */
+struct nrf_modem_gnss_agnss_gal_data_ephemeris {
+	/** Satellite ID (dimensionless). Range [1 .. 36]. */
+	uint8_t sv_id;
+	/** Clock parameters reference time-of-week (s). Scale factor 60 seconds.
+	 *  Range [0 .. 10079].
+	 */
+	uint16_t toc;
+	/** Clock drift rate (s/s^2). Scale factor 2^-59. Range [-32 .. 31]. */
+	int8_t af2;
+	/** Clock drift (s/s). Scale factor 2^-46. Range [-1048576 .. 1048575]. */
+	int32_t af1;
+	/** Clock bias (s). Scale factor 2^-34. Range [-1073741824 .. 1073741823]. */
+	int32_t af0;
+	/** Group delay (s). Scale factor 2^-32. Range [-512 .. 511]. */
+	int16_t tgd;
+	/** Signal-in-Space accuracy index. Range [0 .. 255]. */
+	uint8_t sisa;
+	/** Ephemeris parameters reference time-of-week (s). Scale factor 60 seconds.
+	 *  Range [0 .. 10079].
+	 */
+	uint16_t toe;
+	/** Argument of perigee (semi-circle). Scale factor 2^-31. */
+	int32_t w;
+	/** Mean motion difference (semi-circle/s). Scale factor 2^-43. */
+	int16_t delta_n;
+	/** Mean anomaly at reference time (semi-circle). Scale factor 2^-31. */
+	int32_t m0;
+	/** Rate of right ascension (semi-circle/s). Scale factor 2^-43.
+	 *  Range [-8388608 .. 8388607] (24 bits).
+	 */
+	int32_t omega_dot;
+	/** Eccentricity (dimensionless). Scale factor 2^-33. */
+	uint32_t e;
+	/** Rate of inclination angle (semi-circle/s). Scale factor 2^-43.
+	 *  Range [-8192 .. 8191] (14 bits).
+	 */
+	int16_t idot;
+	/** Square root of semi-major axis (m). Scale factor 2^-19. */
+	uint32_t sqrt_a;
+	/** Inclination angle at reference time (semi-circle). Scale factor 2^-31. */
+	int32_t i0;
+	/** Longitude of ascending node at weekly epoch (semi-circle). Scale factor 2^-31. */
+	int32_t omega0;
+	/** Orbit radius, sine harmonic amplitude (m). Scale factor 2^-5. */
+	int16_t crs;
+	/** Inclination angle, sine harmonic amplitude (rad). Scale factor 2^-29. */
+	int16_t cis;
+	/** Argument of latitude, sine harmonic amplitude (rad). Scale factor 2^-29. */
+	int16_t cus;
+	/** Orbit radius, cosine harmonic amplitude (m). Scale factor 2^-5. */
+	int16_t crc;
+	/** Inclination angle, cosine harmonic amplitude (rad). Scale factor 2^-29. */
+	int16_t cic;
+	/** Argument of latitude, cosine harmonic amplitude (rad). Scale factor 2^-29. */
+	int16_t cuc;
+};
+
+/** @brief A-GNSS Galileo almanac data. */
+struct nrf_modem_gnss_agnss_gal_data_almanac {
+	/** Satellite ID (dimensionless). Range [1 .. 36]. */
+	uint8_t sv_id;
+	/** Almanac reference Galileo week number modulo 4. */
+	uint8_t wn;
+	/** Almanac reference Galileo time-of-week (s). Scale factor 600. Range [0 .. 1007]. */
+	uint16_t toa;
+	/** Issue of data, almanac (dimensionless). Range [0 .. 15] (4 bits). */
+	uint8_t ioda;
+	/** Eccentricity (dimensionless). Scale factor 2^-16. Range [0 .. 2047]. */
+	uint16_t e;
+	/** Correction to inclination (semi-circle). Scale factor 2^-14. Range [-1024 .. 1023]. */
+	int16_t delta_i;
+	/** Rate of right ascension (semi-circle/s). Scale factor 2^-33. Range [-1024 .. 1023]. */
+	int16_t omega_dot;
+	/** Satellite health (dimensionless). E1-B_HS occupies bits [0 .. 1] (two LSBs), and
+	 *  E5b_HS occupies bits [2 .. 3].
+	 */
+	uint8_t sv_health;
+	/** Correction to square root of semi-major axis (m^(1/2)). Scale factor 2^-9.
+	 *  Range [-4096 .. 4095].
+	 */
+	int16_t sqrt_a;
+	/** Longitude of ascending node at weekly epoch (semi-circle). Scale factor 2^-15. */
+	int16_t omega0;
+	/** Argument of perigee (semi-circle). Scale factor 2^-15. */
+	int16_t w;
+	/** Mean anomaly at reference time (semi-circle). Scale factor 2^-15. */
+	int16_t m0;
+	/** Clock bias (s). Scale factor 2^-19. */
+	int16_t af0;
+	/** Clock drift (s/s). Scale factor 2^-38. Range [-4096 .. 4095]. */
+	int16_t af1;
+};
+
+/** @brief A-GNSS GPS-to-Galileo Time Offset (GGTO) data.
+ *
+ * If all bits in all four parameters are set to one, the GGTO is considered invalid.
+ */
+struct nrf_modem_gnss_agnss_data_ggto {
+	/** Constant term of the polynomial describing the offset between GPS and Galileo time
+	 *  scales (s). Scale factor 2^-35. Range [-32767 .. 32767] (16 bits).
+	 */
+	int16_t a0;
+	/** Rate of change of the offset (s/s). Scale factor 2^-51.
+	 *  Range [-2047 .. 2047] (12 bits).
+	 */
+	int16_t a1;
+	/** GGTO data reference time-of-week (s). Scale factor 16. Range [0 .. 37799]. */
+	uint16_t t0g;
+	/** GGTO reference week number. Range [0 .. 8191] (13 bits). */
+	uint16_t wn;
 };
 
 /** @defgroup nrf_modem_gnss_delete_bitmask Delete bitmask values
@@ -988,6 +1160,8 @@ int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t han
  *
  * @note GPS L1 C/A can't be disabled and remains enabled even if the corresponding bit is not set.
  *
+ * @note Galileo E1 OS signal can only be enabled on devices with Galileo support.
+ *
  * @param[in] signal_mask Signal bitmask, see @ref nrf_modem_gnss_signal_bitmask.
  *
  * @retval 0 on success.
@@ -1041,8 +1215,8 @@ int32_t nrf_modem_gnss_use_case_set(uint8_t use_case);
  *
  * Continuous navigation mode is engaged by setting fix interval to 1.
  *
- * Periodic navigation mode is engaged by setting the fix interval to value 10...65535. The unit is
- * seconds.
+ * Periodic navigation mode is engaged by setting the fix interval to value [10 .. 65535].
+ * The unit is seconds.
  *
  * Default value: 1 (continuous navigation)
  *
@@ -1106,6 +1280,27 @@ int32_t nrf_modem_gnss_fix_retry_set(uint16_t fix_retry);
  */
 int32_t nrf_modem_gnss_nmea_mask_set(uint16_t nmea_mask);
 
+/** @brief Sets the NMEA talker mode.
+ *
+ * @details The NMEA talker mode configuration controls which NMEA talker IDs are used.
+ *
+ * Default value: #NRF_MODEM_GNSS_NMEA_TALKER_MODE_STANDARD
+ *
+ * @note This is only supported by devices with Galileo support.
+ *
+ * @param[in] talker_mode NMEA talker mode, see @ref nrf_modem_gnss_nmea_talker_modes.
+ *
+ * @retval 0 on success.
+ * @retval -NRF_EPERM The Modem library is not initialized.
+ * @retval -NRF_EACCES GNSS is not enabled in system or functional mode.
+ * @retval -NRF_EINVAL The GNSS stack returned an error or
+ *                     the operation cannot be executed while GNSS is running.
+ * @retval -NRF_ENOMEM There is not enough shared memory for this request.
+ * @retval -NRF_EOPNOTSUPP The operation is not supported by the modem firmware.
+ * @retval -NRF_ESHUTDOWN The modem was shut down.
+ */
+int32_t nrf_modem_gnss_nmea_talker_mode_set(uint8_t talker_mode);
+
 /** @brief Sets the used power saving mode.
  *
  * @details Valid only in continuous navigation mode.
@@ -1151,7 +1346,7 @@ int32_t nrf_modem_gnss_timing_source_set(uint8_t timing_source);
  *
  * @details NMEA 4.10 standard does not support QZSS satellites, so in standard NMEA mode QZSS
  *          satellites are not reported in GPGSA and GPGSV sentences. In custom NMEA mode satellite
- *          IDs 193...202 are used for QZSS satellites.
+ *          IDs [193 .. 202] are used for QZSS satellites.
  *
  * Default value: #NRF_MODEM_GNSS_QZSS_NMEA_MODE_STANDARD
  *
@@ -1170,11 +1365,11 @@ int32_t nrf_modem_gnss_qzss_nmea_mode_set(uint8_t nmea_mode);
 /** @brief Sets which QZSS PRNs are enabled.
  *
  * @details QZSS satellite acquisition and tracking can be configured per satellite using QZSS PRN
- *          mask. Bits 0...9 correspond to QZSS PRNs 193...202, respectively. When a bit is set,
- *          usage of the corresponding QZSS satellite is enabled. Bits 10...15 are reserved and
- *          their value is ignored.
+ *          mask. Bits [0 .. 9] correspond to QZSS PRNs [193 .. 202], respectively. When a bit is
+ *          set, usage of the corresponding QZSS satellite is enabled. Bits [10 .. 15] are reserved
+ *          and their value is ignored.
  *
- * Default value: All QZSS PRNs (193...202) are enabled.
+ * Default value: All QZSS PRNs ([193 .. 202]) are enabled.
  *
  * @param[in] prn_mask QZSS PRN mask.
  *

@@ -290,7 +290,8 @@ enum nrf_modem_dect_phy_rx_mode {
 	 * @brief Continuous reception.
 	 *
 	 * The reception is continued automatically after PDC reception.
-	 * Continuous reception does not support reception of physical header type 2 format 0 packets.
+	 * Continuous reception does not support reception of physical header type 2 format 0
+	 * packets.
 	 */
 	NRF_MODEM_DECT_PHY_RX_MODE_CONTINUOUS,
 	/**
@@ -1574,6 +1575,20 @@ struct nrf_modem_dect_phy_latency_info_event {
 	struct nrf_modem_dect_phy_latency_info *latency_info;
 };
 
+/**
+ * @brief Reject event.
+ */
+struct nrf_modem_dect_phy_reject_event {
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
+	 */
+	enum nrf_modem_dect_phy_err err;
+};
+
 enum nrf_modem_dect_phy_event_id {
 	/**
 	 * @brief Event to indicate the completion of the DECT PHY stack initialization.
@@ -1655,6 +1670,14 @@ enum nrf_modem_dect_phy_event_id {
 	 * @brief Event to indicate the completion of the test RF TX CW configuration.
 	 */
 	NRF_MODEM_DECT_PHY_EVT_TEST_RF_TX_CW_CONTROL_CONFIG,
+	/**
+	 * @brief Event to indicate an operation was rejected.
+	 *
+	 * Received in response to any operation scheduled while the DECT PHY stack is not
+	 * ready to accept it, for example, during a modem flash operation or when the
+	 * DECT PHY interface is claimed by the DECT MAC stack.
+	 */
+	NRF_MODEM_DECT_PHY_EVT_REJECT,
 };
 
 /**
@@ -1693,6 +1716,7 @@ struct nrf_modem_dect_phy_event {
 		struct nrf_modem_dect_phy_test_rf_tx_cw_control_event test_rf_tx_cw_control;
 		struct nrf_modem_dect_phy_stf_control_event stf_cover_seq_control;
 		struct nrf_modem_dect_phy_link_config_event link_config;
+		struct nrf_modem_dect_phy_reject_event reject;
 	};
 };
 
