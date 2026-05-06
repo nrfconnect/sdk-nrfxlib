@@ -84,7 +84,8 @@ void nrf_802154_ack_generator_reset(void)
     nrf_802154_enh_ack_generator_reset();
 }
 
-uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t * p_frame_data)
+uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t    * p_frame_data,
+                                          const nrf_802154_peer_rec_t * p_peer_rec)
 {
     /* This function should not be called if ACK is not requested. */
     NRF_802154_ASSERT(nrf_802154_frame_ar_bit_is_set(p_frame_data));
@@ -92,10 +93,10 @@ uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_t * p_frame_dat
     switch (frame_version_is_2015_or_above(p_frame_data))
     {
         case FRAME_VERSION_BELOW_2015:
-            return nrf_802154_imm_ack_generator_create(p_frame_data);
+            return nrf_802154_imm_ack_generator_create(p_frame_data, p_peer_rec);
 
         case FRAME_VERSION_2015_OR_ABOVE:
-            return nrf_802154_enh_ack_generator_create(p_frame_data);
+            return nrf_802154_enh_ack_generator_create(p_frame_data, p_peer_rec);
 
         default:
             return NULL;

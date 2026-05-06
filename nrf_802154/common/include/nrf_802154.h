@@ -58,6 +58,13 @@
 extern "C" {
 #endif
 
+/* The __deprecated macro is provided by Zephyr. Define a compatible fallback for unit tests
+ * and other toolchains that do not support it.
+ */
+#ifndef __deprecated
+#define __deprecated
+#endif /* __deprecated */
+
 /**
  * @brief Timestamp value indicating that the timestamp is inaccurate.
  */
@@ -137,8 +144,12 @@ bool nrf_802154_reinit(void);
  * @brief Deinitializes the 802.15.4 driver.
  *
  * This function deinitializes the RADIO peripheral and resets it to the default state.
+ *
+ * @deprecated This function is deprecated. Calling it can crash the driver and it is not recommended
+ *             to use it. Use the @ref nrf_802154_reinit function instead to reinitialize the driver
+ *             when needed.
  */
-void nrf_802154_deinit(void);
+__deprecated void nrf_802154_deinit(void);
 #endif // !NRF_802154_SERIALIZATION_HOST
 
 /**
@@ -1414,8 +1425,8 @@ nrf_802154_ifs_mode_t nrf_802154_ifs_mode_get(void);
  *
  * @param[in] mode  IFS operation mode. Refer to @ref nrf_802154_ifs_mode_t for details.
  *
- * @retval    true  The update of IFS operation mode was successful.
- * @retval    false The update of IFS operation mode failed. Provided mode is unsupported
+ * @retval true     The update of IFS operation mode was successful.
+ * @retval false    The update of IFS operation mode failed. Provided mode is unsupported.
  */
 bool nrf_802154_ifs_mode_set(nrf_802154_ifs_mode_t mode);
 

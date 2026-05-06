@@ -47,6 +47,7 @@ target_sources(nrf-802154-driver
     src/nrf_802154_aes_ccm_acc_ccm.c
     src/nrf_802154_aes_ccm_acc_ecb.c
     src/nrf_802154_bsim_utils.c
+    src/nrf_802154_bsmap.c
     src/nrf_802154_co.c
     src/nrf_802154_core.c
     src/nrf_802154_core_hooks.c
