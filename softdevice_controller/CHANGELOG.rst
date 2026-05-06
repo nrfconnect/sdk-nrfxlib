@@ -12,6 +12,11 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
+
 Changes
 =======
 
