@@ -188,7 +188,7 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
 {
     bool result = true;
 
-    for (uint32_t i = 0; i < sizeof(m_abort_hooks) / sizeof(m_abort_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_abort_hooks); i++)
     {
         if (m_abort_hooks[i] == NULL)
         {
@@ -211,8 +211,7 @@ nrf_802154_tx_error_t nrf_802154_core_hooks_tx_setup(
 {
     nrf_802154_tx_error_t result = NRF_802154_TX_ERROR_NONE;
 
-    for (uint32_t i = 0; i < sizeof(m_tx_setup_hooks) / sizeof(m_tx_setup_hooks[0]);
-         i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_tx_setup_hooks); i++)
     {
         if (m_tx_setup_hooks[i] == NULL)
         {
@@ -232,7 +231,7 @@ nrf_802154_tx_error_t nrf_802154_core_hooks_tx_setup(
 
 void nrf_802154_core_hooks_transmitted(const nrf_802154_frame_t * p_frame)
 {
-    for (uint32_t i = 0; i < sizeof(m_transmitted_hooks) / sizeof(m_transmitted_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_transmitted_hooks); i++)
     {
         if (m_transmitted_hooks[i] == NULL)
         {
@@ -245,7 +244,7 @@ void nrf_802154_core_hooks_transmitted(const nrf_802154_frame_t * p_frame)
 
 void nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
-    for (uint32_t i = 0; i < sizeof(m_tx_failed_hooks) / sizeof(m_tx_failed_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_tx_failed_hooks); i++)
     {
         if (m_tx_failed_hooks[i] == NULL)
         {
@@ -258,7 +257,7 @@ void nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t er
 
 void nrf_802154_core_hooks_tx_ack_failed(uint8_t * p_ack, nrf_802154_tx_error_t error)
 {
-    for (uint32_t i = 0; i < sizeof(m_tx_ack_failed_hooks) / sizeof(m_tx_ack_failed_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_tx_ack_failed_hooks); i++)
     {
         if (m_tx_ack_failed_hooks[i] == NULL)
         {
@@ -271,7 +270,7 @@ void nrf_802154_core_hooks_tx_ack_failed(uint8_t * p_ack, nrf_802154_tx_error_t 
 
 void nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
 {
-    for (uint32_t i = 0; i < sizeof(m_tx_started_hooks) / sizeof(m_tx_started_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_tx_started_hooks); i++)
     {
         if (m_tx_started_hooks[i] == NULL)
         {
@@ -284,7 +283,7 @@ void nrf_802154_core_hooks_tx_started(uint8_t * p_frame)
 
 void nrf_802154_core_hooks_rx_started(const nrf_802154_frame_t * p_frame)
 {
-    for (uint32_t i = 0; i < sizeof(m_rx_started_hooks) / sizeof(m_rx_started_hooks[0]); i++)
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_rx_started_hooks); i++)
     {
         if (m_rx_started_hooks[i] == NULL)
         {
@@ -297,7 +296,7 @@ void nrf_802154_core_hooks_rx_started(const nrf_802154_frame_t * p_frame)
 
 void nrf_802154_core_hooks_rx_ack_started(void)
 {
-    for (uint32_t i = 0; i < sizeof(m_rx_ack_started_hooks) / sizeof(m_rx_ack_started_hooks[0]);
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_rx_ack_started_hooks);
          i++)
     {
         if (m_rx_ack_started_hooks[i] == NULL)
@@ -311,7 +310,7 @@ void nrf_802154_core_hooks_rx_ack_started(void)
 
 void nrf_802154_core_hooks_tx_ack_started(uint8_t * p_ack)
 {
-    for (uint32_t i = 0; i < sizeof(m_tx_ack_started_hooks) / sizeof(m_tx_ack_started_hooks[0]);
+    for (uint32_t i = 0; i < NRFX_ARRAY_SIZE(m_tx_ack_started_hooks);
          i++)
     {
         if (m_tx_ack_started_hooks[i] == NULL)

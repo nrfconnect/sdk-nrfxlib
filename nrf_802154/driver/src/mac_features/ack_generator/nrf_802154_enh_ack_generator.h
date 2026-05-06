@@ -42,6 +42,7 @@
 #define NRF_802154_ENH_ACK_GENERATOR_H
 
 #include "mac_features/nrf_802154_frame.h"
+#include "nrf_802154_ack_data.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -69,11 +70,14 @@ void nrf_802154_enh_ack_generator_reset(void);
  *
  * @param [in]  p_frame_data  Pointer to the parser data of the frame for which an Ack
  *                            will be generated.
+ * @param [in]  p_peer_rec    Information record about the peer the @p p_frame_data
+ *                            is received from. May be @c NULL if peer not found.
  *
  * @returns  Either pointer to a constant buffer that contains PHR and PSDU
  *           of the created Enhanced ACK frame, or NULL when the response cannot be
  *           created.
  */
-uint8_t * nrf_802154_enh_ack_generator_create(const nrf_802154_frame_t * p_frame_data);
+uint8_t * nrf_802154_enh_ack_generator_create(const nrf_802154_frame_t    * p_frame_data,
+                                              const nrf_802154_peer_rec_t * p_peer_rec);
 
 #endif /* NRF_802154_ENH_ACK_GENERATOR_H */

@@ -47,12 +47,6 @@
 extern "C" {
 #endif
 
-/**@brief Macro to get the number of elements in an array.
- *
- * @param[in] X   Array.
- */
-#define NUMELTS(X) (sizeof((X)) / sizeof(X[0]))
-
 typedef struct
 {
     nrf_radio_txpower_t reg;
@@ -107,7 +101,7 @@ static radio_tx_power_t to_radio_tx_power_convert(int8_t integer_tx_power)
 #endif
     };
 
-    for (uint32_t i = NUMELTS(allowed_values) - 1; i > 0; i--)
+    for (uint32_t i = NRFX_ARRAY_SIZE(allowed_values) - 1; i > 0; i--)
     {
         if (integer_tx_power >= allowed_values[i].dbm)
         {
