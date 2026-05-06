@@ -120,6 +120,12 @@ The |controller| currently has the following supported capabilities:
    * - TX SNR Control
      -
      - X
+   * - CS AM Attack Resilience
+     -
+     - X
+   * - CS Enhancement-1
+     - X
+     -
 
 In addition to the supported capabilities listed above, the |controller| supports the following step timings:
 
@@ -139,10 +145,18 @@ In addition to the supported capabilities listed above, the |controller| support
      - 10 µs or greater.
    * - T_SW
      - 10 µs.
+   * - T_IP2_IPT
+     - 20 µs or greater.
+   * - T_SW_IPT
+     - 10 µs.
 
 .. note::
    The T_SW time reported is based on the implementation of antenna switching in the |NCS|, as described in :ref:`cs_multiple_antenna_support`.
    If you implement your own switching functions, you must ensure that the new implementation meets the timing requirements reported in :ref:`cs_supported_capabilities`.
+
+.. note::
+   The T_IP2_IPT and T_SW_IPT times are used when using the Inline Phase Correction Term Transfer (IPT) feature.
+   These timings are used when IPT is enabled in the CS config and the |controller| has the reflector role.
 
 .. _cs_multiple_antenna_support:
 

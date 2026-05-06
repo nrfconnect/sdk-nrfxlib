@@ -317,6 +317,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_RATE_PARAMS = 0x20a2,
     /** @brief See @ref sdc_hci_cmd_le_read_min_supported_conn_interval(). */
     SDC_HCI_OPCODE_CMD_LE_READ_MIN_SUPPORTED_CONN_INTERVAL = 0x20a3,
+    /** @brief See @ref sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_READ_LOCAL_SUPPORTED_CAPABILITIES_V2 = 0x20a5,
+    /** @brief See @ref sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_WRITE_CACHED_REMOTE_SUPPORTED_CAPABILITIES_V2 = 0x20a6,
 };
 
 /** @brief LE subevent Code values. */
@@ -414,6 +418,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_FRAME_SPACE_UPDATE_COMPLETE = 0x35,
     /** @brief See @ref sdc_hci_subevent_le_conn_rate_change_t. */
     SDC_HCI_SUBEVENT_LE_CONN_RATE_CHANGE = 0x37,
+    /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_v2_t. */
+    SDC_HCI_SUBEVENT_LE_CS_READ_REMOTE_SUPPORTED_CAPABILITIES_COMPLETE_V2 = 0x38,
 };
 
 /** @brief Advertising Event Properties parameters. */
@@ -2310,7 +2316,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t channel_selection_type;
     uint8_t ch3c_shape;
     uint8_t ch3c_jump;
-    uint8_t reserved;
+    uint8_t cs_enhancements;
     uint8_t t_ip1_time;
     uint8_t t_ip2_time;
     uint8_t t_fcs_time;
@@ -2563,6 +2569,93 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t continuation_number;
     uint16_t supervision_timeout;
 } sdc_hci_subevent_le_conn_rate_change_t;
+
+/** @brief LE CS Read Remote Supported Capabilities Complete v2.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.39
+ *
+ * The HCI_LE_CS_Read_Remote_Supported_Capabilities_Complete event shall be
+ * generated when a locally initiated CS Capabilities Exchange procedure has completed
+ * or when the local Controller has received an LL_CS_CAPABILITIES_REQ from the
+ * remote Controller.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the remote Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the remote Controller.
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ *
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the remote Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the
+ * remote Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the remote Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and RTT_Random_-
+ * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
+ * B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the remote Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs supported by the remote Controller for CS_SYNC exchanges as described in [Vol
+ * 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the remote Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels as described in [Vol
+ *   6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicated the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+    uint16_t t_ip2_ipt_times_supported;
+    uint8_t t_sw_ipt_time_supported;
+    uint8_t rtt_2m_aa_only_n;
+    uint8_t rtt_2m_sounding_n;
+    uint8_t rtt_2m_random_sequence_n;
+} sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_v2_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -3942,7 +4035,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t channel_selection_type;
     uint8_t ch3c_shape;
     uint8_t ch3c_jump;
-    uint8_t reserved;
+    uint8_t cs_enhancements;
 } sdc_hci_cmd_le_cs_create_config_t;
 
 /** @brief LE CS Remove Config command parameter(s). */
@@ -4012,7 +4105,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t t_pm_time;
     uint8_t t_sw_time;
     uint8_t tone_antenna_config_selection;
-    uint8_t reserved;
+    uint8_t cs_enhancements;
     uint8_t snr_control_initiator;
     uint8_t snr_control_reflector;
     uint16_t drbg_nonce;
@@ -4075,6 +4168,73 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t num_groups;
     sdc_hci_le_read_min_supported_conn_interval_group_t groups[];
 } sdc_hci_cmd_le_read_min_supported_conn_interval_return_t;
+
+/** @brief LE CS Read Local Supported Capabilities v2 return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+    uint16_t t_ip2_ipt_times_supported;
+    uint8_t t_sw_ipt_time_supported;
+    uint8_t rtt_2m_aa_only_n;
+    uint8_t rtt_2m_sounding_n;
+    uint8_t rtt_2m_random_sequence_n;
+} sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2_return_t;
+
+/** @brief LE CS Write Cached Remote Supported Capabilities v2 command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+    uint16_t t_ip2_ipt_times_supported;
+    uint8_t t_sw_ipt_time_supported;
+    uint8_t rtt_2m_aa_only_n;
+    uint8_t rtt_2m_sounding_n;
+    uint8_t rtt_2m_random_sequence_n;
+} sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_t;
+
+/** @brief LE CS Write Cached Remote Supported Capabilities v2 return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -11566,6 +11726,161 @@ uint8_t sdc_hci_cmd_le_set_default_rate_params(const sdc_hci_cmd_le_set_default_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_supported_conn_interval_return_t * p_return);
+
+/** @brief LE CS Read Local Supported Capabilities v2.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.130
+ *
+ * The HCI_LE_CS_Read_Local_Supported_Capabilities command allows a Host to read
+ * the CS capabilities that are supported by the local Controller. This command may
+ * be used along with the local supported features to provide additional details of the
+ * supported CS capabilities.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the local Controller.
+ *
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the local Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the local
+ * Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the local Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the RTT_Random_-
+ * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
+ * B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the local Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs that are supported by the local Controller for CS_SYNC exchanges as described
+ * in [Vol 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the local Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels relative to mode-0
+ *   transmissions when in the reflector role as described in [Vol 6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ *
+ * If the Host issues this command when the Channel Sounding (Host Support) feature bit
+ * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Read_Local_Supported_Capabilities command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2(sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2_return_t * p_return);
+
+/** @brief LE CS Write Cached Remote Supported Capabilities v2.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.132
+ *
+ * The HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command allows a
+ * Host to write the cached copy of the CS capabilities that are supported by the remote
+ * Controller for the connection identified by the Connection_Handle parameter.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the remote Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the remote Controller.
+ *
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the local Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the
+ * remote Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the remote Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
+ * RTT_Random_Payload_N parameters indicate the time-of-flight accuracy as described
+ * in [Vol 6] Part B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the remote Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs that are supported by the remote Controller for CS_SYNC exchanges as
+ * described in [Vol 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the remote Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels relative to mode-0
+ *   transmissions when in the reflector role as described in [Vol 6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ *
+ * If the Host issues this command after an LL_CS_CAPABILITIES_REQ or
+ * LL_CS_CAPABILITIES_RSP PDU has been received from the remote Controller, then
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command after a CS configuration has been created in the local
+ * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
+ * If the Host issues this command when the Channel Sounding (Host Support) feature bit
+ * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL the Controller shall return the error code Unknown
+ * Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2(const sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_t * p_params,
+                                                                        sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 
