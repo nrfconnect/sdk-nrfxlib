@@ -13,10 +13,30 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Notable changes
+===============
+
+* Separate maps for pending bits and IEs are replaced with a single map that stores the peer records containing both pending bits an IEs.
+  There are two such maps, one for short addresses and one for extended addresses.
+  When a frame is being received there is only one search for the peer record in one of the maps instead of separate searches for pending bits and IEs. (KRKNWK-21632)
+
 Added
 =====
 
 * Added experimental support for the nRF54LC10A SoC (CPU application, secure and non-secure).
+
+Minor changes
+=============
+
+* Replaced:
+
+  * The ``MIN`` and ``MAX`` macros with the ``NRFX_MIN`` and ``NRFX_MAX`` macros from the ``nrfx`` library.
+  * The internal ``NUMELTS`` and ``NB_ELEMS`` macros with the ``NRFX_ARRAY_SIZE`` macro from the ``nrfx`` library.
+
+Other changes
+=============
+
+* Deprecated the :c:func:`nrf_802154_deinit` function. (KRKNWK-21759)
 
 nRF Connect SDK v3.3.0 - nRF 802.15.4 Radio Driver
 **************************************************

@@ -165,8 +165,8 @@ void nrf_802154_trx_disable(void);
 /**
  * @brief Returns if the radio has PA modulation fix enabled.
  *
- * @retval True   PA modulation fix is enabled.
- * @retval False  PA modulation fix is disabled.
+ * @retval true   PA modulation fix is enabled.
+ * @retval false  PA modulation fix is disabled.
  */
 bool nrf_802154_trx_pa_modulation_fix_get(void);
 

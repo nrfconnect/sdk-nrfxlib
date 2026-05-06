@@ -51,21 +51,17 @@
 #include "hal/nrf_ecb.h"
 #endif
 
-#ifndef MIN
-#define MIN(a, b)                                 ((a) < (b) ? (a) : (b)) ///< Leaves the minimum of the two arguments
-#endif
+#define NRF_802154_AES_CCM_BLOCK_SIZE             16     // Annex B4 Specification of generic CCM* a)
 
-#define NRF_802154_AES_CCM_BLOCK_SIZE             16                      // Annex B4 Specification of generic CCM* a)
+#define NRF_802154_AES_CCM_ADATA_AUTH_FLAG        (0x40) // Annex B4.1.2 - Adata flag for authentication transform
+#define NRF_802154_AES_CCM_M_BITS_AUTH_FLAG       3      // Annex B4.1.2 - Nr of bits for MIC flag for authentication transform
 
-#define NRF_802154_AES_CCM_ADATA_AUTH_FLAG        (0x40)                  // Annex B4.1.2 - Adata flag for authentication transform
-#define NRF_802154_AES_CCM_M_BITS_AUTH_FLAG       3                       // Annex B4.1.2 - Nr of bits for MIC flag for authentication transform
-
-#define NRF_802154_AES_CCM_AI_FIELD_FLAG_OCTET    0                       // AnnnexB4.1.3b) - Position of octet for flags in Ai field
-#define NRF_802154_AES_CCM_AI_FIELD_NONCE_OCTET   1                       // AnnnexB4.1.3b) - Position of octet for nonce in Ai field
-#define NRF_802154_AES_CCM_B0_FIELD_FLAG_OCTET    0                       // AnnnexB4.1.2b) - Position of octet for flags in B0 field
-#define NRF_802154_AES_CCM_B0_FIELD_NONCE_OCTET   1                       // AnnnexB4.1.2b) - Position of octet for nonce in B0 field
-#define NRF_802154_AES_CCM_AUTH_DATA_LENGTH_OCTET 0                       // AnnnexB4.1.1b) - Position of octet for length of auth data in AddAuthData
-#define NRF_802154_AES_CCM_AUTH_DATA_OCTET        2                       // AnnnexB4.1.1b) - Position of octet for data of auth data in AddAuthData
+#define NRF_802154_AES_CCM_AI_FIELD_FLAG_OCTET    0      // Annex B4.1.3b) - Position of octet for flags in Ai field
+#define NRF_802154_AES_CCM_AI_FIELD_NONCE_OCTET   1      // Annex B4.1.3b) - Position of octet for nonce in Ai field
+#define NRF_802154_AES_CCM_B0_FIELD_FLAG_OCTET    0      // Annex B4.1.2b) - Position of octet for flags in B0 field
+#define NRF_802154_AES_CCM_B0_FIELD_NONCE_OCTET   1      // Annex B4.1.2b) - Position of octet for nonce in B0 field
+#define NRF_802154_AES_CCM_AUTH_DATA_LENGTH_OCTET 0      // Annex B4.1.1b) - Position of octet for length of auth data in AddAuthData
+#define NRF_802154_AES_CCM_AUTH_DATA_OCTET        2      // Annex B4.1.1b) - Position of octet for data of auth data in AddAuthData
 
 /**
  * @brief Steps of AES-CCM* algorithm.
@@ -319,7 +315,7 @@ static bool add_auth_data_get(const nrf_802154_aes_ccm_data_t * p_frame,
 
     if (iter == 0)
     {
-        len = MIN(p_frame->auth_data_len, NRF_802154_AES_CCM_BLOCK_SIZE - sizeof(uint16_t));
+        len = NRFX_MIN(p_frame->auth_data_len, NRF_802154_AES_CCM_BLOCK_SIZE - sizeof(uint16_t));
         p_b[NRF_802154_AES_CCM_AUTH_DATA_LENGTH_OCTET]     = (p_frame->auth_data_len & 0xFF00) >> 8;
         p_b[NRF_802154_AES_CCM_AUTH_DATA_LENGTH_OCTET + 1] = (p_frame->auth_data_len & 0xFF);
         memcpy(&p_b[NRF_802154_AES_CCM_AUTH_DATA_OCTET], p_frame->auth_data, len);
@@ -333,7 +329,7 @@ static bool add_auth_data_get(const nrf_802154_aes_ccm_data_t * p_frame,
         return false;
     }
 
-    len = MIN(p_frame->auth_data_len - offset, NRF_802154_AES_CCM_BLOCK_SIZE);
+    len = NRFX_MIN(p_frame->auth_data_len - offset, NRF_802154_AES_CCM_BLOCK_SIZE);
     memcpy(p_b, p_frame->auth_data + offset, len);
     return true;
 }
@@ -369,7 +365,7 @@ static bool plain_text_data_get(const nrf_802154_aes_ccm_data_t * p_frame,
         return false;
     }
 
-    len = MIN(p_frame->plain_text_data_len - offset, NRF_802154_AES_CCM_BLOCK_SIZE);
+    len = NRFX_MIN(p_frame->plain_text_data_len - offset, NRF_802154_AES_CCM_BLOCK_SIZE);
     memcpy(p_b, p_frame->plain_text_data + offset, len);
 
     return true;
@@ -472,8 +468,8 @@ static void ecb_hal_block_encrypted_handler(void)
             two_blocks_xor(m_m, ecb_hal_ciphertext_ptr_get(), NRF_802154_AES_CCM_BLOCK_SIZE);
 
             offset = (m_state.iteration - 1) * NRF_802154_AES_CCM_BLOCK_SIZE;
-            len    = MIN(m_aes_ccm_data.plain_text_data_len - offset,
-                         NRF_802154_AES_CCM_BLOCK_SIZE);
+            len    = NRFX_MIN(m_aes_ccm_data.plain_text_data_len - offset,
+                              NRF_802154_AES_CCM_BLOCK_SIZE);
             memcpy(mp_ciphertext + offset, m_m, len);
             if (plain_text_data_get(&m_aes_ccm_data, m_state.iteration, m_m))
             {
