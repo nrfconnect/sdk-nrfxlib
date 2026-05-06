@@ -6,7 +6,7 @@
 
 include_guard(GLOBAL)
 
-include(${NRFXLIB_DIR}/common.cmake)
+include(${ZEPHYR_NRFXLIB_MODULE_DIR}/common.cmake)
 
 nrfxlib_calculate_lib_path(lib_path)
 
@@ -224,8 +224,8 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   #
   add_library(nrf_cc3xx_psa_crypto_imported STATIC IMPORTED GLOBAL)
 
-  target_link_libraries(nrf_cc3xx_psa_crypto_imported 
-    INTERFACE 
+  target_link_libraries(nrf_cc3xx_psa_crypto_imported
+    INTERFACE
       nrf_cc3xx_legacy_crypto_imported
       nrf_cc3xx_core_imported
       nrf_cc3xx_platform
