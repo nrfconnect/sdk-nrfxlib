@@ -78,12 +78,6 @@
         (ticks) * (NRF_802154_US_PER_S >> NRF_802154_FREQUENCY_US_PER_S_GCD_BITS), \
         (NRF_802154_RTC_FREQUENCY >> NRF_802154_FREQUENCY_US_PER_S_GCD_BITS))
 
-/**@brief Macro to get the number of elements in an array.
- *
- * @param[in] X   Array.
- */
-#define NUMELTS(X) (sizeof((X)) / sizeof(X[0]))
-
 /**@brief Type holding MCU critical section state.
  *
  * Variable of this type is required to hold state saved by @ref nrf_802154_mcu_critical_enter

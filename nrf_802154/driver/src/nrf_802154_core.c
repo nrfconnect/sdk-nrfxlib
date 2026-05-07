@@ -48,6 +48,7 @@
 #include <string.h>
 
 #include "nrf_802154.h"
+#include "mac_features/ack_generator/nrf_802154_ack_data.h"
 #include "nrf_802154_compiler.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
@@ -111,15 +112,23 @@
  */
 #define PRESTARTED_TIMER_TIMEOUT_US (160U)
 
-static rx_buffer_t * mp_current_rx_buffer;         /**< Pointer to currently used receive buffer. */
-static uint8_t * mp_ack;                           /**< Pointer to Ack frame buffer. */
-static uint32_t  m_ed_time_left;                   /**< Remaining time of the current energy detection procedure [us]. */
-static int8_t    m_ed_result;                      /**< Result of the current energy detection procedure. */
-static uint8_t   m_last_lqi;                       /**< LQI of the last received non-ACK frame, corrected for the temperature. */
-static int8_t    m_last_rssi;                      /**< RSSI of the last received non-ACK frame, corrected for the temperature. */
-static uint8_t   m_no_rx_buffer_notified;          /**< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified. */
+static rx_buffer_t * mp_current_rx_buffer;            /**< Pointer to currently used receive buffer. */
+static uint8_t * mp_ack;                              /**< Pointer to Ack frame buffer. */
+static uint32_t  m_ed_time_left;                      /**< Remaining time of the current energy detection procedure [us]. */
+static int8_t    m_ed_result;                         /**< Result of the current energy detection procedure. */
+static uint8_t   m_last_lqi;                          /**< LQI of the last received non-ACK frame, corrected for the temperature. */
+static int8_t    m_last_rssi;                         /**< RSSI of the last received non-ACK frame, corrected for the temperature. */
+static uint8_t   m_no_rx_buffer_notified;             /**< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified. */
 
-static nrf_802154_frame_t m_current_rx_frame_data; /**< RX frame parser data. */
+static nrf_802154_frame_t    m_current_rx_frame_data; /**< RX frame parser data. */
+static nrf_802154_peer_rec_t m_current_rx_peer_rec;   /**< Content of peer rec for current rx frame. */
+
+enum
+{
+    PEER_REC_NOT_SEARCHED,
+    PEER_REC_NOT_FOUND,
+    PEER_REC_VALID,
+} m_current_rx_peer_rec_state;
 
 static nrf_802154_transmit_params_t m_tx;
 
@@ -214,7 +223,8 @@ static void rx_data_clear(void)
                                             &m_current_rx_frame_data);
     nrf_802154_ack_generator_reset();
 
-    mp_ack = NULL;
+    mp_ack                      = NULL;
+    m_current_rx_peer_rec_state = PEER_REC_NOT_SEARCHED;
 }
 
 /**
@@ -607,8 +617,8 @@ static uint8_t * rx_buffer_get(void)
  *
  * @param[in]  p_frame  Pointer to a TX frame to check.
  *
- * @retval  true   ACK is requested in given frame.
- * @retval  false  ACK is not requested in given frame.
+ * @retval true   ACK is requested in given frame.
+ * @retval false  ACK is not requested in given frame.
  */
 static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
 {
@@ -634,16 +644,16 @@ static bool tx_frame_ack_is_requested(const nrf_802154_frame_t * p_frame)
 /**
  * @brief Set up the next iteration of energy detection procedure.
  *
- *  Energy detection procedure is performed in iterations to make sure it is performed for requested
- *  time regardless radio arbitration.
+ * Energy detection procedure is performed in iterations to make sure it is performed for requested
+ * time regardless of radio arbitration.
  *
- *  @param[inout] p_requested_ed_time_us  Remaining time of energy detection procedure [us]. Value will be updated
- *                                        with time remaining for the next attempt of energy detection.
- *  @param[out]   p_next_trx_ed_count     Number of trx energy detection iterations to perform.
+ * @param[inout] p_requested_ed_time_us  Remaining time of energy detection procedure [us]. Value will be updated
+ *                                       with time remaining for the next attempt of energy detection.
+ * @param[out]   p_next_trx_ed_count     Number of trx energy detection iterations to perform.
  *
- *  @retval  true   Next iteration of energy detection procedure will be performed now.
- *  @retval  false  Next iteration of energy detection procedure will not be performed now due to
- *                  ending timeslot.
+ * @retval true   Next iteration of energy detection procedure will be performed now.
+ * @retval false  Next iteration of energy detection procedure will not be performed now due to
+ *                ending timeslot.
  */
 static bool ed_iter_setup(uint32_t * p_requested_ed_time_us, uint32_t * p_next_trx_ed_count)
 {
@@ -1955,6 +1965,44 @@ void nrf_802154_trx_receive_frame_started(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+static void curr_peer_rec_update(void)
+{
+    if (m_current_rx_peer_rec_state == PEER_REC_NOT_SEARCHED)
+    {
+        if (nrf_802154_frame_parse_level_get(&m_current_rx_frame_data) < PARSE_LEVEL_ADDRESSING_END)
+        {
+            return;
+        }
+
+        if (nrf_802154_frame_type_get(&m_current_rx_frame_data) == FRAME_TYPE_MULTIPURPOSE)
+        {
+            return;
+        }
+
+        bool extended =
+            nrf_802154_frame_src_addr_is_extended(&m_current_rx_frame_data);
+        const uint8_t * p_src_addr = nrf_802154_frame_src_addr_get(&m_current_rx_frame_data);
+
+        if (p_src_addr == NULL)
+        {
+            m_current_rx_peer_rec_state = PEER_REC_NOT_FOUND;
+        }
+        else if (nrf_802154_peer_rec_get(p_src_addr, extended, &m_current_rx_peer_rec))
+        {
+            m_current_rx_peer_rec_state = PEER_REC_VALID;
+        }
+        else
+        {
+            m_current_rx_peer_rec_state = PEER_REC_NOT_FOUND;
+        }
+    }
+}
+
+static const nrf_802154_peer_rec_t * curr_peer_rec_get(void)
+{
+    return (m_current_rx_peer_rec_state == PEER_REC_VALID) ? &m_current_rx_peer_rec : NULL;
+}
+
 uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2116,7 +2164,8 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
         nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data) &&
         nrf_802154_pib_auto_ack_get())
     {
-        mp_ack = nrf_802154_ack_generator_create(&m_current_rx_frame_data);
+        curr_peer_rec_update();
+        mp_ack = nrf_802154_ack_generator_create(&m_current_rx_frame_data, curr_peer_rec_get());
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2239,7 +2288,9 @@ void nrf_802154_trx_receive_frame_received(void)
             nrf_802154_pib_auto_ack_get())
         {
             nrf_802154_tx_work_buffer_reset(&m_default_frame_props);
-            mp_ack   = nrf_802154_ack_generator_create(&m_current_rx_frame_data);
+            curr_peer_rec_update();
+            mp_ack = nrf_802154_ack_generator_create(&m_current_rx_frame_data,
+                                                     curr_peer_rec_get());
             send_ack = (mp_ack != NULL);
         }
 
@@ -2713,7 +2764,7 @@ void nrf_802154_trx_energy_detection_finished(int8_t ed_sample_dbm)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    m_ed_result = MAX(m_ed_result, ed_sample_dbm);
+    m_ed_result = NRFX_MAX(m_ed_result, ed_sample_dbm);
 
     if (m_ed_time_left >= ED_ITER_DURATION)
     {
@@ -2756,10 +2807,11 @@ void nrf_802154_trx_energy_detection_finished(int8_t ed_sample_dbm)
 
 void nrf_802154_core_init(void)
 {
-    m_state                    = RADIO_STATE_SLEEP;
-    m_rsch_timeslot_is_granted = false;
-    m_rx_prestarted_trig_count = 0;
-    m_no_rx_buffer_notified    = 0U;
+    m_state                     = RADIO_STATE_SLEEP;
+    m_rsch_timeslot_is_granted  = false;
+    m_rx_prestarted_trig_count  = 0;
+    m_no_rx_buffer_notified     = 0U;
+    m_current_rx_peer_rec_state = PEER_REC_NOT_SEARCHED;
 
     nrf_802154_sl_timer_init(&m_rx_prestarted_timer);
 
