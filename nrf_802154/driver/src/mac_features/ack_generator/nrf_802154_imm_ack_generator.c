@@ -65,7 +65,8 @@ void nrf_802154_imm_ack_generator_reset(void)
 }
 
 uint8_t * nrf_802154_imm_ack_generator_create(
-    const nrf_802154_frame_t * p_frame_data)
+    const nrf_802154_frame_t    * p_frame_data,
+    const nrf_802154_peer_rec_t * p_peer_rec)
 {
 #if NRF_802154_IE_WRITER_ENABLED
 
@@ -96,7 +97,7 @@ uint8_t * nrf_802154_imm_ack_generator_create(
     m_ack_data[DSN_OFFSET] = *frame_dsn;
 
     /* Set pending bit in ACK frame. */
-    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data))
+    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data, p_peer_rec))
     {
         m_ack_data[FRAME_PENDING_OFFSET] = ACK_HEADER_WITH_PENDING;
     }
