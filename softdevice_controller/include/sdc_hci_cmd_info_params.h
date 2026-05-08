@@ -513,6 +513,14 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_connection_rate_request : 1;
     uint8_t hci_le_set_default_rate_parameters : 1;
     uint8_t hci_le_read_minimum_supported_connection_interval : 1;
+    uint8_t rfu_49_0 : 1;
+    uint8_t rfu_49_1 : 1;
+    uint8_t hci_le_cs_read_local_supported_capabilities_v2 : 1;
+    uint8_t hci_le_cs_write_cached_remote_supported_capabilities_v2 : 1;
+    uint8_t rfu_49_4 : 1;
+    uint8_t rfu_49_5 : 1;
+    uint8_t rfu_49_6 : 1;
+    uint8_t rfu_49_7 : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
