@@ -9,6 +9,19 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.3.1
+**********************
+
+Added
+=====
+
+* Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
+
 nRF Connect SDK v3.3.0
 **********************
 
