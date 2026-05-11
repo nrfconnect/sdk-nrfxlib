@@ -38,6 +38,11 @@ Other changes
 
 * Deprecated the :c:func:`nrf_802154_deinit` function. (KRKNWK-21759)
 
+Bug fixes
+=========
+
+* Fixed a bug on nRF53 Series SoCs where, after transmitting a frame at transmit power above 0 dBm, the radio high voltage could remain enabled during subsequent non-TX phases. (KRKNWK-21329)
+
 nRF Connect SDK v3.3.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

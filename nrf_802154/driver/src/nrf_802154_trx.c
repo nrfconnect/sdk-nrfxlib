@@ -54,9 +54,9 @@
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"
-#if defined(NRF53_SERIES)
+#ifdef NRF53_SERIES
 #include "hal/nrf_vreqctrl.h"
-#endif
+#endif /* NRF53_SERIES */
 
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_critical_section.h"
@@ -147,6 +147,25 @@
 #else
 #define MAX_RAMPDOWN_CYCLES 10
 #endif
+
+/* Macro to turn off radio high voltage.
+ * High voltage may be enabled for TX power above 0 dBm, with it left on, RX draws more current.
+ * Disabling it here avoids that extra RX power consumption.
+ */
+#ifdef NRF53_SERIES
+#define RADIO_HIGH_VOLTAGE_DISABLE()                              \
+    do                                                            \
+    {                                                             \
+        nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL, false); \
+    }                                                             \
+    while (0)
+#else /* NRF53_SERIES */
+#define RADIO_HIGH_VOLTAGE_DISABLE()\
+    do                              \
+    {                               \
+    }                               \
+    while (0)
+#endif /* NRF53_SERIES */
 
 #if NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
 void nrf_802154_radio_irq_handler(void); ///< Prototype required by internal RADIO IRQ handler
@@ -300,8 +319,9 @@ static void txpower_set(int8_t txpower)
         /* To get higher than 0dBm raise operating voltage of the radio, giving 3dBm power boost */
         radio_high_voltage_enable = true;
     }
-    nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL_NS, radio_high_voltage_enable);
-#endif
+    nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL, radio_high_voltage_enable);
+#endif /* NRF53_SERIES */
+
     uint32_t reg = mpsl_tx_power_dbm_to_radio_register_convert(txpower);
 
     nrf_radio_txpower_set(NRF_RADIO, reg);
@@ -378,6 +398,8 @@ static inline void radio_reset_without_power_reg(void)
 static void nrf_radio_reset(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
 #if defined(RADIO_POWER_POWER_Msk)
     nrf_radio_power_set(NRF_RADIO, false);
@@ -842,7 +864,6 @@ void nrf_802154_trx_disable(void)
          * Disabling the radio may take some time.
          * In the meantime perform other clean-up actions.
          */
-
 #if defined(RADIO_INTENSET_SYNC_Msk)
         nrf_egu_int_disable(NRF_802154_EGU_INSTANCE, EGU_SYNC_INTMASK);
         nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_SYNC_EVENT);
@@ -1112,15 +1133,16 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
     return result;
 }
 
-void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
-                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power)
+void nrf_802154_trx_receive_frame(uint8_t                                bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t  rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t notifications_mask)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     uint32_t ints_to_enable = 0U;
     uint32_t shorts         = SHORTS_RX;
+
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
     timer_stop_and_clear();
 
@@ -1135,8 +1157,6 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     m_flags.rssi_started = false;
 
     m_flags.rssi_settled = false;
-
-    txpower_set(p_ack_tx_power->radio_tx_power);
 
     uint8_t * p_receive_buffer = mp_receive_buffer;
 
@@ -1227,9 +1247,6 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
         nrf_timer_cc_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_CC_CHANNEL0, delta_time);
     }
 
-    // Set FEM PA gain for ACK transmission
-    mpsl_fem_pa_power_control_set(p_ack_tx_power->fem_pa_power_control);
-
     m_timer_value_on_radio_end_event = delta_time;
 
     // Select antenna
@@ -1254,12 +1271,13 @@ void nrf_802154_trx_receive_ack(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    uint32_t shorts         = SHORTS_RX_ACK;
-    uint32_t ints_to_enable = 0U;
+    uint32_t  shorts           = SHORTS_RX_ACK;
+    uint32_t  ints_to_enable   = 0U;
+    uint8_t * p_receive_buffer = mp_receive_buffer;
 
     m_trx_state = TRX_STATE_RXACK;
 
-    uint8_t * p_receive_buffer = mp_receive_buffer;
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
     if (p_receive_buffer != NULL)
     {
@@ -1458,7 +1476,9 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_us)
+bool nrf_802154_trx_transmit_ack(const void                            * p_transmit_buffer,
+                                 uint32_t                                delay_us,
+                                 const nrf_802154_fal_tx_power_split_t * p_tx_power_split)
 {
     /* Assumptions on peripherals
      * TIMER is running, is counting from value saved in m_timer_value_on_radio_end_event,
@@ -1467,7 +1487,6 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
      * RADIO is DISABLED
      * PPIs are DISABLED
      */
-
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     bool result = false;
@@ -1484,6 +1503,8 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
         nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
         return result;
     }
+
+    txpower_set(p_tx_power_split->radio_tx_power);
 
     uint32_t timer_cc_ramp_up_start = m_timer_value_on_radio_end_event + delay_us -
                                       TX_RAMP_UP_TIME -
@@ -1509,6 +1530,9 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
     // Set the moment for FEM at which real transmission starts.
     m_activate_tx_cc0_timeshifted.event.timer.counter_period.end = timer_cc_ramp_up_start +
                                                                    TX_RAMP_UP_TIME;
+
+    // Set FEM PA gain for ACK transmission
+    mpsl_fem_pa_power_control_set(p_tx_power_split->fem_pa_power_control);
 
     if (mpsl_fem_pa_configuration_set(&m_activate_tx_cc0_timeshifted, NULL) == 0)
     {
@@ -1599,6 +1623,8 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
         mpsl_fem_deactivate_now(MPSL_FEM_PA);
 
         timer_stop_and_clear();
+
+        RADIO_HIGH_VOLTAGE_DISABLE();
 
         /* No callbacks will be called */
 #else // !NRF_802154_TRX_TEST_MODE_ALLOW_LATE_TX_ACK
@@ -1952,6 +1978,8 @@ void nrf_802154_trx_standalone_cca(void)
 
     m_trx_state = TRX_STATE_STANDALONE_CCA;
 
+    RADIO_HIGH_VOLTAGE_DISABLE();
+
     // Set shorts
     nrf_radio_shorts_set(NRF_RADIO, SHORTS_CCA);
 
@@ -2056,6 +2084,8 @@ static void continuous_carrier_abort(void)
 
     radio_robust_disable();
 
+    RADIO_HIGH_VOLTAGE_DISABLE();
+
     m_trx_state = TRX_STATE_FINISHED;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -2120,6 +2150,8 @@ static void modulated_carrier_abort()
 
     radio_robust_disable();
 
+    RADIO_HIGH_VOLTAGE_DISABLE();
+
     m_trx_state = TRX_STATE_FINISHED;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -2140,6 +2172,8 @@ void nrf_802154_trx_energy_detection(uint32_t ed_count)
 #if defined(RADIO_EDCNT_EDCNT_Msk)
     NRF_802154_ASSERT( (ed_count & (~RADIO_EDCNT_EDCNT_Msk)) == 0U);
 #endif
+
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
     nrf_radio_ed_loop_count_set(NRF_RADIO, ed_count);
 
@@ -2418,6 +2452,8 @@ static void txframe_finish(void)
     m_flags.tx_started             = false;
     m_flags.missing_receive_buffer = false;
 
+    RADIO_HIGH_VOLTAGE_DISABLE();
+
     /* Current state of peripherals
      * RADIO is either in TXDISABLE or DISABLED
      * FEM is powered but PA mode will be turned off on entry into DISABLED state or is already turned off
@@ -2445,6 +2481,8 @@ static void transmit_frame_abort(void)
 
     nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_CCASTOP);
     radio_robust_disable();
+
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
     m_trx_state = TRX_STATE_FINISHED;
 
@@ -2481,6 +2519,8 @@ static void txack_finish(void)
 
     timer_stop_and_clear();
 
+    RADIO_HIGH_VOLTAGE_DISABLE();
+
     nrf_radio_int_disable(NRF_RADIO,
                           NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK |
                           NRF_RADIO_INT_DISABLED_MASK);
@@ -2515,6 +2555,8 @@ static void transmit_ack_abort(void)
     nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK);
 
     radio_robust_disable();
+
+    RADIO_HIGH_VOLTAGE_DISABLE();
 
     m_trx_state = TRX_STATE_FINISHED;
 

@@ -1150,16 +1150,11 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 
     nrf_802154_trx_receive_buffer_set(rx_buffer_get());
 
-    nrf_802154_fal_tx_power_split_t split_power = {0};
-
-    (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
-
     nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());
 
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
                                  ru_tr_mode,
-                                 m_trx_receive_frame_notifications_mask,
-                                 &split_power);
+                                 m_trx_receive_frame_notifications_mask);
 
     if (ru_tr_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
@@ -2195,14 +2190,9 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     /* We don't change receive buffer, receive will go to the same that was already used */
     request_preconditions_for_state(m_state);
 
-    nrf_802154_fal_tx_power_split_t split_power = {0};
-
-    (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
-
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
                                  TRX_RAMP_UP_SW_TRIGGER,
-                                 m_trx_receive_frame_notifications_mask,
-                                 &split_power);
+                                 m_trx_receive_frame_notifications_mask);
 
 #if NRF_802154_NOTIFY_CRCERROR
 
@@ -2300,7 +2290,13 @@ void nrf_802154_trx_receive_frame_received(void)
 
             if (is_state_allowed_for_prio(m_rsch_priority, RADIO_STATE_TX_ACK))
             {
-                if (nrf_802154_trx_transmit_ack(nrf_802154_tx_work_buffer_get(mp_ack), ACK_IFS))
+                nrf_802154_fal_tx_power_split_t split_power = {0};
+
+                (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
+
+                if (nrf_802154_trx_transmit_ack(nrf_802154_tx_work_buffer_get(mp_ack),
+                                                ACK_IFS,
+                                                &split_power))
                 {
                     /* Intentionally empty: transmitting ack, because we can. */
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
