@@ -87,8 +87,8 @@ typedef void (* nrf_scan_event_handler_t)(nrf_scan_event_type_t const * p_event,
                                           void *                        p_context);
 
 /**
- * ,* @brief sCAN context structure.
- * ,*/
+ * @brief sCAN context structure.
+ */
 typedef struct
 {
     uint16_t sp_identifier;        ///< Soft peripheral identifier
@@ -97,8 +97,8 @@ typedef struct
 } nrf_scan_context_t;
 
 /**
- * ,* @brief sCAN timing configuration structure.
- * ,*/
+ * @brief sCAN timing configuration structure.
+ */
 typedef struct
 {
     uint16_t sjw;        ///< (Re)synchronization jump width in quanta units
@@ -109,8 +109,8 @@ typedef struct
 } nrf_scan_timing_t;
 
 /**
- * ,* @brief sCAN TX/RX frame structure.
- * ,*/
+ * @brief sCAN TX/RX frame structure.
+ */
 typedef struct
 {
     uint32_t identifier;  ///< ID, 11 or 29 bits depending on ide
@@ -121,8 +121,8 @@ typedef struct
 } nrf_scan_frame_t;
 
 /**
- * ,* @brief sCAN RX filter structure.
- * ,*/
+ * @brief sCAN RX filter structure.
+ */
 typedef struct
 {
     uint32_t id;   ///< ID, can be standard or extended
@@ -130,8 +130,8 @@ typedef struct
 } nrf_scan_rx_filter_t;
 
 /**
- * ,* @brief sCAN RX mailbox structure.
- * ,*/
+ * @brief sCAN RX mailbox structure.
+ */
 typedef struct
 {
     nrf_scan_frame_t     rx_frame;  ///< Received frame
@@ -140,16 +140,14 @@ typedef struct
 } nrf_scan_rx_mailbox_t;
 
 /**
- * ,* @brief sCAN RX mailbox.
- *
+ * @brief sCAN RX mailbox. 
  * @note This is populated by the sCAN API, user should only read its data after NRF_SCAN_EVT_RX_COMPLETE.
- *
- * ,*/
+ */
 extern nrf_scan_rx_mailbox_t m_scan_rx_mailbox[];
 
 /**
- * ,* @brief sCAN driver instance structure.
- * ,*/
+ * @brief sCAN driver instance structure.
+ */
 typedef struct
 {
     void * p_reg;        ///< Pointer to a structure with sCAN virtual register interface.
@@ -158,8 +156,8 @@ typedef struct
 } nrf_scan_t;
 
 /**
- * ,* @brief sCAN status structure.
- * ,*/
+ * @brief sCAN status structure.
+ */
 typedef struct
 {
     nrf_scan_error_t error; ///< CAN errors.
