@@ -15,12 +15,14 @@ nRF Connect SDK v3.3.1
 Added
 =====
 
+* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x11`` to indicate compatibility with Bluetooth Core Specification v6.3 (DRGN-28241).
 * Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
 
 Bug fixes
 =========
 
 * Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
+* Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
 
 nRF Connect SDK v3.3.0
 **********************

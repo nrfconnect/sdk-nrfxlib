@@ -47,6 +47,8 @@ enum sdc_hci_event
     SDC_HCI_EVENT_DATA_BUFFER_OVERFLOW = 0x1a,
     /** @brief Encryption Key Refresh Complete. */
     SDC_HCI_EVENT_ENCRYPTION_KEY_REFRESH_COMPLETE = 0x30,
+    /** @brief LE Meta. */
+    SDC_HCI_EVENT_LE_META = 0x3e,
     /** @brief Authenticated Payload Timeout Expired. */
     SDC_HCI_EVENT_AUTHENTICATED_PAYLOAD_TIMEOUT_EXPIRED = 0x57,
 };
@@ -67,7 +69,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Disconnection Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.5
  *
  * This event occurs when a connection is terminated. The status parameter indicates if
@@ -100,7 +102,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Encryption Change [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.8
  *
  * This event is used to indicate that the change of the encryption mode has been
@@ -122,7 +124,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Read Remote Version Information Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.12
  *
  * This event is used to indicate the completion of the process obtaining the version
@@ -146,7 +148,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Command Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.14
  *
  * This event is used by the Controller for most commands to transmit return status of
@@ -174,7 +176,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Command Status.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.15
  *
  * This event is used to indicate that the command described by the Command_Opcode
@@ -204,7 +206,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Number Of Completed Packets.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.19
  *
  * This event is used by the Controller to indicate to the Host how many HCI Data
@@ -235,7 +237,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Data Buffer Overflow.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.26
  *
  * This event is used to indicate that the Controller’s data buffers have been overflowed.
@@ -249,7 +251,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief Encryption Key Refresh Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.39
  *
  * This event is used to indicate to the Host that the encryption key was refreshed on
@@ -273,17 +275,32 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t conn_handle;
 } sdc_hci_event_encryption_key_refresh_complete_t;
 
+/** @brief LE Meta.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.7.65
+ *
+ * The LE Meta event is used to encapsulate all LE Controller specific events. The Event
+ * Code of all LE Meta events shall be 0x3E. The Subevent_Code is the first octet of the
+ * event parameters. The Subevent_Code shall be set to one of the valid Subevent_Codes
+ * from an LE specific event. All other parameters are defined in the LE Controller specific
+ * events.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t subevent_code;
+    uint8_t params[];
+} sdc_hci_event_le_meta_t;
+
 /** @brief Authenticated Payload Timeout Expired.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.75
  *
  * This event is used to indicate that a packet containing a valid MIC on the
  * Connection_Handle was not received within the authenticatedPayloadTO (see [Vol
  * 2] Part B, Appendix B for the BR/EDR and [Vol 6] Part B, Section 5.4 for the LE
- * connection).
- *
- * Note: A Host may choose to disconnect the link when this occurs.
+ * connection). The Host may disconnect the link when this occurs.
  */
 typedef struct __PACKED __ALIGN(1)
 {
