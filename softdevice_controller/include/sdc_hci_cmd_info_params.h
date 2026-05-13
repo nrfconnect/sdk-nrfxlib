@@ -540,7 +540,7 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t lmp_subversion;
 } sdc_hci_cmd_ip_read_local_version_information_return_t;
 
-/** @brief Read Local Supported Commands return parameter(s). */
+/** @brief Read Local Supported Commands [v1] return parameter(s). */
 typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_ip_supported_commands_t params;
@@ -568,7 +568,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.4.1
  *
  * This command reads the values for the version information for the local Controller.
@@ -592,9 +592,9 @@ typedef struct __PACKED __ALIGN(1)
  */
 uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_version_information_return_t * p_return);
 
-/** @brief Read Local Supported Commands.
+/** @brief Read Local Supported Commands [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.4.2
  *
  * This command reads the list of HCI commands supported for the local Controller.
@@ -618,7 +618,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.4.3
  *
  * This command requests a list of the supported features for the local BR/EDR Controller.
@@ -640,7 +640,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address

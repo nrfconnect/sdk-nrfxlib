@@ -1440,11 +1440,14 @@ void sdc_support_connection_subrating_peripheral(void);
  * After this API is called, the controller will support the HCI commands
  * related to Extended Feature Set for the central and peripheral link roles.
  *
+ * @deprecated Use @ref sdc_support_extended_feature_set_central() and/or
+ *             @ref sdc_support_extended_feature_set_peripheral() instead.
+ *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-void sdc_support_extended_feature_set(void);
+__attribute__((deprecated)) void sdc_support_extended_feature_set(void);
 
 /** @brief Support Extended Feature Set as Central
  *

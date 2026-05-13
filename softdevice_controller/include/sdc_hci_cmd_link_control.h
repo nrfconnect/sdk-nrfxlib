@@ -69,7 +69,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Disconnect.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.1.6
  *
  * This command is used to terminate an existing connection. The Connection_Handle
@@ -139,7 +139,7 @@ uint8_t sdc_hci_cmd_lc_disconnect(const sdc_hci_cmd_lc_disconnect_t * p_params);
 
 /** @brief Read Remote Version Information.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.1.23
  *
  * This command will obtain the values for the version information for the remote device

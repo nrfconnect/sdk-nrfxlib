@@ -16,10 +16,12 @@ Added
 =====
 
 * Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
+* The vendor-specific HCI command: Transmitter carrier frequency test. (DRGN-28500)
 
 Changes
 =======
 
+* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x11`` to indicate compatibility with Bluetooth Core Specification v6.3 (DRGN-28241).
 * The functions :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` have been deprecated.
 
   Applications can now reduce the NVM usage of Channel Sounding by enabling support only for the required roles using the following functions:
@@ -31,10 +33,20 @@ Changes
 
   This change does not affect applications developed in the |NCS| context. (DRGN-28206)
 
+* The function :c:func:`sdc_support_extended_feature_set` has been deprecated.
+
+  Applications can now reduce the NVM usage of Extended Feature Set by enabling support only for the required roles using the following functions:
+
+    * :c:func:`sdc_support_extended_feature_set_central`
+    * :c:func:`sdc_support_extended_feature_set_peripheral`
+
+  This change does not affect applications developed in the |NCS| context. (DRGN-28206)
+
 Bug fixes
 =========
 
 * Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
+* Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
 
 nRF Connect SDK v3.3.0
 **********************
