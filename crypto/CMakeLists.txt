@@ -204,7 +204,6 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   target_link_libraries(nrf_cc3xx_legacy_crypto_imported
     INTERFACE
       nrf_cc3xx_core_imported
-      mbedcrypto_base
     )
 
   set(NRF_CC3XX_MBEDTLS_LEGACY_LIB
