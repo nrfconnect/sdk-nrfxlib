@@ -109,6 +109,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
     /** @brief See @ref sdc_hci_cmd_vs_cs_params_set(). */
     SDC_HCI_OPCODE_CMD_VS_CS_PARAMS_SET = 0xfd22,
+    /** @brief See @ref sdc_hci_cmd_vs_transmitter_carrier_test(). */
+    SDC_HCI_OPCODE_CMD_VS_TRANSMITTER_CARRIER_TEST = 0xfd23,
 };
 
 /** @brief VS subevent Code values. */
@@ -768,6 +770,13 @@ typedef struct __PACKED __ALIGN(1)
         sdc_hci_vs_cs_board_distance_offset_params_t cs_board_distance_offset_params;
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
+
+/** @brief Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_transmitter_carrier_test_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1819,6 +1828,37 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_params);
+
+/** @brief Transmitter carrier frequency test.
+ *
+ * This command extends Bluetooth DTM commands.
+ * This command is used to start a test where the IUT generates an unmodulated constant carrier
+ * wave.
+ * The Controller shall transmit at the power level indicated by the TX_Power_Level parameter.
+ *
+ * The TX_Channel specifies the RF channel to be used by the transmitter.
+ *
+ * The TX_Power_Level parameter specifies the transmit power level to be used by
+ * the transmitter. If the parameter is set to a value other than 0x7E or 0x7F, then the
+ * Controller shall make the requested change or shall make the nearest change that it is
+ * capable of doing.
+ * TX_Power_Level is a signed integer value in dBm.
+ * 0x7E sets transmitter to minimum transmit power level.
+ * 0x7F sets transmitter to maximum transmit power level.
+ *
+ * HCI LE Test End command should be used to stop the transmitter carrier frequency test.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Transmitter_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_vs_transmitter_carrier_test_t * p_params);
 
 /** @} end of HCI_VS_API */
 
