@@ -17,15 +17,15 @@ participant "Hardware" as HW
 
 App -> FEM : mpsl_fem_enable()
 FEM -> HW  : activate PDN pin
-App -> FEM : mpsl_fem_lna_configuration_set()\nconfigure LNA\ntime = 40us\ntimer=TIMER0\nevent=rx_end
+App -> FEM : mpsl_fem_lna_configuration_set()\nconfigure LNA\ntime = 40us\ntimer=MPSL_TIMER0\nevent=rx_end
 FEM -> FEM : calculate timings
-FEM -> HW  : configure TIMER0 to 27us
+FEM -> HW  : configure MPSL_TIMER0 to 27us
 
-App -> HW : start Rx\nstart TIMER0
+App -> HW : start Rx\nstart MPSL_TIMER0
 
-...Waiting for TIMER0 event...
+...Waiting for MPSL_TIMER0 event...
 
-HW -> HW : TIMER0 event\nactivate RX_EN pin
+HW -> HW : MPSL_TIMER0 event\nactivate RX_EN pin
 HW -> HW : RADIO READY event
 
 
@@ -36,7 +36,7 @@ HW -> HW : rx_end event\ndeactivate RX_EN pin
 
 
 App -> FEM : mpsl_fem_lna_configuartion_clear()
-FEM -> HW : deconfigure TIMER0
+FEM -> HW : deconfigure MPSL_TIMER0
 App -> FEM : mpsl_fem_disable()
 FEM -> HW : deactivate PDN pin
 

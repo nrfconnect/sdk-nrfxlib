@@ -101,7 +101,7 @@ The following example activates the LNA for an RX operation, using the following
 * RX ramp-up time - 40 us
 * LNA settle time - 13 us
 * LNA deactivation event - ``rx_end``
-* LNA activation timer - ``TIMER0``
+* LNA activation timer - ``MPSL_TIMER0``
 
 The *RX ramp-up time* is the total time scheduled by the application.
 
@@ -109,9 +109,9 @@ The steps needed to properly configure LNA in this example are the following:
 
 1. The application configures the LNA to be activated by the timer event, with the start time set to 0 us and the end time set to 40 us.
 #. The application provides the ``rx_end`` event as the LNA deactivation event.
-#. The FEM module reads the scheduled time and sets the ``TIMER0`` compare channel to 27 us, as a result of the RX ramp-up time (40 us) minus the LNA settle time (13 us).
+#. The FEM module reads the scheduled time and sets the ``MPSL_TIMER0`` compare channel to 27 us, as a result of the RX ramp-up time (40 us) minus the LNA settle time (13 us).
 #. The application starts the RX operation.
-#. The application starts ``TIMER0``.
+#. The application starts ``MPSL_TIMER0``.
 
 The following picture illustrates the timings in this scenario:
 
@@ -140,7 +140,7 @@ The following example controls LNA and PDN during an RX operation, using the fol
 * PDN settle time - 18 us
 * LNA deactivation event - ``rx_end``
 * PDN deactivation event - ``software``
-* LNA activation timer - ``TIMER0``
+* LNA activation timer - ``MPSL_TIMER0``
 
 The *RX ramp-up time* is the total time scheduled by the application.
 
@@ -149,9 +149,9 @@ The steps needed to properly configure LNA and PDN in this example are the follo
 1. The application calls the :c:func:`mpsl_fem_enable` function to power up the FEM.
 #. The application calls the :c:func:`mpsl_fem_lna_configuration_set` function, that configures the LNA (RX_EN pin) to be activated by the timer event, with the start time set to 0 µs and the end time set to 40 µs.
 #. The application provides the ``rx_end`` event as the LNA (RX_EN pin) deactivation event.
-#. The FEM module reads the scheduled time and sets ``TIMER0`` compare channel to 27 µs (40-13).
+#. The FEM module reads the scheduled time and sets ``MPSL_TIMER0`` compare channel to 27 µs (40-13).
 #. The application starts the RX operation.
-#. The application starts ``TIMER0``.
+#. The application starts ``MPSL_TIMER0``.
 
 The steps needed to properly deconfigure the LNA (RX_EN pin) and PDN in this example are the following:
 

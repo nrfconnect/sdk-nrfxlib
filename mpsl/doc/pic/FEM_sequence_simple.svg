@@ -124,9 +124,9 @@
 			<text x="0" y="361.97" class="st8">time = 40 us</text>		</g>
 		<g id="shape1533-67" transform="translate(42.5113,-295.999)">
 			<title>Sheet.1533</title>
-			<desc>timer=TIMER0</desc>
+			<desc>timer=MPSL_TIMER0</desc>
 			<rect x="0" y="353.119" width="117" height="11.7" class="st7"/>
-			<text x="0" y="361.97" class="st8">timer=TIMER0</text>		</g>
+			<text x="0" y="361.97" class="st8">timer=MPSL_TIMER0</text>		</g>
 		<g id="shape1534-70" transform="translate(42.5113,-284.649)">
 			<title>Sheet.1534</title>
 			<desc>event=rx_end</desc>
@@ -143,9 +143,9 @@
 		</g>
 		<g id="shape1543-81" transform="translate(132.136,-219.85)">
 			<title>Sheet.1543</title>
-			<desc>set TIMER0</desc>
+			<desc>set MPSL_TIMER0</desc>
 			<rect x="0" y="353.119" width="107.625" height="11.7" class="st7"/>
-			<text x="0" y="361.97" class="st8">set TIMER0</text>		</g>
+			<text x="0" y="361.97" class="st8">set MPSL_TIMER0</text>		</g>
 		<g id="shape1544-84" transform="translate(132.136,-208.501)">
 			<title>Sheet.1544</title>
 			<desc>compare channel to 27us</desc>
@@ -157,9 +157,9 @@
 		</g>
 		<g id="shape1547-92" transform="translate(42.5113,-186.651)">
 			<title>Sheet.1547</title>
-			<desc>start TIMER0</desc>
+			<desc>start MPSL_TIMER0</desc>
 			<rect x="0" y="353.119" width="117" height="11.7" class="st7"/>
-			<text x="0" y="361.97" class="st8">start TIMER0</text>		</g>
+			<text x="0" y="361.97" class="st8">start MPSL_TIMER0</text>		</g>
 		<g id="shape1548-95" transform="translate(88.6363,-159.144)">
 			<title>Sheet.1548</title>
 			<desc>Waiting for timer event</desc>
@@ -171,9 +171,9 @@
 		</g>
 		<g id="shape1551-104" transform="translate(132.136,-134.198)">
 			<title>Sheet.1551</title>
-			<desc>TIMER0 event</desc>
+			<desc>MPSL_TIMER0 event</desc>
 			<rect x="0" y="353.119" width="71.25" height="11.7" class="st7"/>
-			<text x="0" y="361.97" class="st8">TIMER0 event</text>		</g>
+			<text x="0" y="361.97" class="st8">MPSL_TIMER0 event</text>		</g>
 		<g id="shape1553-107" transform="translate(123.511,-111.474)">
 			<title>Sheet.1553</title>
 			<path d="M0 364.82 L108.82 364.82" class="st5"/>
