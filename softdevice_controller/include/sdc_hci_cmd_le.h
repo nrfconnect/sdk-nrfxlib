@@ -378,8 +378,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_PATH_LOSS_THRESHOLD = 0x20,
     /** @brief See @ref sdc_hci_subevent_le_transmit_power_reporting_t. */
     SDC_HCI_SUBEVENT_LE_TRANSMIT_POWER_REPORTING = 0x21,
-    /** @brief See @ref sdc_hci_subevent_le_big_info_adv_report_t. */
-    SDC_HCI_SUBEVENT_LE_BIG_INFO_ADV_REPORT = 0x22,
+    /** @brief See @ref sdc_hci_subevent_le_biginfo_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_BIGINFO_ADV_REPORT = 0x22,
     /** @brief See @ref sdc_hci_subevent_le_subrate_change_t. */
     SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
     /** @brief See @ref sdc_hci_subevent_le_periodic_adv_sync_established_v2_t. */
@@ -824,7 +824,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Connection Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.1
  *
  * This event indicates to both of the Hosts forming the connection that a new connection
@@ -858,7 +858,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.2
  *
  * This event indicates that one or more Bluetooth devices have responded to an active
@@ -880,7 +880,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Connection Update Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.3
  *
  * This event is used to indicate that the Connection Update procedure has completed.
@@ -899,7 +899,7 @@ typedef struct __PACKED __ALIGN(1)
  * change the connection interval based on the range of allowable connection intervals for
  * that connection.
  *
- * Note: The parameter values returned in this event may be different from the parameter
+ * Note: The parameter values returned in this event can be different from the parameter
  * values provided by the Host through the HCI_LE_Connection_Update command
  * (Section 7.8.18) or the HCI_LE_Remote_Connection_Parameter_Request_Reply
  * command (Section 7.8.31).
@@ -915,7 +915,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Read Remote Features Page 0 Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.4
  *
  * This event is used to indicate the completion of the process of the Controller obtaining
@@ -935,7 +935,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Long Term Key Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.5
  *
  * This event indicates that the peer device, in the Central role, is attempting to encrypt or
@@ -953,7 +953,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Data Length Change.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.7
  *
  * This event notifies the Host of a change to either the maximum LL Data PDU Payload
@@ -974,7 +974,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Enhanced Connection Complete [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.10
  *
  * This event indicates to both of the Hosts forming the connection that a new connection
@@ -1022,7 +1022,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Directed Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.11
  *
  * This event indicates that directed advertisements have been received where the
@@ -1046,7 +1046,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE PHY Update Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.12
  *
  * This event is used to indicate that the Controller has changed the transmitter PHY or
@@ -1068,7 +1068,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Extended Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.13
  *
  * This event indicates that one or more Bluetooth devices have responded to an active
@@ -1162,7 +1162,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Sync Established [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.14
  *
  * This event indicates that the Controller has received the first periodic advertising packet
@@ -1204,7 +1204,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Report [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.15
  *
  * This event indicates that the Controller has received a periodic advertisement or has
@@ -1260,7 +1260,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Sync Lost.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.16
  *
  * This event indicates that the Controller has not received a Periodic Advertising packet
@@ -1273,7 +1273,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Advertising Set Terminated.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.18
  *
  * This event indicates that the Controller has terminated advertising in the advertising
@@ -1314,7 +1314,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Scan Request Received.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.19
  *
  * This event indicates that a SCAN_REQ PDU or an AUX_SCAN_REQ PDU has been
@@ -1337,7 +1337,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Channel Selection Algorithm.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.20
  *
  * The HCI_LE_Channel_Selection_Algorithm event indicates which channel selection
@@ -1356,7 +1356,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Sync Transfer Received [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.24
  *
  * This event is used by the Controller to report that it has received periodic advertising
@@ -1398,9 +1398,9 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t adv_clock_accuracy;
 } sdc_hci_subevent_le_periodic_adv_sync_transfer_received_t;
 
-/** @brief LE CIS Established.
+/** @brief LE CIS Established [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.25
  *
  * This event indicates that a CIS has been established, was considered lost before being
@@ -1453,7 +1453,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CIS Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.26
  *
  * This event indicates that a Controller has received a request to establish a CIS. If the
@@ -1487,7 +1487,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Create BIG Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.27
  *
  * This event indicates that the HCI_LE_Create_BIG or HCI_LE_Create_BIG_Test
@@ -1533,7 +1533,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Terminate BIG Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.28
  *
  * This event indicates that the transmission of all the BISes in the BIG are terminated.
@@ -1542,7 +1542,7 @@ typedef struct __PACKED __ALIGN(1)
  * parameter is provided by the Host in the HCI_LE_Terminate_BIG command.
  *
  * If the BIG is terminated by the local Host, the Reason parameter shall be set to the error
- * code Connection Terminated By Local Host (0x16).
+ * code Connection Terminated by Local Host (0x16).
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1552,7 +1552,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE BIG Sync Established.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.29
  *
  * This event indicates that the HCI_LE_BIG_Create_Sync command has completed.
@@ -1593,7 +1593,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE BIG Sync Lost.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.30
  *
  * This event indicates that the Controller has not received any PDUs on a BIG within
@@ -1623,7 +1623,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Request Peer SCA Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.31
  *
  * This event indicates that the HCI_LE_Request_Peer_SCA command has been
@@ -1643,7 +1643,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Path Loss Threshold.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.32
  *
  * This event is used to report a path loss threshold crossing (see [Vol 6] Part B,
@@ -1664,7 +1664,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Transmit Power Reporting.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.33
  *
  * This event is used to report the transmit power level on the ACL connection identified by
@@ -1719,7 +1719,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE BIGInfo Advertising Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.34
  *
  * This event indicates that the Controller has received an Advertising PDU that contained
@@ -1758,11 +1758,11 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t phy;
     uint8_t framing;
     uint8_t encryption;
-} sdc_hci_subevent_le_big_info_adv_report_t;
+} sdc_hci_subevent_le_biginfo_adv_report_t;
 
 /** @brief LE Subrate Change.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.35
  *
  * This event is used to indicate that a Connection Subrate Update procedure has
@@ -1786,7 +1786,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Sync Established [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.14
  *
  * This event indicates that the Controller has received the first periodic advertising packet
@@ -1832,7 +1832,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Report [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.15
  *
  * This event indicates that the Controller has received a periodic advertisement or has
@@ -1890,7 +1890,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Sync Transfer Received [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.24
  *
  * This event is used by the Controller to report that it has received periodic advertising
@@ -1938,7 +1938,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Subevent Data Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.36
  *
  * This event is used to allow the Controller to indicate that it is ready to transmit
@@ -1955,6 +1955,9 @@ typedef struct __PACKED __ALIGN(1)
  *
  * The Controller shall not send this event more than once for the same subevent of the
  * same periodic advertising event.
+ *
+ * This event shall override any outstanding request for subevent data that the Controller
+ * sent in the past for this Advertising_Handle.
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -1965,7 +1968,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Periodic Advertising Response Report.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.37
  *
  * This event indicates that one or more Bluetooth devices have responded to a
@@ -1997,7 +2000,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Enhanced Connection Complete [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.10
  *
  * This event indicates to both of the Hosts forming the connection that a new connection
@@ -2047,7 +2050,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CIS Established [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.25
  *
  * This event indicates that a CIS has been established, was considered lost before being
@@ -2106,7 +2109,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Read All Remote Features Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.38
  *
  * This event is used to indicate the completion of the process of the Controller
@@ -2142,7 +2145,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Read Remote Supported Capabilities Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.39
  *
  * This event shall be generated when a locally initiated CS Capabilities Exchange
@@ -2209,7 +2212,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -2224,7 +2227,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Read Remote FAE Table Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.40
  *
  * This event shall be generated when a locally initiated CS Mode-0 Frequency Actuation
@@ -2239,7 +2242,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Security Enable Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.41
  *
  * This event shall be generated when a locally initiated CS Security Start procedure has
@@ -2254,7 +2257,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Config Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.42
  *
  * This event shall be generated when a locally initiated Channel Sounding Configuration
@@ -2292,6 +2295,9 @@ typedef struct __PACKED __ALIGN(1)
  * Ch3c_Jump parameters indicate the selected shape and channels to be skipped as
  * described in [Vol 6] Part H, Section 4.1.4.2.
  *
+ * The CS_Enhancements parameter indicates which CS enhancements are enabled. For
+ * each enhancement that is not enabled, the corresponding bit shall be set to 0.
+ *
  * The T_IP1_Time, T_IP2_Time, T_FCS_Time, T_PM_Time, and T_SW_Time
  * parameters indicate the time durations used in CS steps as described in [Vol 6] Part
  * H, Section 4.3.
@@ -2325,7 +2331,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Procedure Enable Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.43
  *
  * This event shall be generated when the local or remote Controller has scheduled a
@@ -2380,7 +2386,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Subevent Result.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.44
  *
  * This event shall be generated when the local Controller has results to report for a CS
@@ -2400,10 +2406,10 @@ typedef struct __PACKED __ALIGN(1)
  * parameter in the HCI_LE_CS_Procedure_Enable_Complete event.
  *
  * The Procedure_Counter parameter indicates the associated CS procedure count for the
- * results reported in this HCI event (see [Vol 6] Part B, Section 5.1.24).
+ * results reported in this HCI event (see [Vol 6] Part B, Section 5.1.26).
  * The Frequency_Compensation parameter indicates the value of the fractional frequency
  * offset (FFO) used by the initiator device to align the timing of CS steps and transmit
- * frequencies during non-mode-0 CS steps (see [Vol 6] Part A, Section 3.5.1).
+ * frequencies during non-mode-0 CS steps (see FFORX* in [Vol 6] Part A, Section 3.5.1).
  *
  * The Reference_Power_Level parameter is expressed in dBm and is described in [Vol 6]
  * Part H, Section 4.6 and [Vol 6] Part H, Section 3.3.1. If the reference power level value
@@ -2476,7 +2482,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Subevent Result Continue.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.45
  *
  * This event shall be generated after the local Controller has completed a new CS
@@ -2501,7 +2507,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Test End Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.46
  *
  * This event shall be generated when the local Controller has stopped an ongoing CS test
@@ -2516,7 +2522,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Frame Space Update Complete.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.48
  *
  * This event is used to indicate that the Frame Space Update procedure has completed
@@ -2543,7 +2549,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE Connection Rate Change.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.50
  *
  * The HCI_LE_Connection_Rate_Change event is used to indicate that the Connection
@@ -2572,7 +2578,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE CS Read Remote Supported Capabilities Complete v2.
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.7.65.39
  *
  * The HCI_LE_CS_Read_Remote_Supported_Capabilities_Complete event shall be
@@ -2585,7 +2591,7 @@ typedef struct __PACKED __ALIGN(1)
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the remote Controller.
- * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * The Num_Antennae_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
  *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
@@ -2639,7 +2645,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -2651,7 +2657,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t t_sw_time_supported;
     uint8_t tx_snr_capability;
     uint16_t t_ip2_ipt_times_supported;
-    uint8_t t_sw_ipt_time_supported;
+    uint8_t t_sw_ipt_times_supported;
     uint8_t rtt_2m_aa_only_n;
     uint8_t rtt_2m_sounding_n;
     uint8_t rtt_2m_random_sequence_n;
@@ -2664,7 +2670,7 @@ typedef struct __PACKED __ALIGN(1)
  * @{
  */
 
-/** @brief LE Set Event Mask command parameter(s). */
+/** @brief LE Set Event Mask [v1] command parameter(s). */
 typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_le_le_event_mask_t params;
@@ -3820,7 +3826,7 @@ typedef struct __PACKED __ALIGN(1)
 typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
-    uint8_t num_subevents;
+    uint8_t num_subevents_with_data;
     /** C does not allow array of variable sized arrays, otherwise it should be @ref
     sdc_hci_le_set_periodic_adv_subevent_data_array_params_t array_params[]; */
     uint8_t array_params[];
@@ -3855,7 +3861,7 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
     uint16_t periodic_adv_properties;
-    uint8_t num_subevents;
+    uint8_t num_subevents_to_sync;
     uint8_t subevents[];
 } sdc_hci_cmd_le_set_periodic_sync_subevent_t;
 
@@ -3912,7 +3918,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t pages_requested;
 } sdc_hci_cmd_le_read_all_remote_features_t;
 
-/** @brief LE CS Read Local Supported Capabilities return parameter(s). */
+/** @brief LE CS Read Local Supported Capabilities [v1] return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint8_t num_config_supported;
@@ -3924,7 +3930,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -3943,7 +3949,7 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t conn_handle;
 } sdc_hci_cmd_le_cs_read_remote_supported_capabilities_t;
 
-/** @brief LE CS Write Cached Remote Supported Capabilities command parameter(s). */
+/** @brief LE CS Write Cached Remote Supported Capabilities [v1] command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
@@ -3956,7 +3962,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -3969,7 +3975,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t tx_snr_capability;
 } sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_t;
 
-/** @brief LE CS Write Cached Remote Supported Capabilities return parameter(s). */
+/** @brief LE CS Write Cached Remote Supported Capabilities [v1] return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
@@ -4169,7 +4175,7 @@ typedef struct __PACKED __ALIGN(1)
     sdc_hci_le_read_min_supported_conn_interval_group_t groups[];
 } sdc_hci_cmd_le_read_min_supported_conn_interval_return_t;
 
-/** @brief LE CS Read Local Supported Capabilities v2 return parameter(s). */
+/** @brief LE CS Read Local Supported Capabilities [v2] return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint8_t num_config_supported;
@@ -4181,7 +4187,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -4193,13 +4199,13 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t t_sw_time_supported;
     uint8_t tx_snr_capability;
     uint16_t t_ip2_ipt_times_supported;
-    uint8_t t_sw_ipt_time_supported;
+    uint8_t t_sw_ipt_times_supported;
     uint8_t rtt_2m_aa_only_n;
     uint8_t rtt_2m_sounding_n;
     uint8_t rtt_2m_random_sequence_n;
 } sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2_return_t;
 
-/** @brief LE CS Write Cached Remote Supported Capabilities v2 command parameter(s). */
+/** @brief LE CS Write Cached Remote Supported Capabilities [v2] command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
@@ -4212,7 +4218,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rtt_capability;
     uint8_t rtt_aa_only_n;
     uint8_t rtt_sounding_n;
-    uint8_t rtt_random_payload_n;
+    uint8_t rtt_random_sequence_n;
     uint16_t nadm_sounding_capability;
     uint16_t nadm_random_capability;
     uint8_t cs_sync_phys_supported;
@@ -4224,13 +4230,13 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t t_sw_time_supported;
     uint8_t tx_snr_capability;
     uint16_t t_ip2_ipt_times_supported;
-    uint8_t t_sw_ipt_time_supported;
+    uint8_t t_sw_ipt_times_supported;
     uint8_t rtt_2m_aa_only_n;
     uint8_t rtt_2m_sounding_n;
     uint8_t rtt_2m_random_sequence_n;
 } sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_t;
 
-/** @brief LE CS Write Cached Remote Supported Capabilities v2 return parameter(s). */
+/** @brief LE CS Write Cached Remote Supported Capabilities [v2] return parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
@@ -4242,9 +4248,9 @@ typedef struct __PACKED __ALIGN(1)
  * @defgroup HCI_VS_API API
  * @{
  */
-/** @brief LE Set Event Mask.
+/** @brief LE Set Event Mask [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.1
  *
  * This command is used to control which LE events are generated by the HCI for the
@@ -4275,7 +4281,7 @@ uint8_t sdc_hci_cmd_le_set_event_mask(const sdc_hci_cmd_le_set_event_mask_t * p_
 
 /** @brief LE Read Buffer Size [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.2
  *
  * This command is used to read the maximum size of the data portion of ACL data
@@ -4294,7 +4300,7 @@ uint8_t sdc_hci_cmd_le_set_event_mask(const sdc_hci_cmd_le_set_event_mask_t * p_
  * the HCI_Read_Buffer_Size command to determine the size of the data buffers (shared
  * between BR/EDR and LE transports).
  *
- * Note: Both the HCI_Read_Buffer_Size command and the HCI_LE_Read_Buffer_Size
+ * Both the HCI_Read_Buffer_Size command and the HCI_LE_Read_Buffer_Size
  * command may return buffer length and number of packets parameter values that are
  * nonzero. This allows a Controller to offer different buffers and number of buffers for
  * BR/EDR data packets and LE data packets.
@@ -4331,7 +4337,7 @@ uint8_t sdc_hci_cmd_le_read_buffer_size(sdc_hci_cmd_le_read_buffer_size_return_t
 
 /** @brief LE Read Local Supported Features Page 0.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.3
  *
  * This command requests page 0 of the list of the supported LE features for the
@@ -4354,7 +4360,7 @@ uint8_t sdc_hci_cmd_le_read_local_supported_features(sdc_hci_cmd_le_read_local_s
 
 /** @brief LE Set Random Address.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.4
  *
  * This command is used by the Host to set the LE Random Device Address in the
@@ -4398,7 +4404,7 @@ uint8_t sdc_hci_cmd_le_set_random_address(const sdc_hci_cmd_le_set_random_addres
 
 /** @brief LE Set Advertising Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.5
  *
  * This command is used by the Host to set the advertising parameters.
@@ -4469,7 +4475,7 @@ uint8_t sdc_hci_cmd_le_set_adv_params(const sdc_hci_cmd_le_set_adv_params_t * p_
 
 /** @brief LE Read Advertising Physical Channel Tx Power.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.6
  *
  * This command is used by the Host to read the transmit power level used for LE
@@ -4490,7 +4496,7 @@ uint8_t sdc_hci_cmd_le_read_adv_physical_channel_tx_power(sdc_hci_cmd_le_read_ad
 
 /** @brief LE Set Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.7
  *
  * This command is used to set the data used in advertising packets that have a data field.
@@ -4521,7 +4527,7 @@ uint8_t sdc_hci_cmd_le_set_adv_data(const sdc_hci_cmd_le_set_adv_data_t * p_para
 
 /** @brief LE Set Scan Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.8
  *
  * This command is used to provide data used in Scanning Packets that have a data field.
@@ -4552,7 +4558,7 @@ uint8_t sdc_hci_cmd_le_set_scan_response_data(const sdc_hci_cmd_le_set_scan_resp
 
 /** @brief LE Set Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.9
  *
  * This command is used to request the Controller to start or stop advertising. The
@@ -4561,7 +4567,7 @@ uint8_t sdc_hci_cmd_le_set_scan_response_data(const sdc_hci_cmd_le_set_scan_resp
  *
  * The Controller shall continue advertising until the Host issues an
  * HCI_LE_Set_Advertising_Enable command with Advertising_Enable set to 0x00
- * (Advertising is disabled). a connection is created using the advertising, or the
+ * (Advertising is disabled), a connection is created using the advertising, or the
  * Advertising is timed out due to high duty cycle Directed Advertising. In these cases,
  * advertising is then disabled.
  *
@@ -4629,7 +4635,7 @@ uint8_t sdc_hci_cmd_le_set_adv_enable(const sdc_hci_cmd_le_set_adv_enable_t * p_
 
 /** @brief LE Set Scan Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.10
  *
  * This command is used to set the scan parameters.
@@ -4670,7 +4676,7 @@ uint8_t sdc_hci_cmd_le_set_scan_params(const sdc_hci_cmd_le_set_scan_params_t * 
 
 /** @brief LE Set Scan Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.11
  *
  * This command is used to start and stop scanning for legacy PDUs (but not extended
@@ -4730,7 +4736,7 @@ uint8_t sdc_hci_cmd_le_set_scan_enable(const sdc_hci_cmd_le_set_scan_enable_t * 
 
 /** @brief LE Create Connection.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.12
  *
  * This command is used to create a single ACL connection, with the local device in the
@@ -4847,7 +4853,7 @@ uint8_t sdc_hci_cmd_le_create_conn(const sdc_hci_cmd_le_create_conn_t * p_params
 
 /** @brief LE Create Connection Cancel.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.13
  *
  * This command is used to cancel the HCI_LE_Create_Connection or
@@ -4883,7 +4889,7 @@ uint8_t sdc_hci_cmd_le_create_conn_cancel(void);
 
 /** @brief LE Read Filter Accept List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.14
  *
  * This command is used to read the number of Filter Accept List entries (including those
@@ -4908,7 +4914,7 @@ uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_a
 
 /** @brief LE Clear Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.15
  *
  * This command is used to clear the Filter Accept List stored in the Controller.
@@ -4934,7 +4940,7 @@ uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
 
 /** @brief LE Add Device To Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.16
  *
  * This command is used to add a single device to the Filter Accept List stored in the
@@ -4977,7 +4983,7 @@ uint8_t sdc_hci_cmd_le_add_device_to_filter_accept_list(const sdc_hci_cmd_le_add
 
 /** @brief LE Remove Device From Filter Accept List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.17
  *
  * This command is used to remove a single device from the Filter Accept List stored in
@@ -5007,7 +5013,7 @@ uint8_t sdc_hci_cmd_le_remove_device_from_filter_accept_list(const sdc_hci_cmd_l
 
 /** @brief LE Connection Update.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.18
  *
  * This command is used to change the ACL connection parameters. This command may
@@ -5074,7 +5080,7 @@ uint8_t sdc_hci_cmd_le_conn_update(const sdc_hci_cmd_le_conn_update_t * p_params
 
 /** @brief LE Set Host Channel Classification.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.19
  *
  * This command allows the Host to specify a channel classification for the data,
@@ -5102,16 +5108,25 @@ uint8_t sdc_hci_cmd_le_set_host_channel_classification(const sdc_hci_cmd_le_set_
 
 /** @brief LE Read Channel Map.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.20
  *
  * This command returns the current Channel_Map for the specified Connection_Handle.
  * The returned value indicates the state of the Channel_Map specified by
  * the last transmitted or received Channel_Map (in a CONNECT_IND or
  * LL_CHANNEL_MAP_IND message) for the specified Connection_Handle, regardless
- * of whether the Central has received an acknowledgment. If the connection handle does
- * not identify an ACL connection, the Controller shall reject the command and should
- * return the error code Unknown Connection Identifier (0x02).
+ * of whether the Central has received an acknowledgment.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *
+ * <pre>
+ * Type   Condition                                             Error code
+ * M      Connection_Handle does not identify an ACL            Unknown Connection Identifier
+ *        connection.                                           (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5130,7 +5145,7 @@ uint8_t sdc_hci_cmd_le_read_channel_map(const sdc_hci_cmd_le_read_channel_map_t 
 
 /** @brief LE Read Remote Features Page 0.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.21
  *
  * This command requests, from the remote device identified by the Connection_Handle,
@@ -5167,7 +5182,7 @@ uint8_t sdc_hci_cmd_le_read_remote_features(const sdc_hci_cmd_le_read_remote_fea
 
 /** @brief LE Encrypt.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.22
  *
  * This command is used to request the Controller to encrypt the Plaintext_Data in the
@@ -5192,7 +5207,7 @@ uint8_t sdc_hci_cmd_le_encrypt(const sdc_hci_cmd_le_encrypt_t * p_params,
 
 /** @brief LE Rand.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.23
  *
  * This command is used to request the Controller to generate 8 octets of random data to
@@ -5214,7 +5229,7 @@ uint8_t sdc_hci_cmd_le_rand(sdc_hci_cmd_le_rand_return_t * p_return);
 
 /** @brief LE Enable Encryption.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.24
  *
  * This command is used to authenticate the given encryption key associated with the
@@ -5225,13 +5240,20 @@ uint8_t sdc_hci_cmd_le_rand(sdc_hci_cmd_le_rand_return_t * p_return);
  * encryption before attempting to authenticate the given encryption key, and then re-
  * encrypt the connection. While encryption is paused no user data shall be transmitted.
  *
- * If the Connection_Handle parameter identifies an ACL with an associated CIS that has
- * been created, the Controller shall return the error code Command Disallowed (0x0C).
- *
  * On an authentication failure, the connection shall be automatically disconnected by the
  * Link Layer. If this command succeeds, then the connection shall be encrypted.
  *
  * This command shall only be used when the local device’s role is Central.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *
+ * <pre>
+ * Type   Condition                                                 Error code
+ * MC     Connection_Handle identifies an ACL with a created CIS.   Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5252,7 +5274,7 @@ uint8_t sdc_hci_cmd_le_enable_encryption(const sdc_hci_cmd_le_enable_encryption_
 
 /** @brief LE Long Term Key Request Reply.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.25
  *
  * This command is used to reply to an HCI_LE_Long_Term_Key_Request event from
@@ -5279,7 +5301,7 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_reply(const sdc_hci_cmd_le_long_ter
 
 /** @brief LE Long Term Key Request Negative Reply.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.26
  *
  * This command is used to reply to an HCI_LE_Long_Term_Key_Request event from the
@@ -5304,7 +5326,7 @@ uint8_t sdc_hci_cmd_le_long_term_key_request_negative_reply(const sdc_hci_cmd_le
 
 /** @brief LE Read Supported States.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.27
  *
  * This command reads the states, roles, and combinations of states and roles that the
@@ -5335,7 +5357,7 @@ uint8_t sdc_hci_cmd_le_read_supported_states(sdc_hci_cmd_le_read_supported_state
 
 /** @brief LE Receiver Test [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.28
  *
  * This command is used to start a test where the IUT receives test reference packets at a
@@ -5358,7 +5380,7 @@ uint8_t sdc_hci_cmd_le_receiver_test_v1(const sdc_hci_cmd_le_receiver_test_v1_t 
 
 /** @brief LE Transmitter Test [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.29
  *
  * This command is used to start a test where the IUT generates test reference packets
@@ -5389,7 +5411,7 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v1(const sdc_hci_cmd_le_transmitter_test
 
 /** @brief LE Test End.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.30
  *
  * This command is used to stop any test which is in progress. The Num_Packets for a
@@ -5397,6 +5419,7 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v1(const sdc_hci_cmd_le_transmitter_test
  * and contains the number of received packets.
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_LE_Test_End command has completed, an HCI_Command_Complete
  * event shall be generated.
  *
@@ -5410,7 +5433,7 @@ uint8_t sdc_hci_cmd_le_test_end(sdc_hci_cmd_le_test_end_return_t * p_return);
 
 /** @brief LE Set Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.33
  *
  * This command allows the Host to suggest the maximum transmission payload size and
@@ -5439,7 +5462,7 @@ uint8_t sdc_hci_cmd_le_set_data_length(const sdc_hci_cmd_le_set_data_length_t * 
 
 /** @brief LE Read Suggested Default Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.34
  *
  * This command allows the Host to read the Host's suggested values
@@ -5463,7 +5486,7 @@ uint8_t sdc_hci_cmd_le_read_suggested_default_data_length(sdc_hci_cmd_le_read_su
 
 /** @brief LE Write Suggested Default Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.35
  *
  * This command allows the Host to specify its suggested values for the Controller's
@@ -5487,7 +5510,7 @@ uint8_t sdc_hci_cmd_le_write_suggested_default_data_length(const sdc_hci_cmd_le_
 
 /** @brief LE Add Device To Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.38
  *
  * This command is used to add one device to the resolving list used to generate and
@@ -5506,21 +5529,30 @@ uint8_t sdc_hci_cmd_le_write_suggested_default_data_length(const sdc_hci_cmd_le_
  *
  * The added device shall be set to Network Privacy mode.
  *
- * If Peer_Identity_Address_Type is 0x01 and Peer_Identity_Address is not a static
- * address, then the Controller should return the error code Invalid HCI Command
- * Parameters (0x12).
- *
- * When a Controller cannot add a device to the list because there is no space available, it
- * shall return the error code Memory Capacity Exceeded (0x07).
- *
  * If an entry already exists in the resolving list with the same four parameter values, the
- * Controller shall either reject the command or not add the device to the resolving list
- * again and return success. If the command is rejected then the error code Invalid HCI
- * Command Parameters (0x12) should be used.
+ * Controller shall not add the device to the resolving list again.
  *
- * If there is an existing entry in the resolving list with the same Peer_Identity_Address
- * and Peer_Identity_Address_Type, or with the same non-zero Peer_IRK, the Controller
- * should return the error code Invalid HCI Command Parameters (0x12).
+ * Note: In this situation the command can either succeed or fail; the only difference is the
+ * returned status code.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                              Error code
+ * RC     Peer_Identity_Address_Type is 0x01 and Peer_Identity_Address is a      Invalid HCI
+ *        non-static address.                                                    Command
+ *                                                                               Parameters (0x12)
+ * MC     There is no space available to add a device to the list.               Memory Capacity
+ *                                                                               Exceeded (0x07)
+ * RC     An entry with the same Peer_Identity_Address and                       Invalid HCI
+ *        Peer_Identity_Address_Type, or with the same non-zero Peer_IRK,        Command
+ *        already exists in the resolving list.                                  Parameters (0x12)
+ * O      An entry with the same four parameter values already exists in the     Invalid HCI
+ *        resolving list.                                                        Command
+ *                                                                               Parameters (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5537,7 +5569,7 @@ uint8_t sdc_hci_cmd_le_add_device_to_resolving_list(const sdc_hci_cmd_le_add_dev
 
 /** @brief LE Remove Device From Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.39
  *
  * This command is used to remove one device from the resolving list used to resolve
@@ -5554,8 +5586,14 @@ uint8_t sdc_hci_cmd_le_add_device_to_resolving_list(const sdc_hci_cmd_le_add_dev
  * This command may be used at any time when address resolution is disabled in the
  * Controller.
  *
- * When a Controller cannot remove a device from the resolving list because it is not
- * found, it shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                  Error code
+ * MC     The device is not in the resolving list.   Unknown Connection Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5572,7 +5610,7 @@ uint8_t sdc_hci_cmd_le_remove_device_from_resolving_list(const sdc_hci_cmd_le_re
 
 /** @brief LE Clear Resolving List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.40
  *
  * This command is used to remove all devices from the resolving list used to resolve
@@ -5603,7 +5641,7 @@ uint8_t sdc_hci_cmd_le_clear_resolving_list(void);
 
 /** @brief LE Read Resolving List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.41
  *
  * This command is used to read the total number of entries in the resolving list that can
@@ -5628,7 +5666,7 @@ uint8_t sdc_hci_cmd_le_read_resolving_list_size(sdc_hci_cmd_le_read_resolving_li
 
 /** @brief LE Set Address Resolution Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.44
  *
  * This command is used to enable resolution of Resolvable Private Addresses in the
@@ -5663,7 +5701,7 @@ uint8_t sdc_hci_cmd_le_set_address_resolution_enable(const sdc_hci_cmd_le_set_ad
 
 /** @brief LE Set Resolvable Private Address Timeout [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.45
  *
  * Version [v1] of this command sets the length of time the Controller uses a Resolvable
@@ -5694,6 +5732,9 @@ uint8_t sdc_hci_cmd_le_set_address_resolution_enable(const sdc_hci_cmd_le_set_ad
  * If RPA_Timeout_Min is greater than RPA_Timeout_Max, then the Controller shall return
  * the error code Invalid HCI Command Parameters (0x12).
  *
+ * If the Controller supports version [v2] of this command, then the default behavior shall
+ * be to use the range 8 to 15 minutes. Otherwise the default timeout shall be 15 minutes.
+ *
  * Event(s) generated (unless masked away):
  *
  * When the HCI_LE_Set_Resolvable_Private_Address_Timeout command has
@@ -5709,7 +5750,7 @@ uint8_t sdc_hci_cmd_le_set_resolvable_private_address_timeout(const sdc_hci_cmd_
 
 /** @brief LE Read Maximum Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.46
  *
  * This command allows the Host to read the Controller’s maximum supported
@@ -5732,7 +5773,7 @@ uint8_t sdc_hci_cmd_le_read_max_data_length(sdc_hci_cmd_le_read_max_data_length_
 
 /** @brief LE Read PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.47
  *
  * This command is used to read the current transmitter PHY and receiver PHY on the
@@ -5755,7 +5796,7 @@ uint8_t sdc_hci_cmd_le_read_phy(const sdc_hci_cmd_le_read_phy_t * p_params,
 
 /** @brief LE Set Default PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.48
  *
  * This command allows the Host to specify its preferred values for the transmitter PHY
@@ -5780,10 +5821,16 @@ uint8_t sdc_hci_cmd_le_read_phy(const sdc_hci_cmd_le_read_phy_t * p_params,
  * Controller does not support, including a bit that is reserved for future use, the Controller
  * shall return the error code Unsupported Feature or Parameter Value (0x11).
  *
- * If the Controller does not support asymmetric connections (see [Vol 6] Part B,
- * Section 4.6.9.1) and the Host sets All_PHYs to 0x00 and TX_PHYs to a different
- * value than RX_PHYs, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                           Error code
+ * MC     The Controller does not support asymmetric connections (see [Vol    Unsupported Feature
+ *        6] Part B, Section 4.6.9.1), All_PHYs is 0x00, and TX_PHYs is not   or Parameter Value
+ *        the same as RX_PHYs.                                                (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5800,7 +5847,7 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
 
 /** @brief LE Set PHY.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.49
  *
  * This command is used to set the PHY preferences for the connection identified by
@@ -5840,14 +5887,19 @@ uint8_t sdc_hci_cmd_le_set_default_phy(const sdc_hci_cmd_le_set_default_phy_t * 
  * The Host may specify a preferred coding even if it prefers not to use the LE Coded
  * transmitter PHY since the Controller may override the PHY preference.
  *
- * If the Host sets, in the TX_PHYs or RX_PHYs parameter, a bit for a PHY that the
- * Controller does not support, including a bit that is reserved for future use, the Controller
- * shall return the error code Unsupported Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Controller does not support asymmetric connections (see [Vol 6] Part B,
- * Section 4.6.9.1) and the Host sets All_PHYs to 0x00 and TX_PHYs to a different
- * value than RX_PHYs, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                           Error code
+ * MC     TX_PHYs or RX_PHYs contains a bit for a PHY that the Controller     Unsupported Feature
+ *        does not support or is reserved for future use.                     or Parameter Value
+ *                                                                            (0x11)
+ * MC     The Controller does not support asymmetric connections (see [Vol    Unsupported Feature
+ *        6] Part B, Section 4.6.9.1), All_PHYs is 0x00, and TX_PHYs is not   or Parameter Value
+ *        the same as RX_PHYs.                                                (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5870,23 +5922,71 @@ uint8_t sdc_hci_cmd_le_set_phy(const sdc_hci_cmd_le_set_phy_t * p_params);
 
 /** @brief LE Receiver Test [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.28
  *
  * This command is used to start a test where the IUT receives test reference packets at a
- * fixed interval. The tester generates the test reference packets.
+ * fixed interval. The Lower Tester generates the test reference packets.
  *
  * The RX_Channel and PHY parameters specify the RF channel and PHY to be used by
- * the receiver. If the Host sets the PHY parameter to a PHY that the Controller does not
- * support, including a value that is reserved for future use, the Controller shall return the
- * error code Unsupported Feature or Parameter Value (0x11).
+ * the receiver.
  *
  * The Modulation_Index parameter specifies whether or not the Controller should assume
  * the receiver has a stable modulation index.
  *
+ * The Expected_CTE_Length and Expected_CTE_Type parameters specify the expected
+ * length and type of the Constant Tone Extensions in received test reference packets.
+ * When receiving on a PHY that allows Constant Tone Extensions, if the Constant Tone
+ * Extension in a received test reference packet does not match both of these, the IUT
+ * shall discard that packet.
+ *
+ * Slot_Durations, Switching_Pattern_Length, and Antenna_IDs[i] are only used when
+ * expecting an AoA Constant Tone Extension and shall be ignored when expecting an
+ * AoD Constant Tone Extension.
+ * Missing parameters:
+ *
+ * When a version of this command is issued that does not include all the parameters, the
+ * following values shall be used for any missing parameters:
+ *
+ *  Parameter                                                         Value
+ *  PHY                                                               0x01
+ *  Modulation_Index                                                  0x00
+ *  Expected_CTE_Length                                               0x00
+ *  Expected_CTE_Type                                                 any valid value
+ *  Slot_Durations                                                    any valid value
+ *  Switching_Pattern_Length                                          any valid value
+ *  Antenna_IDs[i]                                                    any valid value
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                Error code
+ * MC     PHY contains a bit for a PHY that the Controller does not support or     Unsupported
+ *        is reserved for future use.                                              Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * MC     Expected_CTE_Length is non-zero and PHY contains a bit for a PHY that    Command
+ *        does not support CTEs.                                                   Disallowed
+ *                                                                                 (0x0C)
+ * MC     Slot_Durations is set to 0x01 and the Controller does not support 1 μs   Unsupported
+ *        switching and sampling.                                                  Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * MC     Antenna_IDs[i] contains a bit for an antenna that the Controller can     Unsupported
+ *        determine is not in the device’s antenna array (some Controllers might   Feature or
+ *        be unable to determine which values do or do not identify an antenna).   Parameter Value
+ *                                                                                 (0x11)
+ * </pre>
+ *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_LE_Receiver_Test command has completed, an HCI_Command_-
  * Complete event shall be generated.
+ *
+ * If the Expected_CTE_Length parameter is not set to zero, then HCI_LE_-
+ * Connectionless_IQ_Report events may be generated by the Controller.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -5898,7 +5998,7 @@ uint8_t sdc_hci_cmd_le_receiver_test_v2(const sdc_hci_cmd_le_receiver_test_v2_t 
 
 /** @brief LE Transmitter Test [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.29
  *
  * This command is used to start a test where the IUT generates test reference packets
@@ -5931,7 +6031,7 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v2(const sdc_hci_cmd_le_transmitter_test
 
 /** @brief LE Set Advertising Set Random Address.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.52
  *
  * This command is used by the Host to set the random device address specified by the
@@ -5942,14 +6042,22 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v2(const sdc_hci_cmd_le_transmitter_test
  * This command may be issued at any time after an advertising set
  * identified by the Advertising_Handle parameter has been created using the
  * HCI_LE_Set_Extended_Advertising_Parameters command (see Section 7.8.53).
- * However, if the Host issues this command while the advertising set identified by the
- * Advertising_Handle parameter is using connectable advertising and is enabled, the
- * Controller shall return the error code Command Disallowed (0x0C).
  *
  * If this command is used to change the address, the new random
  * address shall take effect for advertising no later than the next successful
  * HCI_LE_Set_Extended_Advertising_Enable command and for periodic advertising no
  * later than the next successful HCI_LE_Periodic_Advertising_Enable command.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     Advertising_Handle identifies an advertising set that is enabled and    Command
+ *        is using connectable advertising.                                       Disallowed
+ *                                                                                (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -5966,7 +6074,7 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
 
 /** @brief LE Set Extended Advertising Parameters [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.53
  *
  * This command is used by the Host to set the advertising parameters.
@@ -5994,7 +6102,6 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  *  Scannable undirected          ADV_SCAN_IND           0b00000000_00010010   Supported
  *  Non-connectable and non-      ADV_NON-               0b00000000_00010000   Supported
  *  scannable undirected          CONN_IND
- *
  * Table 7.3: Advertising_Event_Properties values for legacy PDUs
  *
  * • If extended advertising PDU types are being used (bit 4 = 0), then the advertisement
@@ -6002,16 +6109,12 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  *   and high duty cycle directed connectable advertising (≤ 3.75 ms advertising interval)
  *   shall not be used (bit 3 = 0).
  *
- * If the Advertising_Event_Properties parameter does not describe an event type
- * supported by the Controller, contains an invalid bit combination, or specifies a type
- * that does not support advertising data when the advertising set already contains some,
- * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
  * The parameters beginning with “Secondary” are only valid when extended advertising
  * PDU types are being used (bit 4 = 0).
  *
  * The Own_Address_Type parameter shall be ignored for undirected anonymous
  * advertising (bit 2 = 0 and bit 5 = 1).
+ *
  * If Directed advertising is selected, the Peer_Address_Type and Peer_Address shall be
  * valid and the Advertising_Filter_Policy parameter shall be ignored.
  *
@@ -6023,11 +6126,6 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  * For high duty cycle connectable directed advertising event type (ADV_DIRECT_IND),
  * the Primary_Advertising_Interval_Min and Primary_Advertising_Interval_Max
  * parameters are not used and shall be ignored.
- *
- * If the primary advertising interval range provided by the Host
- * (Primary_Advertising_Interval_Min, Primary_Advertising_Interval_Max) does not
- * overlap with the advertising interval range supported by the Controller, then the
- * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
  *
  * The Primary_Advertising_Channel_Map is a bit field that indicates the advertising
  * channel indices that shall be used when transmitting advertising packets. At least one
@@ -6053,24 +6151,14 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  * advertising PDUs are being used, the Primary_Advertising_PHY shall indicate the LE
  * 1M PHY. The Secondary_Advertising_PHY parameter indicates the PHY on which the
  * advertising packets are be transmitted on the secondary advertising physical channel.
- * If the Host specifies a PHY that is not supported by the Controller, including a value
- * that is reserved for future use, it should return the error code Unsupported Feature or
- * Parameter Value (0x11). If Constant Tone Extensions are enabled for the advertising set
- * and Secondary_Advertising_PHY specifies a PHY that does not allow Constant Tone
- * Extensions, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * If the Primary_Advertising_PHY indicates the LE Coded PHY, then the
  * Primary_Advertising_PHY_Options shall indicate the Host's preference or requirement
- * concerning coding scheme. Otherwise, Primary_Advertising_PHY_Options shall
- * be ignored. If the Secondary_Advertising_PHY indicates the LE Coded PHY,
- * then the Secondary_Advertising_PHY_Options shall indicate the Host's preference
- * or requirement concerning coding scheme (including for periodic advertising).
- * Otherwise, Secondary_Advertising_PHY_Options shall be ignored. If the Host
- * specifies that it requires a specific coding (i.e., value 0x03 or 0x04) in the
- * Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options and the
- * Controller supports the LE Feature (Advertising Coding Selection) but is currently
- * unable to provide all the required settings, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * concerning coding scheme. Otherwise, Primary_Advertising_PHY_Options shall be
+ * ignored. If the Secondary_Advertising_PHY indicates the LE Coded PHY, then
+ * the Secondary_Advertising_PHY_Options shall indicate the Host's preference or
+ * requirement concerning coding scheme (including for periodic advertising). Otherwise,
+ * Secondary_Advertising_PHY_Options shall be ignored.
  *
  * The Secondary_Advertising_Max_Skip parameter is the maximum number of
  * advertising events that can be skipped before the AUX_ADV_IND can be sent.
@@ -6091,45 +6179,79 @@ uint8_t sdc_hci_cmd_le_set_adv_set_random_address(const sdc_hci_cmd_le_set_adv_s
  * level will vary between packets (e.g., because of frequency-dependent properties of the
  * transmitter) then the value should be the best estimate of the maximum power used.
  *
- * If the Host issues this command when advertising is enabled for the specified
- * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Host issues this command when periodic advertising is enabled for the specified
- * advertising set and connectable, scannable, legacy, or anonymous advertising is
- * specified, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
- *
- * If periodic advertising is enabled for the advertising set and the
- * Secondary_Advertising_PHY parameter does not specify the PHY currently being
- * used for the periodic advertising, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the Advertising_Handle does not identify an existing advertising set and the Controller
- * is unable to support a new advertising set at present, the Controller shall return the error
- * code Memory Capacity Exceeded (0x07).
- *
- * If the advertising set already contains advertising data or scan response data, extended
- * advertising is being used, and the length of the data is greater than the maximum that
- * the Controller can transmit within the longest possible auxiliary advertising segment
- * consistent with the parameters, the Controller shall return the error code Packet Too
- * Long (0x45). If advertising on the LE Coded PHY, the S=8 coding shall be assumed
- * unless the current advertising parameters require the use of S=2 for an advertising
- * physical channel, in which case the S=2 coding shall be assumed for that advertising
- * physical channel.
- *
- * If the Controller does not support the LE Feature (Advertising Coding
- * Selection) and the Host does not set both Primary_Advertising_PHY_Options and
- * Secondary_Advertising_PHY_Options to zero, the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
- *
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                   Value
- *  Primary_Advertising_PHY_Options                                             0x00
- *  Secondary_Advertising_PHY_Options                                           0x00
+ *  Parameter                                                                            Value
+ *  Primary_Advertising_PHY_Options                                                      0x00
+ *  Secondary_Advertising_PHY_Options                                                    0x00
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Event_Properties does not describe an event type supported by     Invalid
+ *        the Controller or contains an invalid bit combination.                        HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Advertising_Event_Properties specifies an event type that does not support    Invalid
+ *        advertising data and the advertising set already contains data.               HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     The primary advertising interval range defined by                             Unsupporte
+ *        Primary_Advertising_Interval_Min and Primary_Advertising_Interval_Max does    d Feature
+ *        not overlap the advertising interval range supported by the Controller.       or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * RC     Primary_Advertising_PHY specifies a PHY that the Controller does not          Unsupporte
+ *        support or is reserved for future use.                                        d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     The advertising set enables Constant Tone Extensions but                      Command
+ *        Secondary_Advertising_PHY specifies a PHY that does not allow Constant Tone   Disallowed
+ *        Extensions.                                                                   (0x0C)
+ * MC     Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options is set   Command
+ *        to 0x03 or 0x04 and the controller supports the Advertising Coding            Disallowed
+ *        Selection feature but is unable to provide all the required settings.         (0x0C)
+ * MC     Advertising is enabled for the specified advertising set.                     Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     Periodic advertising is enabled for an advertising set that is connectable,   Invalid
+ *        scannable, legacy, or anonymous advertising.                                  HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Periodic advertising is enabled for the advertising set and                   Command
+ *        Secondary_Advertising_PHY does not specify the PHY being used for that        Disallowed
+ *        periodic advertising.                                                         (0x0C)
+ * MC     Advertising_Handle is not an existing advertising set and the controller is   Memory
+ *        not able to support a new advertising set.                                    Capacity
+ *                                                                                      Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set already contains advertising data or scan response        Packet Too
+ *        data, extended advertising is being used, and the length of the data is       Long
+ *        greater than the maximum that the Controller can transmit within the          (0x45)
+ *        longest possible auxiliary advertising segment consistent with the
+ *        parameters. If advertising on the LE Coded PHY, the S=8 coding shall be
+ *        assumed unless the current advertising parameters require the use of S=2
+ *        for an advertising physical channel, in which case the S=2 coding shall be
+ *        assumed for that advertising physical channel.
+ * MC     The Controller does not support the Advertising Coding Selection feature      Unsupporte
+ *        and Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options      d Feature
+ *        are not zero.                                                                 or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6148,7 +6270,7 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params(const sdc_hci_cmd_le_set_ext_adv_param
 
 /** @brief LE Set Extended Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.54
  *
  * This command is used to set the data used in advertising PDUs that have
@@ -6170,20 +6292,8 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params(const sdc_hci_cmd_le_set_ext_adv_param
  * packets as defined in [Vol 3] Part C, Section 11.
  *
  * The Host may set the advertising data in one or more operations using the Operation
- * parameter in the command. If the combined length of the data exceeds the capacity of
- * the advertising set identified by the Advertising_Handle parameter (see Section 7.8.57
- * LE Read Maximum Advertising Data Length command) or the amount of memory
- * currently available, all the data shall be discarded and the Controller shall return the
- * error code Memory Capacity Exceeded (0x07).
+ * parameter in the command.
  *
- * If the advertising set uses extended advertising and the combined length of the data is
- * greater than the maximum that the Controller can transmit within the longest possible
- * auxiliary advertising segment consistent with the current parameters of the advertising
- * set (using the current advertising interval if advertising is enabled), all the data shall
- * be discarded and the Controller shall return the error code Packet Too Long (0x45). If
- * advertising on the LE Coded PHY, the S=8 coding shall be assumed unless the current
- * advertising parameters require the use of S=2 for an advertising physical channel, in
- * which case the S=2 coding shall be assumed for that advertising physical channel.
  * If Operation indicates the start of new data (values 0x01 or 0x03), then any existing
  * partial or complete advertising data shall be discarded.
  *
@@ -6197,32 +6307,53 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params(const sdc_hci_cmd_le_set_ext_adv_param
  * The Fragment_Preference parameter provides a hint to the Controller as to whether
  * advertising data should be fragmented.
  *
- * If the advertising set specifies a type that does not support advertising data, the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ * Errors:
  *
- * If the advertising set uses legacy advertising PDUs that support advertising data and
- * either Operation is not 0x03 or the Advertising_Data_Length parameter exceeds 31
- * octets, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If Operation is 0x04 and:
- *
- * • advertising is currently disabled for the advertising set;
- * • the advertising set contains no data;
- * • the advertising set uses legacy PDUs; or
- * • Advertising_Data_Length is not zero;
- *
- * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If Operation is not 0x03 or 0x04 and Advertising_Data_Length is zero, the Controller
- * shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If advertising is currently enabled for the specified advertising set and Operation does
- * not have the value 0x03 or 0x04, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     The combined length of the data exceeds the capacity of the advertising set   Memory
+ *        identified by Advertising_Handle (see Section 7.8.57) or the amount of        Capacity
+ *        memory available. All the data shall be discarded.                            Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set uses extended advertising and the combined length of      Packet Too
+ *        the data is greater than the maximum that the Controller can transmit         Long
+ *        within the longest possible auxiliary advertising segment consistent with     (0x45)
+ *        the current parameters of the advertising set (using the current
+ *        advertising interval if advertising is enabled). All the data shall be
+ *        discarded. If advertising on the LE Coded PHY, the S=8 coding shall be
+ *        assumed unless the current advertising parameters require the use of S=2
+ *        for an advertising physical channel, in which case the S=2 coding shall be
+ *        assumed for that advertising physical channel.
+ * MC     The advertising set has a type that does not support advertising data.        Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     The advertising set uses legacy advertising PDUs that support advertising     Invalid
+ *        data and either Operation is not 0x03 or Advertising_Data_Length exceeds 31   HCI
+ *        octets.                                                                       Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is 0x04 and: • advertising is disabled for the advertising set; •   Invalid
+ *        the advertising set contains no data; • the advertising set uses legacy       HCI
+ *        PDUs; or • Advertising_Data_Length is not zero.                               Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 or 0x04 and Advertising_Data_Length is zero.            Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 or 0x04 and the advertising set is enabled.             Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6239,7 +6370,7 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_data(const sdc_hci_cmd_le_set_ext_adv_data_t 
 
 /** @brief LE Set Extended Scan Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.55
  *
  * This command is used to provide scan response data used in scanning
@@ -6261,11 +6392,7 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_data(const sdc_hci_cmd_le_set_ext_adv_data_t 
  * advertising packets as defined in [Vol 3] Part C, Section 11.
  *
  * The Host may set the scan response data in one or more operations using the
- * Operation parameter in the command. If the combined length of the data exceeds
- * the capacity of the advertising set identified by the Advertising_Handle parameter (see
- * Section 7.8.57 LE Read Maximum Advertising Data Length command) or the amount
- * of memory currently available, all the data shall be discarded and the Controller shall
- * return the error code Memory Capacity Exceeded (0x07).
+ * Operation parameter in the command.
  *
  * If Operation indicates the start of new data (values 0x01 or 0x03), then any existing
  * partial or complete scan response data shall be discarded.
@@ -6276,35 +6403,51 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_data(const sdc_hci_cmd_le_set_ext_adv_data_t 
  *
  * The Fragment_Preference parameter provides a hint to the Controller as to whether
  * advertising data should be fragmented.
- * If the advertising set is non-scannable and the Host uses this command other than to
- * discard existing data, the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12). If the advertising set uses scannable legacy advertising PDUs and
- * either Operation is not 0x03 or the Scan_Response_Data_Length parameter exceeds
- * 31 octets, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
  *
- * If Operation is not 0x03 and Scan_Response_Data_Length is zero, the Controller shall
- * return the error code Invalid HCI Command Parameters (0x12).
+ * Errors:
  *
- * If advertising is currently enabled for the specified advertising set and Operation does
- * not have the value 0x03, the Controller shall return the error code Command Disallowed
- * (0x0C).
- *
- * If the advertising set uses extended advertising and the combined length of the data is
- * greater than the maximum that the Controller can transmit within the longest possible
- * auxiliary advertising segment consistent with the current parameters of the advertising
- * set (using the current advertising interval if advertising is enabled), all the data shall
- * be discarded and the Controller shall return the error code Packet Too Long (0x45). If
- * advertising on the LE Coded PHY, the S=8 coding shall be assumed unless the current
- * advertising parameters require the use of S=2 for an advertising physical channel, in
- * which case the S=2 coding shall be assumed for that advertising physical channel.
- *
- * If the advertising set uses scannable extended advertising PDUs, advertising is
- * currently enabled for the specified advertising set, and Scan_Response_Data_Length
- * is zero, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     The combined length of the data exceeds the capacity of the advertising set   Memory
+ *        identified by Advertising_Handle (see Section 7.8.57) or the amount of        Capacity
+ *        memory available. All the data shall be discarded.                            Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set uses extended advertising and the combined length of      Packet Too
+ *        the data is greater than the maximum that the Controller can transmit         Long
+ *        within the longest possible auxiliary advertising segment consistent with     (0x45)
+ *        the current parameters of the advertising set (using the current
+ *        advertising interval if advertising is enabled). All the data shall be
+ *        discarded.
+ * MC     The advertising set is non-scannable and the command is used other than to    Invalid
+ *        discard existing data.                                                        HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     The advertising set uses scannable legacy advertising PDUs and either         Invalid
+ *        Operation is not 0x03 or Advertising_Data_Length exceeds 31 octets.           HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 and Scan_Response_Data_Length is zero.                  Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 and the advertising set is enabled.                     Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     The advertising set uses scannable extended advertising PDUs, advertising     Command
+ *        is enabled for the advertising set, and Scan_Response_Data_Length is zero.    Disallowed
+ *        If advertising on the LE Coded PHY, the S=8 coding shall be assumed unless    (0x0C)
+ *        the current advertising parameters require the use of S=2 for an
+ *        advertising physical channel, in which case the S=2 coding shall be assumed
+ *        for that advertising physical channel.
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6321,7 +6464,7 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
 
 /** @brief LE Set Extended Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.56
  *
  * This command is used to request the Controller to enable or disable one or more
@@ -6364,64 +6507,17 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_response_data(const sdc_hci_cmd_le_set_ext_s
  *
  * Disabling an advertising set that is already disabled has no effect.
  *
- * If the same advertising set is identified by more than one entry in the
- * Advertising_Handle[i] arrayed parameter, then the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
+ * Errors:
  *
- * If the advertising set corresponding to the Advertising_Handle[i] parameter does not
- * exist, then the Controller shall return the error code Unknown Advertising Identifier
- * (0x42).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * The remainder of this section only applies if Enable is set to 0x01.
- *
- * If the Controller does not have enough resources to schedule all the advertising sets in
- * the command, the Controller should return an error code which should be Connection
- * Rejected due to Limited Resources (0x0D).
- *
- * If Num_Sets is set to 0x00, the Controller shall return the error code Invalid HCI
- * Command Parameters (0x12).
- *
- * If the advertising set contains partial advertising data or partial scan response data, the
- * Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the advertising set uses scannable extended advertising PDUs and no scan response
- * data is currently provided, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the advertising set uses connectable extended advertising PDUs and the advertising
- * data in the advertising set will not fit in the AUX_ADV_IND PDU, the Controller shall
- * return the error code Invalid HCI Command Parameters (0x12).
- *
- * Note: The maximum amount of data that will fit in the PDU depends on which options
- * are selected and on the maximum length of PDU that the Controller is able to transmit.
- *
- * If extended advertising is being used and the length of any advertising data or of
- * any scan response data is greater than the maximum that the Controller can transmit
- * within the longest possible auxiliary advertising segment consistent with the chosen
- * advertising interval, the Controller shall return the error code Packet Too Long (0x45). If
- * advertising on the LE Coded PHY, the S=8 coding shall be assumed unless the current
- * advertising parameters require the use of S=2 for an advertising physical channel, in
- * which case the S=2 coding shall be assumed for that advertising physical channel.
- *
- * If the advertising set's Own_Address_Type parameter is set to 0x00 and the device
- * does not have a public address, the Controller should return an error code which should
- * be Invalid HCI Command Parameters (0x12).
- *
- * If the advertising set's Own_Address_Type parameter is set to 0x01 and the
- * random address for the advertising set has not been initialized using the
- * HCI_LE_Set_Advertising_Set_Random_Address command, the Controller shall return
- * the error code Invalid HCI Command Parameters (0x12).
- *
- * If the advertising set's Own_Address_Type parameter is set to 0x02, the Controller's
- * resolving list did not contain a matching entry, and the device does not have a public
- * address, the Controller should return an error code which should be Invalid HCI
- * Command Parameters (0x12).
- *
- * If the advertising set's Own_Address_Type parameter is set to 0x03,
- * the Controller's resolving list did not contain a matching entry, and the
- * random address for the advertising set has not been initialized using the
- * HCI_LE_Set_Advertising_Set_Random_Address command, the Controller shall return
- * the error code Invalid HCI Command Parameters (0x12).
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     The same advertising set is identified by more than one        Invalid HCI Command
+ *        entry in Advertising_Handle[i].                                Parameters (0x12)
+ * MC     Advertising_Handle does not identify an existing advertising   Unknown Advertising
+ *        set.                                                           Identifier (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6466,15 +6562,15 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_enable(const sdc_hci_cmd_le_set_ext_adv_enabl
 
 /** @brief LE Read Maximum Advertising Data Length.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.57
  *
  * This command is used to read the maximum length of data supported by the Controller
  * for use as advertisement data or scan response data in an advertising event or as
  * periodic advertisement data.
  *
- * Note: The maximum amount may be fragmented across multiple PDUs (see [Vol 6] Part
- * B, Section 2.3.4.9).
+ * Note: The maximum amount might require fragmenting across multiple PDUs (see [Vol
+ * 6] Part B, Section 2.3.4.9).
  *
  * Event(s) generated (unless masked away):
  *
@@ -6491,7 +6587,7 @@ uint8_t sdc_hci_cmd_le_read_max_adv_data_length(sdc_hci_cmd_le_read_max_adv_data
 
 /** @brief LE Read Number of Supported Advertising Sets.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.58
  *
  * This command is used to read the number of advertising sets (including those already
@@ -6516,15 +6612,23 @@ uint8_t sdc_hci_cmd_le_read_number_of_supported_adv_sets(sdc_hci_cmd_le_read_num
 
 /** @brief LE Remove Advertising Set.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.59
  *
  * This command is used to remove an advertising set from the Controller.
  *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * then the Controller shall return the error code Unknown Advertising Identifier (0x42). If
- * advertising or periodic advertising on the advertising set is enabled, then the Controller
- * shall return the error code Command Disallowed (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *
+ * <pre>
+ * Type   Condition                                                  Error code
+ * MC     Advertising_Handle does not identify an existing           Unknown Advertising
+ *        advertising set.                                           Identifier (0x42)
+ * MC     Advertising or periodic advertising is enabled on the      Command Disallowed (0x0C)
+ *        advertising set.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6541,15 +6645,23 @@ uint8_t sdc_hci_cmd_le_remove_adv_set(const sdc_hci_cmd_le_remove_adv_set_t * p_
 
 /** @brief LE Clear Advertising Sets.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.60
  *
  * This command is used to remove all existing advertising sets from the Controller.
  *
- * If advertising or periodic advertising is enabled on any advertising set, then the
- * Controller shall return the error code Command Disallowed (0x0C).
- *
  * Note: All advertising sets are cleared on HCI reset.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ *
+ * <pre>
+ * Type   Condition                                                        Error code
+ * MC     Advertising or periodic advertising is enabled on the            Command Disallowed
+ *        advertising set.                                                 (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6565,26 +6677,18 @@ uint8_t sdc_hci_cmd_le_clear_adv_sets(void);
 
 /** @brief LE Set Periodic Advertising Parameters [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.61
  *
  * This command is used by the Host to set the parameters for periodic advertising.
  *
  * The Advertising_Handle parameter identifies the advertising set whose periodic
- * advertising parameters are being configured. If the corresponding advertising set does
- * not already exist, then the Controller shall return the error code Unknown Advertising
- * Identifier (0x42).
+ * advertising parameters are being configured.
  *
  * The Periodic_Advertising_Interval_Min parameter shall be less than or equal to the
  * Periodic_Advertising_Interval_Max parameter. The Periodic_Advertising_Interval_Min
  * and Periodic_Advertising_Interval_Max parameters should not be the same value to
  * enable the Controller to determine the best advertising interval given other activities.
- *
- * If the periodic advertising interval range provided by the Host (Periodic_Advertising_-
- * Interval_Min, Periodic_Advertising_Interval_Max) does not overlap with the periodic
- * advertising interval range supported by the Controller, then the Controller shall return
- * an error which should use the error code Unsupported Feature or Parameter Value
- * (0x11).
  *
  * The Periodic_Advertising_Properties parameter indicates which fields should be
  * included in the advertising packet.
@@ -6616,35 +6720,54 @@ uint8_t sdc_hci_cmd_le_clear_adv_sets(void);
  * The Num_Response_Slots parameter identifies the number of response slots in a
  * subevent.
  *
- * If the advertising set identified by the Advertising_Handle specified scannable,
- * connectable, legacy, or anonymous advertising, the Controller shall return the error
- * code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command when periodic advertising is enabled for the specified
- * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Advertising_Handle does not identify an advertising set that is already configured
- * for periodic advertising and the Controller is unable to support more periodic advertising
- * at present, the Controller shall return the error code Memory Capacity Exceeded (0x07).
- *
- * If the advertising set already contains periodic advertising data and the length of the
- * data is greater than the maximum that the Controller can transmit within a periodic
- * advertising interval of Periodic_Advertising_Interval_Max, the Controller shall return the
- * error code Packet Too Long (0x45). If advertising on the LE Coded PHY, the S=8 coding
- * shall be assumed unless the current advertising parameters require the use of S=2 for
- * an advertising physical channel, in which case the S=2 coding shall be assumed for that
- * advertising physical channel.
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                      Value
- *  Num_Subevents                                                                  0
- *  Subevent_Interval                                                              ignored
- *  Response_Slot_Delay                                                            ignored
- *  Response_Slot_Spacing                                                          ignored
- *  Num_Response_Slots                                                             ignored
+ *  Parameter                                                                    Value
+ *  Num_Subevents                                                                0
+ *  Subevent_Interval                                                            ignored
+ *  Response_Slot_Delay                                                          ignored
+ *  Response_Slot_Spacing                                                        ignored
+ *  Num_Response_Slots                                                           ignored
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * M      The periodic advertising interval range defined by                            Unsupporte
+ *        Periodic_Advertising_Interval_Min and Periodic_Advertising_Interval_Max       d Feature
+ *        does not overlap the periodic advertising interval range supported by the     or
+ *        Controller.                                                                   Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     Advertising_Handle identifies an advertising set with scannable,              Invalid
+ *        connectable, legacy, or anonymous advertising.                                HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Periodic advertising is enabled for the advertising set.                      Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     The Advertising_Handle does not identify an advertising set that is already   Memory
+ *        configured for periodic advertising and the Controller is unable to support   Capacity
+ *        more periodic advertising at present.                                         Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set already contains periodic advertising data and the        Packet Too
+ *        length of the data is greater than the maximum that the Controller can        Long
+ *        transmit within a periodic advertising interval of                            (0x45)
+ *        Periodic_Advertising_Max. If advertising on the LE Coded PHY, the S=8
+ *        coding shall be assumed unless the current advertising parameters require
+ *        the use of S=2 for an advertising physical channel, in which case the S=2
+ *        coding shall be assumed for that advertising physical channel.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6661,17 +6784,14 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic
 
 /** @brief LE Set Periodic Advertising Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.62
  *
  * This command is used to set the data used in periodic advertising PDUs. This
  * command may be issued at any time after the advertising set identified by the
  * Advertising_Handle parameter has been configured for periodic advertising using
  * the HCI_LE_Set_Periodic_Advertising_Parameters command (see Section 7.8.61),
- * regardless of whether periodic advertising in that set is enabled or disabled. If the
- * advertising set has not been configured for periodic advertising or has been configured
- * for Periodic Advertising with Responses, then the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * regardless of whether periodic advertising in that set is enabled or disabled.
  *
  * If periodic advertising is currently enabled for the specified advertising set, the
  * Controller shall use the new data in subsequent periodic advertising events for this
@@ -6686,20 +6806,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic
  * advertising packets as defined in [Vol 3] Part C, Section 11.
  *
  * The Host may set the periodic advertising data in one or more operations using the
- * Operation parameter in the command. If the combined length of the data exceeds
- * the capacity of the advertising set identified by the Advertising_Handle parameter (see
- * Section 7.8.57 LE Read Maximum Advertising Data Length command) or the amount
- * of memory currently available, all the data shall be discarded and the Controller shall
- * return the error code Memory Capacity Exceeded (0x07).
- *
- * If the combined length of the data is greater than the maximum that the Controller can
- * transmit within the current periodic advertising interval (if periodic advertising is currently
- * enabled) or the Periodic_Advertising_Interval_Max for the advertising set (if currently
- * disabled), all the data shall be discarded and the Controller shall return the error code
- * Packet Too Long (0x45). If advertising on the LE Coded PHY, the S=8 coding shall
- * be assumed unless the current advertising parameters require the use of S=2 for an
- * advertising physical channel, in which case the S=2 coding shall be assumed for that
- * advertising physical channel.
+ * Operation parameter in the command.
  *
  * If Operation indicates the start of new data (values 0x01 or 0x03), then any existing
  * partial or complete data shall be discarded.
@@ -6708,27 +6815,47 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic
  * data had been sent again; this can be used to cause the Advertising DID value to be
  * updated (see [Vol 6] Part B, Section 4.4.2.11).
  *
- * If Operation is 0x04 and:
- *
- * • periodic advertising is currently disabled for the advertising set;
- * • the periodic advertising set contains no data; or
- * • Advertising_Data_Length is not zero;
- *
- * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If Operation is not 0x03 or 0x04 and Advertising_Data_Length is zero, then the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
  * If the periodic advertising data is discarded by the command or the combined length of
  * the data after the command completes is zero, the advertising set will have no periodic
  * advertising data.
  *
- * If periodic advertising is currently enabled for the specified advertising set and
- * Operation does not have the value 0x03 or 0x04, then the Controller shall return the
- * error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * then the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     The advertising set for the Advertising_Handle is not configured for          Command
+ *        Periodic Advertising or Periodic Advertising with Responses.                  Disallowed
+ *                                                                                      (0x0C)
+ * MC     The combined length of the data exceeds the capacity of the advertising set   Memory
+ *        identified by the Advertising_Handle parameter (see Section 7.8.57) or the    Capacity
+ *        amount of memory available. All the data shall be discarded.                  Exceeded
+ *                                                                                      (0x07)
+ * MC     The combined length of data is greater than the maximum that the Controller   Packet Too
+ *        can transmit within the periodic advertising interval, if periodic            Long
+ *        advertising is enabled, or the Periodic_Advertising_Interval_Max for the      (0x45)
+ *        advertising set, if disabled. If advertising on the LE Coded PHY, the S=8
+ *        coding shall be assumed unless the current advertising parameters require
+ *        the use of S=2 for an advertising physical channel, in which case the S=2
+ *        coding shall be assumed for that advertising physical channel.
+ * MC     Operation is set to 0x04 and periodic advertising is disabled for the         Invalid
+ *        advertising set, the periodic advertising set contains no data, or            HCI
+ *        Advertising_Data_Length is not zero.                                          Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 or 0x04 and Advertising_Data_Length is zero.            Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Operation is not 0x03 or 0x04 and Periodic advertising is enabled for the     Command
+ *        advertising set.                                                              Disallowed
+ *                                                                                      (0x0C)
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6745,7 +6872,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_data(const sdc_hci_cmd_le_set_periodic_a
 
 /** @brief LE Set Periodic Advertising Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.63
  *
  * This command is used to request the Controller to enable or disable the periodic
@@ -6763,37 +6890,46 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_data(const sdc_hci_cmd_le_set_periodic_a
  * The Controller manages the timing of advertisements in accordance with the advertising
  * parameters given in the HCI_LE_Set_Periodic_Advertising_Parameters command.
  *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * the Controller shall return the error code Unknown Advertising Identifier (0x42).
- *
- * If bit 0 of Enable is set to 1 (periodic advertising is enabled) and the advertising set
- * contains partial periodic advertising data, the Controller shall return the error code
- * Command Disallowed (0x0C).
- *
- * If bit 0 of Enable is set to 1 and the Host has not issued the
- * HCI_LE_Set_Periodic_Advertising_Parameters command for the advertising set, the
- * Controller shall either use vendor-specified parameters or return the error code
- * Command Disallowed (0x0C).
- *
- * If bit 0 of Enable is set to 1 and the length of the periodic advertising data is greater than
- * the maximum that the Controller can transmit within the chosen periodic advertising
- * interval, the Controller shall return the error code Packet Too Long (0x45). If advertising
- * on the LE Coded PHY, the S=8 coding shall be assumed unless the current advertising
- * parameters require the use of S=2 for an advertising physical channel, in which case
- * the S=2 coding shall be assumed for that advertising physical channel.
- *
- * If bit 0 of Enable is set to 1 and the advertising set identified by the Advertising_Handle
- * specified scannable, connectable, legacy, or anonymous advertising, the Controller shall
- * return the error code Command Disallowed (0x0C).
  * If bit 0 of Enable is set to 0 and the Controller supports the Periodic Advertising ADI
  * Support feature, then the Controller shall ignore bit 1.
  *
- * If bit 1 of Enable is set to 1 and the Controller does not support the Periodic Advertising
- * ADI Support feature, the Controller shall return an error which should use the error code
- * Unsupported Feature or Parameter Value (0x11).
- *
  * Enabling periodic advertising when it is already enabled can cause the random address
  * to change. Disabling periodic advertising when it is already disabled has no effect.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * MC     Bit 0 of Enable is set to 1 and the advertising set contains partial          Command
+ *        periodic advertising data.                                                    Disallowed
+ *                                                                                      (0x0C)
+ * MC     Bit 0 of Enable is set to 1 and the Host has not issued the                   Command
+ *        HCI_LE_Set_Periodic_Advertising_Parameters command for the advertising set.   Disallowed
+ *        The Controller may use vendor-specific periodic advertising parameters        (0x0C)
+ *        instead of reporting an error.
+ * MC     Bit 0 of Enable is set to 1 and the length of the periodic advertising data   Packet Too
+ *        is greater than the maximum that the Controller can transmit within the       Long
+ *        specified periodic advertising interval. If advertising on the LE Coded       (0x45)
+ *        PHY, the S=8 coding shall be assumed unless the current advertising
+ *        parameters require the use of S=2 for an advertising physical channel, in
+ *        which case the S=2 coding shall be assumed for that advertising physical
+ *        channel.
+ * MC     Bit 0 of Enable is set to 1 and Advertising_Handle identifies an              Command
+ *        advertising set with scannable, connectable, legacy, or anonymous             Disallowed
+ *        advertising.                                                                  (0x0C)
+ * M      Bit 1 of Enable is set to 1 and the Controller does not support the           Unsupporte
+ *        Periodic Advertising ADI Support feature.                                     d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6810,7 +6946,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_enable(const sdc_hci_cmd_le_set_periodic
 
 /** @brief LE Set Extended Scan Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.64
  *
  * This command is used to set the extended scan parameters to be used on the
@@ -6825,25 +6961,30 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_enable(const sdc_hci_cmd_le_set_periodic
  * the set bits in the Scanning_PHY parameter, starting from bit 0. The number of array
  * elements is determined by the number of bits set in the Scanning_PHY parameter.
  *
- * The Scan_Type[i] parameter specifies the type of scan to perform.
+ * The Scan_Type[i] parameter specifies the type of scan to perform. For each
+ * advertisement received, the type of scan performed shall be determined by the
+ * Scan_Type[i] for the PHY the primary advertising PDU was received on.
  *
  * The Scan_Interval[i] and Scan_Window[i] parameters are recommendations from the
  * Host on how long (Scan_Window[i]) and how frequently (Scan_Interval[i]) the Controller
- * should scan (see [Vol 6] Part B, Section 4.4.3); however the frequency and length
- * of the scan is implementation specific. If the requested scan cannot be supported by
- * the implementation, the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12).
+ * should scan (see [Vol 6] Part B, Section 4.4.3); however the frequency and length of the
+ * scan is implementation specific.
  *
  * The Own_Address_Type parameter indicates the type of address being used in the
  * scan request packets.
  *
- * If the Host issues this command when scanning is enabled in the Controller, the
- * Controller shall return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Controller does not support the Decision-Based Advertising Filtering feature and
- * the Host issues this command with bits 2 and 3 of Scanning_Filter_Policy set to a value
- * other than 0b00, the Controller shall return an error code which should be Unsupported
- * Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                       Error code
+ * MC     The requested scan is not supported.                            Invalid HCI Command
+ *                                                                        Parameters (0x12)
+ * MC     Scanning is enabled.                                            Command Disallowed
+ *                                                                        (0x0C)
+ * M      Decision-Based Advertising Filtering is not supported and       Unsupported Feature or
+ *        either bit 2 or bit 3 of Scanning_Filter_Policy is set.         Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -6860,7 +7001,7 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
 
 /** @brief LE Set Extended Scan Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.65
  *
  * This command is used to enable or disable scanning for both legacy and extended
@@ -6868,10 +7009,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
  *
  * The Enable parameter determines whether scanning is enabled or disabled. If it is set to
  * 0x00, the remaining parameters shall be ignored.
- *
- * If Enable is set to 0x01 and the Host has not issued the
- * HCI_LE_Set_Extended_Scan_Parameters command, the Controller shall either use
- * vendor-specified parameters or return the error code Command Disallowed (0x0C).
  *
  * The Filter_Duplicates parameter controls whether the Link Layer should filter out
  * duplicate advertising reports (filtering duplicates enabled) to the Host or if the Link
@@ -6886,22 +7023,17 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
  *
  * If the Filter_Duplicates parameter is set to 0x02, duplicate advertisements in a single
  * scan period should not be sent to the Host in advertising report events; this setting shall
- * only be used if both Period and Duration are non-zero. If Filter_Duplicates is set to 0x02
- * and either Period or Duration to zero, the Controller shall return the error code Invalid
- * HCI Command Parameters (0x12).
+ * only be used if both Period and Duration are non-zero.
  *
  * If the Duration parameter is zero or both the Duration parameter and Period parameter
  * are non-zero, the Controller shall continue scanning until scanning is disabled by
  * the Host issuing an HCI_LE_Set_Extended_Scan_Enable command with the Enable
  * parameter set to 0x00 (Scanning is disabled). The Period parameter shall be ignored
  * when the Duration parameter is zero.
+ *
  * If the Duration parameter is non-zero and the Period parameter is zero, the Controller
  * shall continue scanning until the duration specified in the Duration parameter has
  * expired.
- *
- * If both the Duration and Period parameters are non-zero and the Duration is greater
- * than or equal to the Period (comparing the times, not how they are represented), the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
  *
  * When the Duration and Period parameters are non-zero, the Controller shall scan for
  * the duration of the Duration parameter within a scan period specified by the Period
@@ -6921,19 +7053,39 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_params(const sdc_hci_cmd_le_set_ext_scan_par
  * does not prevent the Link Layer from scanning for and receiving auxiliary packets of
  * received advertisements.
  *
- * If Enable is set to 0x01, the scanning parameters' Own_Address_Type parameter is set
- * to 0x00 or 0x02, and the device does not have a public address, the Controller should
- * return an error code which should be Invalid HCI Command Parameters (0x12).
+ * Errors:
  *
- * If Enable is set to 0x01, the scanning parameters' Own_Address_Type parameter is set
- * to 0x01 or 0x03, and the random address for the device has not been initialized using
- * the HCI_LE_Set_Random_Address command, the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                  Error code
+ * MC     Enable is set to 0x01 and the Host has not issued the                      Command
+ *        HCI_LE_Set_Extended_Scan_Parameters command for the advertising set. The   Disallowed
+ *        Controller may use vendor-specific scanning parameters instead of          (0x0C)
+ *        reporting an error.
+ * MC     Filter_Duplicates is set to 0x02 and either Period or Duration is set to   Invalid HCI
+ *        0.                                                                         Command
+ *                                                                                   Parameters
+ *                                                                                   (0x12)
+ * MC     Both Duration and Period are non-zero and Duration is greater than or      Invalid HCI
+ *        equal to Period. Note: this compares the times, not how they are           Command
+ *        represented.                                                               Parameters
+ *                                                                                   (0x12)
+ * R      Enable is set to 0x01, the scanning parameters’ Own_Address_Type is set    Invalid HCI
+ *        to 0x00 or 0x02, and the device does not have a public address.            Command
+ *                                                                                   Parameters
+ *                                                                                   (0x12)
+ * MC     Enable is set to 0x01, the scanning parameters’ Own_Address_Type is set    Invalid HCI
+ *        to 0x01 or 0x03, and the random address for the device has not been        Command
+ *        initialized using the HCI_LE_Set_Random_Address command.                   Parameters
+ *                                                                                   (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
  * When the HCI_LE_Set_Extended_Scan_Enable command has completed, an
  * HCI_Command_Complete event shall be generated.
+ *
  * Zero or more LE Extended Advertising Reports are generated by the Controller based
  * on any advertising packets received and the duplicate filtering in effect. More than
  * one advertising packet may be reported in each HCI_LE_Extended_Advertising_Report
@@ -6952,7 +7104,7 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
 
 /** @brief LE Extended Create Connection [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.66
  *
  * This command is used to create a single ACL connection, with the local device in the
@@ -6967,11 +7119,6 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * request shall be initiated from a periodic advertising train. The Host may use
  * this subevent whether or not the Controller has requested data for it using the
  * HCI_LE_Periodic_Advertising_Subevent_Data_Request event.
- *
- * The Advertising_Handle and Subevent parameters shall be set to 0xFF if these
- * parameters are not used. If the Host sets one but not both of these to 0xFF, then the
- * Controller shall return an error which should use the error code Invalid HCI Command
- * Parameters (0x12).
  *
  * If the Advertising_Handle and Subevent parameters are set to values other than 0xFF,
  * then the Initiator_Filter_Policy, Scan_Interval[i], and Scan_Window[i] parameters shall
@@ -7001,25 +7148,17 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * The Initiating_PHYs parameter indicates the PHY(s) on which the advertising packets
  * should be received on the primary advertising physical channel and the PHYs for
  * which connection parameters have been specified. The Host may enable one or more
- * initiating PHYs. If the Host specifies a PHY that is not supported by the Controller,
- * including a bit that is reserved for future use, the latter should return the error code
- * Unsupported Feature or Parameter Value (0x11). If the Host sets Advertising_Handle to
- * a value other than 0xFF and does not include the PHY used for the specified periodic
- * advertising train in Initiating_PHYs, the Controller shall return an error which should use
- * the error code Invalid HCI Command Parameters (0x12). The array elements of the
- * arrayed parameters are ordered in the same order as the set bits in the Initiating_PHYs
- * parameter, starting from bit 0. The number of array elements is determined by the
- * number of bits set in the Initiating_PHYs parameter. When a connectable advertisement
- * is received and a connection request is sent on one PHY, scanning on any other PHYs
- * is terminated.
+ * initiating PHYs. The array elements of the arrayed parameters are ordered in the
+ * same order as the set bits in the Initiating_PHYs parameter, starting from bit 0. The
+ * number of array elements is determined by the number of bits set in the Initiating_PHYs
+ * parameter. When a connectable advertisement is received and a connection request is
+ * sent on one PHY, scanning on any other PHYs is terminated.
  *
  * The Scan_Interval[i] and Scan_Window[i] parameters are recommendations from the
  * Host on how long (Scan_Window[i]) and how frequently (Scan_Interval[i]) the Controller
- * should scan (see [Vol 6] Part B, Section 4.5.3); however the frequency and length
- * of the scan is implementation specific. If the requested scan cannot be supported by
- * the implementation, the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12). If bit 1 is set in Initiating_PHYs, the values for the LE 2M PHY shall
- * be ignored.
+ * should scan (see [Vol 6] Part B, Section 4.5.3); however the frequency and length of the
+ * scan is implementation specific. If bit 1 is set in Initiating_PHYs, the values for the LE
+ * 2M PHY shall be ignored.
  *
  * The Connection_Interval_Min[i] and Connection_Interval_Max[i] parameters define the
  * minimum and maximum allowed connection interval. The Connection_Interval_Min[i]
@@ -7033,10 +7172,9 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * Max_Latency[i]) × Connection_Interval_Max[i] × 2, where Connection_Interval_Max[i]
  * is given in milliseconds (see [Vol 6] Part B, Section 4.5.2).
  *
- * The Min_CE_Length[i] and Max_CE_Length[i] parameters provide the Controller
- * with the expected minimum and maximum length of the connection events. The
- * Min_CE_Length[i] parameter shall be less than or equal to the Max_CE_Length[i]
- * parameter. The Controller is not required to use these values.
+ * The Min_CE_Length[i] and Max_CE_Length[i] parameters provide the Controller with
+ * the expected minimum and maximum length of the connection events. The Controller is
+ * not required to use these values.
  *
  * Where the connection is made on a PHY whose bit is not set in the
  * Initiating_PHYs parameter, the Controller shall use the Connection_Interval_Min[i],
@@ -7044,62 +7182,83 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  * and Max_CE_Length[i] parameters for an implementation-chosen PHY whose bit is set
  * in the Initiating_PHYs parameter.
  *
- * If the Host issues this command when another HCI_LE_Extended_Create_Connection
- * command is pending in the Controller, the Controller shall return the error code
- * Command Disallowed (0x0C).
- * If the local device is already connected to the same device address as the advertiser
- * (including two different Resolvable Private Addresses that resolve to the same IRK),
- * then the Controller shall return an error which should use the error code Connection
- * Already Exists (0x0B).
- *
- * If the Own_Address_Type parameter is set to 0x00 and the device does not have a
- * public address, the Controller should return an error code which should be Invalid HCI
- * Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x01 and the random address for the
- * device has not been initialized using the HCI_LE_Set_Random_Address command, the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
- * is set to 0x00, the Controller's resolving list did not contain a matching entry, and the
- * device does not have a public address, the Controller should return an error code which
- * should be Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
- * is not set to 0x00, and the device does not have a public address, the Controller should
- * return an error code which should be Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy
- * parameter is set to 0x00, the Controller's resolving list did not contain a matching
- * entry, and the random address for the device has not been initialized using the
- * HCI_LE_Set_Random_Address command, the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy parameter
- * is not set to 0x00, and the random address for the device has not been initialized using
- * the HCI_LE_Set_Random_Address command, the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the Initiating_PHYs parameter does not have at least one bit set for a PHY allowed
- * for scanning on the primary advertising physical channel, the Controller shall return the
- * error code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command and the Controller has insufficient resources to handle
- * any more connections, the Controller shall return the error code Rejected due to Limited
- * Resources (0x0D).
- *
- * If the Controller does not support the Decision-Based Advertising Filtering feature and
- * the Host issues this command with Initiator_Filter_Policy set to a value other than 0x00
- * or 0x01, the Controller shall return an error code which should be Unsupported Feature
- * or Parameter Value (0x11).
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                   Value
- *  Advertising_Handle                                                          0xFF
- *  Subevent                                                                    0xFF
+ *  Parameter                                                        Value
+ *  Advertising_Handle                                               0xFF
+ *  Subevent                                                         0xFF
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                Error code
+ * M      Advertising_Handle or Subevent, but not both, is set to 0xFF.            Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * RC     Initiating_PHYs has a bit set which is not supported by the Controller   Unsupported
+ *        or is RFU.                                                               Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * M      Advertising_Handle is not 0xFF and Initiating_PHYs does not have the     Invalid HCI
+ *        bit set for the PHY used for the specified periodic advertising train.   Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     The requested scan is not supported.                                     Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Another HCI_LE_Extended_Create_Connection command is pending.            Command
+ *                                                                                 Disallowed
+ *                                                                                 (0x0C)
+ * M      The local device is already connected to the same device address as      Connection
+ *        the advertiser (including two different Resolvable Private Addresses     Already Exists
+ *        that resolve to the same IRK).                                           (0x0B)
+ * R      Own_Address_Type is 0x00 and the device does not have a public           Invalid HCI
+ *        address.                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Own_Address_Type is 0x01 and the random address for the device has not   Invalid HCI
+ *        been initialized using HCI_LE_Set_Random_Address.                        Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * R      Own_Address_Type is 0x02, Initiator_Filter_Policy is 0x00, the           Invalid HCI
+ *        Controller’s resolving list does not contain a matching entry, and the   Command
+ *        device does not have a public address.                                   Parameters
+ *                                                                                 (0x12)
+ * R      Own_Address_Type is 0x02, Initiator_Filter_Policy is not 0x00, and the   Invalid HCI
+ *        device does not have a public address.                                   Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Own_Address_Type is 0x03, Initiator_Filter_Policy is 0x00, the           Invalid HCI
+ *        Controller’s resolving list does not contain a matching entry, and the   Command
+ *        device’s random address has not been initialized using                   Parameters
+ *        HCI_LE_Set_Random_Address.                                               (0x12)
+ * MC     Own_Address_Type is 0x03, Initiator_Filter_Policy is not 0x00, and the   Invalid HCI
+ *        device’s random address has not been initialized using                   Command
+ *        HCI_LE_Set_Random_Address.                                               Parameters
+ *                                                                                 (0x12)
+ * MC     Initiating_PHYs does not have at least one bit set for a PHY allowed     Invalid HCI
+ *        for scanning on the primary advertising physical channel.                Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     The Controller has insufficient resources to handle any more             Rejected due to
+ *        connections.                                                             Limited
+ *                                                                                 Resources
+ *                                                                                 (0x0D)
+ * M      Decision-Based Advertising Filtering is not supported and                Unsupported
+ *        Initiator_Filter_Policy is not 0x00 or 0x01.                             Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * R      Max_CE_Length is less than Min_CE_Length.                                Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7123,7 +7282,7 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
 
 /** @brief LE Periodic Advertising Create Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.67
  *
  * This command is used to synchronize with a single periodic advertising train from an
@@ -7154,17 +7313,9 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  *
  * The Sync_Timeout parameter specifies the maximum permitted time between
  * successful receives. If this time is exceeded, synchronization is lost.
- *
  * The Sync_CTE_Type parameter specifies whether to only synchronize to periodic
- * advertising with certain types of Constant Tone Extension (a value of 0 indicates that
- * the presence or absence of a Constant Tone Extension is irrelevant). If the periodic
- * advertising has the wrong type of Constant Tone Extension then:
- *
- * • If bit 0 of Options is set, the Controller shall ignore this address and SID, as if they
- *   were not on the Periodic Advertiser List, and continue to search for other periodic
- *   advertisements.
- * • Otherwise, the Controller shall cancel the synchronization with the error code
- *   Unsupported Remote Feature (0x1A).
+ * advertising with certain types of Constant Tone Extension (a value of 0 indicates that the
+ * presence or absence of a Constant Tone Extension is irrelevant).
  *
  * If the Controller does not support the Connectionless CTE Receiver feature, then the
  * Host should set Sync_CTE_Type to 0.
@@ -7173,41 +7324,40 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  * has synchronized with the periodic advertising, the scanner's Link Layer shall remain
  * synchronized.
  *
- * If the Host issues this command with the Sync_CTE_Type parameter set to any value
- * other than zero but the Controller does not support the Connectionless CTE Receiver
- * feature, then the Controller should return an error which should use the error code
- * Unsupported Feature or Parameter Value (0x11). If the Controller does not return an
- * error, then it should behave as if Sync_CTE_Type is set to zero.
- *
- * If the Host sets all the non-reserved bits of the Sync_CTE_Type parameter to 1, the
- * Controller shall return the error code Command Disallowed (0x0C).
- *
  * Irrespective of the value of the Skip parameter, the Controller should stop skipping
  * packets before the Sync_Timeout would be exceeded.
  *
- * If the Host issues this command when another
- * HCI_LE_Periodic_Advertising_Create_Sync command is pending, the Controller shall
- * return the error code Command Disallowed (0x0C).
- *
- * If the Host issues this command with bit 0 of Options not set and with Advertising_SID,
- * Advertiser_Address_Type, and Advertiser_Address the same as those of a periodic
- * advertising train that the Controller is already synchronized to, the Controller shall return
- * the error code Connection Already Exists (0x0B).
- *
- * If the Host issues this command and the Controller has insufficient resources to handle
- * any more periodic advertising trains, the Controller shall return the error code Memory
- * Capacity Exceeded (0x07).
- *
  * If bit 1 of Options is set to 1 and the Controller supports the Periodic Advertising ADI
  * Support feature, then the Controller shall ignore bit 2.
- * If bit 1 of Options is set to 0, bit 2 is set to 1, and the Controller does not support the
- * Periodic Advertising ADI Support feature, then the Controller shall return an error which
- * should use the error code Unsupported Feature or Parameter Value (0x11).
  *
- * If bit 1 of the Options parameter is set to 1 and the Controller does not support
- * the HCI_LE_Set_Periodic_Advertising_Receive_Enable command, the Controller shall
- * return the error code Connection Failed to be Established / Synchronization Timeout
- * (0x3E).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     All the non-reserved bits of Sync_CTE_Type are set to 1.           Command Disallowed
+ *                                                                           (0x0C)
+ * MC     Another HCI_LE_Periodic_Advertising_Create_Sync is pending.        Command Disallowed
+ *                                                                           (0x0C)
+ * MC     Options bit 0 is set to 0 and Advertising_SID,                     Connection Already
+ *        Advertiser_Address_Type, and Advertiser_Address identify a         Exists (0x0B)
+ *        periodic advertising train that the Controller is already
+ *        synchronized to.
+ * MC     The Controller has insufficient resources to handle any more       Memory Capacity
+ *        periodic advertising trains.                                       Exceeded (0x07)
+ * M      Options bit 1 is set to 0, bit 2 is set to 1, and the Controller   Unsupported Feature
+ *        does not support the Periodic Advertising ADI Support feature.     or Parameter Value
+ *                                                                           (0x11)
+ * MC     Options bit 1 is set to 1 and the Controller does not support      Connection Failed to
+ *        the HCI_LE_Set_Periodic_Advertising_Receive_Enable command.        be Established /
+ *                                                                           Synchronization
+ *                                                                           Timeout (0x3E)
+ * R      Sync_CTE_Type is non-zero and the Controller does not support      Unsupported Feature
+ *        the Connectionless CTE Receiver feature. If the Controller does    or Parameter Value
+ *        not return this error, then it should behave as if Sync_CTE_Type   (0x11)
+ *        is set to zero.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7216,9 +7366,17 @@ uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * 
  * HCI_LE_Periodic_Advertising_Sync_Established event shall be generated when the
  * Controller starts receiving periodic advertising packets.
  *
+ * If Sync_CTE_Type is non-zero and the Controller receives periodic advertising that has
+ * the wrong type of Constant Tone Extension then:
+ *
+ * • If bit 0 of Options is set, then the Controller shall ignore this address and SID and
+ *   continue to search for other periodic advertisements.
+ * • Otherwise, the Controller shall generate an
+ *   HCI_LE_Periodic_Advertising_Sync_Established event with Status set to
+ *   Unsupported Remote Feature (0x1A).
+ *
  * When the Controller receives periodic advertising packets then, if reporting is enabled, it
  * sends HCI_LE_Periodic_Advertising_Report events to the Host.
- *
  * If the Controller does not receive a periodic advertising packet within
  * 6 periodic advertising events of first listening, then it shall generate an
  * HCI_LE_Periodic_Advertising_Sync_Established event that should have Status set to
@@ -7238,15 +7396,21 @@ uint8_t sdc_hci_cmd_le_periodic_adv_create_sync(const sdc_hci_cmd_le_periodic_ad
 
 /** @brief LE Periodic Advertising Create Sync Cancel.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.68
  *
  * This command is used to cancel the HCI_LE_Periodic_Advertising_Create_Sync
  * command while it is pending.
  *
- * If the Host issues this command while no HCI_LE_Periodic_Advertising_Create_Sync
- * command is pending, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     No HCI_LE_Periodic_Advertising_Create_Sync command is          Command Disallowed
+ *        pending.                                                       (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7266,17 +7430,23 @@ uint8_t sdc_hci_cmd_le_periodic_adv_create_sync_cancel(void);
 
 /** @brief LE Periodic Advertising Terminate Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.69
  *
  * This command is used to stop reception of the periodic advertising train identified by the
  * Sync_Handle parameter.
  *
- * If the periodic advertising train corresponding to the Sync_Handle parameter does not
- * exist, then the Controller shall return the error code Unknown Advertising Identifier
- * (0x42).
- *
  * Following successful completion of this command the Sync_Handle is destroyed.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                 Error code
+ * MC     Sync_Handle does not identify an existing periodic        Unknown Advertising
+ *        advertising train.                                        Identifier (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7293,20 +7463,26 @@ uint8_t sdc_hci_cmd_le_periodic_adv_terminate_sync(const sdc_hci_cmd_le_periodic
 
 /** @brief LE Add Device To Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.70
  *
  * This command is used to add an entry, consisting of a single device address and SID,
  * to the Periodic Advertiser list stored in the Controller. Any additions to the Periodic
- * Advertiser list take effect immediately. If the entry is already on the list, the Controller
- * shall return the error code Invalid HCI Command Parameters (0x12).
+ * Advertiser list take effect immediately.
  *
- * If the Host issues this command when an HCI_LE_Periodic_Advertising_Create_Sync
- * command is pending, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * Errors:
  *
- * When a Controller cannot add an entry to the Periodic Advertiser list because the list is
- * full, the Controller shall return the error code Memory Capacity Exceeded (0x07).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                            Error code
+ * MC     The entry is already on the list.                    Invalid HCI Command Parameters
+ *                                                             (0x12)
+ * MC     An HCI_LE_Periodic_Advertising_Create_Sync is        Command Disallowed (0x0C)
+ *        pending.
+ * MC     The entry cannot be added because the list is        Memory Capacity Exceeded (0x07)
+ *        full.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7323,19 +7499,23 @@ uint8_t sdc_hci_cmd_le_add_device_to_periodic_adv_list(const sdc_hci_cmd_le_add_
 
 /** @brief LE Remove Device From Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.71
  *
  * This command is used to remove one entry from the list of Periodic Advertisers stored
  * in the Controller. Removals from the Periodic Advertisers List take effect immediately.
  *
- * If the Host issues this command when an HCI_LE_Periodic_Advertising_Create_Sync
- * command is pending, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * Errors:
  *
- * When a Controller cannot remove an entry from the Periodic Advertiser list because it
- * is not found, the Controller shall return the error code Unknown Advertising Identifier
- * (0x42).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                            Error code
+ * MC     An HCI_LE_Periodic_Advertising_Create_Sync is        Command Disallowed (0x0C)
+ *        pending
+ * MC     The entry is not on the list.                        Unknown Advertising Identifier
+ *                                                             (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7352,15 +7532,20 @@ uint8_t sdc_hci_cmd_le_remove_device_from_periodic_adv_list(const sdc_hci_cmd_le
 
 /** @brief LE Clear Periodic Advertiser List.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.72
  *
  * This command is used to remove all entries from the list of Periodic Advertisers in the
  * Controller.
  *
- * If this command is used when an HCI_LE_Periodic_Advertising_Create_Sync
- * command is pending, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                Error code
+ * MC     An HCI_LE_Periodic_Advertising_Create_Sync is pending.   Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7376,7 +7561,7 @@ uint8_t sdc_hci_cmd_le_clear_periodic_adv_list(void);
 
 /** @brief LE Read Periodic Advertiser List Size.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.73
  *
  * This command is used to read the number of Periodic Advertiser list entries (including
@@ -7401,7 +7586,7 @@ uint8_t sdc_hci_cmd_le_read_periodic_adv_list_size(sdc_hci_cmd_le_read_periodic_
 
 /** @brief LE Read Transmit Power.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.74
  *
  * This command is used to read the minimum and maximum transmit powers supported
@@ -7422,7 +7607,7 @@ uint8_t sdc_hci_cmd_le_read_transmit_power(sdc_hci_cmd_le_read_transmit_power_re
 
 /** @brief LE Read RF Path Compensation.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.75
  *
  * This command is used to read the RF path compensation value parameters used in the
@@ -7443,7 +7628,7 @@ uint8_t sdc_hci_cmd_le_read_rf_path_compensation(sdc_hci_cmd_le_read_rf_path_com
 
 /** @brief LE Write RF Path Compensation.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.76
  *
  * This command is used to indicate the RF path gain or loss between the RF
@@ -7507,7 +7692,7 @@ uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_
 
 /** @brief LE Set Privacy Mode.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.77
  *
  * This command is used to allow the Host to specify the privacy mode to be used for a
@@ -7528,8 +7713,14 @@ uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_
  * This command may be used at any time when address resolution is disabled in the
  * Controller.
  *
- * If the device is not on the resolving list, the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                  Error code
+ * MC     The device is not on the resolving list.   Unknown Connection Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7546,16 +7737,14 @@ uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t 
 
 /** @brief LE Receiver Test [v3].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.28
  *
  * This command is used to start a test where the IUT receives test reference packets at a
- * fixed interval. The tester generates the test reference packets.
+ * fixed interval. The Lower Tester generates the test reference packets.
  *
  * The RX_Channel and PHY parameters specify the RF channel and PHY to be used by
- * the receiver. If the Host sets the PHY parameter to a PHY that the Controller does not
- * support, including a value that is reserved for future use, the Controller shall return the
- * error code Unsupported Feature or Parameter Value (0x11).
+ * the receiver.
  *
  * The Modulation_Index parameter specifies whether or not the Controller should assume
  * the receiver has a stable modulation index.
@@ -7564,25 +7753,50 @@ uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t 
  * length and type of the Constant Tone Extensions in received test reference packets.
  * When receiving on a PHY that allows Constant Tone Extensions, if the Constant Tone
  * Extension in a received test reference packet does not match both of these, the IUT
- * shall discard that packet. If Expected_CTE_Length is not zero and PHY specifies a PHY
- * that does not allow Constant Tone Extensions, the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * shall discard that packet.
  *
- * If the Slot_Durations parameter is set to 0x01 and the Controller does not support 1 µs
- * switching and sampling, the Controller shall return the error code Unsupported Feature
- * or Parameter Value (0x11).
  * Slot_Durations, Switching_Pattern_Length, and Antenna_IDs[i] are only used when
  * expecting an AoA Constant Tone Extension and shall be ignored when expecting an
  * AoD Constant Tone Extension.
+ * Missing parameters:
  *
- * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
- * antenna in the device's antenna array, it shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * When a version of this command is issued that does not include all the parameters, the
+ * following values shall be used for any missing parameters:
  *
- * Note: Some Controllers may be unable to determine which values do or do not identify
- * an antenna.
+ *  Parameter                                                         Value
+ *  PHY                                                               0x01
+ *  Modulation_Index                                                  0x00
+ *  Expected_CTE_Length                                               0x00
+ *  Expected_CTE_Type                                                 any valid value
+ *  Slot_Durations                                                    any valid value
+ *  Switching_Pattern_Length                                          any valid value
+ *  Antenna_IDs[i]                                                    any valid value
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                Error code
+ * MC     PHY contains a bit for a PHY that the Controller does not support or     Unsupported
+ *        is reserved for future use.                                              Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * MC     Expected_CTE_Length is non-zero and PHY contains a bit for a PHY that    Command
+ *        does not support CTEs.                                                   Disallowed
+ *                                                                                 (0x0C)
+ * MC     Slot_Durations is set to 0x01 and the Controller does not support 1 μs   Unsupported
+ *        switching and sampling.                                                  Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * MC     Antenna_IDs[i] contains a bit for an antenna that the Controller can     Unsupported
+ *        determine is not in the device’s antenna array (some Controllers might   Feature or
+ *        be unable to determine which values do or do not identify an antenna).   Parameter Value
+ *                                                                                 (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_LE_Receiver_Test command has completed, an HCI_Command_-
  * Complete event shall be generated.
  *
@@ -7599,7 +7813,7 @@ uint8_t sdc_hci_cmd_le_receiver_test_v3(const sdc_hci_cmd_le_receiver_test_v3_t 
 
 /** @brief LE Transmitter Test [v3].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.29
  *
  * This command is used to start a test where the IUT generates test reference packets
@@ -7650,7 +7864,7 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v3(const sdc_hci_cmd_le_transmitter_test
 
 /** @brief LE Set Connectionless CTE Transmit Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.80
  *
  * This command is used to set the type, length, and antenna switching pattern for the
@@ -7665,37 +7879,42 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v3(const sdc_hci_cmd_le_transmitter_test
  * Controller can no longer schedule all of these packets, it should transmit as many as
  * possible.
  *
- * If the Host issues this command when Constant Tone Extensions have been enabled
- * in the advertising set, the Controller shall return the error code Command Disallowed
- * (0x0C).
- *
  * The Switching_Pattern_Length and Antenna_IDs[i] parameters are only used when
  * transmitting an AoD Constant Tone Extension and shall be ignored if CTE_Type
  * specifies an AoA Constant Tone Extension.
  *
- * If the CTE_Length parameter is greater than the maximum length of Constant Tone
- * Extension supported, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * Errors:
  *
- * If the Host requests a type of Constant Tone Extension that the Controller does not
- * support, the Controller shall return the error code Unsupported Feature or Parameter
- * Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Controller is unable to schedule CTE_Count packets in each event, the Controller
- * shall return the error code Unsupported Feature or Parameter Value (0x11).
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * the Controller shall return the error code Unknown Advertising Identifier (0x42).
- *
- * If Switching_Pattern_Length is greater than the maximum length of switching pattern
- * supported by the Controller (see Section 7.8.87), the Controller shall return the error
- * code Unsupported Feature or Parameter Value (0x11).
- *
- * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
- * antenna in the device's antenna array, it shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
- *
- * Note: Some Controllers may be unable to determine which values do or do not identify
- * an antenna.
+ * <pre>
+ * Type   Condition                                                              Error code
+ * MC     Constant Tone Extensions have been enabled in the advertising set.     Command
+ *                                                                               Disallowed (0x0C)
+ * MC     CTE_Length is greater than the maximum length of Constant Tone         Unsupported
+ *        Extension supported.                                                   Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     CTE_Type is not supported.                                             Unsupported
+ *                                                                               Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     The Controller is unable to schedule CTE_Count packets in each         Unsupported
+ *        event.                                                                 Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     Advertising_Handle does not identify an existing handle.               Unknown
+ *                                                                               Advertising
+ *                                                                               Identifier (0x42)
+ * MC     Switching_Pattern_Length is greater than the maximum length            Unsupported
+ *        supported.                                                             Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     Any of the Antenna_IDs[i] values does not identify an antenna in the   Unsupported
+ *        device’s antenna array (some Controllers might be unable to            Feature or
+ *        determine which values do or do not identify an antenna).              Parameter Value
+ *                                                                               (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7712,7 +7931,7 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Connectionless CTE Transmit Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.81
  *
  * This command is used to request that the Controller enables or disables the use of
@@ -7726,10 +7945,6 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  * Note: Periodic advertising can only be enabled when advertising is enabled on the
  * same advertising set, but can continue after advertising has been disabled.
  *
- * If the Host issues this command before it has issued the
- * HCI_LE_Set_Periodic_Advertising_Parameters command (see Section 7.8.61) for the
- * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
- *
  * Once enabled, the Controller shall continue advertising with Constant Tone Extensions
  * until either one of the following occurs:
  *
@@ -7740,18 +7955,24 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  *   Section 7.8.63) with Enable set to 0x00 (disabling periodic advertising). If periodic
  *   advertising is re-enabled then it shall continue to contain Constant Tone Extensions.
  *
- * If the Host issues this command before it has issued the
- * HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command for the advertising
- * set, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the periodic advertising is on a PHY that does not allow Constant Tone Extensions,
- * the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * the Controller shall return the error code Unknown Advertising Identifier (0x42).
- *
  * The Host may issue this command when advertising or periodic advertising is enabled
  * in the advertising set.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     The HCI_LE_Set_Periodic_Advertising_Parameters command has not    Command Disallowed
+ *        been issued for the advertising set.                              (0x0C)
+ * MC     The HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command     Command Disallowed
+ *        has not been issued for the advertising set.                      (0x0C)
+ * MC     The periodic advertising is on a PHY that does not allow          Command Disallowed
+ *        Constant Tone Extensions.                                         (0x0C)
+ * MC     Advertising_Handle does not identify an existing handle.          Unknown Advertising
+ *                                                                          Identifier (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7768,36 +7989,40 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Connection CTE Transmit Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.84
  *
  * This command is used to set the antenna switching pattern and permitted Constant
  * Tone Extension types used for transmitting Constant Tone Extensions requested by the
  * peer device on the connection identified by the Connection_Handle parameter.
  *
- * If the Host issues this command when Constant Tone Extension responses have
- * been enabled on the connection, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the CTE_Types parameter has a bit set for a type of Constant Tone Extension that
- * the Controller does not support, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
- *
  * The Switching_Pattern_Length and Antenna_IDs[i] parameters are only used when
  * transmitting an AoD Constant Tone Extension and shall be ignored when CTE_Types
  * does not have a bit set for an AoD Constant Tone Extension; they do not affect the
  * transmission of an AoA Constant Tone Extension.
  *
- * If Switching_Pattern_Length is greater than the maximum length of switching pattern
- * supported by the Controller, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Controller determines that any of the Antenna_IDs[i] values do not identify an
- * antenna in the device's antenna array, it shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * Note: Some Controllers may be unable to determine which values do or do not identify
- * an antenna.
+ *
+ * <pre>
+ * Type   Condition                                                              Error code
+ * MC     Constant Tone Extension responses have been enabled on the             Command
+ *        connection.                                                            Disallowed (0x0C)
+ * MC     CTE_Types has a bit set for a type of Constant Tone Extension that     Unsupported
+ *        the Controller does not support.                                       Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     Switching_Pattern_Length is greater than the maximum length of         Unsupported
+ *        switching pattern supported.                                           Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     Any of the Antenna_IDs[i] values does not identify an antenna in the   Unsupported
+ *        device’s antenna array (some Controllers might be unable to            Feature or
+ *        determine which values do or do not identify an antenna).              Parameter Value
+ *                                                                               (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7816,19 +8041,11 @@ uint8_t sdc_hci_cmd_le_set_conn_cte_transmit_params(const sdc_hci_cmd_le_set_con
 
 /** @brief LE Connection CTE Response Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.86
  *
  * This command is used to request the Controller to respond to LL_CTE_REQ PDUs with
  * LL_CTE_RSP PDUs on the specified connection.
- *
- * If the Host issues this command before issuing the
- * HCI_LE_Set_Connection_CTE_Transmit_Parameters command at least once on the
- * connection, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Host issues this command when the transmitter PHY for the connection is not a
- * PHY that allows Constant Tone Extensions, the Controller shall return the error code
- * Command Disallowed (0x0C).
  *
  * If the transmitter PHY for the connection changes to a PHY that does not allow
  * Constant Tone Extensions, then the Controller shall automatically disable Constant
@@ -7836,6 +8053,18 @@ uint8_t sdc_hci_cmd_le_set_conn_cte_transmit_params(const sdc_hci_cmd_le_set_con
  *
  * Note: If the PHY changes back to a PHY that allows Constant Tone Extensions, then
  * the Controller will not automatically re-enable Constant Tone Extension responses.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                              Error code
+ * MC     The HCI_LE_Set_Connection_CTE_Transmit_Parameters command has not      Command
+ *        been issued for the connection.                                        Disallowed (0x0C)
+ * MC     The transmitter PHY for the connection is not a PHY that allows        Command
+ *        Constant Tone Extensions.                                              Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7854,7 +8083,7 @@ uint8_t sdc_hci_cmd_le_conn_cte_response_enable(const sdc_hci_cmd_le_conn_cte_re
 
 /** @brief LE Read Antenna Information.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.87
  *
  * This command allows the Host to read the switching rates, the sampling rates,
@@ -7879,7 +8108,7 @@ uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_info
 
 /** @brief LE Set Periodic Advertising Receive Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.88
  *
  * This command will enable or disable reports for the periodic advertising train identified
@@ -7888,12 +8117,17 @@ uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_info
  * The Enable parameter determines whether reporting and duplicate filtering are enabled
  * or disabled. If the value is the same as the current state, the command has no effect.
  *
- * If the periodic advertising train corresponding to the Sync_Handle parameter does not
- * exist, the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * Errors:
  *
- * If the Host sets both bits 0 and 1 of Enable and the Controller does not support the
- * Periodic Advertising ADI Support feature, then the Controller shall return an error which
- * should use the error code Unsupported Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                        Error code
+ * MC     Sync_Handle does not identify an existing periodic advertising   Unknown Advertising
+ *        train.                                                           Identifier (0x42)
+ * M      Enable bits 0 and 1 are both set to 1 and the Controller does    Unsupported Feature or
+ *        not support the Periodic Advertising ADI Support feature.        Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7910,7 +8144,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_
 
 /** @brief LE Periodic Advertising Sync Transfer.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.89
  *
  * This command is used to instruct the Controller to send synchronization information
@@ -7922,19 +8156,23 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_
  *
  * The connected device is identified by the Connection_Handle parameter.
  *
- * If the periodic advertising train corresponding to the Sync_Handle parameter does not
- * exist, the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * This command may successfully complete after the periodic advertising synchronization
+ * information is queued for transmission but before it is actually sent. No indication is
+ * given as to how the recipient handled the information.
  *
- * If the Connection_Handle parameter does not identify a current connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the remote device has not indicated support for the Periodic Advertising Sync Transfer
- * - Recipient feature, the Controller shall return the error code Unsupported Remote
- * Feature (0x1A).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * Note: This command may successfully complete after the periodic advertising
- * synchronization information is queued for transmission but before it is actually sent.
- * No indication is given as to how the recipient handled the information.
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     Sync_Handle does not identify an existing periodic advertising    Unknown Advertising
+ *        train.                                                            Identifier (0x42)
+ * MC     Connection_Handle does not identify a current connection.         Unknown Connection
+ *                                                                          Identifier (0x02)
+ * MC     The remote device has not indicated support for the Periodic      Unsupported Remote
+ *        Advertising Sync Transfer – Recipient feature.                    Feature (0x1A)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -7953,7 +8191,7 @@ uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_
 
 /** @brief LE Periodic Advertising Set Info Transfer.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.90
  *
  * This command is used to instruct the Controller to send synchronization information
@@ -7968,22 +8206,25 @@ uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_
  *
  * The connected device is identified by the Connection_Handle parameter.
  *
- * If the advertising set corresponding to the Advertising_Handle parameter does not exist,
- * the Controller shall return the error code Unknown Advertising Identifier (0x42).
+ * This command may successfully complete after the periodic advertising synchronization
+ * information is queued for transmission but before it is actually sent. No indication is
+ * given as to how the recipient handled the information.
  *
- * If periodic advertising is not currently in progress for the advertising set, the Controller
- * shall return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Connection_Handle parameter does not identify a current connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the remote device has not indicated support for the Periodic Advertising Sync Transfer
- * - Recipient feature, the Controller shall return the error code Unsupported Remote
- * Feature (0x1A).
- *
- * Note: This command may successfully complete after the periodic advertising
- * synchronization information is queued for transmission but before it is actually sent.
- * No indication is given as to how the recipient handled the information.
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     Sync_Handle does not identify an existing periodic advertising    Unknown Advertising
+ *        train.                                                            Identifier (0x42)
+ * MC     Periodic advertising is not in progress for the advertising       Command Disallowed
+ *        set.                                                              (0x0C)
+ * MC     Connection_Handle does not identify a current connection.         Unknown Connection
+ *                                                                          Identifier (0x02)
+ * MC     The remote device has not indicated support for the Periodic      Unsupported Remote
+ *        Advertising Sync Transfer – Recipient feature.                    Feature (0x1A)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8002,7 +8243,7 @@ uint8_t sdc_hci_cmd_le_periodic_adv_set_info_transfer(const sdc_hci_cmd_le_perio
 
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.91
  *
  * This command is used to specify how the Controller will process periodic
@@ -8042,15 +8283,18 @@ uint8_t sdc_hci_cmd_le_periodic_adv_set_info_transfer(const sdc_hci_cmd_le_perio
  * HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command on the same
  * connection.
  *
- * If the Connection_Handle parameter does not identify a current connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host sets Mode to 0x03 and the Controller does not support the Periodic
- * Advertising ADI Support feature, then the Controller shall return an error which should
- * use the error code Unsupported Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host sets all the non-reserved bits of CTE_Type to 1, then the Controller should
- * return an error using the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                   Error code
+ * MC     Connection_Handle does not identify a current connection.   Unknown Connection
+ *                                                                    Identifier (0x02)
+ * M      Mode is 0x03 and the Controller does not support the        Unsupported Feature or
+ *        Periodic Advertising ADI Support feature.                   Parameter Value (0x11)
+ * RC     All non-reserved bits of CTE_Type are set to 1.             Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8069,7 +8313,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
 
 /** @brief LE Set Default Periodic Advertising Sync Transfer Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.92
  *
  * This command is used to specify the initial value for the
@@ -8098,12 +8342,16 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
  *
  * This command does not affect any existing connection.
  *
- * If the Host sets Mode to 0x03 and the Controller does not support the Periodic
- * Advertising ADI Support feature, then the Controller shall return an error which should
- * use the error code Unsupported Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Host sets all the non-reserved bits of CTE_Type to 1, then the Controller should
- * return an error using the error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                   Error code
+ * M      Mode is 0x03 and the Controller does not support the        Unsupported Feature or
+ *        Periodic Advertising ADI Support feature.                   Parameter Value (0x11)
+ * RC     All non-reserved bits of CTE_Type are set to 1.             Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8120,7 +8368,7 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
 
 /** @brief LE Read Buffer Size [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.2
  *
  * This command is used to read the maximum size of the data portion of ACL data
@@ -8139,7 +8387,7 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
  * the HCI_Read_Buffer_Size command to determine the size of the data buffers (shared
  * between BR/EDR and LE transports).
  *
- * Note: Both the HCI_Read_Buffer_Size command and the HCI_LE_Read_Buffer_Size
+ * Both the HCI_Read_Buffer_Size command and the HCI_LE_Read_Buffer_Size
  * command may return buffer length and number of packets parameter values that are
  * nonzero. This allows a Controller to offer different buffers and number of buffers for
  * BR/EDR data packets and LE data packets.
@@ -8176,7 +8424,7 @@ uint8_t sdc_hci_cmd_le_read_buffer_size_v2(sdc_hci_cmd_le_read_buffer_size_v2_re
 
 /** @brief LE Read ISO TX Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.96
  *
  * This command is used to read the TX_Time_Stamp and Time_Offset of a transmitted
@@ -8191,16 +8439,18 @@ uint8_t sdc_hci_cmd_le_read_buffer_size_v2(sdc_hci_cmd_le_read_buffer_size_v2_re
  * identifies a CIS or BIS that is transmitting unframed PDUs, the value of Time_Offset
  * returned shall be zero.
  *
- * If the Host issues this command with a connection handle that does not exist, or the
- * connection handle is not associated with a CIS or BIS, the Controller shall return the
- * error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command on an existing connection handle for a CIS or BIS
- * that is not configured for transmitting SDUs, the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command before an SDU has been transmitted by the Controller,
- * the Controller shall return the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     The connection handle does not exist or is not associated      Unknown Connection
+ *        with a CIS or BIS.                                             Identifier (0x02)
+ * MC     The connection handle is for a CIS or BIS that is not          Command Disallowed (0x0C)
+ *        configured for transmitting SDUs.
+ * MC     An SDU has not been transmitted by the Controller.             Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8219,7 +8469,7 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
 
 /** @brief LE Set CIG Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.97
  *
  * This command is used by a Central’s Host to create a CIG and to set the parameters of
@@ -8284,17 +8534,10 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
  *
  * The Max_SDU_C_To_P[i] parameter identifies the maximum size of an SDU from the
  * Central’s Host. If the CIS is unidirectional from Peripheral to Central, this parameter
- * shall be set to 0. If a CIS configuration that is being modified has a data path set in
- * the Central to Peripheral direction and the Host has specified that Max_SDU_C_To_P[i]
- * shall be set to zero, the Controller shall return the error code Command Disallowed
- * (0x0C).
- *
+ * shall be set to 0.
  * The Max_SDU_P_To_C[i] parameter identifies the maximum size of an SDU from the
  * Peripheral’s Host. If the CIS is unidirectional from Central to Peripheral, this parameter
- * shall be set to 0. If a CIS configuration that is being modified has a data path set in
- * the Peripheral to Central direction and the Host has specified that Max_SDU_P_To_C[i]
- * shall be set to zero, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * shall be set to 0.
  *
  * The PHY_C_To_P[i] parameter identifies which PHY to use for transmission from the
  * Central to the Peripheral. The Host shall set at least one bit in this parameter and the
@@ -8329,6 +8572,7 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
  * If the Status parameter is non-zero, then the state of the CIG and its CIS configurations
  * shall not be changed by the command. If the CIG did not already exist, it shall not be
  * created.
+ *
  * If Status is zero, then the Controller shall set each Connection_Handle[i] to the
  * connection handle corresponding to the CIS configuration specified in CIS_ID[i]. If the
  * same CIS_ID is being reconfigured, the same connection handle shall be returned.
@@ -8337,29 +8581,33 @@ uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t 
  * configuration of the CIS stored in a CIG when the CIG exists but the CIS with that
  * CIS_ID does not.
  *
- * If the Host issues this command when the CIG is not in the configurable state, the
- * Controller shall return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Host attempts to create a CIG or set parameters that exceed the maximum
- * supported resources in the Controller, the Controller shall return the error code Memory
- * Capacity Exceeded (0x07).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host attempts to set CIS parameters that exceed the maximum supported
- * connections in the Controller, the Controller shall return the error code Connection Limit
- * Exceeded (0x09).
- *
- * If the Host sets, in the PHY_C_To_P[i] or PHY_P_To_C[i] parameters, a bit for a PHY
- * that the Controller does not support, including a bit that is reserved for future use, the
- * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
- *
- * If the Controller does not support asymmetric PHYs and the Host sets PHY_C_To_P[i]
- * to a different value than PHY_P_To_C[i], the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
- *
- * If the Host specifies an invalid combination of CIS parameters, the Controller shall
- * return the error code Invalid HCI Command Parameters (0x12) or the error code
- * Unsupported Feature or Parameter Value (0x11); it should return the error code Invalid
- * HCI Command Parameters (0x12).
+ * <pre>
+ * Type   Condition                                            Error code
+ * MC     A CIS configuration that is being modified has a     Command Disallowed (0x0C)
+ *        data path set in the Central to Peripheral
+ *        direction and Max_SDU_C_To_P[i] is zero.
+ * MC     A CIS configuration that is being modified has a     Command Disallowed (0x0C)
+ *        data path set in the Peripheral to Central
+ *        direction and Max_SDU_P_To_C[i] is zero.
+ * MC     The CIG is not in the configurable state.            Command Disallowed (0x0C)
+ * MC     The resulting configuration would exceed the         Memory Capacity Exceeded (0x07)
+ *        maximum supported resources in the Controller.
+ * MC     The resulting configuration would exceed the         Connection Limit Exceeded (0x09)
+ *        maximum supported connections in the Controller.
+ * MC     In PHY_C_To_P[i] or PHY_P_To_C[i], a bit is set      Unsupported Feature or Parameter
+ *        for a PHY that the Controller does not support,      Value (0x11)
+ *        including a bit that is reserved for future use.
+ * MC     The Controller does not support asymmetric PHYs      Unsupported Feature or Parameter
+ *        and PHY_C_To_P[i] is set to a different value than   Value (0x11)
+ *        PHY_P_To_C[i].
+ * MC     The Host specifies an invalid combination of CIS     Invalid HCI Command Parameters
+ *        parameters.                                          (0x12) (recommended) OR Unsupported
+ *                                                             Feature or Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8378,7 +8626,7 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
 
 /** @brief LE Set CIG Parameters Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.98
  *
  * This command should only be used for testing purposes.
@@ -8486,29 +8734,28 @@ uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_
  * If Status is zero, then the Controller shall set Connection_Handle[i] to the connection
  * handle corresponding to the CIS configuration specified in CIS_ID[i]. If the same CIS_ID
  * is being reconfigured, the same connection handle shall be returned.
- * If the Host issues this command when the CIG is not in the configurable state, the
- * Controller shall return the error code Command Disallowed (0x0C).
  *
- * If the Host attempts to create a CIG or set parameters that exceed the maximum
- * supported resources in the Controller, the Controller shall return the error code Memory
- * Capacity Exceeded (0x07).
+ * Errors:
  *
- * If the Host attempts to set CIS parameters that exceed the maximum supported
- * connections in the Controller, the Controller shall return the error code Connection Limit
- * Exceeded (0x09).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host attempts to set an invalid combination of CIS parameters, the Controller
- * shall return the error code Invalid HCI Command Parameters (0x12) or the error code
- * Unsupported Feature or Parameter Value (0x11); it should return the error code Invalid
- * HCI Command Parameters (0x12).
- *
- * If the Host sets, in the PHY_C_To_P[i] or PHY_P_To_C[i] parameters, a bit for a PHY
- * that the Controller does not support, including a bit that is reserved for future use, the
- * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
- *
- * If the Controller does not support asymmetric PHYs and the Host sets PHY_C_To_P[i]
- * to a different value than PHY_P_To_C[i], the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
+ * <pre>
+ * Type   Condition                                            Error code
+ * MC     The CIG is not in the configurable state.            Command Disallowed (0x0C)
+ * MC     The resulting configuration would exceed the         Memory Capacity Exceeded (0x07)
+ *        maximum supported resources in the Controller.
+ * MC     The resulting configuration would exceed the         Connection Limit Exceeded (0x09)
+ *        maximum supported connections in the Controller.
+ * MC     In PHY_C_To_P[i] or PHY_P_To_C[i], a bit is set      Unsupported Feature or Parameter
+ *        for a PHY that the Controller does not support,      Value (0x11)
+ *        including a bit that is reserved for future use.
+ * MC     The Controller does not support asymmetric PHYs      Unsupported Feature or Parameter
+ *        and PHY_C_To_P[i] is set to a different value than   Value (0x11)
+ *        PHY_P_To_C[i].
+ * MC     The Host specifies an invalid combination of CIS     Invalid HCI Command Parameters
+ *        parameters.                                          (0x12) (recommended) OR Unsupported
+ *                                                             Feature or Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8527,7 +8774,7 @@ uint8_t sdc_hci_cmd_le_set_cig_params_test(const sdc_hci_cmd_le_set_cig_params_t
 
 /** @brief LE Create CIS.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.99
  *
  * This command is used by the Central’s Host to create one or more CISes using the
@@ -8550,44 +8797,53 @@ uint8_t sdc_hci_cmd_le_set_cig_params_test(const sdc_hci_cmd_le_set_cig_params_t
  * initiating the Connected Isochronous Stream Creation procedure (see [Vol 6] Part B,
  * Section 5.1.15).
  *
- * If any ACL_Connection_Handle[i] is not the handle of an existing ACL connection or any
- * CIS_Connection_Handle[i] is not the handle of a CIS or CIS configuration, the Controller
- * shall return the error code Unknown Connection Identifier (0x02).
- *
- * If the Host attempts to create a CIS that has already been created, the Controller shall
- * return the error code Connection Already Exists (0x0B).
- *
- * If two different elements of the CIS_Connection_Handle arrayed parameter identify the
- * same CIS, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
- *
- * If the Host issues this command before all the HCI_LE_CIS_Established events from
- * the previous use of the command have been generated, the Controller shall return the
- * error code Command Disallowed (0x0C).
- * If the Host issues this command on an ACL_Connection_Handle where the Controller is
- * the Peripheral, the Controller shall return the error code Command Disallowed (0x0C).
- *
  * Note: The order of the CIS connection handles in this command does not
  * relate to the order of connection handles in the return parameters of the
  * HCI_LE_Set_CIG_Parameters command or the HCI_LE_Set_CIG_Parameters_Test
  * command.
- *
- * If the Host issues this command when the Connected Isochronous Stream (Host
- * Support) feature bit (see [Vol 6] Part B, Section 4.6.27) is not set, the Controller shall
- * return the error code Command Disallowed (0x0C).
- *
- * If the Host specified an invalid combination of parameters in the
- * HCI_LE_Set_CIG_Parameters or HCI_LE_Set_CIG_Parameters_Test command that
- * created the CIS configuration, but the Controller could not detect the problem without
- * knowing the properties of the ACL connection associated with the CIS, then the
- * Controller shall return an error which should use the error code Unsupported Feature or
- * Parameter Value (0x11).
  *
  * Note: If an error is reported in the HCI_Command_Status event, it means that no
  * CIS is created and the Host cannot determine which CIS had the error. Therefore, in
  * the case of an error that only affects one CIS of several, reporting the error in the
  * HCI_LE_CIS_Established event for that CIS means that the remaining CISes are still
  * created and the Host can determine which CIS had the error.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                    Error code
+ * MC     An ACL_Connection_Handle[i] does not identify an existing ACL connection.    Unknown
+ *                                                                                     Connection
+ *                                                                                     Identifier
+ *                                                                                     (0x02)
+ * MC     A CIS_Connection_Handle[i] does not identify a CIS or CIS configuration.     Unknown
+ *                                                                                     Connection
+ *                                                                                     Identifier
+ *                                                                                     (0x02)
+ * MC     A CIS has already been created.                                              Connection
+ *                                                                                     Already
+ *                                                                                     Exists
+ *                                                                                     (0x0B)
+ * MC     Two different CIS_Connection_Handle[i] identify the same CIS.                Invalid HCI
+ *                                                                                     Command
+ *                                                                                     Parameters
+ *                                                                                     (0x12)
+ * MC     Not all of the HCI_LE_CIS_Established events from the previous use of the    Command
+ *        command have been generated.                                                 Disallowed
+ *                                                                                     (0x0C)
+ * MC     An ACL_Connection_Handle[i] identifies a connection where the Controller     Command
+ *        is the Peripheral.                                                           Disallowed
+ *                                                                                     (0x0C)
+ * MC     The Connected Isochronous Stream (Host Support) feature bit (see [Vol 6]     Command
+ *        Part B, Section 4.6.27) is not set.                                          Disallowed
+ *                                                                                     (0x0C)
+ * M      An invalid combination of parameters was specified in the                    Unsupported
+ *        HCI_LE_Set_CIG_Parameters or HCI_LE_Set_CIG_Parameters_Test command that     Feature or
+ *        created the CIS configuration, but the Controller could not detect the       Parameter
+ *        problem without knowing the properties of the ACL connection associated      Value
+ *        with the CIS.                                                                (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8607,7 +8863,7 @@ uint8_t sdc_hci_cmd_le_create_cis(const sdc_hci_cmd_le_create_cis_t * p_params);
 
 /** @brief LE Remove CIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.100
  *
  * This command is used by the Central’s Host to remove the CIG identified by CIG_ID.
@@ -8621,11 +8877,15 @@ uint8_t sdc_hci_cmd_le_create_cis(const sdc_hci_cmd_le_create_cis_t * p_params);
  * the Connection_Handles of the CIS configurations, which is equivalent to issuing the
  * HCI_LE_Remove_ISO_Data_Path command (see Section 7.8.110).
  *
- * If the Host tries to remove a CIG which is in the active state, then the Controller shall
- * return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Host issues this command with a CIG_ID that does not exist, the Controller shall
- * return the error code Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                         Error code
+ * MC     The CIG is in the active state.   Command Disallowed (0x0C)
+ * MC     The CIG_ID does not exist.        Unknown Connection Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8644,7 +8904,7 @@ uint8_t sdc_hci_cmd_le_remove_cig(const sdc_hci_cmd_le_remove_cig_t * p_params,
 
 /** @brief LE Accept CIS Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.101
  *
  * This command is used by the Peripheral’s Host to inform the Controller to accept the
@@ -8653,17 +8913,23 @@ uint8_t sdc_hci_cmd_le_remove_cig(const sdc_hci_cmd_le_remove_cig_t * p_params,
  * The command shall only be issued after an HCI_LE_CIS_Request event has occurred.
  * The event contains the Connection_Handle of the CIS.
  *
- * If the Peripheral’s Host issues this command with a Connection_Handle that does not
- * exist, or the Connection_Handle is not for a CIS, the Controller shall return the error
- * code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Peripheral's Host issues this command with a Connection_Handle for a CIS that
- * has already been established or that already has an HCI_LE_Accept_CIS_Request
- * or HCI_LE_Reject_CIS_Request command in progress, the Controller shall return the
- * error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Central’s Host issues this command, the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                                Error code
+ * MC     Connection_Handle does not identify a CIS.                               Unknown
+ *                                                                                 Connection
+ *                                                                                 Identifier
+ *                                                                                 (0x02)
+ * MC     Connection_Handle identifies a connection that has already been          Command
+ *        established or already has an HCI_LE_Accept_CIS_Request or               Disallowed
+ *        HCI_LE_Reject_CIS_Request command in progress.                           (0x0C)
+ * MC     The Host is a Central.                                                   Command
+ *                                                                                 Disallowed
+ *                                                                                 (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8682,7 +8948,7 @@ uint8_t sdc_hci_cmd_le_accept_cis_request(const sdc_hci_cmd_le_accept_cis_reques
 
 /** @brief LE Reject CIS Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.102
  *
  * This command is used by the Peripheral’s Host to inform the Controller to reject the
@@ -8696,16 +8962,23 @@ uint8_t sdc_hci_cmd_le_accept_cis_request(const sdc_hci_cmd_le_accept_cis_reques
  *
  * The Reason parameter indicates the reason for rejecting the CIS request.
  *
- * If the Peripheral's Host issues this command with a Connection_Handle that is not for a
- * CIS, the Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Peripheral's Host issues this command with a Connection_Handle for a CIS that
- * has already been established or that already has an HCI_LE_Accept_CIS_Request
- * or HCI_LE_Reject_CIS_Request command in progress, the Controller shall return the
- * error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Central’s Host issues this command, the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                                Error code
+ * MC     Connection_Handle does not identify a CIS.                               Unknown
+ *                                                                                 Connection
+ *                                                                                 Identifier
+ *                                                                                 (0x02)
+ * MC     Connection_Handle identifies a connection that has already been          Command
+ *        established or already has an HCI_LE_Accept_CIS_Request or               Disallowed
+ *        HCI_LE_Reject_CIS_Request command in progress.                           (0x0C)
+ * MC     The Host is a Central.                                                   Command
+ *                                                                                 Disallowed
+ *                                                                                 (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8724,7 +8997,7 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
 
 /** @brief LE Create BIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.103
  *
  * This command is used to create a BIG with one or more BISes (see [Vol 6] Part B,
@@ -8752,11 +9025,7 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
  *
  * The PHY parameter is a bit field that indicates the PHY used for transmission of PDUs
  * of BISes in the BIG. The Host shall set at least one bit in this parameter and the
- * Controller shall pick a PHY from the bits set. If the Host sets, in the PHY parameter,
- * a bit for a PHY that the Controller does not support, including a bit that is reserved
- * for future use, then the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
- *
+ * Controller shall pick a PHY from the bits set.
  * The Packing parameter is used to indicate the preferred method of arranging subevents
  * of multiple BISes. The subevents can be arranged in Sequential or Interleaved
  * arrangement. This is a recommendation to the Controller which it may ignore. This
@@ -8776,32 +9045,44 @@ uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_reques
  * the Broadcast_Code parameter shall be set to zero by the Host and ignored by the
  * Controller.
  *
- * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the maximum
- * value supported by the Controller, then it shall return the error code Rejected due to
- * Limited Resources (0x0D).
+ * Errors:
  *
- * If the Advertising_Handle does not identify a periodic advertising train, the periodic
- * advertising train is associated with another BIG, or the periodic advertising train has
- * responses and the Controller does not support PAwR trains associated with BIGs (see
- * [Vol 6] Part B, Section 4.4.6.9), then the Controller shall return the error code Unknown
- * Advertising Identifier (0x42).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command with a BIG_Handle for a BIG that is already created,
- * then the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Host specifies an invalid combination of BIG parameters, then the Controller shall
- * return an error which should use the error code Invalid HCI Command Parameters
- * (0x12).
- *
- * If the length of the associated periodic advertising, with the BIGInfo added to
- * the ACAD, is greater than the maximum that the Controller can transmit within
- * the periodic advertising interval (if periodic advertising is currently enabled) or the
- * Periodic_Advertising_Interval_Max for the advertising set (if currently disabled), then the
- * Controller shall return an error and should use the error code Packet Too Long (0x45).
- * If advertising on the LE Coded PHY, then the S=8 coding shall be assumed unless
- * the current advertising parameters require the use of S=2 for an advertising physical
- * channel, in which case the S=2 coding shall be assumed for that advertising physical
- * channel.
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     The PHY parameter contains a bit for a PHY that the Controller does not       Unsupporte
+ *        support or is reserved for future use.                                        d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     The Controller cannot create all BISes of the BIG or Num_BIS exceeds the      Rejected
+ *        maximum value supported by the Controller.                                    due to
+ *                                                                                      Limited
+ *                                                                                      Resources
+ *                                                                                      (0x0D)
+ * MC     Advertising_Handle does not identify a periodic advertising train,            Unknown Ad
+ *        identifies a periodic advertising train associated with another BIG, or       vertising
+ *        identifies a periodic advertising train that has responses and the            Identifier
+ *        Controller does not support PAwR.                                             (0x42)
+ * MC     BIG_Handle identifies a BIG that is already created.                          Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * M      The BIG parameters are incompatible.                                          Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * M      The length of the associated periodic advertising, with the BIGInfo added     Packet Too
+ *        to the ACAD, is greater than the maximum that the Controller can transmit     Long
+ *        within the periodic advertising interval (if periodic advertising is          (0x45)
+ *        enabled) or the Periodic_Advertising_Interval_Max for the advertising set
+ *        (if disabled). If advertising on the LE Coded PHY, then the S=8 coding
+ *        shall be assumed unless the current advertising parameters require the use
+ *        of S=2 for an advertising physical channel, in which case the S=2 coding
+ *        shall be assumed for that advertising physical channel.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8819,7 +9100,7 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
 
 /** @brief LE Create BIG Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.104
  *
  * This command should only be used for testing purposes.
@@ -8851,10 +9132,7 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
  *
  * The PHY parameter is a bit field that indicates the PHY used for transmission of PDUs
  * of BISes in the BIG. The Host shall set only one bit in this parameter and the Controller
- * shall use the PHY set by the Host. If the Host sets, in the PHY parameter, a bit for
- * a PHY that the Controller does not support, including a bit that is reserved for future
- * use, the Controller shall return the error code Unsupported Feature or Parameter Value
- * (0x11).
+ * shall use the PHY set by the Host.
  *
  * The Packing parameter indicates the method of arranging subevents of multiple
  * BISes. The subevents can be arranged in Sequential or Interleaved arrangement. This
@@ -8883,36 +9161,60 @@ uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
  * 0 (unencrypted), all 16 octets of the Broadcast_Code parameter shall be set to zero by
  * the Host and ignored by the Controller.
  *
- * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the maximum
- * value supported by the Controller, it shall return the error code Rejected due to Limited
- * Resources (0x0D).
- * If the Advertising_Handle does not identify a periodic advertising train, the periodic
- * advertising train is associated with another BIG, or the periodic advertising train has
- * responses and the Controller does not support PAwR trains associated with BIGs (see
- * [Vol 6] Part B, Section 4.4.6.9), the Controller shall return the error code Unknown
- * Advertising Identifier (0x42).
+ * Errors:
  *
- * If the Host issues this command with a BIG_Handle for a BIG that is already created,
- * the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the value of the Max_PDU, NSE, BN, IRC or PTO parameters exceeds the values
- * supported by the Controller, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
- *
- * If the Host specifies an invalid combination of BIG parameters, the Controller shall
- * return an error. If the value of the NSE parameter is not an integer multiple of BN,
- * or NSE is less than (IRC × BN), or the parameters are not in the specified range,
- * these errors shall use the error code Unsupported Feature or Parameter Value (0x11).
- * The errors in all other circumstances should use the error code Invalid HCI Command
- * Parameters (0x12).
- *
- * If the length of the associated periodic advertising, with the BIGInfo added to the
- * ACAD, is greater than the maximum that the Controller can transmit within the periodic
- * advertising interval, then the Controller shall return an error and should use the error
- * code Packet Too Long (0x45). If advertising on the LE Coded PHY, then the S=8 coding
- * shall be assumed unless the current advertising parameters require the use of S=2 for
- * an advertising physical channel, in which case the S=2 coding shall be assumed for that
- * advertising physical channel.
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     The PHY parameter contains a bit for a PHY that the Controller does not       Unsupporte
+ *        support or is reserved for future use.                                        d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     The Controller cannot create all BISes of the BIG or Num_BIS exceeds the      Rejected
+ *        maximum value supported by the Controller.                                    due to
+ *                                                                                      Limited
+ *                                                                                      Resources
+ *                                                                                      (0x0D)
+ * MC     Advertising_Handle does not identify a periodic advertising train,            Unknown Ad
+ *        identifies a periodic advertising train associated with another BIG, or       vertising
+ *        identifies a periodic advertising train that has responses and the            Identifier
+ *        Controller does not support PAwR.                                             (0x42)
+ * MC     BIG_Handle identifies a BIG that is already created.                          Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     Max_PDU, NSE, BN, IRC, or PTO exceeds the value supported by the              Unsupporte
+ *        Controller.                                                                   d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     NSE is not an integer multiple of BN or is less than IRC × BN.                Unsupporte
+ *                                                                                      d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     Any parameter is not in the specified range.                                  Unsupporte
+ *                                                                                      d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * M      The BIG parameters are incompatible in a way not covered by one of the        Invalid
+ *        previous two items.                                                           HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * M      The length of the associated periodic advertising, with the BIGInfo added     Packet Too
+ *        to the ACAD, is greater than the maximum that the Controller can transmit     Long
+ *        within the periodic advertising interval. If advertising on the LE Coded      (0x45)
+ *        PHY, then the S=8 coding shall be assumed unless the current advertising
+ *        parameters require the use of S=2 for an advertising physical channel, in
+ *        which case the S=2 coding shall be assumed for that advertising physical
+ *        channel.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -8931,7 +9233,7 @@ uint8_t sdc_hci_cmd_le_create_big_test(const sdc_hci_cmd_le_create_big_test_t * 
 
 /** @brief LE Terminate BIG.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.105
  *
  * This command is used to terminate a BIG identified by the BIG_Handle parameter.
@@ -8941,16 +9243,23 @@ uint8_t sdc_hci_cmd_le_create_big_test(const sdc_hci_cmd_le_create_big_test_t * 
  *
  * The Reason parameter is used to indicate the reason why the BIG is to be terminated.
  *
- * If the BIG_Handle does not identify a BIG, the Controller shall return the error code
- * Unknown Advertising Identifier (0x42).
+ * Errors:
  *
- * If the Controller is not the Isochronous Broadcaster for the BIG identified by
- * BIG_Handle, the Controller shall return the error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     BIG_Handle does not identify a BIG.                            Unknown Advertising
+ *                                                                       Identifier (0x42)
+ * MC     The Controller is not the Isochronous Broadcaster for the      Command Disallowed (0x0C)
+ *        BIG identified by BIG_Handle.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
  * When the Controller receives the HCI_LE_Terminate_BIG command, the Controller
  * sends the HCI_Command_Status event to the Host.
+ *
  * When the HCI_LE_Terminate_BIG command has completed, the
  * HCI_LE_Terminate_BIG_Complete event will be generated.
  *
@@ -8970,7 +9279,7 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
 
 /** @brief LE BIG Create Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.106
  *
  * This command is used to synchronize to a BIG described in the periodic advertising
@@ -8983,9 +9292,6 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
  * The Broadcast_Code parameter is a 16-octet field that is used to generate the session
  * key to encrypt or decrypt payloads of an encrypted BIS. Broadcast_Code shall be
  * ignored by the Controller if Encryption is set to 0x00.
- *
- * If Encryption is set to 0x00 for an encrypted BIG or is set to 0x01 for an unencrypted
- * BIG, then the Controller shall return the error Encryption Mode Not Acceptable (0x25).
  *
  * The MSE (Maximum Subevents) parameter is the maximum number of subevents that
  * a Controller should listen to for data payloads in each interval for a BIS. The Controller
@@ -9000,36 +9306,39 @@ uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_pa
  * The Num_BIS parameter contains the number of BISes specified in the BIS arrayed
  * parameter. The number of BISes requested may be less than the number of BISes in
  * the BIG.
+ *
  * The BIS arrayed parameter is a list of BIS_Numbers corresponding to BIS(es) in the
  * synchronized BIG. The list of BIS_Numbers shall be in ascending order and shall not
  * contain any duplicates.
  *
- * If the Sync_Handle does not exist, the Controller shall return the error code Unknown
- * Advertising Identifier (0x42).
+ * Errors:
  *
- * If the Host sends this command with a BIG_Handle that is already allocated, the
- * Controller shall return the error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the information describing the BIG does not specify a PHY supported by the
- * Controller or does not specify exactly one PHY, the Controller shall return the error
- * code Unsupported Feature or Parameter Value (0x11).
- *
- * If the Num_BIS parameter is greater than the total number of BISes in the BIG, the
- * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
- *
- * If MSE is greater than zero and less than the BN value for the BIS, then the Controller
- * should return the error code Invalid HCI Command Parameters (0x12).
- *
- * If the Host sends this command when the Controller is in the process of synchronizing
- * to any BIG, i.e. the HCI_LE_BIG_Sync_Established event has not been generated, the
- * Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Controller is unable to receive PDUs from the specified number of BISes in the
- * synchronized BIG, it shall return the error code Rejected Due To Limited Resources
- * (0x0D).
- *
- * If the Controller is already synchronized to the BIG specified by Sync_Handle, it shall
- * return an error which should use the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     Encryption is set to 0x00 for an encrypted BIG or is set to       Encryption Mode Not
+ *        0x01 for an unencrypted BIG.                                      Acceptable (0x25)
+ * MC     Sync_Handle does not exist.                                       Unknown Advertising
+ *                                                                          Identifier (0x42)
+ * MC     BIG_Handle identifies a BIG.                                      Command Disallowed
+ *                                                                          (0x0C)
+ * MC     The information describing the BIG does not specify a PHY         Unsupported Feature or
+ *        supported by the Controller or does not specify exactly one       Parameter Value (0x11)
+ *        PHY.
+ * MC     Num_BIS is greater than the total number of BISes in the BIG.     Unsupported Feature or
+ *                                                                          Parameter Value (0x11)
+ * RC     MSE is less than the BN value for the BIS.                        Invalid HCI Command
+ *                                                                          Parameters (0x12)
+ * MC     The Controller is in the process of synchronizing to any BIG      Command Disallowed
+ *        and the HCI_LE_BIG_Sync_Established event has not been            (0x0C)
+ *        generated.
+ * MC     The Controller is unable to receive PDUs from the specified       Rejected Due To
+ *        number of BISes in the synchronized BIG.                          Limited Resources
+ *                                                                          (0x0D).
+ * M      The Controller is already synchronized to the BIG specified by    Command Disallowed
+ *        Sync_Handle.                                                      (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9052,7 +9361,7 @@ uint8_t sdc_hci_cmd_le_big_create_sync(const sdc_hci_cmd_le_big_create_sync_t * 
 
 /** @brief LE BIG Terminate Sync.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.107
  *
  * This command is used to stop synchronizing or cancel the process of synchronizing
@@ -9061,12 +9370,17 @@ uint8_t sdc_hci_cmd_le_big_create_sync(const sdc_hci_cmd_le_big_create_sync_t * 
  * destroys the associated connection handles of the BISes in the BIG and removes the
  * data paths for all BISes in the BIG.
  *
- * If the Host issues this command with a BIG_Handle that does not exist, the Controller
- * shall return the error code Unknown Advertising Identifier (0x42).
+ * Errors:
  *
- * If the Host issues this command for a BIG which it is neither synchronized to nor in the
- * process of synchronizing to, then the Controller shall return the error code Command
- * Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     BIG_Handle does not identify a BIG.                                Unknown Advertising
+ *                                                                           Identifier (0x42)
+ * MC     BIG_Handle identifies a BIG which the Controller is neither        Command Disallowed
+ *        synchronized to nor in the process of synchronizing to.            (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9091,26 +9405,32 @@ uint8_t sdc_hci_cmd_le_big_terminate_sync(const sdc_hci_cmd_le_big_terminate_syn
 
 /** @brief LE Request Peer SCA.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.108
  *
  * This command is used to read the Sleep Clock Accuracy (SCA) of the peer device.
  *
  * The Connection_Handle parameter is the connection handle of the ACL connection.
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL the Controller shall return the error code Unknown
- * Connection Identifier (0x02).
- *
  * If the Host sends this command and the peer device does not support the Sleep
  * Clock Accuracy Updates feature, the Controller shall return the error code Unsupported
  * Feature or Parameter Value (0x11) in the HCI_LE_Request_Peer_SCA_Complete
  * event.
  *
- * If the Host issues this command when the Controller is aware (e.g., through a previous
- * feature exchange) that the peer device's Link Layer does not support the Sleep Clock
- * Accuracy Updates feature, the Controller shall return the error code Unsupported
- * Remote Feature (0x1A).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     Connection_Handle does not identify an ACL.                             Unknown
+ *                                                                                Connection
+ *                                                                                Identifier
+ *                                                                                (0x02)
+ * MC     The Controller is aware (e.g., through a previous feature exchange)     Unsupported
+ *        that the peer device's Link Layer does not support the Sleep Clock      Remote Feature
+ *        Accuracy Updates feature.                                               (0x1A)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9129,7 +9449,7 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
 
 /** @brief LE Setup ISO Data Path.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.109
  *
  * This command is used to identify and create the isochronous data path between
@@ -9143,15 +9463,6 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
  * The input and output directions are defined from the perspective of the Controller, so
  * "input" refers to data flowing from the Host to the Controller.
  *
- * If the Host issues this command more than once for the same Connection_Handle
- * and direction before issuing the HCI_LE_Remove_ISO_Data_Path command for that
- * Connection_Handle and direction, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the Host issues this command for a CIS on a Peripheral before it has issued the
- * HCI_LE_Accept_CIS_Request command for that CIS, then the Controller shall return
- * the error code Command Disallowed (0x0C).
- *
  * The Data_Path_Direction parameter specifies the direction for which the data path is
  * being configured.
  *
@@ -9160,18 +9471,6 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
  * 0x01 to 0xFE, the data path shall use a vendor-specific transport interface (e.g., a
  * PCM interface) with logical transport numbers. The meanings of these logical transport
  * numbers are vendor-specific.
- * If the Host issues this command for a vendor-specific data transport path that has
- * not been configured, the Controller shall return the error code Command Disallowed
- * (0x0C).
- *
- * If the Host attempts to set a data path with a Connection Handle that does not exist or
- * that is not for a CIS, CIS configuration, or BIS, the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
- *
- * If the Host attempts to set an output data path using a connection handle that is for an
- * Isochronous Broadcaster, for an input data path on a Synchronized Receiver, or for a
- * data path for the direction on a unidirectional CIS where BN is set to 0, the Controller
- * shall return the error code Command Disallowed (0x0C).
  *
  * The Codec_ID parameter specifies the coding format used over the air.
  *
@@ -9184,8 +9483,7 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
  * to transfer the corresponding data to the data path interface. The Host should use the
  * HCI_Read_Local_Supported_Controller_Delay command to obtain a suitable value for
  * Controller_Delay.
- *
- * Note: Controller vendors may provide additional guidance to the Host on how to
+ * Note: Controller vendors can provide additional guidance to the Host on how to
  * select a suitable Controller_Delay value from the range of values provided by the
  * HCI_Read_Local_Supported_Controller_Delay command for various configurations of
  * the data path interface.
@@ -9193,19 +9491,46 @@ uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t 
  * The Codec_Configuration parameter specifies codec-specific configuration information
  * for the specified direction.
  *
- * If the Host issues this command with Codec_Configuration_Length non-zero and
- * Codec_ID set to transparent air mode, the Controller shall return the error code Invalid
- * HCI Command Parameters (0x12).
+ * Errors:
  *
- * If the Host issues this command with codec-related parameters that exceed the
- * bandwidth and latency allowed on the established CIS or BIS identified by the
- * Connection_Handle parameter, the Controller shall return the error code Invalid HCI
- * Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command when the CIS or BIS identified by Connection_Handle
- * is in ISO Test mode (see Section 7.8.111, Section 7.8.112, and [Vol 6] Part B, Section 7)
- * for the specified Data_Path_Direction, then the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                                Error code
+ * MC     A data path for the same Connection_Handle and direction has been set    Command
+ *        up and not removed.                                                      Disallowed
+ *                                                                                 (0x0C)
+ * MC     Connection_Handle identifies a CIS on a Peripheral and the               Command
+ *        HCI_LE_Accept_CIS_Request command for that CIS has not completed         Disallowed
+ *        successfully.                                                            (0x0C)
+ * MC     The data transport path is vendor-specific and has not been              Command
+ *        configured.                                                              Disallowed
+ *                                                                                 (0x0C)
+ * MC     Connection Handle does not identify a CIS, CIS configuration, or BIS.    Unknown
+ *                                                                                 Connection
+ *                                                                                 Identifier
+ *                                                                                 (0x02)
+ * MC     Data_Path_Direction is output and Connection_Handle identifies an        Command
+ *        Isochronous Broadcaster.                                                 Disallowed
+ *                                                                                 (0x0C)
+ * MC     Data_Path_Direction is input and Connection_Handle identifies a          Command
+ *        Synchronized Receiver.                                                   Disallowed
+ *                                                                                 (0x0C)
+ * MC     Connection_Handle identifies a unidirectional CIS and                    Command
+ *        Data_Path_Direction is the direction where BN is set to 0.               Disallowed
+ *                                                                                 (0x0C)
+ * MC     Codec_Configuration_Length is non-zero and Codec_ID is set to            Invalid HCI
+ *        transparent air mode.                                                    Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     The codec-related parameters exceed the bandwidth and latency allowed    Invalid HCI
+ *        on the established CIS or BIS identified by Connection_Handle.           Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Connection_Handle identifies a CIS or BIS that is in ISO Test mode       Command
+ *        (see Section 7.8.111, Section 7.8.112, and [Vol 6] Part B, Section 7)    Disallowed
+ *        for the specified Data_Path_Direction.                                   (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9224,7 +9549,7 @@ uint8_t sdc_hci_cmd_le_setup_iso_data_path(const sdc_hci_cmd_le_setup_iso_data_p
 
 /** @brief LE Remove ISO Data Path.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.110
  *
  * This command is used to remove the input and/or output data path(s) associated with a
@@ -9233,13 +9558,17 @@ uint8_t sdc_hci_cmd_le_setup_iso_data_path(const sdc_hci_cmd_le_setup_iso_data_p
  * The Data_Path_Direction parameter specifies which directions are to have the data
  * path removed.
  *
- * If the Host issues this command with a Connection_Handle that does not exist or is not
- * for a CIS, CIS configuration, or BIS, the Controller shall return the error code Unknown
- * Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command for a data path that has not been set up (using the
- * HCI_LE_Setup_ISO_Data_Path command), the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                     Error code
+ * MC     Connection_Handle does not identify a CIS, CIS                Unknown Connection
+ *        configuration, or BIS.                                        Identifier (0x02)
+ * MC     The data path has not been set up (using the                  Command Disallowed (0x0C)
+ *        HCI_LE_Setup_ISO_Data_Path command).
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9258,7 +9587,7 @@ uint8_t sdc_hci_cmd_le_remove_iso_data_path(const sdc_hci_cmd_le_remove_iso_data
 
 /** @brief LE ISO Transmit Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.111
  *
  * This command should only be used in the ISO Test mode and only for testing purposes.
@@ -9269,16 +9598,21 @@ uint8_t sdc_hci_cmd_le_remove_iso_data_path(const sdc_hci_cmd_le_remove_iso_data
  *
  * The Payload_Type parameter defines the configuration of SDUs in the payload.
  *
- * If the Host issues this command with a connection handle that does not exist, or the
- * Connection_Handle parameter is not associated with a CIS or a BIS, then the Controller
- * shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command when the value of the transmit BN parameter of the
- * CIS is set to zero, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host has set the input data path for the CIS or BIS identified by the connection
- * handle, the Controller shall return the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                  Error code
+ * MC     Connection_Handle does not identify a CIS or a BIS.        Unknown Connection Identifier
+ *                                                                   (0x02)
+ * MC     Connection_Handle identifies a CIS where the transmit BN   Unsupported Feature or
+ *        is zero.                                                   Parameter Value (0x11)
+ * MC     Connection_Handle identifies a BIS which is a              Unsupported Feature or
+ *        Synchronized Receiver.                                     Parameter Value (0x11)
+ * MC     Connection_Handle identifies a CIS or BIS where the        Command Disallowed (0x0C)
+ *        input data path is already set up.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9297,7 +9631,7 @@ uint8_t sdc_hci_cmd_le_iso_transmit_test(const sdc_hci_cmd_le_iso_transmit_test_
 
 /** @brief LE ISO Receive Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.112
  *
  * This command should only be used in the ISO Test mode and only for testing purposes.
@@ -9310,17 +9644,21 @@ uint8_t sdc_hci_cmd_le_iso_transmit_test(const sdc_hci_cmd_le_iso_transmit_test_
  *
  * The Payload_Type parameter defines the configuration of SDUs in the payload.
  *
- * If the Host issues this command with a connection handle that is not for an established
- * CIS or a BIS, the Controller shall return the error code Unknown Connection Identifier
- * (0x02).
+ * Errors:
  *
- * If the Host issues this command when the value of the receive BN parameter of the CIS
- * or BIS is set to zero, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host has set the output data path for the CIS or BIS identified by the
- * Connection_Handle parameter, the Controller shall return the error code Command
- * Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                  Error code
+ * MC     Connection_Handle does not identify an established CIS     Unknown Connection Identifier
+ *        or a BIS.                                                  (0x02)
+ * MC     Connection_Handle identifies a CIS where the receive BN    Unsupported Feature or
+ *        is zero.                                                   Parameter Value (0x11)
+ * MC     Connection_Handle identifies a BIS which is an             Unsupported Feature or
+ *        Isochronous Broadcaster.                                   Parameter Value (0x11)
+ * MC     Connection_Handle identifies a CIS or BIS where the        Command Disallowed (0x0C)
+ *        output data path is already set up.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9339,7 +9677,7 @@ uint8_t sdc_hci_cmd_le_iso_receive_test(const sdc_hci_cmd_le_iso_receive_test_t 
 
 /** @brief LE ISO Read Test Counters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.113
  *
  * This command should only be used in the ISO Test mode and only for testing purposes.
@@ -9351,13 +9689,17 @@ uint8_t sdc_hci_cmd_le_iso_receive_test(const sdc_hci_cmd_le_iso_receive_test_t 
  * The Received_SDU_Count, Missed_SDU_Count and Failed_SDU_Count parameters
  * are set in the ISO Receive Test mode (see [Vol 6] Part B, Section 7.2).
  *
- * If the Host issues this command with a Connection_Handle parameter that is not for an
- * established CIS or a BIS, the Controller shall return the error code Unknown Connection
- * Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command for a CIS or BIS that is not configured in the ISO
- * Receive Test mode, the Controller shall return the error code Unsupported Feature or
- * Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                   Error code
+ * MC     Connection_Handle does not identify an established CIS or   Unknown Connection
+ *        a BIS.                                                      Identifier (0x02)
+ * MC     Connection_Handle identifies a CIS or BIS that is not       Unsupported Feature or
+ *        configured in the ISO Receive Test mode.                    Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9376,7 +9718,7 @@ uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test
 
 /** @brief LE ISO Test End.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.114
  *
  * This command should only be used in the ISO Test mode and only for testing purposes.
@@ -9392,13 +9734,17 @@ uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test
  * Receive Test mode, the return parameters contain the values of the test counters as
  * defined in [Vol 6] Part B, Section 7.
  *
- * If the Host issues this command with a Connection_Handle that is not for an established
- * CIS or a BIS, the Controller shall return the error code Unknown Connection Identifier
- * (0x02).
+ * Errors:
  *
- * If the Host issues this command for a CIS or BIS that is not configured in the ISO
- * Transmit or Receive Test mode, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     Connection_Handle does not identify an established CIS or a    Unknown Connection
+ *        BIS.                                                           Identifier (0x02)
+ * MC     Connection_Handle identifies a CIS or BIS that is not          Unsupported Feature or
+ *        configured in the ISO Transmit or Receive Test mode.           Parameter Value (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9417,7 +9763,7 @@ uint8_t sdc_hci_cmd_le_iso_test_end(const sdc_hci_cmd_le_iso_test_end_t * p_para
 
 /** @brief LE Set Host Feature [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.115
  *
  * This command is used by the Host to set or clear a bit controlled by the Host in the Link
@@ -9427,15 +9773,21 @@ uint8_t sdc_hci_cmd_le_iso_test_end(const sdc_hci_cmd_le_iso_test_end_t * p_para
  *
  * The Bit_Value parameter specifies whether the feature is enabled or disabled.
  *
- * If Bit_Number specifies a feature bit that is not controlled by the Host, the Controller
- * shall return the error code Unsupported Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If Bit_Value is set to 0x01 and Bit_Number specifies a feature bit that requires support of
- * a feature that the Controller does not support, the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command while the Controller has a connection to another
- * device, the Controller shall return the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     Bit_Number specifies a feature bit that is not controlled by the   Unsupported Feature
+ *        Host.                                                              or Parameter Value
+ *                                                                           (0x11)
+ * MC     Bit_Value is set to 0x01 and Bit_Number specifies a feature bit    Unsupported Feature
+ *        that requires support of a feature that the Controller does not    or Parameter Value
+ *        support.                                                           (0x11)
+ * MC     The Controller has a connection to another device.                 Command Disallowed
+ *                                                                           (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9452,7 +9804,7 @@ uint8_t sdc_hci_cmd_le_set_host_feature(const sdc_hci_cmd_le_set_host_feature_t 
 
 /** @brief LE Read ISO Link Quality.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.116
  *
  * This command returns the values of various counters related to link quality that are
@@ -9497,9 +9849,15 @@ uint8_t sdc_hci_cmd_le_set_host_feature(const sdc_hci_cmd_le_set_host_feature_t 
  *
  * Table 7.4: Isochronous streams link quality counters
  *
- * If the Connection_Handle parameter does not identify a current CIS connection or a BIS
- * that the Controller is synchronized to, the Controller shall return the error code Unknown
- * Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     Connection_Handle does not identify a current CIS connection or    Unknown Connection
+ *        a BIS that the Controller is synchronized to.                      Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9518,19 +9876,24 @@ uint8_t sdc_hci_cmd_le_read_iso_link_quality(const sdc_hci_cmd_le_read_iso_link_
 
 /** @brief LE Enhanced Read Transmit Power Level.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.117
  *
  * This command is used to read the current and maximum transmit power levels of the
  * local Controller on the ACL connection identified by the Connection_Handle parameter
  * and the PHY indicated by the PHY parameter.
  *
- * If the Host sets PHY to a value that the Controller does not support, including a value
- * that is reserved for future use, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     PHY specifies a value that the Controller does not support,    Unsupported Feature or
+ *        including a value that is reserved for future use.             Parameter Value (0x11)
+ * MC     Connection_Handle does not identify a current ACL.             Unknown Connection
+ *                                                                       Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9549,7 +9912,7 @@ uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_e
 
 /** @brief LE Read Remote Transmit Power Level.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.118
  *
  * This command is used to read the transmit power level used by the remote Controller
@@ -9564,12 +9927,17 @@ uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_e
  * Controller shall initiate a new Power Control Request procedure to obtain the remote
  * transmit power level.
  *
- * If the Host sets PHY to a value that the Controller does not support, including a value
- * that is reserved for future use, the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                      Error code
+ * MC     PHY specifies a value that the Controller does not support,    Unsupported Feature or
+ *        including a value that is reserved for future use.             Parameter Value (0x11)
+ * MC     Connection_Handle does not identify a current ACL.             Unknown Connection
+ *                                                                       Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9588,7 +9956,7 @@ uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_rea
 
 /** @brief LE Set Path Loss Reporting Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.119
  *
  * This command is used to set the path loss threshold reporting parameters for the ACL
@@ -9597,14 +9965,6 @@ uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_rea
  * The path loss threshold-based mechanism is described in [Vol 6] Part B, Section 4.5.16.
  * For each zone boundary, the upwards boundary shall equal the threshold plus the
  * hysteresis and the downwards boundary shall equal the threshold minus the hysteresis.
- *
- * If the Host issues this command with High_Threshold+High_Hysteresis greater than
- * 0xFF or with Low_Threshold less than Low_Hysteresis, the Controller shall return the
- * error code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command with Low_Threshold greater than High_Threshold
- * or with Low_Threshold+Low_Hysteresis greater than High_Threshold–High_Hysteresis,
- * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
  *
  * The Min_Time_Spent parameter indicates the minimum time that the Controller shall
  * observe the path loss has crossed the threshold before the Controller generates an
@@ -9619,8 +9979,23 @@ uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_rea
  * supported by the Controller. However, the Host can reissue this command with suitable
  * parameters whenever a PHY switch is detected.
  *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                    Error code
+ * MC     High_Threshold + High_Hysteresis is greater than 0xFF.       Invalid HCI Command
+ *                                                                     Parameters (0x12)
+ * MC     Low_Threshold is less than Low_Hysteresis.                   Invalid HCI Command
+ *                                                                     Parameters (0x12)
+ * MC     Low_Threshold is greater than High_Threshold.                Invalid HCI Command
+ *                                                                     Parameters (0x12)
+ * MC     Low_Threshold + Low_Hysteresis is greater than               Invalid HCI Command
+ *        High_Threshold – High_Hysteresis.                            Parameters (0x12)
+ * MC     Connection_Handle does not identify a current ACL.           Unknown Connection
+ *                                                                     Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9648,7 +10023,7 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_params(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Path Loss Reporting Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.120
  *
  * This command is used to enable or disable path loss reporting for the ACL connection
@@ -9660,15 +10035,20 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_params(const sdc_hci_cmd_le_set_p
  *
  * Path loss reporting is disabled when the connection is first created.
  *
- * If the Host issues this command before it has issued the
- * HCI_LE_Set_Path_Loss_Reporting_Parameters command on this connection, the
- * Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
- *
  * Enabling path loss monitoring when it is already enabled or disabling path loss
  * monitoring when it is already disabled has no effect.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                        Error code
+ * MC     HCI_LE_Set_Path_Loss_Reporting_Parameters has not been           Command Disallowed
+ *        successfully issued on this connection.                          (0x0C)
+ * MC     Connection_Handle does not identify a current ACL.               Unknown Connection
+ *                                                                         Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9702,7 +10082,7 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Transmit Power Reporting Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.121
  *
  * This command is used to enable or disable the reporting to the local Host of transmit
@@ -9715,8 +10095,15 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
  *
  * Reporting is disabled when the connection is first created.
  *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                           Error code
+ * MC     Connection_Handle does not identify a current       Unknown Connection Identifier
+ *        ACL.                                                (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9743,7 +10130,7 @@ uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_
 
 /** @brief LE Transmitter Test [v4].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.29
  *
  * This command is used to start a test where the IUT generates test reference packets
@@ -9799,7 +10186,7 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v4(const sdc_hci_cmd_le_transmitter_test
 
 /** @brief LE Set Data Related Address Changes.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.122
  *
  * This command specifies circumstances when the Controller shall refresh any
@@ -9811,13 +10198,20 @@ uint8_t sdc_hci_cmd_le_transmitter_test_v4(const sdc_hci_cmd_le_transmitter_test
  * default when an advertising set is created, or if legacy advertising commands (see
  * Section 3.1.1) are used, is for all bits to be clear.
  *
- * If extended advertising commands (see Section 3.1.1) are being used and the
- * advertising set corresponding to the Advertising_Handle parameter does not exist, or
- * if no command specified in Table 3.2 has been used, then the Controller shall return the
- * error code Unknown Advertising Identifier (0x42).
- *
  * If legacy advertising commands are being used, the Controller shall ignore the
  * Advertising_Handle parameter.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                            Error code
+ * MC     No command specified in Table 3.2 has been issued.                   Unknown Advertising
+ *                                                                             Identifier (0x42)
+ * MC     The extended advertising commands (see Section 3.1.1) are being      Unknown Advertising
+ *        used and Advertising_Handle does not identify an advertising set.    Identifier (0x42)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9834,27 +10228,30 @@ uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set
 
 /** @brief LE Set Default Subrate.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.123
  *
  * This command is used by the Host to set the initial values for the acceptable
- * parameters for subrating requests, as defined by the HCI_LE Subrate_Request
+ * parameters for subrating requests, as defined by the HCI_LE_Subrate_Request
  * command (see Section 7.8.124), for all future ACL connections where the Controller
  * is the Central. This command does not affect any existing connection.
  *
  * The parameters have the same meanings as those in the HCI_LE_Subrate_Request
  * command.
  *
- * If the Host issues this command with Subrate_Max × (Max_Latency + 1) greater than
- * 500, then the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
+ * Errors:
  *
- * If the Host issues this command with Subrate_Max less than Subrate_Min, then the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command with Continuation_Number greater than or equal to
- * Subrate_Max, then the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12).
+ * <pre>
+ * Type   Condition                                              Error code
+ * MC     Subrate_Max × (Max_Latency + 1) is greater than 500.   Invalid HCI Command Parameters
+ *                                                               (0x12)
+ * MC     Subrate_Max is less than Subrate_Min.                  Invalid HCI Command Parameters
+ *                                                               (0x12)
+ * MC     Continuation_Number is greater than or equal to        Invalid HCI Command Parameters
+ *        Subrate_Max.                                           (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9871,7 +10268,7 @@ uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subr
 
 /** @brief LE Subrate Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.124
  *
  * This command is used by a Central or a Peripheral to request a change to the subrating
@@ -9923,28 +10320,27 @@ uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subr
  *   (maximum subrate factor - 1).
  * • The connection supervision timeout shall be equal to Supervision_Timeout.
  *
- * If the Connection_Handle parameter does not identify a current ACL connection, the
- * Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command with parameters such that Subrate_Max ×
- * (Max_Latency + 1) is greater than 500 or the current connection interval × Subrate_Max
- * × (Max_Latency + 1) is greater than or equal to half the Supervision_Timeout
- * parameter, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command with Subrate_Max less than Subrate_Min, the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command with Continuation_Number greater than or equal to
- * Subrate_Max, then the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12).
- *
- * If the Central's Host issues this command when the Connection Subrating (Host
- * Support) bit is not set in the Peripheral's FeatureSet, the Controller shall return the
- * error code Unsupported Remote Feature (0x1A).
- *
- * If a Connection Rate Request procedure or a Connection Rate Update procedure is in
- * progress, then the Controller shall return the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                           Error code
+ * MC     Connection_Handle does not identify a current ACL.                  Unknown Connection
+ *                                                                            Identifier (0x02)
+ * MC     Subrate_Max is less than Subrate_Min.                               Invalid HCI Command
+ *                                                                            Parameters (0x12)
+ * MC     Continuation_Number is greater than or equal to Subrate_Max.        Invalid HCI Command
+ *                                                                            Parameters (0x12)
+ * MC     The Controller is the Central and the Connection Subrating (Host    Unsupported Remote
+ *        Support) bit is not set in the Peripheral's FeatureSet.             Feature (0x1A)
+ * MC     Subrate_Max × (Max_Latency + 1) > 500                               Invalid HCI Command
+ *                                                                            Parameters (0x12)
+ * MC     Current connection interval × Subrate_Max × (Max_Latency + 1) ≥     Invalid HCI Command
+ *        Supervision_Timeout ÷ 2                                             Parameters (0x12)
+ * MC     Connection Rate Request or Connection Rate Update procedure is in   Command Disallowed
+ *        progress                                                            (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -9963,7 +10359,7 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
 
 /** @brief LE Set Extended Advertising Parameters [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.53
  *
  * This command is used by the Host to set the advertising parameters.
@@ -9991,7 +10387,6 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  *  Scannable undirected          ADV_SCAN_IND           0b00000000_00010010   Supported
  *  Non-connectable and non-      ADV_NON-               0b00000000_00010000   Supported
  *  scannable undirected          CONN_IND
- *
  * Table 7.3: Advertising_Event_Properties values for legacy PDUs
  *
  * • If extended advertising PDU types are being used (bit 4 = 0), then the advertisement
@@ -9999,16 +10394,12 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  *   and high duty cycle directed connectable advertising (≤ 3.75 ms advertising interval)
  *   shall not be used (bit 3 = 0).
  *
- * If the Advertising_Event_Properties parameter does not describe an event type
- * supported by the Controller, contains an invalid bit combination, or specifies a type
- * that does not support advertising data when the advertising set already contains some,
- * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
  * The parameters beginning with “Secondary” are only valid when extended advertising
  * PDU types are being used (bit 4 = 0).
  *
  * The Own_Address_Type parameter shall be ignored for undirected anonymous
  * advertising (bit 2 = 0 and bit 5 = 1).
+ *
  * If Directed advertising is selected, the Peer_Address_Type and Peer_Address shall be
  * valid and the Advertising_Filter_Policy parameter shall be ignored.
  *
@@ -10020,11 +10411,6 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  * For high duty cycle connectable directed advertising event type (ADV_DIRECT_IND),
  * the Primary_Advertising_Interval_Min and Primary_Advertising_Interval_Max
  * parameters are not used and shall be ignored.
- *
- * If the primary advertising interval range provided by the Host
- * (Primary_Advertising_Interval_Min, Primary_Advertising_Interval_Max) does not
- * overlap with the advertising interval range supported by the Controller, then the
- * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
  *
  * The Primary_Advertising_Channel_Map is a bit field that indicates the advertising
  * channel indices that shall be used when transmitting advertising packets. At least one
@@ -10050,24 +10436,14 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  * advertising PDUs are being used, the Primary_Advertising_PHY shall indicate the LE
  * 1M PHY. The Secondary_Advertising_PHY parameter indicates the PHY on which the
  * advertising packets are be transmitted on the secondary advertising physical channel.
- * If the Host specifies a PHY that is not supported by the Controller, including a value
- * that is reserved for future use, it should return the error code Unsupported Feature or
- * Parameter Value (0x11). If Constant Tone Extensions are enabled for the advertising set
- * and Secondary_Advertising_PHY specifies a PHY that does not allow Constant Tone
- * Extensions, the Controller shall return the error code Command Disallowed (0x0C).
  *
  * If the Primary_Advertising_PHY indicates the LE Coded PHY, then the
  * Primary_Advertising_PHY_Options shall indicate the Host's preference or requirement
- * concerning coding scheme. Otherwise, Primary_Advertising_PHY_Options shall
- * be ignored. If the Secondary_Advertising_PHY indicates the LE Coded PHY,
- * then the Secondary_Advertising_PHY_Options shall indicate the Host's preference
- * or requirement concerning coding scheme (including for periodic advertising).
- * Otherwise, Secondary_Advertising_PHY_Options shall be ignored. If the Host
- * specifies that it requires a specific coding (i.e., value 0x03 or 0x04) in the
- * Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options and the
- * Controller supports the LE Feature (Advertising Coding Selection) but is currently
- * unable to provide all the required settings, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * concerning coding scheme. Otherwise, Primary_Advertising_PHY_Options shall be
+ * ignored. If the Secondary_Advertising_PHY indicates the LE Coded PHY, then
+ * the Secondary_Advertising_PHY_Options shall indicate the Host's preference or
+ * requirement concerning coding scheme (including for periodic advertising). Otherwise,
+ * Secondary_Advertising_PHY_Options shall be ignored.
  *
  * The Secondary_Advertising_Max_Skip parameter is the maximum number of
  * advertising events that can be skipped before the AUX_ADV_IND can be sent.
@@ -10088,45 +10464,79 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  * level will vary between packets (e.g., because of frequency-dependent properties of the
  * transmitter) then the value should be the best estimate of the maximum power used.
  *
- * If the Host issues this command when advertising is enabled for the specified
- * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Host issues this command when periodic advertising is enabled for the specified
- * advertising set and connectable, scannable, legacy, or anonymous advertising is
- * specified, the Controller shall return the error code Invalid HCI Command Parameters
- * (0x12).
- *
- * If periodic advertising is enabled for the advertising set and the
- * Secondary_Advertising_PHY parameter does not specify the PHY currently being
- * used for the periodic advertising, the Controller shall return the error code Command
- * Disallowed (0x0C).
- *
- * If the Advertising_Handle does not identify an existing advertising set and the Controller
- * is unable to support a new advertising set at present, the Controller shall return the error
- * code Memory Capacity Exceeded (0x07).
- *
- * If the advertising set already contains advertising data or scan response data, extended
- * advertising is being used, and the length of the data is greater than the maximum that
- * the Controller can transmit within the longest possible auxiliary advertising segment
- * consistent with the parameters, the Controller shall return the error code Packet Too
- * Long (0x45). If advertising on the LE Coded PHY, the S=8 coding shall be assumed
- * unless the current advertising parameters require the use of S=2 for an advertising
- * physical channel, in which case the S=2 coding shall be assumed for that advertising
- * physical channel.
- *
- * If the Controller does not support the LE Feature (Advertising Coding
- * Selection) and the Host does not set both Primary_Advertising_PHY_Options and
- * Secondary_Advertising_PHY_Options to zero, the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
- *
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                   Value
- *  Primary_Advertising_PHY_Options                                             0x00
- *  Secondary_Advertising_PHY_Options                                           0x00
+ *  Parameter                                                                            Value
+ *  Primary_Advertising_PHY_Options                                                      0x00
+ *  Secondary_Advertising_PHY_Options                                                    0x00
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Event_Properties does not describe an event type supported by     Invalid
+ *        the Controller or contains an invalid bit combination.                        HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Advertising_Event_Properties specifies an event type that does not support    Invalid
+ *        advertising data and the advertising set already contains data.               HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     The primary advertising interval range defined by                             Unsupporte
+ *        Primary_Advertising_Interval_Min and Primary_Advertising_Interval_Max does    d Feature
+ *        not overlap the advertising interval range supported by the Controller.       or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * RC     Primary_Advertising_PHY specifies a PHY that the Controller does not          Unsupporte
+ *        support or is reserved for future use.                                        d Feature
+ *                                                                                      or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     The advertising set enables Constant Tone Extensions but                      Command
+ *        Secondary_Advertising_PHY specifies a PHY that does not allow Constant Tone   Disallowed
+ *        Extensions.                                                                   (0x0C)
+ * MC     Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options is set   Command
+ *        to 0x03 or 0x04 and the controller supports the Advertising Coding            Disallowed
+ *        Selection feature but is unable to provide all the required settings.         (0x0C)
+ * MC     Advertising is enabled for the specified advertising set.                     Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     Periodic advertising is enabled for an advertising set that is connectable,   Invalid
+ *        scannable, legacy, or anonymous advertising.                                  HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Periodic advertising is enabled for the advertising set and                   Command
+ *        Secondary_Advertising_PHY does not specify the PHY being used for that        Disallowed
+ *        periodic advertising.                                                         (0x0C)
+ * MC     Advertising_Handle is not an existing advertising set and the controller is   Memory
+ *        not able to support a new advertising set.                                    Capacity
+ *                                                                                      Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set already contains advertising data or scan response        Packet Too
+ *        data, extended advertising is being used, and the length of the data is       Long
+ *        greater than the maximum that the Controller can transmit within the          (0x45)
+ *        longest possible auxiliary advertising segment consistent with the
+ *        parameters. If advertising on the LE Coded PHY, the S=8 coding shall be
+ *        assumed unless the current advertising parameters require the use of S=2
+ *        for an advertising physical channel, in which case the S=2 coding shall be
+ *        assumed for that advertising physical channel.
+ * MC     The Controller does not support the Advertising Coding Selection feature      Unsupporte
+ *        and Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options      d Feature
+ *        are not zero.                                                                 or
+ *                                                                                      Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10145,7 +10555,7 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_pa
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.125
  *
  * This command is used by the Host to set the data for one or more subevents of PAwR
@@ -10157,25 +10567,17 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_pa
  * separate commands, the first command can contain either subevent.
  *
  * The Advertising_Handle parameter identifies the advertising set whose periodic
- * advertising subevent data is being set. If the corresponding advertising set does not
- * already exist, then the Controller shall return the error code Unknown Advertising
- * Identifier (0x42). If the corresponding advertising set exists but has not been configured
- * for Periodic Advertising with Responses, then the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * advertising subevent data is being set.
  *
  * The Num_Subevents_With_Data parameter is the number of subevent data contained
  * in the parameter arrays.
  *
  * The Subevent[i] parameter identifies the subevent of the PAwR that is being set.
- * If the Host provides a subevent value that is outside of the range of subevents
- * requested using the HCI_LE_Periodic_Advertising_Subevent_Data_Request event,
- * then the Controller shall return the error code Command Disallowed (0x0C). If two
- * elements of the array specify the same subevent, then the Controller shall return an
- * error code which should be Invalid HCI Command Parameters (0x12).
  *
  * The Response_Slot_Start[i] and Response_Slot_Count[i] parameters identify the
  * starting response slot and the number of response slots that are expected to be used in
  * this subevent.
+ *
  * Note: If the Host does not expect any responses in a subevent, then it can
  * set Response_Slot_Count[i] for that subevent to 0. If the Host expects one or
  * more responses in a future subevent, then it can set Response_Slot_Start[i] and
@@ -10188,20 +10590,50 @@ uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_pa
  * The Subevent_Data[i] parameter contains the advertising data to be transmitted in
  * the subevent of the advertising set. If the combined data length is greater than the
  * maximum that the Controller can transmit within the current subevent interval, then all
- * data shall be discarded and the Controller shall return the error code Packet Too Long
- * (0x45). If advertising on the LE Coded PHY, then the S=8 coding shall be assumed
- * unless the current advertising parameters require the use of S=2 for an advertising
- * physical channel, in which case the S=2 coding shall be assumed for that advertising
- * physical channel.
+ * data shall be discarded.
  *
  * If the Subevent_Data cannot be transmitted because, for example, the subevent where
  * this data would have been sent has already passed or is too early, then the Controller
- * shall return the error code Too Late (0x46) or Too Early (0x47) and discard the data.
+ * shall discard the data.
  *
- * If the Host sends this command without the Controller having issued an
- * HCI_LE_Periodic_Advertising_Subevent_Data_Request event, or sends it twice for the
- * same subevent of the same periodic advertising event, then the Controller shall return
- * an error which should use the error code Command Disallowed (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * MC     Advertising_Handle identifies an advertising set that has not been            Command
+ *        configured for Periodic Advertising with Responses.                           Disallowed
+ *                                                                                      (0x0C)
+ * MC     Subevent[i] is outside of the range of subevents requested using the          Command
+ *        HCI_LE_Periodic_Advertising_Subevent_Data_Request event.                      Disallowed
+ *                                                                                      (0x0C)
+ * M      Two elements of Subevent specify the same subevent.                           Invalid
+ *                                                                                      HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     The combined data length of Subevent is greater than the maximum that the     Packet Too
+ *        Controller can transmit within the current subevent interval. If              Long
+ *        advertising on the LE Coded PHY, then the S=8 coding shall be assumed         (0x45)
+ *        unless the current advertising parameters require the use of S=2 for an
+ *        advertising physical channel, in which case the S=2 coding shall be assumed
+ *        for that advertising physical channel.
+ * MC     The Subevent_Data cannot be transmitted because, for example, the subevent    Too Late
+ *        where this data would have been sent has already passed.                      (0x46)
+ * MC     The Subevent_Data cannot be transmitted because, for example, the subevent    Too Early
+ *        where this data would have been sent is too early.                            (0x47)
+ * M      No HCI_LE_Periodic_Advertising_Subevent_Data_Request event has been issued.   Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * M      This command is sent twice for the same subevent of the same periodic         Command
+ *        advertising event.                                                            Disallowed
+ *                                                                                      (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10220,7 +10652,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_subevent_data(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Periodic Advertising Response Data.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.126
  *
  * This command is used by the Host to set the data for a response slot in a specific
@@ -10243,17 +10675,29 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_subevent_data(const sdc_hci_cmd_le_set_p
  * significant.
  *
  * The Response_Data contains the advertising data to be transmitted in the response
- * slot. If the Response_Data_Length is greater than the maximum that the Controller can
- * transmit within the response slot, then the Response_Data shall be discarded and the
- * Controller shall return the error code Packet Too Long (0x45). If the periodic advertising
- * train is on the LE Coded PHY, then the S=8 coding shall be assumed.
+ * slot. If the Response_Data_Length is greater than the maximum that the Controller
+ * can transmit within the response slot, then the Response_Data shall be discarded. If
+ * the periodic advertising train is on the LE Coded PHY, then the S=8 coding shall be
+ * assumed.
  *
- * If the response slot identified by the Response_Slot parameter has passed by the time
- * this command is received by the Controller, the Controller shall return the error code
- * Too Late (0x46) and discard the Response_Data parameter.
- * If Response_Subevent exceeds numSubevents of the periodic advertising train, or the
- * Controller is not synchronized with the subevent, then the Controller should return the
- * error code Command Disallowed (0x0C).
+ * If the response slot identified by the Response_Slot parameter has passed by the
+ * time this command is received by the Controller, the Controller shall discard the
+ * Response_Data parameter.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Response_Data_Length is greater than the maximum that the Controller can      Packet Too
+ *        transmit within the response slot. If the periodic advertising train is on    Long
+ *        the LE Coded PHY, then the S=8 coding shall be assumed.                       (0x45)
+ * MC     The response slot identified by the Response_Slot parameter has already       Too Late
+ *        passed.                                                                       (0x46)
+ * M      Response_Subevent exceeds numSubevents of the periodic advertising train or   Command
+ *        the Controller is not synchronized with the subevent.                         Disallowed
+ *                                                                                      (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10272,7 +10716,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_response_data(const sdc_hci_cmd_le_set_p
 
 /** @brief LE Set Periodic Sync Subevent.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.127
  *
  * This command is used to instruct the Controller to synchronize with a subset of the
@@ -10307,7 +10751,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
 
 /** @brief LE Extended Create Connection [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.66
  *
  * This command is used to create a single ACL connection, with the local device in the
@@ -10322,11 +10766,6 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * request shall be initiated from a periodic advertising train. The Host may use
  * this subevent whether or not the Controller has requested data for it using the
  * HCI_LE_Periodic_Advertising_Subevent_Data_Request event.
- *
- * The Advertising_Handle and Subevent parameters shall be set to 0xFF if these
- * parameters are not used. If the Host sets one but not both of these to 0xFF, then the
- * Controller shall return an error which should use the error code Invalid HCI Command
- * Parameters (0x12).
  *
  * If the Advertising_Handle and Subevent parameters are set to values other than 0xFF,
  * then the Initiator_Filter_Policy, Scan_Interval[i], and Scan_Window[i] parameters shall
@@ -10356,25 +10795,17 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * The Initiating_PHYs parameter indicates the PHY(s) on which the advertising packets
  * should be received on the primary advertising physical channel and the PHYs for
  * which connection parameters have been specified. The Host may enable one or more
- * initiating PHYs. If the Host specifies a PHY that is not supported by the Controller,
- * including a bit that is reserved for future use, the latter should return the error code
- * Unsupported Feature or Parameter Value (0x11). If the Host sets Advertising_Handle to
- * a value other than 0xFF and does not include the PHY used for the specified periodic
- * advertising train in Initiating_PHYs, the Controller shall return an error which should use
- * the error code Invalid HCI Command Parameters (0x12). The array elements of the
- * arrayed parameters are ordered in the same order as the set bits in the Initiating_PHYs
- * parameter, starting from bit 0. The number of array elements is determined by the
- * number of bits set in the Initiating_PHYs parameter. When a connectable advertisement
- * is received and a connection request is sent on one PHY, scanning on any other PHYs
- * is terminated.
+ * initiating PHYs. The array elements of the arrayed parameters are ordered in the
+ * same order as the set bits in the Initiating_PHYs parameter, starting from bit 0. The
+ * number of array elements is determined by the number of bits set in the Initiating_PHYs
+ * parameter. When a connectable advertisement is received and a connection request is
+ * sent on one PHY, scanning on any other PHYs is terminated.
  *
  * The Scan_Interval[i] and Scan_Window[i] parameters are recommendations from the
  * Host on how long (Scan_Window[i]) and how frequently (Scan_Interval[i]) the Controller
- * should scan (see [Vol 6] Part B, Section 4.5.3); however the frequency and length
- * of the scan is implementation specific. If the requested scan cannot be supported by
- * the implementation, the Controller shall return the error code Invalid HCI Command
- * Parameters (0x12). If bit 1 is set in Initiating_PHYs, the values for the LE 2M PHY shall
- * be ignored.
+ * should scan (see [Vol 6] Part B, Section 4.5.3); however the frequency and length of the
+ * scan is implementation specific. If bit 1 is set in Initiating_PHYs, the values for the LE
+ * 2M PHY shall be ignored.
  *
  * The Connection_Interval_Min[i] and Connection_Interval_Max[i] parameters define the
  * minimum and maximum allowed connection interval. The Connection_Interval_Min[i]
@@ -10388,10 +10819,9 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * Max_Latency[i]) × Connection_Interval_Max[i] × 2, where Connection_Interval_Max[i]
  * is given in milliseconds (see [Vol 6] Part B, Section 4.5.2).
  *
- * The Min_CE_Length[i] and Max_CE_Length[i] parameters provide the Controller
- * with the expected minimum and maximum length of the connection events. The
- * Min_CE_Length[i] parameter shall be less than or equal to the Max_CE_Length[i]
- * parameter. The Controller is not required to use these values.
+ * The Min_CE_Length[i] and Max_CE_Length[i] parameters provide the Controller with
+ * the expected minimum and maximum length of the connection events. The Controller is
+ * not required to use these values.
  *
  * Where the connection is made on a PHY whose bit is not set in the
  * Initiating_PHYs parameter, the Controller shall use the Connection_Interval_Min[i],
@@ -10399,62 +10829,83 @@ uint8_t sdc_hci_cmd_le_set_periodic_sync_subevent(const sdc_hci_cmd_le_set_perio
  * and Max_CE_Length[i] parameters for an implementation-chosen PHY whose bit is set
  * in the Initiating_PHYs parameter.
  *
- * If the Host issues this command when another HCI_LE_Extended_Create_Connection
- * command is pending in the Controller, the Controller shall return the error code
- * Command Disallowed (0x0C).
- * If the local device is already connected to the same device address as the advertiser
- * (including two different Resolvable Private Addresses that resolve to the same IRK),
- * then the Controller shall return an error which should use the error code Connection
- * Already Exists (0x0B).
- *
- * If the Own_Address_Type parameter is set to 0x00 and the device does not have a
- * public address, the Controller should return an error code which should be Invalid HCI
- * Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x01 and the random address for the
- * device has not been initialized using the HCI_LE_Set_Random_Address command, the
- * Controller shall return the error code Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
- * is set to 0x00, the Controller's resolving list did not contain a matching entry, and the
- * device does not have a public address, the Controller should return an error code which
- * should be Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x02, the Initiator_Filter_Policy parameter
- * is not set to 0x00, and the device does not have a public address, the Controller should
- * return an error code which should be Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy
- * parameter is set to 0x00, the Controller's resolving list did not contain a matching
- * entry, and the random address for the device has not been initialized using the
- * HCI_LE_Set_Random_Address command, the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the Own_Address_Type parameter is set to 0x03, the Initiator_Filter_Policy parameter
- * is not set to 0x00, and the random address for the device has not been initialized using
- * the HCI_LE_Set_Random_Address command, the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the Initiating_PHYs parameter does not have at least one bit set for a PHY allowed
- * for scanning on the primary advertising physical channel, the Controller shall return the
- * error code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command and the Controller has insufficient resources to handle
- * any more connections, the Controller shall return the error code Rejected due to Limited
- * Resources (0x0D).
- *
- * If the Controller does not support the Decision-Based Advertising Filtering feature and
- * the Host issues this command with Initiator_Filter_Policy set to a value other than 0x00
- * or 0x01, the Controller shall return an error code which should be Unsupported Feature
- * or Parameter Value (0x11).
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                   Value
- *  Advertising_Handle                                                          0xFF
- *  Subevent                                                                    0xFF
+ *  Parameter                                                        Value
+ *  Advertising_Handle                                               0xFF
+ *  Subevent                                                         0xFF
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ * <pre>
+ * Type   Condition                                                                Error code
+ * M      Advertising_Handle or Subevent, but not both, is set to 0xFF.            Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * RC     Initiating_PHYs has a bit set which is not supported by the Controller   Unsupported
+ *        or is RFU.                                                               Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * M      Advertising_Handle is not 0xFF and Initiating_PHYs does not have the     Invalid HCI
+ *        bit set for the PHY used for the specified periodic advertising train.   Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     The requested scan is not supported.                                     Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Another HCI_LE_Extended_Create_Connection command is pending.            Command
+ *                                                                                 Disallowed
+ *                                                                                 (0x0C)
+ * M      The local device is already connected to the same device address as      Connection
+ *        the advertiser (including two different Resolvable Private Addresses     Already Exists
+ *        that resolve to the same IRK).                                           (0x0B)
+ * R      Own_Address_Type is 0x00 and the device does not have a public           Invalid HCI
+ *        address.                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Own_Address_Type is 0x01 and the random address for the device has not   Invalid HCI
+ *        been initialized using HCI_LE_Set_Random_Address.                        Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * R      Own_Address_Type is 0x02, Initiator_Filter_Policy is 0x00, the           Invalid HCI
+ *        Controller’s resolving list does not contain a matching entry, and the   Command
+ *        device does not have a public address.                                   Parameters
+ *                                                                                 (0x12)
+ * R      Own_Address_Type is 0x02, Initiator_Filter_Policy is not 0x00, and the   Invalid HCI
+ *        device does not have a public address.                                   Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     Own_Address_Type is 0x03, Initiator_Filter_Policy is 0x00, the           Invalid HCI
+ *        Controller’s resolving list does not contain a matching entry, and the   Command
+ *        device’s random address has not been initialized using                   Parameters
+ *        HCI_LE_Set_Random_Address.                                               (0x12)
+ * MC     Own_Address_Type is 0x03, Initiator_Filter_Policy is not 0x00, and the   Invalid HCI
+ *        device’s random address has not been initialized using                   Command
+ *        HCI_LE_Set_Random_Address.                                               Parameters
+ *                                                                                 (0x12)
+ * MC     Initiating_PHYs does not have at least one bit set for a PHY allowed     Invalid HCI
+ *        for scanning on the primary advertising physical channel.                Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * MC     The Controller has insufficient resources to handle any more             Rejected due to
+ *        connections.                                                             Limited
+ *                                                                                 Resources
+ *                                                                                 (0x0D)
+ * M      Decision-Based Advertising Filtering is not supported and                Unsupported
+ *        Initiator_Filter_Policy is not 0x00 or 0x01.                             Feature or
+ *                                                                                 Parameter Value
+ *                                                                                 (0x11)
+ * R      Max_CE_Length is less than Min_CE_Length.                                Invalid HCI
+ *                                                                                 Command
+ *                                                                                 Parameters
+ *                                                                                 (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10478,26 +10929,18 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
 
 /** @brief LE Set Periodic Advertising Parameters [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.61
  *
  * This command is used by the Host to set the parameters for periodic advertising.
  *
  * The Advertising_Handle parameter identifies the advertising set whose periodic
- * advertising parameters are being configured. If the corresponding advertising set does
- * not already exist, then the Controller shall return the error code Unknown Advertising
- * Identifier (0x42).
+ * advertising parameters are being configured.
  *
  * The Periodic_Advertising_Interval_Min parameter shall be less than or equal to the
  * Periodic_Advertising_Interval_Max parameter. The Periodic_Advertising_Interval_Min
  * and Periodic_Advertising_Interval_Max parameters should not be the same value to
  * enable the Controller to determine the best advertising interval given other activities.
- *
- * If the periodic advertising interval range provided by the Host (Periodic_Advertising_-
- * Interval_Min, Periodic_Advertising_Interval_Max) does not overlap with the periodic
- * advertising interval range supported by the Controller, then the Controller shall return
- * an error which should use the error code Unsupported Feature or Parameter Value
- * (0x11).
  *
  * The Periodic_Advertising_Properties parameter indicates which fields should be
  * included in the advertising packet.
@@ -10529,35 +10972,54 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
  * The Num_Response_Slots parameter identifies the number of response slots in a
  * subevent.
  *
- * If the advertising set identified by the Advertising_Handle specified scannable,
- * connectable, legacy, or anonymous advertising, the Controller shall return the error
- * code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command when periodic advertising is enabled for the specified
- * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Advertising_Handle does not identify an advertising set that is already configured
- * for periodic advertising and the Controller is unable to support more periodic advertising
- * at present, the Controller shall return the error code Memory Capacity Exceeded (0x07).
- *
- * If the advertising set already contains periodic advertising data and the length of the
- * data is greater than the maximum that the Controller can transmit within a periodic
- * advertising interval of Periodic_Advertising_Interval_Max, the Controller shall return the
- * error code Packet Too Long (0x45). If advertising on the LE Coded PHY, the S=8 coding
- * shall be assumed unless the current advertising parameters require the use of S=2 for
- * an advertising physical channel, in which case the S=2 coding shall be assumed for that
- * advertising physical channel.
  * Missing parameters:
  *
  * When a version of this command is issued that does not include all the parameters, the
  * following values shall be used for any missing parameters:
  *
- *  Parameter                                                                      Value
- *  Num_Subevents                                                                  0
- *  Subevent_Interval                                                              ignored
- *  Response_Slot_Delay                                                            ignored
- *  Response_Slot_Spacing                                                          ignored
- *  Num_Response_Slots                                                             ignored
+ *  Parameter                                                                    Value
+ *  Num_Subevents                                                                0
+ *  Subevent_Interval                                                            ignored
+ *  Response_Slot_Delay                                                          ignored
+ *  Response_Slot_Spacing                                                        ignored
+ *  Num_Response_Slots                                                           ignored
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                                     Error code
+ * MC     Advertising_Handle does not identify an existing advertising set.             Unknown Ad
+ *                                                                                      vertising
+ *                                                                                      Identifier
+ *                                                                                      (0x42)
+ * M      The periodic advertising interval range defined by                            Unsupporte
+ *        Periodic_Advertising_Interval_Min and Periodic_Advertising_Interval_Max       d Feature
+ *        does not overlap the periodic advertising interval range supported by the     or
+ *        Controller.                                                                   Parameter
+ *                                                                                      Value
+ *                                                                                      (0x11)
+ * MC     Advertising_Handle identifies an advertising set with scannable,              Invalid
+ *        connectable, legacy, or anonymous advertising.                                HCI
+ *                                                                                      Command
+ *                                                                                      Parameters
+ *                                                                                      (0x12)
+ * MC     Periodic advertising is enabled for the advertising set.                      Command
+ *                                                                                      Disallowed
+ *                                                                                      (0x0C)
+ * MC     The Advertising_Handle does not identify an advertising set that is already   Memory
+ *        configured for periodic advertising and the Controller is unable to support   Capacity
+ *        more periodic advertising at present.                                         Exceeded
+ *                                                                                      (0x07)
+ * MC     The advertising set already contains periodic advertising data and the        Packet Too
+ *        length of the data is greater than the maximum that the Controller can        Long
+ *        transmit within a periodic advertising interval of                            (0x45)
+ *        Periodic_Advertising_Max. If advertising on the LE Coded PHY, the S=8
+ *        coding shall be assumed unless the current advertising parameters require
+ *        the use of S=2 for an advertising physical channel, in which case the S=2
+ *        coding shall be assumed for that advertising physical channel.
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10576,7 +11038,7 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_params_v2(const sdc_hci_cmd_le_set_perio
 
 /** @brief LE Read All Local Supported Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.128
  *
  * This command requests the supported LE features for the Controller.
@@ -10596,7 +11058,7 @@ uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all
 
 /** @brief LE Read All Remote Features.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.129
  *
  * This command requests, from the remote device identified by the Connection_Handle,
@@ -10614,9 +11076,14 @@ uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all
  * been fetched on that connection, then the Controller may use a cached copy of the
  * features.
  *
- * If the Host issues this command when another HCI_LE_Read_All_Remote_Features
- * command is pending in the Controller, then the Controller shall return the error code
- * Command Disallowed (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                     Error code
+ * MC     Another HCI_LE_Read_All_Remote_Features command is pending.   Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10637,9 +11104,9 @@ uint8_t sdc_hci_cmd_le_read_all_local_supported_features(sdc_hci_cmd_le_read_all
  */
 uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_remote_features_t * p_params);
 
-/** @brief LE CS Read Local Supported Capabilities.
+/** @brief LE CS Read Local Supported Capabilities [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.130
  *
  * This command allows a Host to read the CS capabilities that are supported by the
@@ -10647,24 +11114,25 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * provide additional details of the supported CS capabilities.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
- * are supported by the Controller.
+ * are supported per connection by the Controller.
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the local Controller.
  *
  * The Num_Antennae_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
+ *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
- *
  * The Roles_Supported parameter indicates the CS roles that are supported by the local
  * Controller.
  *
  * The Modes_Supported parameter indicates the optional CS modes that are supported
  * by the local Controller.
  *
- * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
- * RTT_Random_Sequence_N parameters indicate the time-of-flight accuracy as
+ * The RTT_Capability, RTT_AA_Only_N, RTT_2M_AA_Only_N,
+ * RTT_Sounding_N, RTT_2M_Sounding_N, RTT_Random_Sequence_N, and
+ * RTT_2M_Random_Sequence_N parameters indicate the time-of-flight accuracy as
  * described in [Vol 6] Part B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
@@ -10683,6 +11151,11 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
  * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
  *   Section 3.3.1.
+ * • IPT in the CS reflector as described in [Vol 6] Part H, Section 4.3.3.
+ * • RTT_PHY support denoting the setting of the RTT accuracy requirements for optional
+ *   LE 2M and LE 2M 2BT PHYs separate from the RTT accuracy requirements for the
+ *   mandatory LE 1M PHY as described in [Vol 6] Part B, Section 2.4.2.44. This bit shall
+ *   only be set to 1 if [v2] or above of this command is being used.
  *
  * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
  * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
@@ -10693,9 +11166,21 @@ uint8_t sdc_hci_cmd_le_read_all_remote_features(const sdc_hci_cmd_le_read_all_re
  * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
  * Section 3.1.3.
  *
- * If the Host issues this command when the Channel Sounding (Host Support) feature bit
- * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * The T_IP2_IPT_Times_Supported and T_SW_IPT_Times_Supported parameters
+ * indicate the supported optional time durations used in CS steps if the CS reflector
+ * supports the Channel Sounding Enhancement #1 feature and the IPT capability (see
+ * [Vol 6] Part H, Section 4.3).
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     The local Channel Sounding (Host Support) feature bit (see [Vol 6]      Command
+ *        Part B, Section 4.6.33.4) is not set.                                   Disallowed
+ *                                                                                (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10712,7 +11197,7 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_re
 
 /** @brief LE CS Read Remote Supported Capabilities.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.131
  *
  * This command allows a Host to query the CS capabilities that are supported by
@@ -10728,17 +11213,21 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_re
  * Peripheral shall complete that procedure before initiating the Channel Sounding
  * Capability Exchange procedure (see [Vol 6] Part B, Section 5.1.24).
  *
- * If the Host issues this command when the local or remote Channel Sounding (Host
- * Support) feature bit (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller
- * shall return the error code Command Disallowed (0x0C).
- *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
- *
  * The Host may store a copy of the remote device’s capabilities and write the remote
  * capabilities in the local Controller when it reconnects to the same remote device by
  * using the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                           Error code
+ * MC     The local or remote Channel Sounding (Host Support) feature bit     Command Disallowed
+ *        (see [Vol 6] Part B, Section 4.6.33.4) is not set.                  (0x0C)
+ * MC     Connection_Handle does not exist or is not for an ACL.              Unknown Connection
+ *                                                                            Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10757,9 +11246,9 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_re
  */
 uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_le_cs_read_remote_supported_capabilities_t * p_params);
 
-/** @brief LE CS Write Cached Remote Supported Capabilities.
+/** @brief LE CS Write Cached Remote Supported Capabilities [v1].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.132
  *
  * This command allows a Host to write the cached copy of the CS capabilities
@@ -10767,24 +11256,25 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * Connection_Handle parameter.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
- * are supported by the remote Controller.
+ * are supported per connection by the remote Controller.
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the remote Controller.
  *
  * The Num_Antennae_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
+ *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
- *
  * The Roles_Supported parameter indicates the CS roles that are supported by the
  * remote Controller.
  *
  * The Modes_Supported parameter indicates the optional CS modes that are supported
  * by the remote Controller.
  *
- * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
- * RTT_Random_Sequence_N parameters indicate the time-of-flight accuracy as
+ * The RTT_Capability, RTT_AA_Only_N, RTT_2M_AA_Only_N,
+ * RTT_Sounding_N, RTT_2M_Sounding_N, RTT_Random_Sequence_N, and
+ * RTT_2M_Random_Sequence_N parameters indicate the time-of-flight accuracy as
  * described in [Vol 6] Part B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
@@ -10803,6 +11293,11 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
  * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
  *   Section 3.3.1.
+ * • IPT in the CS reflector as described in [Vol 6] Part H, Section 4.3.3.
+ * • RTT_PHY support denoting the setting of the RTT accuracy requirements for optional
+ *   LE 2M and LE 2M 2BT PHYs separate from the RTT accuracy requirements for the
+ *   mandatory LE 1M PHY as described in [Vol 6] Part B, Section 2.4.2.44. This bit shall
+ *   only be set to 1 if [v2] or above of this command is being used.
  *
  * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
  * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
@@ -10813,19 +11308,26 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_l
  * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
  * Section 3.1.3.
  *
- * If the Host issues this command after an LL_CS_CAPABILITIES_REQ or
- * LL_CS_CAPABILITIES_RSP PDU has been received from the remote Controller, then
- * the Controller shall return the error code Command Disallowed (0x0C).
+ * The T_IP2_IPT_Times_Supported and T_SW_IPT_Times_Supported parameters
+ * indicate the supported optional time durations used in CS steps if the CS reflector
+ * supports the Channel Sounding Enhancement #1 feature and the IPT capability (see
+ * [Vol 6] Part H, Section 4.3).
  *
- * If the Host issues this command after a CS configuration has been created in the local
- * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
- * If the Host issues this command when the Channel Sounding (Host Support) feature bit
- * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL the Controller shall return the error code Unknown
- * Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     An LL_CS_CAPABILITIES_REQ or LL_CS_CAPABILITIES_RSP PDU has       Command Disallowed
+ *        been received from the remote Controller.                         (0x0C)
+ * MC     A CS configuration has been created in the local Controller.      Command Disallowed
+ *                                                                          (0x0C)
+ * MC     The Channel Sounding (Host Support) feature bit (see [Vol 6]      Command Disallowed
+ *        Part B, Section 4.6.33.4) is not set.                             (0x0C)
+ * MC     Connection_Handle does not identify an ACL.                       Unknown Connection
+ *                                                                          Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10844,26 +11346,28 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities(const sdc_h
 
 /** @brief LE CS Security Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.133
  *
  * This command is used by a Host to start or restart the Channel Sounding Security
  * Start procedure in the local Controller for the ACL connection identified by the
  * Connection_Handle parameter.
  *
- * If the Host issues this command on a Connection_Handle where the Controller is the
- * Peripheral, then the Controller shall return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the connection identified by the Connection_Handle parameter is not encrypted, then
- * the Controller shall return the error code Insufficient Security (0x2F).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
- *
- * If the Host issues this command when the Channel Sounding (Host Support) feature bit
- * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                        Error code
+ * MC     Connection_Handle does not identify an ACL.                      Unknown Connection
+ *                                                                         Identifier (0x02)
+ * MC     Connection_Handle identifies an ACL where the Controller is      Command Disallowed
+ *        the Peripheral.                                                  (0x0C)
+ * MC     Connection_Handle identifies an unencrypted ACL.                 Insufficient Security
+ *                                                                         (0x2F)
+ * MC     The Channel Sounding (Host Support) feature bit (see [Vol 6]     Command Disallowed
+ *        Part B, Section 4.6.33.4) is not set.                            (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10882,7 +11386,7 @@ uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enabl
 
 /** @brief LE CS Set Default Settings.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.134
  *
  * This command is used by a Host to set default CS settings in the local Controller for the
@@ -10891,17 +11395,10 @@ uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enabl
  * 0x01.
  *
  * The Role_Enable parameter is used to enable or disable the CS roles in the local
- * Controller. If the Host issues this command to disable a Role for which a valid CS
- * configuration is present, then the Controller shall return the error code Invalid HCI
- * Command Parameters (0x12).
+ * Controller.
  *
  * The CS_SYNC_Antenna_Selection parameter indicates the antenna identifiers to be
  * used for transmitting and receiving CS_SYNC packets.
- *
- * If the Role_Enable parameter is used to enable an unsupported role or the
- * CS_SYNC_Antenna_Selection parameter indicates an unsupported antenna identifier,
- * then the Controller shall return the error code Unsupported Feature or Parameter Value
- * (0x11).
  *
  * The Max_TX_Power parameter is used to set the maximum output power, EIRP, to be
  * used for all CS transmissions. If the value provided in this parameter is higher than
@@ -10910,9 +11407,21 @@ uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enabl
  * output power requested by the Host, then the Controller shall use an output power that
  * is lower but closest to the requested value.
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                  Error code
+ * MC     The bit for a role which has a valid CS configuration      Invalid HCI Command
+ *        present is set to 0 in Role_Enable.                        Parameters (0x12)
+ * MC     CS_SYNC_Antenna_Selection indicates an unsupported         Unsupported Feature or
+ *        antenna identifier.                                        Parameter Value (0x11)
+ * MC     The bit for an unsupported role is set to 1 in             Unsupported Feature or
+ *        Role_Enable.                                               Parameter Value (0x11)
+ * MC     Connection_Handle does not identify an ACL.                Unknown Connection Identifier
+ *                                                                   (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10931,25 +11440,32 @@ uint8_t sdc_hci_cmd_le_cs_set_default_settings(const sdc_hci_cmd_le_cs_set_defau
 
 /** @brief LE CS Read Remote FAE Table.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.135
  *
  * This command is used by a Host to read the per-channel mode-0 Frequency Actuation
  * Error table of the remote Controller.
- *
- * If the remote Controller supports a Frequency Actuation Error of zero relative to its
- * mode-0 transmissions in the reflector role (No_FAE bit set as described in [Vol 6]
- * Part B, Section 2.4.2.44), then the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
  *
  * The Host may store a copy of the remote device’s Frequency Actuation
  * Error table and write the remote Frequency Actuation Error table in the
  * local Controller when it reconnects to the same remote device by using the
  * HCI_LE_CS_Write_Cached_Remote_FAE_Table command.
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     The remote Controller supports a Frequency Actuation Error of zero      Unsupported
+ *        relative to its mode-0 transmissions in the reflector role (No_FAE      Feature or
+ *        bit set as described in [Vol 6] Part B, Section 2.4.2.44).              Parameter Value
+ *                                                                                (0x11)
+ * MC     Connection_Handle does not identify an ACL.                             Unknown
+ *                                                                                Connection
+ *                                                                                Identifier
+ *                                                                                (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -10969,27 +11485,33 @@ uint8_t sdc_hci_cmd_le_cs_read_remote_fae_table(const sdc_hci_cmd_le_cs_read_rem
 
 /** @brief LE CS Write Cached Remote FAE Table.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.136
  *
  * This command is used by a Host to write a cached copy of the per-channel mode-0
  * Frequency Actuation Error table of the remote device in the local Controller.
  *
- * If the remote Controller supports a Frequency Actuation Error of zero relative to its
- * mode-0 transmissions in the reflector role (No_FAE bit set as described in [Vol 6]
- * Part B, Section 2.4.2.44), then the Controller shall return the error code Unsupported
- * Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If the Host issues this command after an LL_CS_FAE_RSP PDU has been received
- * from the remote Controller, then the Controller shall return the error code Command
- * Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command after a CS configuration has been created in the local
- * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     The remote Controller supports a Frequency Actuation Error of zero      Unsupported
+ *        relative to its mode-0 transmissions in the reflector role (No_FAE      Feature or
+ *        bit set as described in [Vol 6] Part B, Section 2.4.2.44).              Parameter Value
+ *                                                                                (0x11)
+ * MC     An LL_CS_FAE_RSP PDU has been received from the remote Controller.      Command
+ *                                                                                Disallowed
+ *                                                                                (0x0C)
+ * MC     A CS configuration has been created in the local Controller.            Command
+ *                                                                                Disallowed
+ *                                                                                (0x0C)
+ * MC     Connection_Handle does not identify an ACL.                             Unknown
+ *                                                                                Connection
+ *                                                                                Identifier
+ *                                                                                (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11008,7 +11530,7 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_
 
 /** @brief LE CS Create Config.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.137
  *
  * This command is used by a Host to create a new CS configuration or update an
@@ -11052,30 +11574,49 @@ uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_
  * as described in [Vol 6] Part H, Section 4.1.4.2. Otherwise, the Ch3c_Shape and the
  * Ch3c_Jump parameters shall be ignored.
  *
- * If the Host issues this command with parameters that are not supported by the local or
- * remote Controllers, then the Controller shall return the error code Unsupported Feature
- * or Parameter Value (0x11).
+ * The CS_Enhancements parameter indicates which CS enhancements to be used
+ * during the CS procedure. For each enhancement that is not enabled, the corresponding
+ * bit shall be set to 0.
  *
- * If the Host issues this command with a Role not enabled by a prior
- * HCI_LE_CS_Set_Default_Settings command or with a set of parameters that are
- * considered an invalid configuration according to [Vol 6] Part H (e.g., a combination
- * of Main_Mode_Type and Sub_Mode_Type not specified in [Vol 6] Part H, Table 4.11),
- * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ * If the Host issues this command before a Channel Sounding Capability Exchange
+ * procedure has been completed or an HCI_LE_CS_Write_Cached_Remote_-
+ * Supported_Capabilities command has been issued for the connection identified by
+ * the Connection_Handle parameter, then the Controller may autonomously initiate the
+ * Channel Sounding Capability Exchange procedure.
  *
- * If the Host issues this command before a Channel Sounding
- * Capability Exchange procedure has been completed or an
- * HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has been
- * issued for the connection identified by the Connection_Handle parameter, then the
- * Controller may autonomously initiate the Channel Sounding Capability Exchange
- * procedure. Otherwise, the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * Errors:
  *
- * If the Host issues this command to update a CS configuration identified by the
- * Config_ID parameter that is already enabled using the HCI_LE_CS_Procedure_Enable
- * command, then the Controller shall return the error code Command Disallowed (0x0C).
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                              Error code
+ * MC     Some parameters are not supported by the local or remote Controller.   Unsupported
+ *                                                                               Feature or
+ *                                                                               Parameter Value
+ *                                                                               (0x11)
+ * MC     The parameters specify an invalid configuration according to [Vol 6]   Invalid HCI
+ *        Part H (e.g., a combination of Main_Mode_Type and Sub_Mode_Type not    Command
+ *        specified in [Vol 6] Part H, Table 4.11).                              Parameters (0x12)
+ * M      Less than 15 channels are enabled.                                     Invalid HCI
+ *                                                                               Command
+ *                                                                               Parameters (0x12)
+ * M      Any of bits 0, 1, 23, 24, 25, 77, or 78 are set to 1.                  Invalid HCI
+ *                                                                               Command
+ *                                                                               Parameters (0x12)
+ * MC     Role has not been enabled by a prior HCI_LE_CS_Set_Default_Settings    Invalid HCI
+ *        command.                                                               Command
+ *                                                                               Parameters (0x12)
+ * MC     Connection_Handle identifies a connection where a Channel Sounding     Command
+ *        Capability Exchange procedure has been completed.                      Disallowed (0x0C)
+ * MC     Connection_Handle identifies a connection where an                     Command
+ *        HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has       Disallowed (0x0C)
+ *        been issued.
+ * MC     Config_ID identifies a CS configuration that is already enabled.       Command
+ *                                                                               Disallowed (0x0C)
+ * MC     Connection_Handle does not identify an ACL.                            Unknown
+ *                                                                               Connection
+ *                                                                               Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11095,27 +11636,27 @@ uint8_t sdc_hci_cmd_le_cs_create_config(const sdc_hci_cmd_le_cs_create_config_t 
 
 /** @brief LE CS Remove Config.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.138
  *
  * This command is used to remove a CS configuration identified by Config_ID from
  * the local Controller for the connection identified by the Connection_Handle parameter.
  * When the Host issues this command, the local Controller shall initiate a Channel
  * Sounding Configuration procedure to remove the CS configuration from both the
- * local and remote device. The Controller shall delete any CS procedure related
+ * local and remote device. The Controller shall also delete any CS procedure related
  * parameters set using the HCI_LE_CS_Set_Procedure_Parameters command for the
  * CS configuration identified by Config_ID.
  *
- * If the CS configuration corresponding to Config_ID does not exist, then the Controller
- * shall return the error code Invalid HCI Command Parameters (0x12).
+ * Errors:
  *
- * If the Host issues this command when one or more CS procedures have been enabled
- * using the HCI_LE_CS_Procedure_Enable command, then the Controller shall return the
- * error code Command Disallowed (0x0C).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * <pre>
+ * Type   Condition                                         Error code
+ * MC     Config_ID does not identify a CS configuration.   Invalid HCI Command Parameters (0x12)
+ * MC     One or more CS procedures have been enabled.      Command Disallowed (0x0C)
+ * MC     Connection_Handle does not identify an ACL.       Unknown Connection Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11134,7 +11675,7 @@ uint8_t sdc_hci_cmd_le_cs_remove_config(const sdc_hci_cmd_le_cs_remove_config_t 
 
 /** @brief LE CS Set Channel Classification.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.139
  *
  * This command is used by a Host to update the channel classification based on its
@@ -11147,12 +11688,17 @@ uint8_t sdc_hci_cmd_le_cs_remove_config(const sdc_hci_cmd_le_cs_remove_config_t 
  * If this command is used, then the Host should send updates within 10 seconds of
  * knowing that the CS channel classification has changed.
  *
- * If the Host issues this command less than 1 second after the previous time it issued this
- * command, then the Controller shall return the error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Channel_Classification parameter enables channels that are reserved for future
- * use or enables fewer than 15 channels, then the Controller shall return the error code
- * Invalid HCI Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     It is less than 1 second since the previous time this command     Command Disallowed
+ *        was executed.                                                     (0x0C)
+ * MC     Channel_Classification enables channels that are reserved for     Invalid HCI Command
+ *        future use or enables fewer than 15 channels.                     Parameters (0x12)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11169,7 +11715,7 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
 
 /** @brief LE CS Set Procedure Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.140
  *
  * This command is used by a Host to set the parameters for the scheduling of
@@ -11211,29 +11757,30 @@ uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set
  * The SNR_Control_Reflector parameter indicates the SNR control adjustment for the
  * CS_SYNC transmissions of the reflector.
  *
- * If the Host issues this command with parameters that exceed the CS capabilities or any
- * coexistence constraints, then the Controller shall return the error code Rejected Due to
- * Limited Resources (0x0D).
- *
- * If the CS configuration corresponding to Config_ID does not exist or is removed using
- * the HCI_LE_CS_Remove_Config command, then the Controller shall return the error
- * code Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command when a CS procedure is already enabled for
- * the specified Config_ID in the Controller using the HCI_LE_CS_Procedure_Enable
- * command, then the Controller shall return the error code Command Disallowed (0x0C).
- *
  * The parameters specified by this command for the CS configuration identified
  * by the Config_ID parameter become invalid after the Host issues the
  * HCI_LE_CS_Remove_Config command for the given Config_ID.
  *
- * If the number of channels available for Channel Sounding before the start of a new CS
- * procedure measurement is less than 15, then the Controller shall return the error code
- * Insufficient Channels (0x48).
+ * Errors:
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     The parameters exceed the CS capabilities or any coexistence       Rejected Due To
+ *        constraints.                                                       Limited Resources
+ *                                                                           (0x0D).
+ * MC     Config_ID does not identify a CS configuration.                    Invalid HCI Command
+ *                                                                           Parameters (0x12)
+ * MC     Config_ID identifies a CS configuration that has been removed.     Invalid HCI Command
+ *                                                                           Parameters (0x12)
+ * MC     A CS procedure measurement is already enabled for Config_ID in     Command Disallowed
+ *        the Controller.                                                    (0x0C)
+ * MC     The number of channels available for Channel Sounding before the   Insufficient Channels
+ *        start of a new CS procedure measurement is less than 15.           (0x48)
+ * MC     Connection_Handle does not identify an ACL.                        Unknown Connection
+ *                                                                           Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11252,38 +11799,35 @@ uint8_t sdc_hci_cmd_le_cs_set_procedure_params(const sdc_hci_cmd_le_cs_set_proce
 
 /** @brief LE CS Procedure Enable.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.141
  *
  * This command is used by a Host to enable or disable the scheduling of CS procedures
  * by the local Controller, with the remote device for the connection identified by the
  * Connection_Handle parameter.
  *
- * If the Host issues this command to enable a CS configuration identified by the
- * Config_ID parameter before a corresponding HCI_LE_CS_Set_Procedure_Parameters
- * command has been issued for the same Config_ID, then the Controller shall return the
- * error code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the CS configuration corresponding to Config_ID does not exist (or has been removed
- * using the HCI_LE_CS_Remove_Config command), then the Controller shall return the
- * error code Invalid HCI Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the CS procedure parameters associated with the given Config_ID exceed any
- * scheduling or coexistence constraints at the time this command is issued, then the
- * Controller shall return the error code Connection Rejected Due to Limited Resources
- * (0x0D).
- *
- * If the Host issues this command to enable a CS configuration identified by the
- * Config_ID parameter that is already enabled using the HCI_LE_CS_Procedure_Enable
- * command, then the Controller shall return the error code Command Disallowed (0x0C).
- *
- * If the number of channels available for Channel Sounding before the start of a new CS
- * procedure is less than 15, then the Controller shall return the error code Insufficient
- * Channels (0x48).
- *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL, then the Controller shall return the error code
- * Unknown Connection Identifier (0x02).
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     A corresponding HCI_LE_CS_Set_Procedure_Parameters command has     Command Disallowed
+ *        not been issued for the same Config_ID.                            (0x0C)
+ * MC     Config_ID does not identify a CS configuration.                    Invalid HCI Command
+ *                                                                           Parameters (0x12)
+ * MC     Config_ID identifies a CS configuration that has been removed.     Invalid HCI Command
+ *                                                                           Parameters (0x12)
+ * MC     The CS procedure parameters associated with Config_ID exceed any   Rejected Due To
+ *        scheduling or coexistence constraints.                             Limited Resources
+ *                                                                           (0x0D).
+ * MC     The CS configuration identified by Config_ID is already enabled.   Command Disallowed
+ *                                                                           (0x0C)
+ * MC     The number of channels available for Channel Sounding before the   Insufficient Channels
+ *        start of a new CS procedure measurement is less than 15.           (0x48)
+ * MC     Connection_Handle does not identify an ACL.                        Unknown Connection
+ *                                                                           Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11307,17 +11851,17 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
 
 /** @brief LE CS Test.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.142
  *
  * This command is used to start a CS test where the Implementation Under Test (IUT)
  * is placed in the role of either the initiator or reflector. The first mode-0 channel in the
  * list is used as the starting channel for the test. At the beginning of any test, the IUT
  * in the reflector role shall listen on the first mode-0 channel until it receives the first
- * transmission from the initiator. Similarly, with the IUT in the initiator role, the tester
- * will start by listening on the first mode-0 channel and the IUT shall transmit on that
- * channel for the first half of the first CS step. Thereafter, the parameters of this command
- * describe the required transmit and receive behavior for the CS test.
+ * transmission from the initiator. Similarly, with the IUT in the initiator role, the Lower
+ * Tester will start by listening on the first mode-0 channel and the IUT shall transmit on
+ * that channel for the first half of the first CS step. Thereafter, the parameters of this
+ * command describe the required transmit and receive behavior for the CS test.
  *
  * This command is used to schedule a single CS procedure that consists of one or more
  * CS subevents. After the channels contained in the Channel map or the Channel array in
@@ -11352,7 +11896,8 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  *
  * The Subevent_Interval parameter indicates the gap between the start of consecutive
  * CS subevents. If Subevent_Interval is set to zero, then only one CS subevent is
- * executed in the CS test.
+ * executed in the CS test. Otherwise, the value for Subevent_Interval shall be greater
+ * than or equal to the sum of the Subevent_Len selected plus T_MES.
  *
  * The Max_Num_Subevents parameter indicates the maximum number of subevents that
  * are in the procedure (0x00 indicates no limit). If Max_Num_Subevents is set to 0x00,
@@ -11367,6 +11912,11 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  * The Tone_Antenna_Config_Selection parameter indicates the Antenna Configuration
  * Index used during antenna switching during the tone phases of CS steps as described
  * in [Vol 6] Part A, Section 5.3.
+ *
+ * The CS_Enhancements parameter indicates which CS enhancements to be used
+ * during the CS procedure. For each enhancement that is not enabled, the corresponding
+ * bit shall be set to 0. If IPT is enabled, then the T_IP2_Time and T_SW_Time
+ * parameters indicate the time durations used in CS steps.
  *
  * The SNR_Control_Initiator parameter indicates the SNR control adjustment for the
  * CS_SYNC transmissions of the initiator.
@@ -11398,10 +11948,10 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  *
  * • Min_Main_Mode_Steps: 6
  * • Max_Main_Mode_Steps: 10
- *
  * If the Override_Config bit 10 corresponding to the Stable Phase test is set, then
  * the procedure is replaced with the Stable Phase test as described in [Vol 6] Part F,
  * Section 2.4.
+ *
  * The Override_Parameters_Data is a variable sized object with a length indicated by
  * Override_Parameters_Length parameter whose contents are determined by the bits set
  * in the Override_Config parameter.
@@ -11412,16 +11962,21 @@ uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_ena
  * The CS test is considered complete when all the results of the CS procedure initiated by
  * the CS test have been reported to the Host.
  *
- * If the Host issues this command when a CS test is already enabled using the
- * HCI_LE_CS_Test command and has not completed, then the Controller shall return
- * the error code Command Disallowed (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                             Error code
+ * MC     A CS test is already enabled and has not completed.   Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
  * When the HCI_LE_CS_Test command has completed, an HCI_Command_Complete
  * event shall be generated. The Controller shall either generate the LE_CS_Subevent_-
- * Result event once or generate the LE_CS_Subevent_Result_Continue event multiple
- * times to send results from the completed CS steps to the Host.
+ * Result event once or may generate the LE_CS_Subevent_Result_Continue event
+ * multiple times to send results from the completed CS steps to the Host.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -11433,14 +11988,19 @@ uint8_t sdc_hci_cmd_le_cs_test(const sdc_hci_cmd_le_cs_test_t * p_params);
 
 /** @brief LE CS Test End.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.143
  *
  * This command is used to stop any CS test that is in progress.
  *
- * If the Host issues this command when there is no prior CS test initiated using the
- * HCI_LE_CS_Test command or when a prior CS test has already been completed, then
- * the Controller shall return the error code Command Disallowed (0x0C).
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                        Error code
+ * MC     No CS test has been enabled but not completed.   Command Disallowed (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11458,7 +12018,7 @@ uint8_t sdc_hci_cmd_le_cs_test_end(void);
 
 /** @brief LE Set Host Feature [v2].
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.115
  *
  * This command is used by the Host to set or clear a bit controlled by the Host in the Link
@@ -11468,15 +12028,21 @@ uint8_t sdc_hci_cmd_le_cs_test_end(void);
  *
  * The Bit_Value parameter specifies whether the feature is enabled or disabled.
  *
- * If Bit_Number specifies a feature bit that is not controlled by the Host, the Controller
- * shall return the error code Unsupported Feature or Parameter Value (0x11).
+ * Errors:
  *
- * If Bit_Value is set to 0x01 and Bit_Number specifies a feature bit that requires support of
- * a feature that the Controller does not support, the Controller shall return the error code
- * Unsupported Feature or Parameter Value (0x11).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command while the Controller has a connection to another
- * device, the Controller shall return the error code Command Disallowed (0x0C).
+ * <pre>
+ * Type   Condition                                                          Error code
+ * MC     Bit_Number specifies a feature bit that is not controlled by the   Unsupported Feature
+ *        Host.                                                              or Parameter Value
+ *                                                                           (0x11)
+ * MC     Bit_Value is set to 0x01 and Bit_Number specifies a feature bit    Unsupported Feature
+ *        that requires support of a feature that the Controller does not    or Parameter Value
+ *        support.                                                           (0x11)
+ * MC     The Controller has a connection to another device.                 Command Disallowed
+ *                                                                           (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11493,7 +12059,7 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
 
 /** @brief LE Frame Space Update.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.151
  *
  * This command allows the Host to request a change to one or more frame space values.
@@ -11515,25 +12081,34 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
  * value, then the Controller shall ignore the value provided by the Host and shall use the
  * frame space value in use as the Frame_Space_Max.
  *
- * If the Connection_Handle parameter does not identify an active ACL connection, then
- * the Controller shall return the error code Unknown Connection Identifier (0x02).
+ * Errors:
  *
- * If the Host issues this command with Frame_Space_Max less than Frame_Space_Min,
- * then the Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ * See Section 4.5.2 for a list of error types and descriptions.
  *
- * If the Host issues this command with no bits set in the PHYS or the Spacing_Types
- * parameter, then the Controller shall reject the command and return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the Host issues this command with a bit set in the PHYS or the Spacing_Types
- * parameter that the Controller does not support, then the Controller shall reject the
- * command and return the error code Unsupported Feature or Parameter Value (0x11).
- * If the Host issues this command with a bit set in the PHYS or the Spacing_Types
- * parameter that the remote device does not support, then the Controller shall reject
- * the command and return the error code Unsupported Remote Feature (0x1A). The
- * Controller can determine this either because it receives a corresponding error response
- * from the remote device or because it has checked the features supported by the remote
- * device.
+ * <pre>
+ * Type   Condition                                                                   Error code
+ * MC     Connection_Handle does not identify an active ACL connection.               Unknown
+ *                                                                                    Connection
+ *                                                                                    Identifier
+ *                                                                                    (0x02)
+ * MC     Frame_Space_Max is less than Frame_Space_Min.                               Invalid HCI
+ *                                                                                    Command
+ *                                                                                    Parameters
+ *                                                                                    (0x12)
+ * MC     No bits are set in PHYS or in Spacing_Types.                                Invalid HCI
+ *                                                                                    Command
+ *                                                                                    Parameters
+ *                                                                                    (0x12)
+ * MC     An unsupported bit is set in PHYS or Spacing_Types.                         Unsupported
+ *                                                                                    Feature or
+ *                                                                                    Parameter
+ *                                                                                    Value (0x11)
+ * MC     A bit set in PHYS or Spacing_Types corresponds to a feature that the        Unsupported
+ *        Controller already knows is not supported by the remote device (e.g.        Remote
+ *        because it has already received a corresponding error response from the     Feature
+ *        remote device or has checked the features supported by the remote           (0x1A)
+ *        device).
+ * </pre>
  *
  * Event(s) generated (unless masked away):
  *
@@ -11552,7 +12127,7 @@ uint8_t sdc_hci_cmd_le_frame_space_update(const sdc_hci_cmd_le_frame_space_updat
 
 /** @brief LE Connection Rate Request.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.154
  *
  * This command is used by a Central or a Peripheral to request a change to
@@ -11640,7 +12215,7 @@ uint8_t sdc_hci_cmd_le_conn_rate_request(const sdc_hci_cmd_le_conn_rate_request_
 
 /** @brief LE Set Default Rate Parameters.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.155
  *
  * This command is used by the Host to set the initial values of the acceptable parameters
@@ -11685,7 +12260,7 @@ uint8_t sdc_hci_cmd_le_set_default_rate_params(const sdc_hci_cmd_le_set_default_
 
 /** @brief LE Read Minimum Supported Connection Interval.
  *
- * The description below is extracted from Core_v6.2,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.156
  *
  * This command is used by the Host to determine the minimum supported connection
@@ -11727,36 +12302,36 @@ uint8_t sdc_hci_cmd_le_set_default_rate_params(const sdc_hci_cmd_le_set_default_
  */
 uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_supported_conn_interval_return_t * p_return);
 
-/** @brief LE CS Read Local Supported Capabilities v2.
+/** @brief LE CS Read Local Supported Capabilities [v2].
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.130
  *
- * The HCI_LE_CS_Read_Local_Supported_Capabilities command allows a Host to read
- * the CS capabilities that are supported by the local Controller. This command may
- * be used along with the local supported features to provide additional details of the
- * supported CS capabilities.
+ * This command allows a Host to read the CS capabilities that are supported by the
+ * local Controller. This command may be used along with the local supported features to
+ * provide additional details of the supported CS capabilities.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
- * are supported by the Controller.
+ * are supported per connection by the Controller.
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the local Controller.
  *
- * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * The Num_Antennae_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
+ *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
- *
  * The Roles_Supported parameter indicates the CS roles that are supported by the local
  * Controller.
  *
  * The Modes_Supported parameter indicates the optional CS modes that are supported
  * by the local Controller.
  *
- * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the RTT_Random_-
- * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
- * B, Section 2.4.2.44.
+ * The RTT_Capability, RTT_AA_Only_N, RTT_2M_AA_Only_N,
+ * RTT_Sounding_N, RTT_2M_Sounding_N, RTT_Random_Sequence_N, and
+ * RTT_2M_Random_Sequence_N parameters indicate the time-of-flight accuracy as
+ * described in [Vol 6] Part B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
  * the support by the local Controller for reporting Normalized Attack Detector Metric
@@ -11774,20 +12349,39 @@ uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_
  * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
  * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
  *   Section 3.3.1.
+ * • IPT in the CS reflector as described in [Vol 6] Part H, Section 4.3.3.
+ * • RTT_PHY support denoting the setting of the RTT accuracy requirements for optional
+ *   LE 2M and LE 2M 2BT PHYs separate from the RTT accuracy requirements for the
+ *   mandatory LE 1M PHY as described in [Vol 6] Part B, Section 2.4.2.44. This bit shall
+ *   only be set to 1 if [v2] or above of this command is being used.
  *
  * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
  * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
  * supported optional time durations used in CS steps as described in [Vol 6] Part H,
  * Section 4.3.
  *
- * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
- * packets as described in [Vol 6] Part A, Section 3.1.3.
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used for the
+ * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
+ * Section 3.1.3.
  *
- * If the Host issues this command when the Channel Sounding (Host Support) feature bit
- * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * The T_IP2_IPT_Times_Supported and T_SW_IPT_Times_Supported parameters
+ * indicate the supported optional time durations used in CS steps if the CS reflector
+ * supports the Channel Sounding Enhancement #1 feature and the IPT capability (see
+ * [Vol 6] Part H, Section 4.3).
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                               Error code
+ * MC     The local Channel Sounding (Host Support) feature bit (see [Vol 6]      Command
+ *        Part B, Section 4.6.33.4) is not set.                                   Disallowed
+ *                                                                                (0x0C)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_LE_CS_Read_Local_Supported_Capabilities command has completed,
  * an HCI_Command_Complete event shall be generated.
  *
@@ -11799,35 +12393,36 @@ uint8_t sdc_hci_cmd_le_read_min_supported_conn_interval(sdc_hci_cmd_le_read_min_
  */
 uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2(sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2_return_t * p_return);
 
-/** @brief LE CS Write Cached Remote Supported Capabilities v2.
+/** @brief LE CS Write Cached Remote Supported Capabilities [v2].
  *
- * The description below is extracted from Core_v6.0,
+ * The description below is extracted from Core_v6.3,
  * Vol 4, Part E, Section 7.8.132
  *
- * The HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command allows a
- * Host to write the cached copy of the CS capabilities that are supported by the remote
- * Controller for the connection identified by the Connection_Handle parameter.
+ * This command allows a Host to write the cached copy of the CS capabilities
+ * that are supported by the remote Controller for the connection identified by the
+ * Connection_Handle parameter.
  *
  * The Num_Config_Supported parameter indicates the number of CS configurations that
- * are supported by the remote Controller.
+ * are supported per connection by the remote Controller.
  *
  * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
  * number of consecutive CS procedures that are supported by the remote Controller.
  *
- * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * The Num_Antennae_Supported parameter indicates the number of antenna elements
  * that are available for CS tone exchanges.
+ *
  * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
  * antenna paths that are supported by the local Controller for CS tone exchanges.
- *
  * The Roles_Supported parameter indicates the CS roles that are supported by the
  * remote Controller.
  *
  * The Modes_Supported parameter indicates the optional CS modes that are supported
  * by the remote Controller.
  *
- * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
- * RTT_Random_Payload_N parameters indicate the time-of-flight accuracy as described
- * in [Vol 6] Part B, Section 2.4.2.44.
+ * The RTT_Capability, RTT_AA_Only_N, RTT_2M_AA_Only_N,
+ * RTT_Sounding_N, RTT_2M_Sounding_N, RTT_Random_Sequence_N, and
+ * RTT_2M_Random_Sequence_N parameters indicate the time-of-flight accuracy as
+ * described in [Vol 6] Part B, Section 2.4.2.44.
  *
  * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
  * the support by the remote Controller for reporting Normalized Attack Detector Metric
@@ -11845,30 +12440,44 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2(sdc_hci_cmd_le_cs
  * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
  * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
  *   Section 3.3.1.
+ * • IPT in the CS reflector as described in [Vol 6] Part H, Section 4.3.3.
+ * • RTT_PHY support denoting the setting of the RTT accuracy requirements for optional
+ *   LE 2M and LE 2M 2BT PHYs separate from the RTT accuracy requirements for the
+ *   mandatory LE 1M PHY as described in [Vol 6] Part B, Section 2.4.2.44. This bit shall
+ *   only be set to 1 if [v2] or above of this command is being used.
  *
  * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
  * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
  * supported optional time durations used in CS steps as described in [Vol 6] Part H,
  * Section 4.3.
  *
- * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
- * packets as described in [Vol 6] Part A, Section 3.1.3.
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used for the
+ * CS_SYNC packets used in mode-1 and mode-3 steps as described in [Vol 6] Part A,
+ * Section 3.1.3.
  *
- * If the Host issues this command after an LL_CS_CAPABILITIES_REQ or
- * LL_CS_CAPABILITIES_RSP PDU has been received from the remote Controller, then
- * the Controller shall return the error code Command Disallowed (0x0C).
+ * The T_IP2_IPT_Times_Supported and T_SW_IPT_Times_Supported parameters
+ * indicate the supported optional time durations used in CS steps if the CS reflector
+ * supports the Channel Sounding Enhancement #1 feature and the IPT capability (see
+ * [Vol 6] Part H, Section 4.3).
  *
- * If the Host issues this command after a CS configuration has been created in the local
- * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
- * If the Host issues this command when the Channel Sounding (Host Support) feature bit
- * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * Errors:
  *
- * If the Host sends this command with a Connection_Handle that does not exist, or the
- * Connection_Handle is not for an ACL the Controller shall return the error code Unknown
- * Connection Identifier (0x02).
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                         Error code
+ * MC     An LL_CS_CAPABILITIES_REQ or LL_CS_CAPABILITIES_RSP PDU has       Command Disallowed
+ *        been received from the remote Controller.                         (0x0C)
+ * MC     A CS configuration has been created in the local Controller.      Command Disallowed
+ *                                                                          (0x0C)
+ * MC     The Channel Sounding (Host Support) feature bit (see [Vol 6]      Command Disallowed
+ *        Part B, Section 4.6.33.4) is not set.                             (0x0C)
+ * MC     Connection_Handle does not identify an ACL.                       Unknown Connection
+ *                                                                          Identifier (0x02)
+ * </pre>
  *
  * Event(s) generated (unless masked away):
+ *
  * When the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has
  * completed, an HCI_Command_Complete event shall be generated.
  *
