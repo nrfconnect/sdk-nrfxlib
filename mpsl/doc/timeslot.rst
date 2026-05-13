@@ -118,7 +118,7 @@ Ending a timeslot in time
 *************************
 The application is responsible for keeping track of timing within the timeslot and for ensuring that the application’s use of the peripherals does not last for longer than the granted timeslot length.
 
-For these purposes, the application is granted access to the TIMER0 peripheral for the length of the timeslot.
+For these purposes, the application is granted access to the :c:macro:`MPSL_TIMER0` peripheral for the length of the timeslot.
 This timer is started from zero at the start of the timeslot and is configured to run at 1 MHz.
 The recommended practice is to set up a timer interrupt that expires before the timeslot expires, with enough time left for the timeslot to do any clean-up actions before the timeslot ends.
 Such a timer interrupt can also be used to request an extension of the timeslot, but there must still be enough time to clean up if the extension is not granted.
