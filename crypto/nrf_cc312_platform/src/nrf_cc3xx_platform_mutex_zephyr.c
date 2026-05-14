@@ -202,7 +202,7 @@ static nrf_cc3xx_platform_mutex_t power_mutex = {
  * @note This symbol can't be static as it is referenced in the replacement
  *       file memory_buffer_alloc.c inside the heap structure.
  */
-nrf_cc3xx_platform_mutex_t mbedtls_threading_heap_mutex = {
+nrf_cc3xx_platform_mutex_t nrf_cc3xx_platform_heap_mutex = {
     .mutex = &heap_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
                 NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
@@ -217,7 +217,7 @@ nrf_cc3xx_platform_mutex_t mbedtls_threading_heap_mutex = {
  *
  * @note This symbol can't be static as it is referenced from Mbed TLS
  */
-nrf_cc3xx_platform_mutex_t mbedtls_threading_key_slot_mutex = {
+nrf_cc3xx_platform_mutex_t nrf_cc3xx_platform_key_slot_mutex = {
     .mutex = &key_slot_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
                 NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
@@ -232,7 +232,7 @@ nrf_cc3xx_platform_mutex_t mbedtls_threading_key_slot_mutex = {
  *
  * @note This symbol can't be static as it is referenced from Mbed TLS
  */
-nrf_cc3xx_platform_mutex_t mbedtls_threading_psa_globaldata_mutex = {
+nrf_cc3xx_platform_mutex_t nrf_cc3xx_platform_psa_globaldata_mutex = {
     .mutex = &psa_globaldata_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
                 NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
@@ -247,7 +247,7 @@ nrf_cc3xx_platform_mutex_t mbedtls_threading_psa_globaldata_mutex = {
  *
  * @note This symbol can't be static as it is referenced from Mbed TLS
  */
-nrf_cc3xx_platform_mutex_t mbedtls_threading_psa_rngdata_mutex = {
+nrf_cc3xx_platform_mutex_t nrf_cc3xx_platform_psa_rngdata_mutex = {
     .mutex = &psa_rng_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
                 NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
