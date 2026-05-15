@@ -309,6 +309,10 @@ static int simple_send(const struct nrf_rpc_group *group, uint8_t dst, uint8_t t
 	hdr.src_group_id = group_id;
 	hdr.dst_group_id = dst_group_id;
 
+	if (len > SIZE_MAX - NRF_RPC_HEADER_SIZE) {
+		return -NRF_EINVAL;
+	}
+
 	nrf_rpc_alloc_tx_buf(group, &tx_buf, len);
 	if (tx_buf == NULL) {
 		return -NRF_ENOMEM;
@@ -338,6 +342,10 @@ static int group_init_send(const struct nrf_rpc_group *group)
 	hdr.id = 0;
 	hdr.src_group_id = group->data->src_group_id;
 	hdr.dst_group_id = group->data->dst_group_id;
+
+	if (strlen(group->strid) > SIZE_MAX - NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE) {
+		return -NRF_EINVAL;
+	}
 
 	len = strlen(group->strid) + NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE;
 
