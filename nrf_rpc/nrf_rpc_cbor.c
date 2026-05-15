@@ -13,6 +13,11 @@
 #include <nrf_rpc_cbor.h>
 #include <nrf_rpc_common.h>
 
+#undef nrf_rpc_cbor_cmd_no_err
+#undef nrf_rpc_cbor_cmd_rsp_no_err
+#undef nrf_rpc_cbor_evt_no_err
+#undef nrf_rpc_cbor_rsp_no_err
+
 /* Maximum RPC parameters that can be passed */
 #define NRF_RPC_MAX_PARAMETERS 255
 
@@ -75,32 +80,44 @@ int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
 	return err;
 }
 
+static void check_send_err(int err, const struct nrf_rpc_group *group, uint8_t id, uint8_t packet_type, const char *file, int line, const char *func)
+{
+	if (err < 0) {
+		NRF_RPC_ERR("Unhandled command send error %d", err);
+		nrf_rpc_err_impl(err, NRF_RPC_ERR_SRC_SEND, group, id, packet_type, file, line, func);
+	}
+}
+
+void nrf_rpc_cbor_cmd_no_err_impl(const struct nrf_rpc_group *group, uint8_t cmd,
+			     struct nrf_rpc_cbor_ctx *ctx,
+			     nrf_rpc_cbor_handler_t handler,
+			     void *handler_data,
+			     const char *file, int line, const char *func)
+{
+	check_send_err(nrf_rpc_cbor_cmd(group, cmd, ctx, handler, handler_data),
+		       group, cmd, NRF_RPC_PACKET_TYPE_CMD, file, line, func);
+}
+
 void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 			     struct nrf_rpc_cbor_ctx *ctx,
 			     nrf_rpc_cbor_handler_t handler,
 			     void *handler_data)
 {
-	int err;
+	nrf_rpc_cbor_cmd_no_err_impl(group, cmd, ctx, handler, handler_data, NULL, 0, NULL);
+}
 
-	err = nrf_rpc_cbor_cmd(group, cmd, ctx, handler, handler_data);
-	if (err < 0) {
-		NRF_RPC_ERR("Unhandled command send error %d", err);
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, group, cmd,
-			    NRF_RPC_PACKET_TYPE_CMD);
-	}
+void nrf_rpc_cbor_cmd_rsp_no_err_impl(const struct nrf_rpc_group *group, uint8_t cmd,
+				 struct nrf_rpc_cbor_ctx *ctx,
+				 const char *file, int line, const char *func)
+{
+	check_send_err(nrf_rpc_cbor_cmd_rsp(group, cmd, ctx),
+		       group, cmd, NRF_RPC_PACKET_TYPE_CMD, file, line, func);
 }
 
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 				 struct nrf_rpc_cbor_ctx *ctx)
 {
-	int err;
-
-	err = nrf_rpc_cbor_cmd_rsp(group, cmd, ctx);
-	if (err < 0) {
-		NRF_RPC_ERR("Unhandled command send error %d", err);
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, group, cmd,
-			    NRF_RPC_PACKET_TYPE_CMD);
-	}
+	nrf_rpc_cbor_cmd_rsp_no_err_impl(group, cmd, ctx, NULL, 0, NULL);
 }
 
 int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
@@ -119,18 +136,18 @@ int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 	return nrf_rpc_evt(group, evt, ctx->out_packet, len);
 }
 
+void nrf_rpc_cbor_evt_no_err_impl(const struct nrf_rpc_group *group, uint8_t evt,
+			     struct nrf_rpc_cbor_ctx *ctx,
+			     const char *file, int line, const char *func)
+{
+	check_send_err(nrf_rpc_cbor_evt(group, evt, ctx),
+		       group, evt, NRF_RPC_PACKET_TYPE_EVT, file, line, func);
+}
+
 void nrf_rpc_cbor_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
 			     struct nrf_rpc_cbor_ctx *ctx)
 {
-	int err;
-
-	err = nrf_rpc_cbor_evt(group, evt, ctx);
-	if (err < 0) {
-		NRF_RPC_ERR("Unhandled command send error %d", err);
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, group, evt,
-			    NRF_RPC_PACKET_TYPE_EVT);
-	}
-
+	nrf_rpc_cbor_evt_no_err_impl(group, evt, ctx, NULL, 0, NULL);
 }
 
 int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
@@ -148,17 +165,16 @@ int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx 
 	return nrf_rpc_rsp(group, ctx->out_packet, len);
 }
 
+void nrf_rpc_cbor_rsp_no_err_impl(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx,
+			     const char *file, int line, const char *func)
+{
+	check_send_err(nrf_rpc_cbor_rsp(group, ctx),
+		       group, NRF_RPC_ID_UNKNOWN, NRF_RPC_PACKET_TYPE_RSP, file, line, func);
+}
+
 void nrf_rpc_cbor_rsp_no_err(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
 {
-	int err;
-
-	err = nrf_rpc_cbor_rsp(group, ctx);
-	if (err < 0) {
-		NRF_RPC_ERR("Unhandled command send error %d", err);
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, group, NRF_RPC_ID_UNKNOWN,
-			    NRF_RPC_PACKET_TYPE_RSP);
-	}
-
+	nrf_rpc_cbor_rsp_no_err_impl(group, ctx, NULL, 0, NULL);
 }
 
 void nrf_rpc_cbor_decoding_done(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
