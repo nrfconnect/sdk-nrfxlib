@@ -6,4 +6,5 @@
  * The following tag tells the "west ncs-sbom" tool which files are covered
  * by the license information above.
  * NCS-SBOM-Apply-To-File: ./lib/**/*.a
+ * NCS-SBOM-Apply-To-File: ./fem/**/*.a
  */
