@@ -310,7 +310,7 @@ nrf_scan_error_t nrf_scan_timing(nrf_scan_t const *        p_scan,
     {
         return NRF_SCAN_ERROR_INVALID_PARAM;
     }
-    if ((p_timing->sjw < 4) || (p_timing->sjw > MIN(ts1, ts2)))
+    if ((p_timing->sjw < 1) || (p_timing->sjw > MIN(p_timing->phase_seg1, 4)))
     {
         return NRF_SCAN_ERROR_INVALID_PARAM;
     }
