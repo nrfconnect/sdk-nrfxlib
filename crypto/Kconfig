@@ -17,7 +17,6 @@ config NRF_CC310_BL
 	bool "nrf_cc310_bl HW crypto library for nRF devices with CryptoCell CC310."
 	select NRFXLIB_CRYPTO
 	select FPU # The cc310_bl lib uses floating point registers.
-	depends on !NORDIC_SECURITY_BACKEND
 	help
 	  This configuration is only available for direct use of nrf_cc3xx_bl
 	  To use, link with nrfxlib_crypto in CMake.
