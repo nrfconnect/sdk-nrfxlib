@@ -12,7 +12,7 @@ nrfxlib_calculate_lib_path(lib_path)
 
 add_library(nrfxlib_crypto INTERFACE)
 
-if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG_PSA_CRYPTO_DRIVER_OBERON)
+if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_PSA_CRYPTO_DRIVER_OBERON)
 
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
   set(OBERON_VER 3.0.19)
@@ -23,12 +23,10 @@ if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG
   )
 
   set(OBERON_LIB ${OBERON_LIB_DIR}/liboberon_${OBERON_VER}.a)
-  set(OBERON_MBEDTLS_LIB ${OBERON_LIB_DIR}/liboberon_mbedtls_${OBERON_VER}.a)
 
-  if(NOT EXISTS ${OBERON_LIB} OR
-     NOT EXISTS ${OBERON_MBEDTLS_LIB})
+  if(NOT EXISTS ${OBERON_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
-                    "(${OBERON_LIB} or ${OBERON_MBEDTLS_LIB} doesn't exist.)")
+                    "(${OBERON_LIB} doesn't exist.)")
   endif()
 
   #
@@ -45,31 +43,9 @@ if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG
   )
 
 
-  if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND AND NOT CONFIG_PSA_CRYPTO_DRIVER_OBERON)
+  if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_PSA_CRYPTO_DRIVER_OBERON)
     target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
     target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
-  else()
-    if(NOT EXISTS ${OBERON_MBEDTLS_LIB})
-      message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon_mbedtls lib."
-                      "(${OBERON_MBEDTLS_LIB} doesn't exist.)")
-    endif()
-
-    #
-    # Add mbedcrypto_oberon_mbedtls_imported - contains legacy crypto APIs
-    #
-    add_library(mbedcrypto_oberon_mbedtls_imported STATIC IMPORTED GLOBAL)
-    set_target_properties(mbedcrypto_oberon_mbedtls_imported PROPERTIES
-      IMPORTED_LOCATION
-        "${OBERON_MBEDTLS_LIB}"
-    )
-    target_include_directories(mbedcrypto_oberon_mbedtls_imported
-      INTERFACE
-        "${OBERON_BASE}/include/mbedtls"
-    )
-    target_link_libraries(mbedcrypto_oberon_mbedtls_imported
-      INTERFACE
-        mbedcrypto_oberon_imported
-    )
   endif()
 endif()
 
@@ -154,7 +130,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   endif()
 endif()
 
-if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_TFM))
+if (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_TFM)
 
   nrfxlib_calculate_lib_path(NRF_CC3XX_LIB_DIR
     BASE_DIR ${NRF_CC3XX_BASE}
@@ -194,35 +170,12 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   endif()
 
   #
-  # Add nrf_cc3xx_legacy_crypto_imported library (for mbedtls_ prfixed APIs)
-  #
-  add_library(nrf_cc3xx_legacy_crypto_imported STATIC IMPORTED GLOBAL)
-
-  target_link_libraries(nrf_cc3xx_legacy_crypto_imported
-    INTERFACE
-      nrf_cc3xx_core_imported
-    )
-
-  set(NRF_CC3XX_MBEDTLS_LEGACY_LIB
-    ${NRF_CC3XX_LIB_DIR}/no-interrupts/libnrf_${CC3XX_ARCH}_legacy_crypto_${NRF_CC3XX_VER}.a
-  )
-
-  if(NOT EXISTS ${NRF_CC3XX_MBEDTLS_LEGACY_LIB})
-    message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_${CC3XX_ARCH}_legacy_crypto lib."
-                  "(${NRF_CC3XX_MBEDTLS_LEGACY_LIB} doesn't exist.)")
-  endif()
-
-  set_property(TARGET nrf_cc3xx_legacy_crypto_imported PROPERTY
-               IMPORTED_LOCATION "${NRF_CC3XX_MBEDTLS_LEGACY_LIB}")
-
-  #
   # Add nrf_cc3xx_psa_crypto_imported_imported library (for PSA APIs)
   #
   add_library(nrf_cc3xx_psa_crypto_imported STATIC IMPORTED GLOBAL)
 
   target_link_libraries(nrf_cc3xx_psa_crypto_imported
     INTERFACE
-      nrf_cc3xx_legacy_crypto_imported
       nrf_cc3xx_core_imported
       nrf_cc3xx_platform
     )
