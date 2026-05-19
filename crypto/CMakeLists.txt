@@ -76,7 +76,6 @@ endif()
 if (CONFIG_NRF_CC310_BL)
   assert(CONFIG_HAS_HW_NRF_CC310 "nrf_cc310_bl requires CryptoCell hardware.")
   set(CC310_BL_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_cc310_bl)
-  set(CC310_FLAVOR no-interrupts)
   set(CC310_BL_VER 0.9.12)
 
   nrfxlib_calculate_lib_path(CC310_BL_LIB_DIR
@@ -85,7 +84,7 @@ if (CONFIG_NRF_CC310_BL)
   )
 
   set(CC310_BL_LIB
-    ${CC310_BL_LIB_DIR}/${CC310_FLAVOR}/libnrf_cc310_bl_${CC310_BL_VER}.a
+    ${CC310_BL_LIB_DIR}/no-interrupts/libnrf_cc310_bl_${CC310_BL_VER}.a
   )
 
   if(NOT EXISTS ${CC310_BL_LIB})
@@ -105,7 +104,6 @@ endif()
 if (CONFIG_NRF_CC3XX_PLATFORM)
   set(NRF_CC3XX_PLATFORM_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
   set(NRF_CC3XX_PLATFORM_VER 0.9.21)
-  set(CC3XX_PLATFORM_FLAVOR no-interrupts)
 
   nrfxlib_calculate_lib_path(NRF_CC3XX_PLATFORM_LIB_DIR
     BASE_DIR ${NRF_CC3XX_PLATFORM_BASE}
@@ -113,7 +111,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   )
 
   set(NRF_CC3XX_PLATFORM_LIB
-    ${NRF_CC3XX_PLATFORM_LIB_DIR}/${CC3XX_PLATFORM_FLAVOR}/libnrf_${CC3XX_ARCH}_platform_${NRF_CC3XX_PLATFORM_VER}.a
+    ${NRF_CC3XX_PLATFORM_LIB_DIR}/no-interrupts/libnrf_${CC3XX_ARCH}_platform_${NRF_CC3XX_PLATFORM_VER}.a
   )
 
   if (NOT EXISTS ${NRF_CC3XX_PLATFORM_LIB})
@@ -157,7 +155,6 @@ endif()
 if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_TFM))
   set(NRF_CC3XX_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_mbedcrypto)
   set(NRF_CC3XX_VER 0.9.21)
-  set(CC3XX_FLAVOR no-interrupts)
 
   nrfxlib_calculate_lib_path(NRF_CC3XX_LIB_DIR
     BASE_DIR ${NRF_CC3XX_BASE}
@@ -165,7 +162,7 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   )
 
   set(NRF_CC3XX_CORE_LIB
-    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_core_${NRF_CC3XX_VER}.a
+    ${NRF_CC3XX_LIB_DIR}/no-interrupts/libnrf_${CC3XX_ARCH}_core_${NRF_CC3XX_VER}.a
   )
 
   if(NOT EXISTS ${NRF_CC3XX_CORE_LIB})
@@ -207,7 +204,7 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
     )
 
   set(NRF_CC3XX_MBEDTLS_LEGACY_LIB
-    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_legacy_crypto_${NRF_CC3XX_VER}.a
+    ${NRF_CC3XX_LIB_DIR}/no-interrupts/libnrf_${CC3XX_ARCH}_legacy_crypto_${NRF_CC3XX_VER}.a
   )
 
   if(NOT EXISTS ${NRF_CC3XX_MBEDTLS_LEGACY_LIB})
@@ -231,7 +228,7 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
     )
 
   set(NRF_CC3XX_PSA_LIB
-    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_psa_crypto_${NRF_CC3XX_VER}.a
+    ${NRF_CC3XX_LIB_DIR}/no-interrupts/libnrf_${CC3XX_ARCH}_psa_crypto_${NRF_CC3XX_VER}.a
   )
 
   if(NOT EXISTS ${NRF_CC3XX_PSA_LIB})
