@@ -102,6 +102,7 @@ elseif(CONFIG_HAS_HW_NRF_CC310)
 endif()
 
 if (CONFIG_NRF_CC3XX_PLATFORM)
+  set(NRF_CC3XX_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_mbedcrypto)
   set(NRF_CC3XX_PLATFORM_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
   set(NRF_CC3XX_VER 0.9.21)
 
@@ -126,7 +127,8 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
     IMPORTED_LOCATION "${NRF_CC3XX_PLATFORM_LIB}"
   )
   target_include_directories(nrf_cc3xx_platform INTERFACE
-      "${NRF_CC3XX_PLATFORM_BASE}/include")
+      "${NRF_CC3XX_PLATFORM_BASE}/include"
+      "${NRF_CC3XX_BASE}/include/mbedtls")
 
   # Make sure that C library is linked after nrf_cc3xx_platform library to
   # prevent linker errors
@@ -153,7 +155,6 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
 endif()
 
 if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_TFM))
-  set(NRF_CC3XX_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_mbedcrypto)
 
   nrfxlib_calculate_lib_path(NRF_CC3XX_LIB_DIR
     BASE_DIR ${NRF_CC3XX_BASE}
