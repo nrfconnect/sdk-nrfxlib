@@ -62,19 +62,6 @@ CC3XX Platform - HMAC-DRBG APIs
 
 .. doxygengroup:: nrf_cc3xx_platform_hmac_drbg
 
-.. _crypto_api_nrf_cc3xx_mbedcrypto:
-
-nRF CC3XX mbedcrypto library
-****************************
-
-.. doxygengroup:: nrf_cc3xx_mbedcrypto
-
-KMU/KDR APIs
-========================
-
-.. doxygengroup:: nrf_cc3xx_mbedcrypto_kmu
-
-
 .. _crypto_api_nrf_oberon:
 
 nrf_oberon crypto library

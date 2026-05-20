@@ -198,8 +198,3 @@ On Arm CryptoCell 310 devices (nRF52840 and nRF91 Series), symmetric operations 
 .. note::
 
       In Arm CryptoCell 312 devices (nRF5340), there are no restrictions as CryptoCell has DMA access to Flash.
-
-API documentation
-=================
-
-:ref:`crypto_api_nrf_cc3xx_mbedcrypto`
