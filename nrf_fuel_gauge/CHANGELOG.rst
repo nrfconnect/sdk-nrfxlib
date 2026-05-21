@@ -9,6 +9,37 @@ Changelog
 
 All notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* All functions now return an error code.
+  Functions that previously returned a data value now return it through an output parameter instead.
+* The ``nrf_fuel_gauge_runtime_parameters`` structure and the ``nrf_fuel_gauge_config_parameters`` parameters are now combined into a single structure, :c:struct:`nrf_fuel_gauge_config_parameters`.
+  These are optional parameters that can be set at initialization or adjusted later using the :c:func:`nrf_fuel_gauge_config_params_adjust` function.
+* The ``nrf_fuel_gauge_opt_params_default_get`` function is replaced with :c:func:`nrf_fuel_gauge_config_params_default_get` and :c:func:`nrf_fuel_gauge_config_params_current_get`.
+* Renamed ``NRF_FUEL_GAUGE_CHARGE_STATE_CC_VBUS_LIMITED`` to ``NRF_FUEL_GAUGE_CHARGE_STATE_CC_LIMITED``.
+
+Added
+=====
+
+* Experimental support for state-of-health estimation for secondary cell (rechargeable) batteries.
+  This is a percentage value that indicates the current maximum capacity of the battery compared to its nominal capacity, estimated based on battery charge cycles.
+* Optional lock function in the :c:struct:`nrf_fuel_gauge_init_parameters` structure to allow the library to be used in a multi-threaded environment.
+* The following functions:
+
+  * :c:func:`nrf_fuel_gauge_config_params_adjust` to adjust parameters at runtime.
+  * :c:func:`nrf_fuel_gauge_config_params_default_get` to initialize the :c:struct:`nrf_fuel_gauge_config_parameters` structure with default values.
+  * :c:func:`nrf_fuel_gauge_config_params_current_get` to retrieve the current configuration parameters.
+  * :c:func:`nrf_fuel_gauge_soc_get` to retrieve the current state-of-charge value.
+  * :c:func:`nrf_fuel_gauge_soh_get` to retrieve the current state-of-health value.
+  * :c:func:`nrf_fuel_gauge_state_compatible_check` to check if a given state blob is compatible with the current library version.
+
+* Convenience macros :c:macro:`NRF_FUEL_GAUGE_DEFAULT_INIT_PARAMETERS_PRIMARY` and :c:macro:`NRF_FUEL_GAUGE_DEFAULT_INIT_PARAMETERS_SECONDARY` used for simple initialization of the :c:struct:`nrf_fuel_gauge_init_parameters` structure.
+* Library builds for Cortex-M0, Cortex-M0+, Cortex-M33 without DSP Extension, Cortex-M55, and Xtensa ESP32 architectures.
+
 nRF Connect SDK v3.3.0
 **********************
 
