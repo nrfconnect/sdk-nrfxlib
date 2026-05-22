@@ -59,7 +59,8 @@ The HFXO must be running to use the ``RADIO`` peripheral.
 MPSL makes sure the HFXO is started in time for every scheduled ``RADIO`` activity.
 
 .. note::
-    For the correct operation of the ``RADIO`` peripheral, you must set the HFXO startup time to less than 1.5 ms.
+    For the correct operation of the ``RADIO`` peripheral, you must configure the HFXO startup time.
+    See the :kconfig:option:`MPSL_HFCLK_LATENCY` Kconfig option for details on how to do this.
     As such, you must choose the external crystal oscillator and the other related components accordingly.
     See the relevant SoC product specification for more information.
 
@@ -108,6 +109,6 @@ The :c:member:`hfclk_request`, :c:member:`hfclk_release`, and :c:member:`hfclk_i
 These APIs will be called by MPSL from high priority, so they may not use blocking operations.
 
 You must correctly configure the  :c:member:`startup_time_us` for the ``RADIO`` operation.
-You must set the HFXO startup time to less than 1.5 ms.
+See the :kconfig:option:`MPSL_HFCLK_LATENCY` Kconfig option for details on how to do this.
 As such, you must choose the external crystal oscillator and the other related components accordingly.
 See the relevant SoC product specification for more information.
