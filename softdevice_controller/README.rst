@@ -94,7 +94,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
      * nRF52 Series: 750 μs
      * nRF53 Series: 875 μs
      * nRF54L Series: 750 μs
-     * nRF54H Series: 875 μs
+     * nRF54H Series: 750 μs
 
 .. _sdc_proprietary_feature_support:
 

@@ -189,7 +189,7 @@ Timestamps
    The timestamp of a previous SDU can be retrieved using the HCI VS ISO Read TX Timestamp command.
    The next timestamp should be incremented by a multiple of the SDU interval.
    This means that, in the audio use case where SDUs are provided every SDU interval, the next timestamp should be incremented by one SDU interval.
-   SDUs must be provided to the |controller| at least :c:macro:`HCI_ISO_SDU_PROCESSING_TIME_US` before the time indicated in the added timestamp.
+   SDUs must be provided to the |controller| at least :c:macro:`HCI_ISO_TX_SDU_ARRIVAL_MARGIN_US` before the time indicated in the added timestamp.
 
    In ISO, the timing information is based on the central's clock.
    This means that for the CIS central and Broadcaster roles, it is sufficient to retrieve the timestamp from the controller only once.
@@ -207,7 +207,7 @@ Time of arrival
    The controller then tries to send the data in the next available CIS or BIS event where it does not yet have data to send.
    By doing this, the application does not need to keep track of the exact time, which leads to a higher probability that the SDU is sent and not dropped before being sent.
    The latency between when an SDU is provided and when it is sent depend on the configuration.
-   There is a minimum of :c:macro:`HCI_ISO_SDU_PROCESSING_TIME_US` latency due to the processing overhead of the |controller| before sending the SDU.
+   There is a minimum of :c:macro:`HCI_ISO_TX_SDU_ARRIVAL_MARGIN_US` latency due to the processing overhead of the |controller| before sending the SDU.
    While the controller tries to minimize latency, there is some inherent jitter due to the asynchronous nature of the HCI interface.
 
    Expect a larger latency if data is not provided every SDU interval and the stream is configured with retransmissions.

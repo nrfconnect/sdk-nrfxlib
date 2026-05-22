@@ -17,10 +17,13 @@ Added
 
 * Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
 * The vendor-specific HCI command: Transmitter carrier frequency test. (DRGN-28500)
+* Added the :file:`include/sdc_asserts.h` file containing a list of documented SDC asserts. (DRGN-28123)
 
 Changes
 =======
 
+* The supported Bluetooth Core Specification version has been updated to v6.3.
+  Multiple HCI fields have been renamed to align with the Bluetooth Core Specification v6.3 naming conventions (DRGN-28241).
 * The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x11`` to indicate compatibility with Bluetooth Core Specification v6.3 (DRGN-28241).
 * The functions :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` have been deprecated.
 
