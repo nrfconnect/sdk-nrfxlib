@@ -10,15 +10,6 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Added
-=====
-
-* Experimental support for the nRF54LS05A device. (DRGN-28121)
-* Added the :file:`include/mpsl_asserts.h` file containing a list of documented MPSL asserts. (DRGN-28123)
-
 nRF Connect SDK v3.3.0
 **********************
 
