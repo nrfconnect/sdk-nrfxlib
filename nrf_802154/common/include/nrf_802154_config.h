@@ -63,7 +63,6 @@ extern "C" {
  * @def NRF_802154_DRV_REINIT_ENABLED
  *
  * Enables the driver reinitialization feature.
- * This is an experimental feature.
  * 
  * @note This option implies the following options to be enabled:
  *       - NRF_802154_DELAYED_TRX_CANCEL_ALL_ENABLED
@@ -371,7 +370,6 @@ extern "C" {
  * Indicates whether the CSMA-CA cancel feature is to be enabled in the driver.
  * When @ref NRF_802154_CSMA_CA_ENABLED is set to 1, this option can be set to 1
  * to enable the @ref nrf_802154_csma_ca_cancel() function.
- * This is an experimental feature.
  *
  */
 #if NRF_802154_CSMA_CA_ENABLED
@@ -625,7 +623,6 @@ extern "C" {
  * @def NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
  *
  * Enables the notification queue flush feature.
- * This is an experimental feature.
  */
 #ifndef NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED
 #define NRF_802154_NOTIFICATION_QUEUE_FLUSH_ENABLED NRF_802154_DRV_REINIT_ENABLED

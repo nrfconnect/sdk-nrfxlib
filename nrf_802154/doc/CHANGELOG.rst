@@ -19,6 +19,7 @@ Notable changes
 * Separate maps for pending bits and IEs are replaced with a single map that stores the peer records containing both pending bits an IEs.
   There are two such maps, one for short addresses and one for extended addresses.
   When a frame is being received there is only one search for the peer record in one of the maps instead of separate searches for pending bits and IEs. (KRKNWK-21632)
+* Removed experimental label from the :c:macro:`NRF_802154_DRV_REINIT_ENABLED` feature. (KRKNWK-21880).
 
 Added
 =====

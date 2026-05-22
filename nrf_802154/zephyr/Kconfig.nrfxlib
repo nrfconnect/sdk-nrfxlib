@@ -97,9 +97,8 @@ config NRF_802154_SL_HPTIMER
 endif # NRF_802154_SL
 
 config NRF_802154_DRV_REINIT_ENABLED
-	bool "Driver reinitialization [EXPERIMENTAL]"
+	bool "Driver reinitialization"
 	depends on !NRF_802154_SER_HOST
-	select EXPERIMENTAL
 	help
 		Enable driver reinitialization to apply a new radio configuration without a full
 		deinitialization cycle, for example when switching between protocols.
