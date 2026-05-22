@@ -159,8 +159,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    803
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 923
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    798
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 907
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -1438,46 +1438,13 @@ void sdc_support_connection_subrating_peripheral(void);
 /** @brief Support Extended Feature Set
  *
  * After this API is called, the controller will support the HCI commands
- * related to Extended Feature Set for the central and peripheral link roles.
- *
- * @deprecated Use @ref sdc_support_extended_feature_set_central() and/or
- *             @ref sdc_support_extended_feature_set_peripheral() instead.
+ * related to Extended Feature Set.
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-__attribute__((deprecated)) void sdc_support_extended_feature_set(void);
-
-/** @brief Support Extended Feature Set as Central
- *
- * After this API is called, the controller will support the HCI commands
- * related to Extended Feature Set for the central link role.
- *
- * @note The application is required to call both @ref sdc_support_extended_feature_set_central()
- *       and @ref sdc_support_extended_feature_set_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_extended_feature_set_central(void);
-
-/** @brief Support Extended Feature Set as Peripheral
- *
- * After this API is called, the controller will support the HCI commands
- * related to Extended Feature Set for the peripheral link role.
- *
- * @note The application is required to call both @ref sdc_support_extended_feature_set_central()
- *       and @ref sdc_support_extended_feature_set_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_extended_feature_set_peripheral(void);
+void sdc_support_extended_feature_set(void);
 
 /** @brief Support Frame Space Update for central role
  *
@@ -1602,24 +1569,7 @@ void sdc_support_channel_sounding_mode3(void);
 /** @brief  Support Channel Sounding Initiator role
  *
  * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Initiator role for the central and peripheral link roles.
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
- *
- * @deprecated Use @ref sdc_support_channel_sounding_initiator_role_central() and/or
- *             @ref sdc_support_channel_sounding_initiator_role_peripheral() instead.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-__attribute__((deprecated)) void sdc_support_channel_sounding_initiator_role(void);
-
-/** @brief Support Channel Sounding Initiator role as Central
- *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Initiator role for the central link role.
+ * related to Channel Sounding Initiator role
  *
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
@@ -1628,43 +1578,12 @@ __attribute__((deprecated)) void sdc_support_channel_sounding_initiator_role(voi
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-void sdc_support_channel_sounding_initiator_role_central(void);
-
-/** @brief Support Channel Sounding Initiator role as Peripheral
- *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Initiator role for the peripheral link role.
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_channel_sounding_initiator_role_peripheral(void);
+void sdc_support_channel_sounding_initiator_role(void);
 
 /** @brief  Support Channel Sounding Reflector role
  *
  * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Reflector role for the central and peripheral link roles.
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
- *
- * @deprecated Use @ref sdc_support_channel_sounding_reflector_role_central() and/or
- *             @ref sdc_support_channel_sounding_reflector_role_peripheral() instead.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-__attribute__((deprecated)) void sdc_support_channel_sounding_reflector_role(void);
-
-/** @brief Support Channel Sounding Reflector role as Central
- *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Reflector role for the central link role.
+ * related to Channel Sounding Reflector role
  *
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
@@ -1673,21 +1592,7 @@ __attribute__((deprecated)) void sdc_support_channel_sounding_reflector_role(voi
  *       Use @ref sdc_support_helper() with this function to make sure
  *       it is called at the right time.
  */
-void sdc_support_channel_sounding_reflector_role_central(void);
-
-/** @brief Support Channel Sounding Reflector role as Peripheral
- *
- * After this API is called, the controller will support the HCI commands
- * related to Channel Sounding Reflector role for the peripheral link role.
- *
- * The application shall call @ref sdc_support_channel_sounding_test() to enable
- * support for Channel Sounding test command.
- *
- * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
- *       Use @ref sdc_support_helper() with this function to make sure
- *       it is called at the right time.
- */
-void sdc_support_channel_sounding_reflector_role_peripheral(void);
+void sdc_support_channel_sounding_reflector_role(void);
 
 /** @brief Support Direct Test Mode
  *
