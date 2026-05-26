@@ -17,7 +17,7 @@ Added
 
 * Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
 * The vendor-specific HCI command: Transmitter carrier frequency test. (DRGN-28500)
-* Added the :file:`include/sdc_asserts.h` file containing a list of documented SDC asserts. (DRGN-28123)
+* The :file:`include/sdc_asserts.h` file containing a list of documented SDC asserts. (DRGN-28123)
 
 Changes
 =======
