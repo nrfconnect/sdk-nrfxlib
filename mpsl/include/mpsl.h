@@ -20,6 +20,7 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "nrfx.h"
@@ -192,6 +193,19 @@ void mpsl_calibration_timer_handle(void);
   */
  void mpsl_low_latency_release_callback(void);
  /** @} */
+
+/** @brief Optimized memory copy helper.
+ *
+ * Copy memory using MPSL's internal memcpy implementation.
+ * This function is optimized for the MPSL target platform.
+ *
+ * @param[out] p_dest     Destination buffer.
+ * @param[in]  p_src      Source buffer.
+ * @param[in]  num_bytes  Number of bytes to copy.
+ *
+ * @return Pointer to @p p_dest.
+ */
+void * mpsl_memcpy(void * restrict p_dest, const void * restrict p_src, size_t num_bytes);
 
 #ifdef __cplusplus
 }
