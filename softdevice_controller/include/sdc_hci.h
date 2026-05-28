@@ -135,6 +135,32 @@ int32_t sdc_hci_iso_data_put(uint8_t const * p_data_in);
  */
 int32_t sdc_hci_get(uint8_t * p_packet_out, uint8_t * p_msg_type_out);
 
+/** @brief HCI packet reference for ACL data from @ref sdc_hci_acquire(). */
+typedef struct
+{
+  uint8_t const * p_packet;
+  uint16_t len;
+} sdc_hci_packet_info_t;
+
+/** @brief Acquire an HCI packet from the SoftDevice Controller.
+ *
+ * For ACL packets, @p p_packet_info_out is filled with a pointer into controller memory.
+ * For event and ISO packets, the HCI payload is written into @p p_out_buf.
+ *
+ * @retval 0            Success
+ * @retval -NRF_EAGAIN  No packet available
+ * @retval -NRF_EINVAL  Invalid input
+ * @retval -NRF_EBUSY   A packet is already held and must be freed first
+ */
+int32_t sdc_hci_acquire(sdc_hci_packet_info_t * p_packet_info_out,
+                        uint8_t *               p_out_buf,
+                        uint16_t                out_buf_len,
+                        uint16_t *              p_out_len,
+                        uint8_t *               p_msg_type_out);
+
+/** @brief Release an HCI packet previously obtained using @ref sdc_hci_acquire(). */
+int32_t sdc_hci_msg_free(void);
+
 #ifdef __cplusplus
 }
 #endif
