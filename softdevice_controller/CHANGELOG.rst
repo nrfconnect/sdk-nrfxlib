@@ -50,6 +50,7 @@ Bug fixes
 
 * Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
 * Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
+* Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
 
 nRF Connect SDK v3.3.0
 **********************
