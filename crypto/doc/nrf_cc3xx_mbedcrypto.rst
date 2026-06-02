@@ -9,17 +9,13 @@ nrf_cc3xx_mbedcrypto library
    :depth: 2
 
 The nrf_cc3xx_mbedcrypto library is a software library used by the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS| to interface with the Arm CryptoCell hardware accelerator that is available on the nRF52840 SoC, the nRF53 Series, and the nRF91 Series.
-The library adds hardware support for selected cryptographic algorithms.
+The library adds hardware support for selected PSA Crypto algorithms.
 
 .. note::
+   Since the update of Mbed TLS to v4.1.0 in the |NCS|, the library is used exclusively for integration with the TF-PSA-Crypto reference implementation.
+
    Do not link to this library directly.
    See :ref:`nrf:psa_crypto_support` for information on how to enable its related driver.
-
-Integration with Mbed TLS
-=========================
-
-The nrf_cc3xx_mbedcrypto library provides low-level integration with the Mbed TLS version provided in the |NCS|.
-Some of the APIs expressed in this library use the Mbed TLS :ref:`legacy crypto <nrf:legacy_crypto_support>` abstraction layer.
 
 Supported cryptographic algorithms
 ==================================
@@ -27,24 +23,23 @@ Supported cryptographic algorithms
 The following tables show the current state of support.
 
 .. note::
-   If `no Mbed TLS support` is listed in limitations, it indicates that the hardware supports it, but it is not exposed in an API that works with Mbed TLS.
-
+   *No support* listed in limitations indicates that the hardware supports it, but it is not exposed in an API.
 
 AES - Advanced Encryption Standard
 ----------------------------------
-+-----------------------+-------------------------------+
-| Cipher                | Limitations                   |
-+=======================+===============================+
-| CTR                   | 128-bit                       |
-+-----------------------+-------------------------------+
-| CBC                   | 128-bit                       |
-+-----------------------+-------------------------------+
-| OFB                   | 128-bit, no Mbed TLS support  |
-+-----------------------+-------------------------------+
-| CFB                   | 128-bit, no Mbed TLS support  |
-+-----------------------+-------------------------------+
-| CMAC                  | 128-bit                       |
-+-----------------------+-------------------------------+
++-----------------------+----------------------+
+| Cipher                | Limitations          |
++=======================+======================+
+| CTR                   | 128-bit              |
++-----------------------+----------------------+
+| CBC                   | 128-bit              |
++-----------------------+----------------------+
+| OFB                   | 128-bit, no support  |
++-----------------------+----------------------+
+| CFB                   | 128-bit, no support  |
++-----------------------+----------------------+
+| CMAC                  | 128-bit              |
++-----------------------+----------------------+
 
 
 AEAD - Authenticated Encryption with Associated Data
@@ -99,22 +94,12 @@ Edwards/Montgommery:
 * Ed25519
 * Curve25519
 
-Additional items in mbedtls_extra
----------------------------------
-
-These mbedtls_extra algorithms are supported, but are not in the Mbed TLS API.
-
-* AES key wrap functions
-* ECIES
-* HKDF
-* SRP, up to 3072 bits
-
 Using the library
 =================
 
 Providing platform specific calloc/free
 ---------------------------------------
-Just like Mbed TLS, this library calls :c:func:`calloc` and :c:func:`free` for memory management.
+This library calls :c:func:`calloc` and :c:func:`free` for memory management.
 
 The :c:func:`calloc` and :c:func:`free` functions can be changed with the following API:
 
