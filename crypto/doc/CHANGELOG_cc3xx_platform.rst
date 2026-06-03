@@ -9,6 +9,39 @@ Changelog - nrf_cc3xx_platform
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_platform - 0.9.22
+***************************
+
+New version of the library with the following features:
+
+ * Restructured the code for ``CTR_DRBG`` and ``HMAC_DRBG`` to avoid dependency on both (which would cause a size increase in v0.9.21).
+ * Removed the usage of legacy Mbed TLS APIs that were previously used for KMU support.
+ * Updated the library to build with ``MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG`` enabled.
+
+Library built against Oberon PSA Crypto v2.0.0.
+
+Added
+=====
+
+Added a new build of nrf_cc3xx_platform libraries for nRF91 Series, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
+
+* nrf_cc312_platform, nRF5340 variants
+
+  * :file:`/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.22.a`
+
+* nrf_cc310_platform, nRF91 Series variants
+
+  * :file:`/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.22.a`
+
+* nrf_cc310_platform, nRF52840 variants
+
+  * :file:`/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.22.a`
+
+
 nrf_cc3xx_platform - 0.9.21
 ***************************
 
