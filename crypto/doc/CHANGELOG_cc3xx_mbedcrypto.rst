@@ -9,6 +9,43 @@ Changelog - nrf_cc3xx_mbedcrypto
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_mbedcrypto - 0.9.22
+*****************************
+
+New version of the runtime library with the following bug fixes and improvements:
+
+* Removed the library for Mbed TLS legacy APIs from the distribution.
+* Removed all alternative header files for the cryptography features that were used by legacy Mbed TLS APIs.
+* Disabled ``MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT``, as it is no longer needed.
+
+Library built against Oberon PSA Crypto v2.0.0.
+
+This version depends on the ``nrf_cc310_platform`` or ``nrf_cc312_platform`` library for low-level system initialization and proper RTOS integration.
+
+Added
+=====
+
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF91 Series, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
+
+* nrf_cc312_mbedcrypto, nRF5340 variants:
+
+  * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.22.a`
+  * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_core_0.9.22.a`
+
+* nrf_cc310_mbedcrypto, nRF91 Series variants:
+
+  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_psa_crypto_0.9.22.a`
+  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_core_0.9.22.a`
+
+* nrf_cc310_mbedcrypto, nRF52840 variants:
+
+  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_psa_crypto_0.9.22.a`
+  * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_core_0.9.22.a`
+
 
 nrf_cc3xx_mbedcrypto - 0.9.21
 *****************************
