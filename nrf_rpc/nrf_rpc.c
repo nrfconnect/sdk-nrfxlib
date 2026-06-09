@@ -803,6 +803,10 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 			goto cleanup_and_exit;
 
 		} else {
+			if (auto_free_rx_buf(transport)) {
+				nrf_rpc_os_event_reset(&group->data->decode_done_event);
+			}
+
 			nrf_rpc_os_msg_set(&cmd_ctx->recv_msg, packet, len);
 			nrf_rpc_os_mutex_unlock(&cmd_ctx->mutex);
 
@@ -815,6 +819,10 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 
 	case NRF_RPC_PACKET_TYPE_EVT:
 		/* or NRF_RPC_PACKET_TYPE_CMD with unknown destination. */
+		if (auto_free_rx_buf(transport)) {
+			nrf_rpc_os_event_reset(&group->data->decode_done_event);
+		}
+
 		nrf_rpc_os_thread_pool_send(packet, len);
 
 		if (auto_free_rx_buf(transport)) {
