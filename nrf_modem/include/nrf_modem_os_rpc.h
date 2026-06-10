@@ -64,6 +64,14 @@ struct nrf_modem_os_rpc_config {
 		 */
 		void (*bound)(void *priv);
 		/**
+		 * @brief Unbound event handler.
+		 *
+		 * Invoked when remote rpc endpoints have been unbound.
+		 *
+		 * @param priv Private user data.
+		 */
+		void (*unbound)(void *priv);
+		/**
 		 * @brief New message has arrived.
 		 *
 		 * Invoked when new data is received.

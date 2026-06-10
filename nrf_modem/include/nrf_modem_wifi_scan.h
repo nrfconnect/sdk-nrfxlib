@@ -41,20 +41,14 @@ extern "C" {
 enum nrf_modem_wifi_scan_status {
 	/** Success. */
 	NRF_MODEM_WIFI_SCAN_STATUS_SUCCESS = 0,
-	/** Request has invalid parameters. */
-	NRF_MODEM_WIFI_SCAN_STATUS_INVALID_PARAMS = 1,
 	/** Scan was aborted. */
 	NRF_MODEM_WIFI_SCAN_STATUS_ABORTED = 2,
 	/** Scan could not be performed within suitable time. */
 	NRF_MODEM_WIFI_SCAN_STATUS_TIMEOUT = 3,
 	/** Scan failure happened during the scan. */
 	NRF_MODEM_WIFI_SCAN_STATUS_FAILURE = 4,
-	/** Invalid modem state. */
-	NRF_MODEM_WIFI_SCAN_STATUS_NOT_ACTIVE = 5,
 	/** Modem ran out of memory during the scan. */
 	NRF_MODEM_WIFI_SCAN_STATUS_NO_MEMORY = 6,
-	/** Request is not allowed in current state. */
-	NRF_MODEM_WIFI_SCAN_STATUS_NOT_ALLOWED = 7,
 };
 
 /** Event IDs. */
@@ -235,11 +229,14 @@ int nrf_modem_wifi_scan_event_handler_set(nrf_modem_wifi_scan_event_handler_t ha
  *
  * @retval 0 Success.
  * @retval -NRF_EPERM The Modem library is not initialized.
- * @retval -NRF_EBADMSG The modem responded with wrong response.
+ * @retval -NRF_ENOMEM There is not enough shared memory for this request.
+ * @retval -NRF_EACCES Wi-Fi scan is not enabled in the functional mode.
  * @retval -NRF_EFAULT Input parameter is NULL or event handler is not set.
  * @retval -NRF_EINVAL Input parameter has an invalid value.
- * @retval -NRF_ENOMEM There is not enough shared memory for this request.
+ * @retval -NRF_EBADMSG The modem responded with wrong response.
+ * @retval -NRF_EOPNOTSUPP Wi-Fi scan API is not supported by the modem.
  * @retval -NRF_ESHUTDOWN The modem was shut down.
+ * @retval -NRF_EALREADY Wi-Fi scan is already in progress.
  */
 int nrf_modem_wifi_scan_start(struct nrf_modem_wifi_scan_start_params const *params);
 
@@ -251,10 +248,13 @@ int nrf_modem_wifi_scan_start(struct nrf_modem_wifi_scan_start_params const *par
  *
  * @retval 0 Success.
  * @retval -NRF_EPERM The Modem library is not initialized.
- * @retval -NRF_EBADMSG The modem responded with wrong response.
- * @retval -NRF_EFAULT Event handler is not set.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ * @retval -NRF_EACCES Wi-Fi scan is not enabled in the functional mode.
+ * @retval -NRF_EFAULT Event handler is not set.
+ * @retval -NRF_EBADMSG The modem responded with wrong response.
+ * @retval -NRF_EOPNOTSUPP Wi-Fi scan API is not supported by the modem.
  * @retval -NRF_ESHUTDOWN The modem was shut down.
+ * @retval -NRF_EALREADY No Wi-Fi scan is in progress.
  */
 int nrf_modem_wifi_scan_cancel(void);
 
