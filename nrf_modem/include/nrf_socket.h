@@ -388,6 +388,17 @@ extern "C" {
  *       - mfw_nrf9151-ntn
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT 20
+
+/**
+ * @brief Configure the minimum and maximum TLS version advertised during the handshake.
+ *
+ * This option accepts a @ref nrf_modem_tls_versions_t structure containing the minimum
+ * and maximum TLS versions to advertise.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - ciot_nrf92
+ */
+#define NRF_SO_SEC_TLS_SUPPORTED_VERSION 21
 /** @} */
 
 /**
@@ -661,6 +672,22 @@ struct nrf_modem_sendcb {
 	/** Callback function */
 	nrf_modem_sendcb_t callback;
 };
+
+/**
+ * @brief TLS version configuration structure for @ref NRF_SO_SEC_TLS_SUPPORTED_VERSION.
+ *
+ * This structure is used to configure the minimum and maximum TLS versions that the
+ * client will advertise during the handshake.
+ *
+ * See @ref nrf_so_sec_tls_version_values for allowed values.
+ */
+struct nrf_modem_tls_versions_t {
+	/** Minimum supported TLS version advertised in the handshake. */
+	uint8_t min_tls_version;
+	/** Maximum supported TLS version advertised in the handshake. */
+	uint8_t max_tls_version;
+};
+
 /** @} */
 
 /**
@@ -1020,6 +1047,19 @@ struct nrf_modem_sendcb {
  */
 #define NRF_SO_SEC_DTLS_FRAG_EXT_1024_ENABLED 2
  /** @} */
+
+/**
+ * @defgroup nrf_so_sec_tls_version_values TLS version values
+ * @brief TLS version values for use with the @ref NRF_SO_SEC_TLS_SUPPORTED_VERSION socket option.
+ *
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** TLS 1.2 */
+#define NRF_SO_SEC_TLS_VERSION_1_2 0
+/** TLS 1.3 */
+#define NRF_SO_SEC_TLS_VERSION_1_3 1
+/** @} */
 
 /**
  * @defgroup nrf_so_sec_tag_tls_decrypt Security tags for decrypting TLS traffic
