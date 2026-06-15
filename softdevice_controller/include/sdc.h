@@ -160,7 +160,7 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 915
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 891
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -381,7 +381,7 @@ extern "C" {
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 371) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 379) : 0)
 
 /** @} end of sdc_mem_defines */
 
