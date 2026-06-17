@@ -12,12 +12,6 @@
 /.gitattributes                           @thst-nordic
 /.gitlint                                 @thst-nordic
 
-# All cmake related files
-/CMakeLists.txt                           @tejlmand
-
-# All Kconfig related files
-Kconfig*                                  @tejlmand
-
 # All documentation related files
 *.rst                                     @b-gent
 doc/*                                     @b-gent
@@ -48,3 +42,11 @@ doc/*                                     @b-gent
 /nrf_fuel_gauge/                          @nordic-auko
 /nrf_wifi/                                @udaynordic @rajb9 @srkanordic
 /softperipheral/                          @lopeztel @nordavid531 @ostenholkestad @bikleppe
+
+# Zephyr module
+/zephyr/                                  @nrfconnect/ncs-co-build-system
+
+# Global override file patterns
+Kconfig*                                  @nrfconnect/ncs-co-build-system
+CMakeLists*                               @nrfconnect/ncs-co-build-system
+*.cmake	                                  @nrfconnect/ncs-co-build-system
