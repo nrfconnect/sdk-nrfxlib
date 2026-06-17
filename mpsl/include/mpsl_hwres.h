@@ -63,6 +63,7 @@
 extern "C" {
 #endif
 
+#ifndef MPSL_RESERVED_PPI_CHANNELS
 /* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
 #if defined(NRF52_SERIES)
     #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
@@ -85,7 +86,9 @@ extern "C" {
 #else
     #error Unknown NRF series.
 #endif
+#endif /* MPSL_RESERVED_PPI_CHANNELS */
 
+#ifndef MPSL_TIMER0
 /* Defines which timer is being used by the MPSL implementation */
 #if defined(NRF52_SERIES)
     #define MPSL_TIMER0 NRF_TIMER0
@@ -96,6 +99,7 @@ extern "C" {
 #else
     #define MPSL_TIMER0 NRF_TIMER020
 #endif
+#endif /* MPSL_TIMER0 */
 
 #ifdef __cplusplus
 }
