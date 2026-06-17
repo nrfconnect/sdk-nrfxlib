@@ -45,12 +45,17 @@ Changes
 
   This change does not affect applications developed in the |NCS| context. (DRGN-28206)
 
+* The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
+  Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
+  Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
+
 Bug fixes
 =========
 
 * Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
 * Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
 * Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
+* Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
 
 nRF Connect SDK v3.3.0
 **********************

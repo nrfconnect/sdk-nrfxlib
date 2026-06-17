@@ -321,6 +321,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_CS_READ_LOCAL_SUPPORTED_CAPABILITIES_V2 = 0x20a5,
     /** @brief See @ref sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2(). */
     SDC_HCI_OPCODE_CMD_LE_CS_WRITE_CACHED_REMOTE_SUPPORTED_CAPABILITIES_V2 = 0x20a6,
+    /** @brief See @ref sdc_hci_cmd_le_cs_set_security_requirements(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SET_SECURITY_REQUIREMENTS = 0x20a7,
+    /** @brief See @ref sdc_hci_cmd_le_cs_set_default_security_requirements(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SET_DEFAULT_SECURITY_REQUIREMENTS = 0x20a8,
 };
 
 /** @brief LE subevent Code values. */
@@ -4241,6 +4245,25 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_return_t;
+
+/** @brief LE CS Set Security Requirements command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint64_t cs_security_requirements;
+} sdc_hci_cmd_le_cs_set_security_requirements_t;
+
+/** @brief LE CS Set Security Requirements return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_set_security_requirements_return_t;
+
+/** @brief LE CS Set Default Security Requirements command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint64_t cs_security_requirements;
+} sdc_hci_cmd_le_cs_set_default_security_requirements_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -12490,6 +12513,92 @@ uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities_v2(sdc_hci_cmd_le_cs
  */
 uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2(const sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_t * p_params,
                                                                         sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_v2_return_t * p_return);
+
+/** @brief LE CS Set Security Requirements.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.157
+ *
+ * The HCI_LE_CS_Set_Security_Requirements command is used by a Host to set
+ * the Channel Sounding security requirements that the Controller shall enforce on the
+ * connection specified by the Connection_Handle parameter. Until the Host sets the
+ * Channel Sounding security requirements for a connection (using this command or the
+ * HCI_LE_Set_CS_Set_Default_Security_Requirements command (see Section 7.8.158)
+ * prior to connection creation), the Controller need not enforce any Channel Sounding
+ * security requirements on that connection.
+ *
+ * The CS_Security_Requirements parameter indicates the Channel Sounding security
+ * requirements.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type     Condition                                                     Error code
+ * MC       Connection_Handle does not exist, or the Connection_Han-      Unknown Connection
+ * Identifier
+ *          dle is not for an ACL.                                        (0x02)
+ * MC       The Channel Sounding (Host Support) feature bit is not set.   Command Disallowed (0x0C)
+ * MC       The CS_Security_Requirements parameter is used to en-         Unsupported Feature or
+ * Param-
+ *          force a security requirement that the Controller does not     eter Value (0x11)
+ *          support.
+ * MC       One or more CS procedures have been enabled.                  Command Disallowed (0x0C)
+ * </pre>
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_CS_Set_Security_Requirements command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_set_security_requirements(const sdc_hci_cmd_le_cs_set_security_requirements_t * p_params,
+                                                    sdc_hci_cmd_le_cs_set_security_requirements_return_t * p_return);
+
+/** @brief LE CS Set Default Security Requirements.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.158
+ *
+ * The HCI_LE_CS_Set_Default_Security_Requirements command is used by a Host to
+ * set the initial Channel Sounding security requirements that the Controller shall enforce
+ * on all future ACL connections. This command does not affect any existing connection.
+ *
+ * The CS_Security_Requirements parameter indicates the Channel Sounding security
+ * requirements.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type     Condition                                                     Error code
+ * MC       The Channel Sounding (Host Support) feature bit is not set.   Command Disallowed (0x0C)
+ * MC       The CS_Security_Requirements parameter is used to en-         Unsupported Feature or
+ * Param-
+ *          force a security requirement that the Controller does not     eter Value (0x11)
+ *          support.
+ * </pre>
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_CS_Set_Default_Security_Requirements command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_set_default_security_requirements(const sdc_hci_cmd_le_cs_set_default_security_requirements_t * p_params);
 
 /** @} end of HCI_VS_API */
 
