@@ -36,7 +36,7 @@ The application can adjust the size of these regions based on its requirements, 
 The base address of all regions must be 4-bytes aligned.
 The library accepts the layout of these regions as parameters to the :c:func:`nrf_modem_init` function through the :c:struct:`nrf_modem_init_params` structure.
 
-For |NCS| users, the Partition Manager will automatically reserve some RAM for each region during linking, according to the size of each region as specified in the glue.
+For |NCS| users, the location and size of these regions can be set and modified using devicetree.
 
 Control area
 ============

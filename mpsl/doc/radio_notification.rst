@@ -3,6 +3,10 @@
 Radio notifications
 ###################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The radio notification is a configurable feature that enables ACTIVE and INACTIVE (nACTIVE) signals from the MPSL to indicate when the radio is in use.
 
 Radio notification signals

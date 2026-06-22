@@ -90,11 +90,11 @@ The following RAM overview diagram shows the placement of Modem library in the s
 
 Following are the minimum sizes of the regions of the Modem Library:
 
-*  The minimum size of the control region is given in the :file:`nrf_modem_platform.h` file.
-*  The RX/TX sizes are set using the  :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_TX_SIZE` and :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_RX_SIZE` Kconfig options.
-   The RX/TX must fit the data for the largest command or socket operation executed.
-*  The trace area size can remain zero if traces are not used.
-   If traces are used, refer to :ref:`nrf_modem_trace` for more information on the trace area size.
+* The minimum size of the control region is given in the :file:`nrf_modem_platform.h` file.
+* The locations and sizes of the control, RX, TX, and trace regions are passed on to the modem library inside the ``init_params`` when calling :c:func:`nrf_modem_init`.
+  The RX/TX must fit the data for the largest command or socket operation executed.
+* The trace area size can remain zero if traces are not used.
+  If traces are used, refer to :ref:`nrf_modem_trace` for more information on the trace area size.
 
 Faults and traces
 *****************
