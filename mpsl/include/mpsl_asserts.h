@@ -30,12 +30,12 @@ typedef struct {
 
 /**@brief Array of documented MPSL asserts. */
 static const mpsl_assert_entry_t mpsl_assert_messages[] = {
-	{ 5, 1013, "HFXO failure" },
-	{ 67, 108, "HFXO failure" },
-	{ 109, 585, "Clock ctrl request" },
-	{ 109, 598, "Clock ctrl release" },
-	{ 183, 85, "HFXO failure" },
-	{ 188, 214, "HFXO failure" },
+	{ 0, 19322, "Clock ctrl release" },
+	{ 0, 21677, "HFXO failure" },
+	{ 0, 35544, "HFXO failure" },
+	{ 0, 56433, "HFXO failure" },
+	{ 0, 56944, "Clock ctrl request" },
+	{ 0, 57816, "HFXO failure" },
 };
 
 #ifdef __cplusplus
