@@ -15,7 +15,6 @@ Main branch
 Added
 =====
 
-* Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
 * The vendor-specific HCI command: Transmitter carrier frequency test. (DRGN-28500)
 * The :file:`include/sdc_asserts.h` file containing a list of documented SDC asserts. (DRGN-28123)
 
@@ -24,7 +23,6 @@ Changes
 
 * The supported Bluetooth Core Specification version has been updated to v6.3.
   Multiple HCI fields have been renamed to align with the Bluetooth Core Specification v6.3 naming conventions (DRGN-28241).
-* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x11`` to indicate compatibility with Bluetooth Core Specification v6.3 (DRGN-28241).
 * The functions :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` have been deprecated.
 
   Applications can now reduce the NVM usage of Channel Sounding by enabling support only for the required roles using the following functions:
@@ -52,10 +50,24 @@ Changes
 Bug fixes
 =========
 
-* Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
-* Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
 * Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
 * Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
+* Fixed an issue where the controller, in rare cases, could assert when the application pulls the HCI LE CS Subevent Result event. (DRGN-28655)
+
+nRF Connect SDK v3.3.1
+**********************
+
+Added
+=====
+
+* The ``Version`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x11`` to indicate compatibility with Bluetooth Core Specification v6.3 (DRGN-28241).
+* Support for new Channel Sounding Inline Phase Correction Term Transfer (IPT) feature. (DRGN-26911)
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller would report the wrong Parameter_Total_Length in the LE Connection Complete event. (DRGN-28394)
+* Fixed an issue where the controller could assert if it lost sync with a periodic advertiser at the same time it was being terminated by the host. (DRGN-28363)
 
 nRF Connect SDK v3.3.0
 **********************
