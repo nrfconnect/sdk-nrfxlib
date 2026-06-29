@@ -30,7 +30,7 @@ typedef struct {
 
 /**@brief Array of documented SDC asserts. */
 static const sdc_assert_entry_t sdc_assert_messages[] = {
-	{ 0, 32855, "CS results encoding failed" },
+	{ 0, 0x8057, "CS results encoding failed" },
 };
 
 #ifdef __cplusplus
