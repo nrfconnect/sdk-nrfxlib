@@ -53,6 +53,7 @@ Bug fixes
 * Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
 * Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
 * Fixed an issue where the controller, in rare cases, could assert when the application pulls the HCI LE CS Subevent Result event. (DRGN-28655)
+* Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
 
 nRF Connect SDK v3.3.1
 **********************
