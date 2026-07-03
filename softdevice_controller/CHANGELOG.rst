@@ -12,6 +12,21 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Changes
+=======
+
+* The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
+  Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
+  Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
+
+nRF Connect SDK v3.4.0
+**********************
+
 Added
 =====
 
@@ -43,17 +58,12 @@ Changes
 
   This change does not affect applications developed in the |NCS| context. (DRGN-28206)
 
-* The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
-  Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
-  Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
-
 Bug fixes
 =========
 
 * Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
 * Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
 * Fixed an issue where the controller, in rare cases, could assert when the application pulls the HCI LE CS Subevent Result event. (DRGN-28655)
-* Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
 
 nRF Connect SDK v3.3.1
 **********************
