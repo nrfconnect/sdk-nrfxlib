@@ -13,6 +13,16 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Bug fixes
+=========
+
+* Fixed an issue where :c:func:`mpsl_init` would hang indefinitely when called after :c:func:`mpsl_uninit` if HFCLK24M was still active.
+  This could occur if USB was active when :c:func:`mpsl_init` was called.
+  This issue applies only to the nRF54LM Series devices. (DRGN-29129)
+
+nRF Connect SDK v3.4.0
+**********************
+
 Added
 =====
 
