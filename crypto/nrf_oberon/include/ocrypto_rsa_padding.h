@@ -58,16 +58,16 @@ int ocrypto_rsa_pkcs1_v15_padding(
  *
  * @param[out] m       The unpadded message. The buffer must be long enough to hold the message.
  * @param      m_len   Length of @p m.
- * @param      em      The padded message.
+ * @param      em      The padded message. @p em can be overwritten.
  * @param      em_len  Length of @p em.
  *
  * @retval -1 If decryption failed.
  * @retval -2 If the output buffer is too short (@p m_len < length of message).
  * @retval  n If a message of length n was successfully decrypted.
  */
-int ocrypto_rsa_pkcs1_v15_check_padding(
+int ocrypto_rsa_pkcs1_v15_unpad(
     uint8_t *m, size_t m_len,
-    const uint8_t *em, size_t em_len);
+    uint8_t *em, size_t em_len);
 
 
 /**
