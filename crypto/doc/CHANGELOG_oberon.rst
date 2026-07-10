@@ -9,6 +9,77 @@ Changelog - nrf_oberon
 
 All notable changes to this project are documented in this file.
 
+nrf_oberon - 3.0.20
+*******************
+
+New version of the nrf_oberon library with the following changes.
+
+Updated
+=======
+
+* Improved implementation of RSA and ML-DSA
+
+Compatible with the Oberon PSA Crypto v2.0.0.
+
+Added the following Oberon PSA Crypto libraries for nRF91, nRF53, nRF52, and nRF51 Series.
+
+.. note::
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_oberon - nRF91 and nRF53 Series application core variants
+
+  * :file:`cortex-m33/hard-float/liboberon_3.0.20.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.20.a`
+
+  * short-wchar
+
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.20.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.20.a`
+
+  * Keil
+
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.20.lib`
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.20.lib`
+
+* nrf_oberon - nRF53 Series network core variants
+
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.20.a`
+
+  * short-wchar
+
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.20.a`
+
+  * Keil
+
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.20.lib`
+
+* nrf_oberon - nRF52 Series variants
+
+  * :file:`cortex-m4/hard-float/liboberon_3.0.20.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.20.a`
+
+  * short-wchar
+
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.20.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.20.a`
+
+  * Keil
+
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.20.lib`
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.20.lib`
+
+* nrf_oberon - nRF51 Series variants
+
+  * :file:`cortex-m0/soft-float/liboberon_3.0.20.a`
+
+  * short-wchar
+
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.20.a`
+
+  * Keil
+
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.20.lib`
+
 nrf_oberon - 3.0.19
 *******************
 
