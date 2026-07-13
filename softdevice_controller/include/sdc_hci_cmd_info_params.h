@@ -49,7 +49,7 @@ enum sdc_hci_opcode_ip
 
 /** @brief LMP features.
  *
- * See Core_v5.4, Vol 2, Part C, Section 3.3
+ * See Core Spec Vol 2, Part C, Section 3.3
  */
 typedef struct __PACKED __ALIGN(1)
 {
