@@ -14,7 +14,7 @@
  * The SoftDevice Controller HCI APIs are used to send HCI commands/data and receive
  * events/data to and from the SoftDevice Controller.
  * The HCI packet format is described in the Bluetooth Core Specification,
- * i.e. in Core v5. Vol 2, Part E.
+ * i.e. in Core Spec Vol 4, Part E.
  * All APIs in this header file are expected to be called from the
  * same execution priority as @ref mpsl_low_priority_process.
  * Not doing so will lead to undefined behavior.
