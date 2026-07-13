@@ -1049,7 +1049,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  * controller
  * will extend the connection event as much as possible, if:
  * - Either of the peers has more data to send.
- *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
+ *   See also: Core Spec Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
  *
  * A connection event can not be extended beyond the connection interval.
@@ -1190,7 +1190,7 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  * This command requests adjustment of radio transmit power level for a connected peer device.
  *
  * When this command is issued, the controller initiates Power Control Request procedure
- * (Core_v5.3, Vol 6, Part B, Section 5.1.17) to request the change from the peer. The
+ * (Core Spec Vol 6, Part B, Section 5.1.17) to request the change from the peer. The
  * peer responds with the actual transmit power level change and the controller reports
  * the change to the host with an event.
  *

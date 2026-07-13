@@ -18,6 +18,8 @@ Changes
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
+* The minimum supported connection intervals have been reduced for each device family.
+  For the nRF52, nRF53 and nRF54H families, the minimum supported interval is now 750 µs and for the nRF54L family, the minimum supported interval is now 625 µs. (DRGN-27710)
 
 Bug fixes
 =========

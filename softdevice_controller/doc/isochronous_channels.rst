@@ -175,7 +175,7 @@ Conversely, a lower ``Max_Transport_Latency`` will reduce reliability, as a PDU 
 Providing data
 **************
 
-Data is provided using SDUs using the HCI format for ISO data described in the `Bluetooth Core Specification`_ Version 5.4, Vol 4, Part E, Section 5.4.5.
+Data is provided using SDUs using the HCI format for ISO data described in the `Bluetooth Core Specification`_ Vol 4, Part E, Section 5.4.5.
 Data should be provided in intervals of SDU interval.
 The SDU interval is configured when the CIS or BIS is created and is a constant during the lifetime of the stream.
 
