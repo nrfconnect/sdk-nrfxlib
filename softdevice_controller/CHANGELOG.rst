@@ -12,6 +12,12 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Added a new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`. (DRGN-29193)
+  This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure.
+
 Changes
 =======
 
@@ -20,6 +26,11 @@ Changes
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
 * The minimum supported connection intervals have been reduced for each device family.
   For the nRF52, nRF53 and nRF54H families, the minimum supported interval is now 750 µs and for the nRF54L family, the minimum supported interval is now 625 µs. (DRGN-27710)
+* Changed the ramp-up behavior of the Channel Sounding Reflector. The SoftDevice Controller will now ramp up earlier in the T_IP2 period when possible. (DRGN-29194)
+  This was done to allow for extra TX Phase settling time when the T_IP2 is sufficiently large, as allowed by the Core Specification.
+  The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
+  With an initial ramp-up time of 20 µs, this means that a T_IP2 greater than 60 µs will not increase the TX Phase settling time further.
+  This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs.
 
 Bug fixes
 =========
