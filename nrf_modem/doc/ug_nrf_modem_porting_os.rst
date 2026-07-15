@@ -175,14 +175,20 @@ This function is called by the Modem library to put a thread to sleep for a cert
 
 *Required actions*:
 
-* Put the thread to sleep, if applicable, or otherwise wait until the amount of time specified by ``timeout`` has elapsed, or until :c:func:`nrf_modem_os_event_notify` is called with the same ``context`` parameter, or with ``context`` equal to ``0``.
+* Before putting the thread to sleep, check the Modem library initialization status using :c:func:`nrf_modem_is_initialized` and return ``-NRF_ESHUTDOWN`` if that call returns ``false``.
+* Put the thread to sleep, if applicable, or otherwise wait until one of the following conditions is met:
+
+  * The amount of time specified by ``timeout`` has elapsed.
+  * The :c:func:`nrf_modem_os_event_notify` function is called with the same ``context`` parameter as given to the :c:func:`nrf_modem_os_timedwait` function.
+  * The :c:func:`nrf_modem_os_event_notify` function is called with ``context`` equal to ``0``.
+  * The :c:func:`nrf_modem_os_event_notify` function is called and the ``context`` parameter given to the :c:func:`nrf_modem_os_timedwait` function is ``0``.
+
 * After the wait is complete, update the ``timeout`` parameter with the amount of time left to sleep.
-  This will be ``0`` if the timeout has elapsed or the amount of time left to sleep if the wait was interrupted by a call to :c:func:`nrf_modem_os_event_notify`.
-* Check the Modem library initialization status using :c:func:`nrf_modem_is_initialized` and return ``-NRF_ESHUTDOWN`` if that call returns ``false``.
+  This will be ``0`` if the timeout has elapsed, and the amount of time left to sleep if the wait was interrupted by a call to :c:func:`nrf_modem_os_event_notify`.
 
 The following points decide the *Function return value*:
 
-* If the modem is not initialized, that is, if :c:func:`nrf_modem_is_initialized` returns false, function return value will be ``NRF_ESHUTDOWN``.
+* If the modem is not initialized, that is, if :c:func:`nrf_modem_is_initialized` returns false, function return value will be negative :c:macro:`NRF_ESHUTDOWN`.
 * If there is a time out, function return value will be negative :c:macro:`NRF_EAGAIN`.
 * In all other cases, function return value will be ``0``.
 
@@ -193,7 +199,7 @@ This function is called by the Modem library when an event occurs.
 
 *Required action*:
 
-* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait` that have the same ``context``.
+* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait` that have the same ``context`` or a context with value ``0``.
   A ``context`` parameter with value ``0`` shall wake up all threads put to sleep with :c:func:`nrf_modem_os_timedwait`.
 
 nrf_modem_os_alloc()
@@ -317,8 +323,9 @@ You can use it as a starting point and customize it for your OS or scheduler.
     void nrf_modem_os_shutdown(void)
     {
         /* Deinitialize the glue layer.
-           When shutdown is called, all pending calls to nrf_modem_os_timedwait
-           shall exit and return -NRF_ESHUTDOWN. */
+         * When shutdown is called, all pending calls to nrf_modem_os_timedwait
+         * shall exit and return -NRF_ESHUTDOWN.
+         */
     }
 
     void *nrf_modem_os_shm_tx_alloc(size_t bytes)
@@ -343,7 +350,9 @@ You can use it as a starting point and customize it for your OS or scheduler.
 
     void nrf_modem_os_busywait(int32_t usec)
     {
-        /* Busy wait for a given number of microseconds. */
+        /* Busy wait for a given number of microseconds,
+         * e.g. with NRFX_DELAY_US(usec).
+         */
     }
 
     int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout)
@@ -354,9 +363,11 @@ You can use it as a starting point and customize it for your OS or scheduler.
         }
 
         /* Put a thread to sleep for a specific time or until an event occurs.
-           Wait for the timeout.
-           All waiting threads shall be woken by nrf_modem_event_notify.
-           A blind return value of zero will cause a blocking wait. */
+         * Wait for the timeout.
+         * All waiting threads shall be woken by nrf_modem_event_notify if their context conditions
+         * are met. See nrf_modem_os_event_notify template below for details.
+         * A blind return value of zero will cause a blocking wait.
+         */
 
         if (!nrf_modem_is_initialized())
         {
@@ -366,10 +377,26 @@ You can use it as a starting point and customize it for your OS or scheduler.
         return 0;
     }
 
-    void nrf_modem_os_event_notify(void)
+    void nrf_modem_os_event_notify(uint32_t context)
     {
         /* Notify the application that an event has occurred.
-           This shall wake all threads sleeping in nrf_modem_os_timedwait. */
+         * If the context is zero this function wakes up all threads sleeping in
+         * nrf_modem_os_timedwait. Otherwise it wakes up all threads sleeping in
+         * nrf_modem_os_timedwait with one of the following conditions met:
+         * - A thread context equal to @p context.
+         * - A thread context of zero (thread wakes on all calls to nrf_modem_os_event_notify).
+         */
+    }
+
+    int nrf_modem_os_sleep(uint32_t timeout)
+    {
+        if (timeout == NRF_MODEM_OS_NO_WAIT || timeout == NRF_MODEM_OS_FOREVER) {
+            return -NRF_EINVAL;
+        }
+
+        /* Puts the thread to sleep for a specific amount of time in milliseconds. */
+
+        return 0;
     }
 
     void nrf_modem_os_errno_set(int errno_val)
@@ -405,11 +432,10 @@ You can use it as a starting point and customize it for your OS or scheduler.
 
     unsigned int nrf_modem_os_sem_count_get(void *sem)
     {
-        /* Get a semaphore's count. */
-        return 0;
+        /* Return the semaphore's count. */
     }
 
-     int nrf_modem_os_mutex_init(void **mutex)
+    int nrf_modem_os_mutex_init(void **mutex)
     {
         /* If multithreaded access to modem functionalities is needed, the function must allocate
          * and initialize a reentrant mutex and return its address through the `mutex` parameter.
@@ -421,15 +447,15 @@ You can use it as a starting point and customize it for your OS or scheduler.
         return 0;
     }
 
-    void nrf_modem_os_mutex_unlock(void *sem)
+    int nrf_modem_os_mutex_lock(void *mutex, int timeout)
     {
-        /* Unlock a mutex. */
+        /* Try to lock a reentrant mutex with the given timeout in milliseconds. */
+        return 0;
     }
 
-    int nrf_modem_os_mutex_lock(void *sem, int timeout)
+    int nrf_modem_os_mutex_unlock(void *mutex)
     {
-        /* Try to lock a reentrant mutex with the given timeout. */
-        return 0;
+        /* Unlock a mutex. */
     }
 
     void nrf_modem_os_log(int level, const char *fmt, ...)
