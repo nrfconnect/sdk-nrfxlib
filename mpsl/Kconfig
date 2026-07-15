@@ -4,6 +4,11 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+config HAS_MPSL_SUPPORT
+	bool
+	default y if SOC_SERIES_BSIM_NRFXX || SOC_SERIES_NRF52 || SOC_NRF5340_CPUNET || \
+		SOC_NRF54H20_CPURAD || SOC_SERIES_NRF54L || SOC_SERIES_NRF71
+
 config MPSL
 	bool "Nordic Multi Protocol Service Layer (MPSL)"
 	select ZERO_LATENCY_IRQS if !SOC_SERIES_BSIM_NRFXX
@@ -11,8 +16,7 @@ config MPSL
 	select NRF_802154_MULTIPROTOCOL_SUPPORT if NRF_802154_RADIO_DRIVER
 	select MULTITHREADING_LOCK
 	select NRF_GRTC_TIMER_AUTO_KEEP_ALIVE if NRF_GRTC_TIMER
-	depends on (SOC_SERIES_BSIM_NRFXX || SOC_SERIES_NRF52 || SOC_NRF5340_CPUNET ||\
-			SOC_NRF54H20_CPURAD || SOC_SERIES_NRF54L || SOC_SERIES_NRF71)
+	depends on HAS_MPSL_SUPPORT
 	help
 	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
 	  providing services for single and multi-protocol implementations.
@@ -28,34 +32,4 @@ config MPSL_BUILD_TYPE_LIB
 
 endchoice
 
-if MPSL_BUILD_TYPE_LIB
-config MPSL_LIB_DIR
-	string
-	default "nrf52" if SOC_SERIES_NRF52
-	default "nrf53" if SOC_NRF5340_CPUNET
-	default "nrf54h" if SOC_NRF54H20_CPURAD
-	default "nrf54ls" if SOC_NRF54LS05B || SOC_NRF54LS05A
-	default "nrf54lm_ns" if (SOC_NRF54LM20A || SOC_NRF54LM20B) && TRUSTED_EXECUTION_NONSECURE
-	default "nrf54lm" if (SOC_NRF54LM20A || SOC_NRF54LM20B) && !TRUSTED_EXECUTION_NONSECURE
-	default "nrf54lv_ns" if (SOC_NRF54LV10A || SOC_NRF54LC10A) && TRUSTED_EXECUTION_NONSECURE
-	default "nrf54lv" if (SOC_NRF54LV10A || SOC_NRF54LC10A) && !TRUSTED_EXECUTION_NONSECURE
-	default "nrf54l_ns" if SOC_SERIES_NRF54L && TRUSTED_EXECUTION_NONSECURE
-	default "nrf54l" if SOC_SERIES_NRF54L && !TRUSTED_EXECUTION_NONSECURE
-	default "nrf71_ns" if SOC_SERIES_NRF71 && TRUSTED_EXECUTION_NONSECURE
-	default "nrf71" if SOC_SERIES_NRF71 && !TRUSTED_EXECUTION_NONSECURE
-	default "nrf52_bsim" if SOC_SERIES_BSIM_NRF52X
-	default "nrf53_bsim" if SOC_SERIES_BSIM_NRF53X
-	default "nrf54l_bsim" if SOC_SERIES_BSIM_NRF54LX
-	help
-	  Hidden helper option to calculate the library path
-
-config MPSL_LIB_FLOAT_ABI_DIR
-	string
-	default "hard-float" if FPU && FP_HARDABI
-	default "softfp-float" if FPU && FP_SOFTABI
-	default "soft-float"
-	help
-	  Hidden helper option to calculate the library path
-
-endif # MPSL_BUILD_TYPE_LIB
 endif # MPSL
