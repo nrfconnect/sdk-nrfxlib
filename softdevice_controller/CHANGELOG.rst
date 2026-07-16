@@ -9,6 +9,31 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.3.2
+**********************
+
+Added
+=====
+
+* Added a new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`. (DRGN-29193)
+  This allows you to set the voltage regulator mode used during a Channel Sounding procedure.
+
+Changes
+=======
+
+* Changed the ramp-up behavior of the Channel Sounding Reflector.
+  The SoftDevice Controller now ramps up earlier during the T_IP2 period when possible. (DRGN-29194)
+  This change allows additional TX Phase settling time when T_IP2 is sufficiently long, as permitted by the Core Specification.
+  The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
+  With an initial ramp-up time of 20 µs, a T_IP2 value greater than 60 µs will not result in any further increase in TX Phase settling time.
+  This change increases power consumption on the Reflector when T_IP2 is greater than 20 µs.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller, in rare cases, could assert when the application pulls the HCI LE CS Subevent Result event. (DRGN-28655)
+* Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
+
 nRF Connect SDK v3.3.1
 **********************
 
