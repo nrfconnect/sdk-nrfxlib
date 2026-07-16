@@ -78,6 +78,5 @@ exceptions:
   - SDK
   - SMP
   - STM
-  - SUIT
   - UART
   - YAML
