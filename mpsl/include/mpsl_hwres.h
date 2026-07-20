@@ -38,6 +38,7 @@
 #if defined(NRF54L05_XXAA) || \
     defined(NRF54LV10A_ENGA_XXAA) || \
     defined(NRF54LV10A_XXAA) || \
+    defined(NRF54LC10A_XXAA) || \
     defined(NRF54L10_XXAA) || \
     defined(NRF54L15_XXAA) || \
     defined(NRF54LM20A_ENGA_XXAA) || \
