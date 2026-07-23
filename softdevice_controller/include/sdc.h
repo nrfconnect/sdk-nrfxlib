@@ -159,8 +159,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    787
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 883
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 891
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -1709,6 +1709,26 @@ void sdc_support_direct_test_mode(void);
  *       it is called at the right time.
  */
 void sdc_support_flushable_acl_data(void);
+
+/** @brief Support MPSL COEX within SDC.
+ *
+ * After this API is called, the controller will use methods from the MPSL COEX API.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_mpsl_coex(void);
+
+/** @brief Support MPSL FEM within SDC.
+ *
+ * After this API is called, the controller will use methods from the MPSL FEM API.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_mpsl_fem(void);
 
 #ifdef __cplusplus
 }

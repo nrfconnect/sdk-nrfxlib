@@ -53,6 +53,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
+    /** @brief See @ref sdc_hci_cmd_vs_dtm_command(). */
+    SDC_HCI_OPCODE_CMD_VS_DTM_COMMAND = 0xfc1f,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -135,7 +137,18 @@ enum sdc_hci_vs_cs_param_type
     SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET = 0x01,
     /** @brief CS board distance offset params set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_BOARD_DISTANCE_OFFSET_SET = 0x02,
-    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x03,
+    /** @brief CS voltage regulator mode set. */
+    SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET = 0x03,
+    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x04,
+};
+
+/** @brief Command type for DTM meta commands. */
+enum sdc_hci_vs_dtm_command_opcode
+{
+    /** @brief DTM Test End command type. */
+    SDC_HCI_VS_DTM_COMMAND_OPCODE_TEST_END = 0x00,
+    /** @brief DTM Transmitter carrier frequency test command type. */
+    SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST = 0x01,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -203,6 +216,19 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cs_t_pm_length_us;
 } sdc_hci_vs_cs_t_pm_params_t;
+
+/** @brief CS voltage regulator mode. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t cs_vreg_mode_enable_ldo;
+} sdc_hci_vs_cs_vreg_mode_params_t;
+
+/** @brief VS DTM HCI Command. */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Command sub-opcode. @ref sdc_hci_vs_dtm_command_opcode. */
+    uint8_t sub_opcode;
+} sdc_hci_vs_dtm_command_header_t;
 
 /** @brief Zephyr Static Address type. */
 typedef struct __PACKED __ALIGN(1)
@@ -461,6 +487,26 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
+
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
+
+/** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+} sdc_hci_cmd_vs_dtm_test_end_t;
+
+/** @brief DTM Test End with Transmitted Packet Count return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t num_packets;
+} sdc_hci_cmd_vs_dtm_test_end_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -768,6 +814,7 @@ typedef struct __PACKED __ALIGN(1)
         sdc_hci_vs_cs_event_length_params_t cs_event_length_params;
         sdc_hci_vs_cs_t_pm_params_t cs_t_pm_params;
         sdc_hci_vs_cs_board_distance_offset_params_t cs_board_distance_offset_params;
+        sdc_hci_vs_cs_vreg_mode_params_t cs_vreg_mode_params;
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
 
@@ -777,6 +824,17 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t tx_channel;
     int8_t tx_power_level;
 } sdc_hci_cmd_vs_transmitter_carrier_test_t;
+
+/** @brief VS Hidden Vs Dtm Command command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Command parameters (union of all sub-command parameter structs). */
+    union __PACKED __ALIGN(1) {
+        sdc_hci_vs_dtm_command_header_t header;
+        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
+        sdc_hci_cmd_vs_dtm_test_end_t test_end;
+    } command_parameters;
+} sdc_hci_cmd_vs_dtm_command_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1000,6 +1058,19 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
  */
 uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
                                             sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
+
+/** @brief Vs Dtm Command. 
+ *
+ * @param[in]  p_params Input parameters (typed union of sub-commands).
+ * @param[out] p_return Extra return parameters.
+ * @param[out] p_return_length_out Length of the return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_dtm_command(const sdc_hci_cmd_vs_dtm_command_t * p_params,
+                    void * p_return, uint8_t * p_return_length_out);
 
 /** @brief Set Low Latency Packet Mode.
  *
@@ -1817,6 +1888,14 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *
  *   Note: Currently the distance offset is not applied to RTT measurements.
  *
+ * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET:
+ *   Set the voltage regulator mode used for CS procedures.
+ *   May not be supported on some platforms.
+ *   - 0x00 corresponds to DC/DC regulator. It is used by default. Provides the best power
+ * consumption
+ *   - 0x01 corresponds to LDO regulator. It provides worse power consumption but may improve some
+ * of RF characteristics.
+ *
  * Event(s) generated (unless masked away):
  *
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1830,6 +1909,8 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
 uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_params);
 
 /** @brief Transmitter carrier frequency test.
+ *
+ * [DEPRECATED]
  *
  * This command extends Bluetooth DTM commands.
  * This command is used to start a test where the IUT generates an unmodulated constant carrier
