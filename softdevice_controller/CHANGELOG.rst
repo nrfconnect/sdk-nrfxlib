@@ -12,6 +12,19 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* A new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`.
+  This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure. (DRGN-29193)
+* The vendor-specific HCI command DTM Command, a command group for all vendor-specific DTM operations.
+  See :c:func:`sdc_hci_cmd_vs_dtm_command`. (DRGN-28862)
+* The HCI VS DTM sub-command Test End.
+  It is functionally identical to the standard HCI_LE_Test_End command, except that it returns the number of packets transmitted when used to end a transmitter test.
+  See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_test_end_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TEST_END`. (DRGN-28862)
+* The HCI VS DTM sub-command Transmitter Carrier Test, to replace the pre-existing standalone HCI VS Transmitter Carrier Test command.
+  See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST`. (DRGN-28862)
+
 Changes
 =======
 
@@ -20,6 +33,12 @@ Changes
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
 * The minimum supported connection intervals have been reduced for each device family.
   For the nRF52, nRF53 and nRF54H families, the minimum supported interval is now 750 µs and for the nRF54L family, the minimum supported interval is now 625 µs. (DRGN-27710)
+* Changed the ramp-up behavior of the Channel Sounding Reflector. The SoftDevice Controller will now ramp up earlier in the T_IP2 period when possible.
+  This was done to allow for extra TX Phase settling time when the T_IP2 is sufficiently large, as allowed by the Core Specification.
+  The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
+  With an initial ramp-up time of 20 µs, this means that a T_IP2 greater than 60 µs will not increase the TX Phase settling time further.
+  This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs. (DRGN-29194)
+* Removed the vendor-specific HCI command Transmitter Carrier Frequency Test, as it instead has been added as a sub-command to the HCI VS DTM Command. See "Added" section. (DRGN-28862)
 
 Bug fixes
 =========
