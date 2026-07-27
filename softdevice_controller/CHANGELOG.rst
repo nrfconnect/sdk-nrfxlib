@@ -24,6 +24,11 @@ Added
   See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_test_end_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TEST_END`. (DRGN-28862)
 * The HCI VS DTM sub-command Transmitter Carrier Test, to replace the pre-existing standalone HCI VS Transmitter Carrier Test command.
   See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST`. (DRGN-28862)
+* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding (CS) Security Requirements.
+  The following HCI commands now have :ref:`Experimental <nrf:software_maturity>` support:
+
+    * ``LE CS Set Default Security Requirements``
+    * ``LE CS Set Security Requirements``
 
 Changes
 =======
@@ -44,6 +49,10 @@ Bug fixes
 =========
 
 * Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
+* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
+* Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
+  The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
+* Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
 
 nRF Connect SDK v3.4.0
 **********************
