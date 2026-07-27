@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.3.3
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
+* Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
+  The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
+
 nRF Connect SDK v3.3.2
 **********************
 
