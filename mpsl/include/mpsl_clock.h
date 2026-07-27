@@ -53,7 +53,7 @@ enum MPSL_CLOCK_LF_SRC
 /** @brief Default LF clock accuracy in parts per million (ppm). */
 #define MPSL_DEFAULT_CLOCK_ACCURACY_PPM  250
 
-/** @brief Worst LF clock accuracy allowed by the Core Spec Vol 6, Part B
+/** @brief Worst LF clock accuracy allowed by the BLUETOOTH CORE SPECIFICATION Version 6.0 | Vol 6, Part B
  *         4.2.2 Sleep clock accuracy in parts per million (ppm).
  */
 #define MPSL_WORST_CLOCK_ACCURACY_PPM  500
