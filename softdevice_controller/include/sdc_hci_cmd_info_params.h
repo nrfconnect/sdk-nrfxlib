@@ -43,13 +43,11 @@ enum sdc_hci_opcode_ip
     SDC_HCI_OPCODE_CMD_IP_READ_LOCAL_SUPPORTED_FEATURES = 0x1003,
     /** @brief See @ref sdc_hci_cmd_ip_read_bd_addr(). */
     SDC_HCI_OPCODE_CMD_IP_READ_BD_ADDR = 0x1009,
-    /** @brief See @ref sdc_hci_cmd_ip_read_local_supported_commands_v2(). */
-    SDC_HCI_OPCODE_CMD_IP_READ_LOCAL_SUPPORTED_COMMANDS_V2 = 0x1010,
 };
 
 /** @brief LMP features.
  *
- * See Core Spec Vol 2, Part C, Section 3.3
+ * See Core_v5.4, Vol 2, Part C, Section 3.3
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -519,8 +517,8 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rfu_49_1 : 1;
     uint8_t hci_le_cs_read_local_supported_capabilities_v2 : 1;
     uint8_t hci_le_cs_write_cached_remote_supported_capabilities_v2 : 1;
-    uint8_t hci_le_cs_set_security_requirements : 1;
-    uint8_t hci_le_cs_set_default_security_requirements : 1;
+    uint8_t rfu_49_4 : 1;
+    uint8_t rfu_49_5 : 1;
     uint8_t rfu_49_6 : 1;
     uint8_t rfu_49_7 : 1;
 } sdc_hci_ip_supported_commands_t;
@@ -561,13 +559,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bd_addr[6];
 } sdc_hci_cmd_ip_read_bd_addr_return_t;
-
-/** @brief Read Local Supported Commands [v2] return parameter(s). */
-typedef union __PACKED __ALIGN(1)
-{
-    sdc_hci_ip_supported_commands_t params;
-    uint8_t raw[251];
-} sdc_hci_cmd_ip_read_local_supported_commands_v2_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -673,30 +664,6 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_ip_read_bd_addr(sdc_hci_cmd_ip_read_bd_addr_return_t * p_return);
-
-/** @brief Read Local Supported Commands [v2].
- *
- * The description below is extracted from Core_v6.3,
- * Vol 4, Part E, Section 7.4.2
- *
- * This command reads the list of HCI commands supported for the local Controller.
- *
- * This command shall return the Supported_Commands configuration parameter.
- *
- * See Section 6.27 for more information.
- *
- * Event(s) generated (unless masked away):
- *
- * When the HCI_Read_Local_Supported_Commands command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_ip_read_local_supported_commands_v2(sdc_hci_cmd_ip_read_local_supported_commands_v2_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 

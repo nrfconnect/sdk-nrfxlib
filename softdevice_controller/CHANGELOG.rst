@@ -9,82 +9,40 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Added
-=====
-
-* A new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`.
-  This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure. (DRGN-29193)
-* The vendor-specific HCI command DTM Command, a command group for all vendor-specific DTM operations.
-  See :c:func:`sdc_hci_cmd_vs_dtm_command`. (DRGN-28862)
-* The HCI VS DTM sub-command Test End.
-  It is functionally identical to the standard HCI_LE_Test_End command, except that it returns the number of packets transmitted when used to end a transmitter test.
-  See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_test_end_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TEST_END`. (DRGN-28862)
-* The HCI VS DTM sub-command Transmitter Carrier Test, to replace the pre-existing standalone HCI VS Transmitter Carrier Test command.
-  See :c:func:`sdc_hci_cmd_vs_dtm_command`, parameters :c:type:`sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t` and sub-opcode :c:enumerator:`SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST`. (DRGN-28862)
-
-Changes
-=======
-
-* The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
-  Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
-  Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
-* The minimum supported connection intervals have been reduced for each device family.
-  For the nRF52, nRF53 and nRF54H families, the minimum supported interval is now 750 µs and for the nRF54L family, the minimum supported interval is now 625 µs. (DRGN-27710)
-* Changed the ramp-up behavior of the Channel Sounding Reflector. The SoftDevice Controller will now ramp up earlier in the T_IP2 period when possible.
-  This was done to allow for extra TX Phase settling time when the T_IP2 is sufficiently large, as allowed by the Core Specification.
-  The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
-  With an initial ramp-up time of 20 µs, this means that a T_IP2 greater than 60 µs will not increase the TX Phase settling time further.
-  This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs. (DRGN-29194)
-* Removed the vendor-specific HCI command Transmitter Carrier Frequency Test, as it instead has been added as a sub-command to the HCI VS DTM Command. See "Added" section. (DRGN-28862)
+nRF Connect SDK v3.3.3
+**********************
 
 Bug fixes
 =========
 
-* Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
+* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
+* Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
+  The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
 
-nRF Connect SDK v3.4.0
+nRF Connect SDK v3.3.2
 **********************
 
 Added
 =====
 
-* The vendor-specific HCI command: Transmitter carrier frequency test. (DRGN-28500)
-* The :file:`include/sdc_asserts.h` file containing a list of documented SDC asserts. (DRGN-28123)
+* Added a new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`. (DRGN-29193)
+  This allows you to set the voltage regulator mode used during a Channel Sounding procedure.
 
 Changes
 =======
 
-* The supported Bluetooth Core Specification version has been updated to v6.3.
-  Multiple HCI fields have been renamed to align with the Bluetooth Core Specification v6.3 naming conventions (DRGN-28241).
-* The functions :c:func:`sdc_support_channel_sounding_initiator_role` and :c:func:`sdc_support_channel_sounding_reflector_role` have been deprecated.
-
-  Applications can now reduce the NVM usage of Channel Sounding by enabling support only for the required roles using the following functions:
-
-    * :c:func:`sdc_support_channel_sounding_initiator_role_central`
-    * :c:func:`sdc_support_channel_sounding_initiator_role_peripheral`
-    * :c:func:`sdc_support_channel_sounding_reflector_role_central`
-    * :c:func:`sdc_support_channel_sounding_reflector_role_peripheral`
-
-  This change does not affect applications developed in the |NCS| context. (DRGN-28206)
-
-* The function :c:func:`sdc_support_extended_feature_set` has been deprecated.
-
-  Applications can now reduce the NVM usage of Extended Feature Set by enabling support only for the required roles using the following functions:
-
-    * :c:func:`sdc_support_extended_feature_set_central`
-    * :c:func:`sdc_support_extended_feature_set_peripheral`
-
-  This change does not affect applications developed in the |NCS| context. (DRGN-28206)
+* Changed the ramp-up behavior of the Channel Sounding Reflector.
+  The SoftDevice Controller now ramps up earlier during the T_IP2 period when possible. (DRGN-29194)
+  This change allows additional TX Phase settling time when T_IP2 is sufficiently long, as permitted by the Core Specification.
+  The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
+  With an initial ramp-up time of 20 µs, a T_IP2 value greater than 60 µs will not result in any further increase in TX Phase settling time.
+  This change increases power consumption on the Reflector when T_IP2 is greater than 20 µs.
 
 Bug fixes
 =========
 
-* Fixed an issue where the controller could assert when a BIG broadcaster was terminated. (DRGN-28765)
-* Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
 * Fixed an issue where the controller, in rare cases, could assert when the application pulls the HCI LE CS Subevent Result event. (DRGN-28655)
+* Fixed an issue where the controller could assert or behave incorrectly due to an incorrect optimization on the CS subevent length, when the used CS submode was mode-1. (DRGN-28736)
 
 nRF Connect SDK v3.3.1
 **********************
