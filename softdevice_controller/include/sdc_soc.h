@@ -35,7 +35,7 @@ extern "C" {
 #elif defined(NRF53_SERIES)
   /* PPI channels 3 - 12, for the nRF53 Series */
   #define SDC_DPPI_CHANNELS_USED_MASK     (0x00001ff8)
-#elif defined(NRF_PLATFORM_LUMOS)
+#elif defined(LUMOS_XXAA)
   #define SDC_DPPIC10_CHANNELS_USED_MASK  (0x00000ffe)
   #define SDC_DPPIC00_CHANNELS_USED_MASK  (0x0000000a)
   #define SDC_PPIB00_CHANNELS_USED_MASK   (0x0000000f)
@@ -51,7 +51,7 @@ extern "C" {
  * @brief Functions used by the SoftDevice Controller to obtain random numbers.
  *
  * These functions are used for security-related purposes, so they must conform to:
- * Core Spec Vol 2, Part H, Section 2.
+ * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 2, Part H, Section 2.
  */
 typedef struct
 {

@@ -53,8 +53,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
-    /** @brief See @ref sdc_hci_cmd_vs_dtm_command(). */
-    SDC_HCI_OPCODE_CMD_VS_DTM_COMMAND = 0xfc1f,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -111,8 +109,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
     /** @brief See @ref sdc_hci_cmd_vs_cs_params_set(). */
     SDC_HCI_OPCODE_CMD_VS_CS_PARAMS_SET = 0xfd22,
-    /** @brief See @ref sdc_hci_cmd_vs_transmitter_carrier_test(). */
-    SDC_HCI_OPCODE_CMD_VS_TRANSMITTER_CARRIER_TEST = 0xfd23,
 };
 
 /** @brief VS subevent Code values. */
@@ -140,15 +136,6 @@ enum sdc_hci_vs_cs_param_type
     /** @brief CS voltage regulator mode set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET = 0x03,
     SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x04,
-};
-
-/** @brief Command type for DTM meta commands. */
-enum sdc_hci_vs_dtm_command_opcode
-{
-    /** @brief DTM Test End command type. */
-    SDC_HCI_VS_DTM_COMMAND_OPCODE_TEST_END = 0x00,
-    /** @brief DTM Transmitter carrier frequency test command type. */
-    SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST = 0x01,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -222,13 +209,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cs_vreg_mode_enable_ldo;
 } sdc_hci_vs_cs_vreg_mode_params_t;
-
-/** @brief VS DTM HCI Command. */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Command sub-opcode. @ref sdc_hci_vs_dtm_command_opcode. */
-    uint8_t sub_opcode;
-} sdc_hci_vs_dtm_command_header_t;
 
 /** @brief Zephyr Static Address type. */
 typedef struct __PACKED __ALIGN(1)
@@ -487,26 +467,6 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
-
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
-
-/** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-} sdc_hci_cmd_vs_dtm_test_end_t;
-
-/** @brief DTM Test End with Transmitted Packet Count return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint16_t num_packets;
-} sdc_hci_cmd_vs_dtm_test_end_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -818,24 +778,6 @@ typedef struct __PACKED __ALIGN(1)
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
 
-/** @brief Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_transmitter_carrier_test_t;
-
-/** @brief VS Hidden Vs Dtm Command command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Command parameters (union of all sub-command parameter structs). */
-    union __PACKED __ALIGN(1) {
-        sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
-        sdc_hci_cmd_vs_dtm_test_end_t test_end;
-    } command_parameters;
-} sdc_hci_cmd_vs_dtm_command_t;
-
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -1059,19 +1001,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
 uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
                                             sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
 
-/** @brief Vs Dtm Command. 
- *
- * @param[in]  p_params Input parameters (typed union of sub-commands).
- * @param[out] p_return Extra return parameters.
- * @param[out] p_return_length_out Length of the return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_dtm_command(const sdc_hci_cmd_vs_dtm_command_t * p_params,
-                    void * p_return, uint8_t * p_return_length_out);
-
 /** @brief Set Low Latency Packet Mode.
  *
  * This command enables or disables Low Latency Packet Mode support.
@@ -1120,7 +1049,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  * controller
  * will extend the connection event as much as possible, if:
  * - Either of the peers has more data to send.
- *   See also: Core Spec Vol 6, Part B, Section 4.5.6
+ *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
  *
  * A connection event can not be extended beyond the connection interval.
@@ -1261,7 +1190,7 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  * This command requests adjustment of radio transmit power level for a connected peer device.
  *
  * When this command is issued, the controller initiates Power Control Request procedure
- * (Core Spec Vol 6, Part B, Section 5.1.17) to request the change from the peer. The
+ * (Core_v5.3, Vol 6, Part B, Section 5.1.17) to request the change from the peer. The
  * peer responds with the actual transmit power level change and the controller reports
  * the change to the host with an event.
  *
@@ -1907,39 +1836,6 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_params);
-
-/** @brief Transmitter carrier frequency test.
- *
- * [DEPRECATED]
- *
- * This command extends Bluetooth DTM commands.
- * This command is used to start a test where the IUT generates an unmodulated constant carrier
- * wave.
- * The Controller shall transmit at the power level indicated by the TX_Power_Level parameter.
- *
- * The TX_Channel specifies the RF channel to be used by the transmitter.
- *
- * The TX_Power_Level parameter specifies the transmit power level to be used by
- * the transmitter. If the parameter is set to a value other than 0x7E or 0x7F, then the
- * Controller shall make the requested change or shall make the nearest change that it is
- * capable of doing.
- * TX_Power_Level is a signed integer value in dBm.
- * 0x7E sets transmitter to minimum transmit power level.
- * 0x7F sets transmitter to maximum transmit power level.
- *
- * HCI LE Test End command should be used to stop the transmitter carrier frequency test.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Transmitter_Test command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_vs_transmitter_carrier_test_t * p_params);
 
 /** @} end of HCI_VS_API */
 
