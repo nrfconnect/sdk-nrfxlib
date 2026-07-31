@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.3.4
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
+
 nRF Connect SDK v3.3.3
 **********************
 
