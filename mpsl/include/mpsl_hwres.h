@@ -38,18 +38,16 @@
 #if defined(NRF54L05_XXAA) || \
     defined(NRF54LV10A_ENGA_XXAA) || \
     defined(NRF54LV10A_XXAA) || \
-    defined(NRF54LC10A_XXAA) || \
     defined(NRF54L10_XXAA) || \
     defined(NRF54L15_XXAA) || \
     defined(NRF54LM20A_ENGA_XXAA) || \
     defined(NRF54LM20A_XXAA) || \
     defined(NRF54LM20B_XXAA) || \
     defined(NRF54LS05B_ENGA_XXAA) || \
-    defined(NRF54LS05A_XXAA) || \
     defined(NRF54LS05B_XXAA) || \
     defined(NRF7120_ENGA_XXAA)
-    #ifndef NRF_PLATFORM_LUMOS
-        #define NRF_PLATFORM_LUMOS
+    #ifndef LUMOS_XXAA
+        #define LUMOS_XXAA
     #endif
 #endif
 
@@ -63,7 +61,6 @@
 extern "C" {
 #endif
 
-#ifndef MPSL_RESERVED_PPI_CHANNELS
 /* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
 #if defined(NRF52_SERIES)
     #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
@@ -73,7 +70,7 @@ extern "C" {
     #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
     /* This corresponds to the DPPI channels 0, 1, and 2. */
     #define MPSL_DPPIC_CHANNELS_USED_MASK (0x00000007)
-#elif defined(NRF_PLATFORM_LUMOS)
+#elif defined(LUMOS_XXAA)
     #define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
     #define MPSL_DPPIC10_CHANNELS_USED_MASK (0x00000001)
     #define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
@@ -86,20 +83,17 @@ extern "C" {
 #else
     #error Unknown NRF series.
 #endif
-#endif /* MPSL_RESERVED_PPI_CHANNELS */
 
-#ifndef MPSL_TIMER0
 /* Defines which timer is being used by the MPSL implementation */
 #if defined(NRF52_SERIES)
     #define MPSL_TIMER0 NRF_TIMER0
 #elif defined(NRF53_SERIES)
     #define MPSL_TIMER0 NRF_TIMER0_NS
-#elif defined(NRF_PLATFORM_LUMOS)
+#elif defined(LUMOS_XXAA)
     #define MPSL_TIMER0 NRF_TIMER10
 #else
     #define MPSL_TIMER0 NRF_TIMER020
 #endif
-#endif /* MPSL_TIMER0 */
 
 #ifdef __cplusplus
 }

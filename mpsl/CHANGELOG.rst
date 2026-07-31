@@ -10,27 +10,6 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Bug fixes
-=========
-
-* Fixed an issue where :c:func:`mpsl_init` would hang indefinitely when called after :c:func:`mpsl_uninit` if HFCLK24M was still active.
-  This could occur if USB was active when :c:func:`mpsl_init` was called.
-  This issue applies only to the nRF54LM Series devices. (DRGN-29129)
-* Fixed an issue where releasing HFCLK24M using the :c:func:`mpsl_clock_hfclk_src_release` function would leave the clock running, causing increased power consumption.
-  This issue applies only to the nRF54LM Series devices. (DRGN-29277)
-
-nRF Connect SDK v3.4.0
-**********************
-
-Added
-=====
-
-* Experimental support for the nRF54LS05A device. (DRGN-28121)
-* The :file:`include/mpsl_asserts.h` file containing a list of documented MPSL asserts. (DRGN-28123)
-
 nRF Connect SDK v3.3.0
 **********************
 
