@@ -43,7 +43,8 @@ Changes
   The SoftDevice Controller will add extra ramp-up time up to a total of 40 additional µs.
   With an initial ramp-up time of 20 µs, this means that a T_IP2 greater than 60 µs will not increase the TX Phase settling time further.
   This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs. (DRGN-29194)
-* Removed the vendor-specific HCI command Transmitter Carrier Frequency Test, as it instead has been added as a sub-command to the HCI VS DTM Command. See "Added" section. (DRGN-28862)
+* Deprecated the vendor-specific HCI command Transmitter Carrier Frequency Test, as it has been added as a subcommand to the new HCI VS DTM command.
+  See the "Added" section for details. (DRGN-28862)
 
 Bug fixes
 =========
