@@ -165,7 +165,7 @@ typedef enum
 typedef void (*mpsl_clock_hfclk_callback_t)(void);
 
 /** @brief Request the high frequency crystal oscillator.
- * 
+ *
  * @deprecated Use ::mpsl_clock_hfclk_src_request instead. This function will be removed in a future release.
  *
  * Will start the high frequency crystal oscillator, the startup time of the crystal varies
@@ -192,7 +192,7 @@ __attribute__((deprecated))
 int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callback);
 
 /** @brief Releases the high frequency crystal oscillator.
- * 
+ *
  * @deprecated Use ::mpsl_clock_hfclk_src_release instead. This function will be removed in a future release.
  *
  * Indicates that the high frequency crystal oscillator is not needed by the application.
@@ -215,7 +215,7 @@ __attribute__((deprecated))
 int32_t mpsl_clock_hfclk_release(void);
 
 /** @brief Checks if the high frequency crystal oscillator is running.
- * 
+ *
  * @deprecated Use ::mpsl_clock_hfclk_src_is_running instead. This function will be removed in a future release.
  *
  * @see mpsl_clock_hfclk_request
@@ -292,7 +292,7 @@ typedef void (*mpsl_clock_hfclk_request_callback_t)(mpsl_clock_evt_type_t evt_ty
  * @note On nRF54L series SoCs the callback is called when the clock
  *                                   has started and is stable (EVENT_XOTUNED has occurred).
  *                                   The callback will be executed in the context as
- *                                   @ref mpsl_low_priority_process. 
+ *                                   @ref mpsl_low_priority_process.
  */
 int32_t mpsl_clock_hfclk_src_request(mpsl_clock_hfclk_src_t src, mpsl_clock_hfclk_request_callback_t hfclk_started_callback);
 
@@ -473,6 +473,15 @@ int32_t mpsl_clock_ctrl_source_register(const mpsl_clock_lfclk_ctrl_source_t * p
  * @retval -NRF_EPERM      Clock control module is still initialized.
  */
 int32_t mpsl_clock_ctrl_source_unregister(void);
+
+/** @brief Temporary workaround required by some Nordic SDK configurations.
+ *
+ * @warning Not intended for application use.
+ *
+ * On configurations where the workaround does not apply, this function has no
+ * effect.
+ */
+void mpsl_clock_temp_hack(void);
 
 #ifdef __cplusplus
 }
