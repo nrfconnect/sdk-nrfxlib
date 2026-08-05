@@ -9,21 +9,35 @@ Type 2 Tag
 
 The Type 2 Tag implementation is based on the NFC Forum document *Type 2 Tag Technical Specification Version 1.0*.
 
+Overview
+********
+
 A Type 2 Tag can be read and re-written, and the memory of the tag can be write protected.
 The Type 2 Tag library implements a Type 2 Tag in read-only state.
 Read only means that the memory of the tag is write protected and cannot be erased (formatted) or re-written by the polling device.
 
 If you use the supplied library, you do not need to know about the actual :ref:`t2t_memory_layout` that is used to implement the tag.
-You can just follow the steps outlined in :ref:`t2t_programming` to configure the tag data.
+You can just follow the steps outlined in :ref:`t2t_configuring` to configure the tag data.
+
+Supported device families
+=========================
+
+The Type 4 Tag library supports the following device families:
+
+* nRF52 Series
+* nRF53 Series
+* nRF54L Series
+* nRF54H Series
 
 .. _t2t_memory_layout:
 
+
 Memory layout
-*************
+=============
 
-This information is not required to program the NFC tag; you can just follow the steps outlined in :ref:`t2t_programming`.
+This information is not required to configure the NFC tag; you can just follow the steps outlined in :ref:`t2t_configuring`.
 
-The NFCT data is stored in RAM, in the same way as data for other nRF52 peripherals.
+The NFCT data is stored in RAM, in the same way as data for other peripherals.
 The data format that is implemented by this library is compliant to the Dynamic Memory Structure defined in the NFC Forum document *Type 2 Tag Technical Specification Version 1.0 2017-08-28 [T2T]*.
 
 The Type 2 Tag memory has a size of 1024 bytes.
@@ -204,7 +218,7 @@ UID0 contains the manufacturer ID for Nordic Semiconductor and equals 0x5F.
 
 CT stands for Cascade Tag byte and equals 0x88.
 
-The UID bytes are stored in the nRF52 FICR registers.
+The UID bytes are stored in the device's FICR registers.
 
 If you want to use UID bytes other than the ones from the FICR registers, use the :c:func:`nfc_t2t_parameter_set` function with the :c:enumerator:`NFC_T2T_PARAM_NFCID1` parameter.
 When choosing a custom UID, remember to follow the NFC Forum requirements.
@@ -295,13 +309,13 @@ The lock bytes are followed by 1 reserved byte (Rsvd) to get a multiple of 8 byt
 .. _t2t_command_set:
 
 Command set
-***********
+===========
 
 The current version of the Type 2 Tag library supports only one Type 2 Tag command type: the READ command.
 When a READ command is received, the tag responds with the data that is stored for the tag.
 
 READ command format
-===================
+-------------------
 
 The READ command has the following format:
 
@@ -323,12 +337,17 @@ The library can send either a READ response (success) or a NACK response (failur
 * A READ response contains the content of 4 data blocks starting with the requested data block (16 bytes).
 * A NACK response contains the error code 0x0, 0x1, 0x4, or 0x5 (4 bits).
 
-.. _t2t_programming:
+Configuration
+*************
 
-Programming a tag
-*****************
+Follow the information in this section to enable the library for your project.
 
-To program a tag, complete the following steps:
+.. _t2t_configuring:
+
+Configuring tag emulation
+=========================
+
+To configure the tag, complete the following steps:
 
 1. Implement a callback function that handles events from the Type 2 Tag library and register it:
 
@@ -391,6 +410,11 @@ To program a tag, complete the following steps:
            printk("Cannot start emulation!\n");
            return err;
       }
+
+Samples using the library
+*************************
+
+See the :ref:`nrf:record_text` sample for a complete application.
 
 .. _nfc_api_type2:
 
