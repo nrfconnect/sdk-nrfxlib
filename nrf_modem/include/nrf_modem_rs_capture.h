@@ -11,6 +11,9 @@
  * @{
  * @brief API for accessing the RS capture module on the modem.
  *
+ * @note This interface is provided for evaluation purposes only and is not intended to be used
+ *       in production.
+ *
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1 v2.0.3 or later
  *       - mfw_nrf9151-ntn
