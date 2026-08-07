@@ -29,6 +29,10 @@ Added
 
     * ``LE CS Set Default Security Requirements``
     * ``LE CS Set Security Requirements``
+* :c:func:`sdc_support_mpsl_fem` and :c:func:`sdc_support_mpsl_coex`
+  The application must now call these APIs to enable FEM or coex integration.
+  This allows applications to reduce the NVM usage of SDC when these features are not required.
+  Applications implementing MPSL coexistence without enabling :kconfig:option:`CONFIG_MPSL_CX` will now need to enable :kconfig:option:`CONFIG_BT_CTLR_SDC_MPSL_COEX`. (DRGN-29256)
 
 Changes
 =======
