@@ -22,6 +22,11 @@ Bug fixes
 * Fixed an issue where releasing HFCLK24M using the :c:func:`mpsl_clock_hfclk_src_release` function would leave the clock running, causing increased power consumption.
   This issue applies only to the nRF54LM Series devices. (DRGN-29277)
 
+Removed
+=======
+
+* Removed support for the nRF2220 Front-End Module. (KRKNWK-22331)
+
 nRF Connect SDK v3.4.0
 **********************
 
