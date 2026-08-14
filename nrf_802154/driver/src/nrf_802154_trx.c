@@ -728,6 +728,11 @@ void nrf_802154_trx_enable(void)
 
     nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_IEEE802154_250KBIT);
 
+#if NRF54L_FIR_4205_ENABLE_WORKAROUND
+    // Apply FIR-4205
+    fir_4205_apply();
+#endif /* NRF54L_FIR_4205_ENABLE_WORKAROUND */
+
 #if NRF54L_ERRATA_6_ENABLE_WORKAROUND
     // Apply MLTPAN-6
     mltpan_6_apply();

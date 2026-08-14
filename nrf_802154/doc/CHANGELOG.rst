@@ -24,7 +24,7 @@ Notable changes
 Added
 =====
 
-* Added experimental support for the nRF54LC10A SoC (CPU application, secure and non-secure).
+* Added production support for the nRF54LC10A SoC (CPU application, secure and non-secure).
 
 Minor changes
 =============
@@ -43,6 +43,10 @@ Bug fixes
 =========
 
 * Fixed a bug on nRF53 Series SoCs where, after transmitting a frame at transmit power above 0 dBm, the radio high voltage could remain enabled during subsequent non-TX phases. (KRKNWK-21329)
+* Implemented a workaround for the FIR-4205 issue affecting the nRF54LC10A and nRF54LV10A.
+  During the ACK reception, RADIO could perform an invalid SYNC, resulting in a frame loss rate of approximately 2%.
+  The invalid SYNC causes a CRC error because RADIO returns a junk frame.
+  The workaround adjusts the threshold of the synchronization correlator. (KRKNWK-22187)
 
 nRF Connect SDK v3.3.0 - nRF 802.15.4 Radio Driver
 **************************************************
