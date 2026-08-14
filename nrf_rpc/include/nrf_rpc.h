@@ -447,20 +447,33 @@ void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler);
  * Calling this function automatically fails all communication until @ref nrf_rpc_resume is called.
  * It also causes all pending commands to fail immediately.
  *
+ * @warning This function is experimental and subject to change or removal without prior notice.
+ *
  * @param cleanup set to true to also invoke all the custom cleanup handlers.
  *
  * @note If the cleanup parameter is set to true it may be needed to reset the peer before invoking
  *       @ref nrf_rpc_resume.
  *
+ * @retval 0             on success.
+ * @retval -NRF_EALREADY when RPC is already stopped or stopping.
+ * @retval -NRF_ETIMEDOUT when waiting for in-flight RPC processing to complete times out
+ *                        and assertions are disabled.
+ *
  */
-void nrf_rpc_stop(bool cleanup);
+int nrf_rpc_stop(bool cleanup);
 
 /** @brief resumes RPC communication
  *
  * Calling this function reverts the effects of @ref nrf_rpc_stop.
  *
+ * @warning This function is experimental and subject to change or removal without prior notice.
+ *
+ * @retval 0             on success.
+ * @retval -NRF_EINPROGRESS when RPC is currently stopping.
+ * @retval -NRF_EALREADY when RPC is already running.
+ *
  */
-void nrf_rpc_resume(void);
+int nrf_rpc_resume(void);
 
 
 /** @brief Send a command and provide callback to handle response.
