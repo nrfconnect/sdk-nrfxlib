@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
 
 #include "nrf_rpc.h"
 #include "nrf_rpc_tr.h"
@@ -129,7 +130,20 @@ static uint8_t initialized_group_count;
 
 /* nRF RPC initialization status. */
 static bool is_initialized;
-static bool is_stopped;
+enum nrf_rpc_runtime_state {
+	NRF_RPC_STATE_RUNNING,
+	NRF_RPC_STATE_STOPPING,
+	NRF_RPC_STATE_STOPPED,
+};
+static enum nrf_rpc_runtime_state rpc_runtime_state = NRF_RPC_STATE_RUNNING;
+
+static bool nrf_rpc_record_processing_start(void);
+static void nrf_rpc_record_processing_end(void);
+
+static bool nrf_rpc_state_is_stopped(void)
+{
+	return rpc_runtime_state != NRF_RPC_STATE_RUNNING;
+}
 
 /* Error handler provided to the init function. */
 static nrf_rpc_err_handler_t global_err_handler;
@@ -140,7 +154,9 @@ static nrf_rpc_group_bound_handler_t global_bound_handler;
 static struct internal_task internal_task;
 static struct nrf_rpc_os_event internal_task_consumed;
 
-static struct nrf_rpc_os_mutex cleanup_mutex;
+static struct nrf_rpc_os_event processing_complete_event;
+static uint8_t processing_in_progress_count;
+static struct nrf_rpc_os_mutex rpc_state_mutex;
 static struct nrf_rpc_cleanup_handler *cleanup_handlers;
 
 /* Array with all defiend groups */
@@ -714,6 +730,7 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 	struct header hdr;
 	struct nrf_rpc_cmd_ctx *cmd_ctx = NULL;
 	const struct nrf_rpc_group *group = NULL;
+	bool is_stopped_local = nrf_rpc_record_processing_start();
 
 	err = header_decode(packet, len, &hdr);
 	if (err < 0) {
@@ -721,7 +738,7 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 		goto cleanup_and_exit;
 	}
 
-	if (is_stopped &&
+	if (is_stopped_local &&
 	    (hdr.type == NRF_RPC_PACKET_TYPE_CMD ||
 	     hdr.type == NRF_RPC_PACKET_TYPE_EVT ||
 	     hdr.type == NRF_RPC_PACKET_TYPE_ACK ||
@@ -815,6 +832,8 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 						      NRF_RPC_OS_WAIT_FOREVER);
 			}
 		}
+
+		nrf_rpc_record_processing_end();
 		return;
 
 	case NRF_RPC_PACKET_TYPE_EVT:
@@ -830,6 +849,7 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 					      NRF_RPC_OS_WAIT_FOREVER);
 		}
 
+		nrf_rpc_record_processing_end();
 		return;
 
 	case NRF_RPC_PACKET_TYPE_ACK:
@@ -861,6 +881,8 @@ cleanup_and_exit:
 	if (!auto_free_rx_buf(transport)) {
 		transport->api->rx_buf_free(transport, (void *)packet);
 	}
+
+	nrf_rpc_record_processing_end();
 
 	if (err < 0) {
 		internal_task.type = NRF_RPC_TASK_RECV_ERROR;
@@ -910,7 +932,10 @@ static int wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_c
 	NRF_RPC_DBG("Waiting for a response");
 
 	do {
+
+		nrf_rpc_record_processing_end();
 		nrf_rpc_os_msg_get(&cmd_ctx->recv_msg, &cmd_ctx->mutex, &packet, &len);
+		nrf_rpc_record_processing_start();
 
 		if (packet == NULL) {
 			return -NRF_ETIMEDOUT;
@@ -974,14 +999,13 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 		handler_data = ptr2;
 	}
 
-	nrf_rpc_os_mutex_lock(&cleanup_mutex);
-	if (is_stopped) {
+	bool cmd_stopped = nrf_rpc_record_processing_start();
+
+	if (cmd_stopped) {
 		err = -NRF_EPERM;
-		nrf_rpc_os_mutex_unlock(&cleanup_mutex);
 	} else {
 
 		cmd_ctx = cmd_ctx_reserve();
-		nrf_rpc_os_mutex_unlock(&cleanup_mutex); /* release the mutex as the context specific one has been acquired */
 
 		hdr.dst = cmd_ctx->remote_id;
 		hdr.src = cmd_ctx->id;
@@ -1022,6 +1046,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 		cmd_ctx_release(cmd_ctx);
 	}
 
+	nrf_rpc_record_processing_end();
 	return err;
 }
 
@@ -1140,7 +1165,9 @@ int nrf_rpc_setup(nrf_rpc_err_handler_t err_handler, nrf_rpc_group_bound_handler
 		return 0;
 	}
 
-	nrf_rpc_os_mutex_init(&cleanup_mutex);
+	nrf_rpc_os_mutex_init(&rpc_state_mutex);
+	nrf_rpc_os_event_init(&processing_complete_event);
+	nrf_rpc_os_event_set(&processing_complete_event); /* initially set to 1 to avoid waiting for the event in nrf_rpc_stop */
 
 	global_err_handler = err_handler;
 	global_bound_handler = bound_handler;
@@ -1285,7 +1312,12 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 
 void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler)
 {
-	nrf_rpc_os_mutex_lock(&cleanup_mutex);
+	nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+
+	if (nrf_rpc_state_is_stopped()) {
+		nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+		return;
+	}
 
 	struct nrf_rpc_cleanup_handler *current;
 
@@ -1301,14 +1333,54 @@ void nrf_rpc_register_cleanup_handler(struct nrf_rpc_cleanup_handler *handler)
 		cleanup_handlers = handler;
 	}
 
-	nrf_rpc_os_mutex_unlock(&cleanup_mutex);
+	nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
 }
 
-void nrf_rpc_stop(bool cleanup)
+static bool nrf_rpc_record_processing_start(void)
 {
-	nrf_rpc_os_mutex_lock(&cleanup_mutex);
+	bool stopped;
 
-	is_stopped = true;
+	nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+	assert(processing_in_progress_count < UINT8_MAX);
+
+	nrf_rpc_os_event_wait(&processing_complete_event,
+			      NRF_RPC_OS_NO_WAIT); /* take if available */
+
+	processing_in_progress_count++;
+	stopped = nrf_rpc_state_is_stopped(); /* snapshot under the same lock as the count increment */
+	nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+
+	return stopped;
+}
+
+static void nrf_rpc_record_processing_end(void)
+{
+	nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+	assert(processing_in_progress_count > 0);
+
+	processing_in_progress_count--;
+	if (processing_in_progress_count == 0) {
+		nrf_rpc_os_event_set(&processing_complete_event);
+	}
+	nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+}
+
+static bool nrf_rpc_request_completion(void)
+{
+	bool request_done;
+
+	nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+	request_done = (rpc_runtime_state == NRF_RPC_STATE_RUNNING);
+	if (request_done) {
+		rpc_runtime_state = NRF_RPC_STATE_STOPPING;
+	}
+	nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+
+	return request_done;
+}
+
+static void nrf_rpc_finalize_stop(bool cleanup)
+{
 	abort_all_ops();
 	if (cleanup) {
 		struct nrf_rpc_cleanup_handler *current;
@@ -1318,13 +1390,52 @@ void nrf_rpc_stop(bool cleanup)
 			}
 		}
 	}
-
-	nrf_rpc_os_mutex_unlock(&cleanup_mutex);
 }
 
-void nrf_rpc_resume(void)
+int nrf_rpc_stop(bool cleanup)
 {
-	is_stopped = false;
+	int err;
+	bool requested = nrf_rpc_request_completion();
+	if (requested) {
+		err = nrf_rpc_os_event_wait(&processing_complete_event, CONFIG_NRF_RPC_STOP_WAIT_TIME);
+		if (err) {
+			assert(err != -NRF_ETIMEDOUT);
+			nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+			rpc_runtime_state = NRF_RPC_STATE_RUNNING;
+			nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+			return err;
+		}
+		nrf_rpc_finalize_stop(cleanup);
+		nrf_rpc_os_mutex_lock(&rpc_state_mutex);
+		rpc_runtime_state = NRF_RPC_STATE_STOPPED;
+		nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+		return 0;
+	}
+
+	return -NRF_EALREADY;
+}
+
+int nrf_rpc_resume(void)
+{
+	nrf_rpc_os_mutex_lock(&rpc_state_mutex); /* just in case, for future use */
+
+	if (rpc_runtime_state == NRF_RPC_STATE_STOPPING) {
+		nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+		return -NRF_EINPROGRESS;
+	}
+
+	if (rpc_runtime_state == NRF_RPC_STATE_RUNNING) {
+		nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+		return -NRF_EALREADY;
+	}
+
+	rpc_runtime_state = NRF_RPC_STATE_RUNNING;
+	if (processing_in_progress_count == 0) { /* restore event if was claimed by nrf_rpc_stop */
+		nrf_rpc_os_event_set(&processing_complete_event);
+	}
+	nrf_rpc_os_mutex_unlock(&rpc_state_mutex);
+
+	return 0;
 }
 
 int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
