@@ -20,6 +20,7 @@ Bug fixes
   The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
 * Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
 * Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
+* Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
 
 nRF Connect SDK v3.4.0
 **********************
