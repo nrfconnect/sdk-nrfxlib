@@ -21,6 +21,7 @@ Bug fixes
 * Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
 * Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
 * Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
+* Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
 
 nRF Connect SDK v3.4.0
 **********************
