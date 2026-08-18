@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Nordic Semiconductor ASA
  *
- * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ * SPDX-License-Identifier: Nordic-5-Clause
  */
 
 #ifndef NRF_ERRNO_H__
