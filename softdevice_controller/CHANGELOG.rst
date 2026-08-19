@@ -9,13 +9,31 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.2.x
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the scanner would assert when performing extended scanning. (DRGN-28050)
+* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
+* Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
+  The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
+* Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
+
+Changes
+=======
+
+* The controller acting as a central will now schedule continuation events only if it has received a packet from the peer device in the previous subrated connection event or in any subsequent continuation events.
+  This change improves scheduling performance with multiple links. (DRGN-27952)
+
 nRF Connect SDK v3.2.4
 **********************
 
 Bug fixes
 =========
 
-* Fixed an issue where the scanner would assert when performing extended active scanning. (DRGN-27065)
+* Fixed two issues where the scanner would assert when performing extended active scanning. (DRGN-27065, DRGN-28050)
 * Fixed an issue where the controller acting as a central would send a packet on the wrong channel.
   This would only happen at the instant of the channel map update procedure. (DRGN-27264)
 * Fixed an issue where the controller, when acting as a channel sounding reflector,
