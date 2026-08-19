@@ -29,6 +29,14 @@ extern "C" {
 #include <stdint.h>
 #include <nrfx.h>
 
+/* The __deprecated macro is provided by Zephyr as a deprecation macro that is compatible with all
+ * Zephyr toolchains. Define a fallback to keep the SDC Zephyr-independent, compatible with GCC-
+ * and Clang-based compilers.
+ */
+#ifndef __deprecated
+#define __deprecated __attribute__((deprecated))
+#endif /* __deprecated */
+
 /**
  * @defgroup HCI_TYPES Types
  * @{
@@ -1910,7 +1918,8 @@ uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_pa
 
 /** @brief Transmitter carrier frequency test.
  *
- * [DEPRECATED]
+ * @deprecated Use @ref sdc_hci_cmd_vs_dtm_command() with sub-opcode
+ *             @ref SDC_HCI_VS_DTM_COMMAND_OPCODE_TRANSMITTER_CARRIER_TEST instead.
  *
  * This command extends Bluetooth DTM commands.
  * This command is used to start a test where the IUT generates an unmodulated constant carrier
@@ -1939,7 +1948,7 @@ uint8_t sdc_hci_cmd_vs_cs_params_set(const sdc_hci_cmd_vs_cs_params_set_t * p_pa
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_vs_transmitter_carrier_test_t * p_params);
+__deprecated uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_vs_transmitter_carrier_test_t * p_params);
 
 /** @} end of HCI_VS_API */
 
