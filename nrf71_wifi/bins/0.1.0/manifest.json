@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "patches": [
+    {
+      "name": "lmac",
+      "file": "lmac_patch.bin",
+      "origin": "0x100000",
+      "size": 16176
+    },
+    {
+      "name": "umac",
+      "file": "umac_patch.bin",
+      "origin": "0x103F30",
+      "size": 18252
+    }
+  ]
+}
