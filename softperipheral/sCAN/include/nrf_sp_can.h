@@ -47,24 +47,22 @@ typedef struct
 /* SP_CAN_CONFIG_TIMING: SCAN Timing parameters */
   #define SP_CAN_CONFIG_TIMING_ResetValue (0x00000000UL)                                             /*!< Reset value of TIMING register.                                  */
 
-/* RSYNCJUMPWIDTH @Bits 0..7 : Re-synchronization jump width */
-  #define SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Pos    (0UL)                                           /*!< Position of RSYNCJUMPWIDTH field.                                 */
-  #define SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Msk                                                        \
-                                                     (0xFFUL << SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Pos) \
-                                                                                                     /*!< Bit mask of
+/* RSYNCJUMPWIDTH @Bits 0..2 : Re-synchronization jump width in quanta */
+  #define SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Pos (0UL)                                              /*!< Position of RSYNCJUMPWIDTH field.                                 */
+  #define SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Msk (0x7UL << SP_CAN_CONFIG_TIMING_RSYNCJUMPWIDTH_Pos) /*!< Bit mask of
                                                                                                       * RSYNCJUMPWIDTH field.*/
 
-/* PHASESEG1 @Bits 8..15 : Number of time quanta in phase 1 */
-  #define SP_CAN_CONFIG_TIMING_PHASESEG1_Pos (8UL)                                                   /*!< Position of PHASESEG1 field.                                         */
-  #define SP_CAN_CONFIG_TIMING_PHASESEG1_Msk (0xFFUL << SP_CAN_CONFIG_TIMING_PHASESEG1_Pos)          /*!< Bit mask of PHASESEG1 field.  */
+/* TSEG1 @Bits 3..7 : Number of time quanta in TSEG1. TSEG1 = PROPSEG + PHASESEG1. 1 <= PROPSEG <= 8. 1 <= PHASESEG1 <= 8. */
+  #define SP_CAN_CONFIG_TIMING_TSEG1_Pos (3UL)                                                       /*!< Position of TSEG1 field.                                             */
+  #define SP_CAN_CONFIG_TIMING_TSEG1_Msk (0x1FUL << SP_CAN_CONFIG_TIMING_TSEG1_Pos)                  /*!< Bit mask of TSEG1 field.              */
 
-/* PHASESEG2 @Bits 16..23 : Number of time quanta in phase 2 */
-  #define SP_CAN_CONFIG_TIMING_PHASESEG2_Pos (16UL)                                                  /*!< Position of PHASESEG2 field.                                         */
-  #define SP_CAN_CONFIG_TIMING_PHASESEG2_Msk (0xFFUL << SP_CAN_CONFIG_TIMING_PHASESEG2_Pos)          /*!< Bit mask of PHASESEG2 field.  */
+/* TSEG2 @Bits 8..11 : Number of time quanta in TSEG2. TSEG2 = PHASESEG2 */
+  #define SP_CAN_CONFIG_TIMING_TSEG2_Pos (8UL)                                                       /*!< Position of TSEG2 field.                                             */
+  #define SP_CAN_CONFIG_TIMING_TSEG2_Msk (0xFUL << SP_CAN_CONFIG_TIMING_TSEG2_Pos)                   /*!< Bit mask of TSEG2 field.               */
 
-/* PRESCALER @Bits 24..31 : Data Bit Rate Prescaler */
-  #define SP_CAN_CONFIG_TIMING_PRESCALER_Pos (24UL)                                                  /*!< Position of PRESCALER field.                                         */
-  #define SP_CAN_CONFIG_TIMING_PRESCALER_Msk (0xFFUL << SP_CAN_CONFIG_TIMING_PRESCALER_Pos)          /*!< Bit mask of PRESCALER field.  */
+/* PRESCALER @Bits 16..31 : Data Bit Rate Prescaler */
+  #define SP_CAN_CONFIG_TIMING_PRESCALER_Pos (16UL)                                                  /*!< Position of PRESCALER field.                                         */
+  #define SP_CAN_CONFIG_TIMING_PRESCALER_Msk (0xFFFFUL << SP_CAN_CONFIG_TIMING_PRESCALER_Pos)        /*!< Bit mask of PRESCALER field.*/
 
 /* SP_CAN_CONFIG_REQUEST: (unspecified) */
   #define SP_CAN_CONFIG_REQUEST_ResetValue (0x00000000UL)                                            /*!< Reset value of REQUEST register.                                */
@@ -107,44 +105,44 @@ typedef struct
   #define SP_CAN_RXFILTER_IDFILTER_ResetValue (0x00000000UL)                                /*!< Reset value of IDFILTER register.                            */
 
 /* IDENTIFIER @Bits 0..28 : ID to match for RX */
-  #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos    (0UL)                                  /*!< Position of IDENTIFIER field.                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos (0UL)                                     /*!< Position of IDENTIFIER field.                                     */
   #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Msk                                                              \
                                                      (0x1FFFFFFFUL << SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos) \
                                                                                             /*!< Bit mask of
                                                                                              * IDENTIFIER field.*/
 
 /* USEFILTER @Bit 29 : Enable the filter to match against a received message */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos         (29UL)                             /*!< Position of USEFILTER field.                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos      (29UL)                                /*!< Position of USEFILTER field.                                      */
   #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Msk                                                           \
                                                          (0x1UL << SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos) \
                                                                                             /*!< Bit mask of USEFILTER
                                                                                              * field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Min         (0x0UL)                            /*!< Min enumerator value of USEFILTER field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Max         (0x1UL)                            /*!< Max enumerator value of USEFILTER field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Disabled    (0x0UL)                            /*!< Disable                                                     */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Enabled     (0x1UL)                            /*!< Enable                                                       */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Min      (0x0UL)                               /*!< Min enumerator value of USEFILTER field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Max      (0x1UL)                               /*!< Max enumerator value of USEFILTER field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Disabled (0x0UL)                               /*!< Disable                                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Enabled  (0x1UL)                               /*!< Enable                                                       */
 
 /* INMAILBOX @Bit 30 : sCAN driver has put the data in a mailbox */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos         (30UL)                             /*!< Position of INMAILBOX field.                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos      (30UL)                                /*!< Position of INMAILBOX field.                                      */
   #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Msk                                                           \
                                                          (0x1UL << SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos) \
                                                                                             /*!< Bit mask of INMAILBOX
                                                                                              * field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Min         (0x0UL)                            /*!< Min enumerator value of INMAILBOX field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Max         (0x1UL)                            /*!< Max enumerator value of INMAILBOX field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Disabled    (0x0UL)                            /*!< Disable                                                     */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Enabled     (0x1UL)                            /*!< Enable                                                       */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Min      (0x0UL)                               /*!< Min enumerator value of INMAILBOX field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Max      (0x1UL)                               /*!< Max enumerator value of INMAILBOX field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Disabled (0x0UL)                               /*!< Disable                                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Enabled  (0x1UL)                               /*!< Enable                                                       */
 
 /* FILTERMATCHED @Bit 31 : Indicates that the filter has been matched */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos        (31UL)                          /*!< Position of FILTERMATCHED field.                              */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos     (31UL)                             /*!< Position of FILTERMATCHED field.                              */
   #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Msk                                                              \
                                                             (0x1UL << SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos) \
                                                                                             /*!< Bit mask of
                                                                                              * FILTERMATCHED field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Min        (0x0UL)                         /*!< Min enumerator value of FILTERMATCHED field.                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Max        (0x1UL)                         /*!< Max enumerator value of FILTERMATCHED field.                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_NoMatch    (0x0UL)                         /*!< No match                                                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Match      (0x1UL)                         /*!< Match                                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Min     (0x0UL)                            /*!< Min enumerator value of FILTERMATCHED field.                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Max     (0x1UL)                            /*!< Max enumerator value of FILTERMATCHED field.                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_NoMatch (0x0UL)                            /*!< No match                                                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Match   (0x1UL)                            /*!< Match                                                      */
 
 /* SP_CAN_RXFILTER_IDMASK: ID mask filter for RX */
   #define SP_CAN_RXFILTER_IDMASK_ResetValue (0x00000000UL)                                  /*!< Reset value of IDMASK register.                                */
@@ -152,6 +150,17 @@ typedef struct
 /* MASK @Bits 0..28 : ID mask filter for RX */
   #define SP_CAN_RXFILTER_IDMASK_MASK_Pos (0UL)                                             /*!< Position of MASK field.                                              */
   #define SP_CAN_RXFILTER_IDMASK_MASK_Msk (0x1FFFFFFFUL << SP_CAN_RXFILTER_IDMASK_MASK_Pos) /*!< Bit mask of MASK field.       */
+
+/* FILTERWIDTH @Bit 29 : Width of the mask and ID filter to apply for RX */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos      (29UL)                                /*!< Position of FILTERWIDTH field.                                    */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk                                                           \
+                                                         (0x1UL << SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos) \
+                                                                                            /*!< Bit mask of FILTERWIDTH
+                                                                                             * field.*/
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Min      (0x0UL)                               /*!< Min enumerator value of FILTERWIDTH field.                       */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Max      (0x1UL)                               /*!< Max enumerator value of FILTERWIDTH field.                       */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Standard (0x0UL)                               /*!< Use standard ID width of 11 bits                            */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Extended (0x1UL)                               /*!< Use extended ID width of 29 bits                            */
 
 /* ================================================== Struct SP_CAN_TXFRAME ================================================== */
 /**
@@ -172,7 +181,7 @@ typedef struct
   #define SP_CAN_TXFRAME_IDENTIFIER_ResetValue (0x00000000UL)                                      /*!< Reset value of IDENTIFIER register.                         */
 
 /* IDENTIFIER @Bits 0..28 : Frame Identifier */
-  #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos    (0UL)                                        /*!< Position of IDENTIFIER field.                                    */
+  #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos (0UL)                                           /*!< Position of IDENTIFIER field.                                    */
   #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Msk                                                               \
                                                       (0x1FFFFFFFUL << SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos) \
                                                                                                    /*!< Bit mask of
@@ -220,26 +229,26 @@ typedef struct
   #define SP_CAN_TXFRAME_METADATA_ResetValue (0x00000000UL)                                        /*!< Reset value of METADATA register.                             */
 
 /* EXTENDEDFORMAT @Bit 0 : Frame's IDE (Identifier Extension bit) */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos         (0UL)                                 /*!< Position of EXTENDEDFORMAT field.                              */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos      (0UL)                                    /*!< Position of EXTENDEDFORMAT field.                              */
   #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Msk                                                               \
                                                              (0x1UL << SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * EXTENDEDFORMAT field.*/
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Min         (0x0UL)                               /*!< Min enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Max         (0x1UL)                               /*!< Max enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Disabled    (0x0UL)                               /*!< Disable                                                 */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Enabled     (0x1UL)                               /*!< Enable                                                   */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Min      (0x0UL)                                  /*!< Min enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Max      (0x1UL)                                  /*!< Max enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Disabled (0x0UL)                                  /*!< Disable                                                 */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Enabled  (0x1UL)                                  /*!< Enable                                                   */
 
 /* REMOTEREQUEST @Bit 1 : Frame's RTR (Remote Transmission request bit) */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos         (1UL)                                  /*!< Position of REMOTEREQUEST field.                                */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos      (1UL)                                     /*!< Position of REMOTEREQUEST field.                                */
   #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Msk                                                              \
                                                             (0x1UL << SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * REMOTEREQUEST field.*/
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Min         (0x0UL)                                /*!< Min enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Max         (0x1UL)                                /*!< Max enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Disabled    (0x0UL)                                /*!< Disable                                                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Enabled     (0x1UL)                                /*!< Enable                                                    */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Min      (0x0UL)                                   /*!< Min enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Max      (0x1UL)                                   /*!< Max enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Disabled (0x0UL)                                   /*!< Disable                                                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Enabled  (0x1UL)                                   /*!< Enable                                                    */
 
 /* DATALENGTH @Bits 2..5 : Frame's DLC (Data Length Code) */
   #define SP_CAN_TXFRAME_METADATA_DATALENGTH_Pos (2UL)                                             /*!< Position of DATALENGTH field.                                      */
@@ -269,7 +278,7 @@ typedef struct
   #define SP_CAN_RXFRAME_IDENTIFIER_ResetValue (0x00000000UL)                                      /*!< Reset value of IDENTIFIER register.                         */
 
 /* IDENTIFIER @Bits 0..28 : Frame Identifier */
-  #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos    (0UL)                                        /*!< Position of IDENTIFIER field.                                    */
+  #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos (0UL)                                           /*!< Position of IDENTIFIER field.                                    */
   #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Msk                                                               \
                                                       (0x1FFFFFFFUL << SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos) \
                                                                                                    /*!< Bit mask of
@@ -317,26 +326,26 @@ typedef struct
   #define SP_CAN_RXFRAME_METADATA_ResetValue (0x00000000UL)                                        /*!< Reset value of METADATA register.                             */
 
 /* EXTENDEDFORMAT @Bit 0 : Frame's IDE (Identifier Extension bit) */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos         (0UL)                                 /*!< Position of EXTENDEDFORMAT field.                              */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos      (0UL)                                    /*!< Position of EXTENDEDFORMAT field.                              */
   #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Msk                                                               \
                                                              (0x1UL << SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * EXTENDEDFORMAT field.*/
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Min         (0x0UL)                               /*!< Min enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Max         (0x1UL)                               /*!< Max enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Disabled    (0x0UL)                               /*!< Disable                                                 */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Enabled     (0x1UL)                               /*!< Enable                                                   */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Min      (0x0UL)                                  /*!< Min enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Max      (0x1UL)                                  /*!< Max enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Disabled (0x0UL)                                  /*!< Disable                                                 */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Enabled  (0x1UL)                                  /*!< Enable                                                   */
 
 /* REMOTEREQUEST @Bit 1 : Frame's RTR (Remote Transmission request bit) */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos         (1UL)                                  /*!< Position of REMOTEREQUEST field.                                */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos      (1UL)                                     /*!< Position of REMOTEREQUEST field.                                */
   #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Msk                                                              \
                                                             (0x1UL << SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * REMOTEREQUEST field.*/
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Min         (0x0UL)                                /*!< Min enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Max         (0x1UL)                                /*!< Max enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Disabled    (0x0UL)                                /*!< Disable                                                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Enabled     (0x1UL)                                /*!< Enable                                                    */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Min      (0x0UL)                                   /*!< Min enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Max      (0x1UL)                                   /*!< Max enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Disabled (0x0UL)                                   /*!< Disable                                                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Enabled  (0x1UL)                                   /*!< Enable                                                    */
 
 /* DATALENGTH @Bits 2..5 : Frame's DLC (Data Length Code) */
   #define SP_CAN_RXFRAME_METADATA_DATALENGTH_Pos (2UL)                                             /*!< Position of DATALENGTH field.                                      */
@@ -366,7 +375,7 @@ typedef struct
   #define SP_CAN_STATUS_STATUS_BITERROR_Msk (0x1UL << SP_CAN_STATUS_STATUS_BITERROR_Pos)           /*!< Bit mask of BITERROR field.      */
 
 /* BITSTUFFINGERROR @Bit 1 : Receiver detects a sequence of 6 dominant or recessive bits */
-  #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos    (1UL)                                       /*!< Position of BITSTUFFINGERROR field.                             */
+  #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos (1UL)                                          /*!< Position of BITSTUFFINGERROR field.                             */
   #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Msk                                                         \
                                                        (0x1UL << SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos) \
                                                                                                    /*!< Bit mask of
@@ -398,14 +407,14 @@ typedef struct
                                                                                                     * PROTOCOLERROR field.*/
 
 /* ARBITRATIONLOST @Bit 8 : TX attempt lost arbitration */
-  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos    (8UL)                                        /*!< Position of ARBITRATIONLOST field.                               */
+  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos (8UL)                                           /*!< Position of ARBITRATIONLOST field.                               */
   #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Msk                                                        \
                                                       (0x1UL << SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * ARBITRATIONLOST field.*/
 
 /* ARBITRATIONLOSTRXOK @Bit 9 : TX attempt lost arbitration, but there was a match for rx filter */
-  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos    (9UL)                                    /*!< Position of ARBITRATIONLOSTRXOK field.                       */
+  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos (9UL)                                       /*!< Position of ARBITRATIONLOSTRXOK field.                       */
   #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Msk                                                            \
                                                           (0x1UL << SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos) \
                                                                                                    /*!< Bit mask of
@@ -429,7 +438,8 @@ typedef struct
 typedef struct
 {
     __IOM uint32_t AUX[6];                                                                          /*!< (@ 0x00000000) Auxiliary registers for XSB macro call handshaking    */
-} NRF_SP_CAN_SPSYNC_Type;                                                                           /*!< Size = 24 (0x018)                                                    */
+    __IOM uint32_t DPPIMAP;                                                                         /*!< (@ 0x00000018) Task to handler map and DPPI subscription permissions */
+} NRF_SP_CAN_SPSYNC_Type;                                                                           /*!< Size = 28 (0x01C)                                                    */
 
 /* SP_CAN_SPSYNC_AUX: Auxiliary registers for XSB macro call handshaking */
   #define SP_CAN_SPSYNC_AUX_MaxCount   (6UL)                                                        /*!< Max size of AUX[6] array.                                            */
@@ -440,6 +450,104 @@ typedef struct
 /* AUX @Bits 0..31 : Auxiliary register */
   #define SP_CAN_SPSYNC_AUX_AUX_Pos (0UL)                                                           /*!< Position of AUX field.                                               */
   #define SP_CAN_SPSYNC_AUX_AUX_Msk (0xFFFFFFFFUL << SP_CAN_SPSYNC_AUX_AUX_Pos)                     /*!< Bit mask of AUX field.                    */
+
+/* SP_CAN_SPSYNC_DPPIMAP: Task to handler map and DPPI subscription permissions */
+  #define SP_CAN_SPSYNC_DPPIMAP_ResetValue (0x03204015UL)                                           /*!< Reset value of DPPIMAP register.                                */
+
+/* VALID @Bits 0..3 : Marks this register as carrying a map the soft peripheral should apply */
+  #define SP_CAN_SPSYNC_DPPIMAP_VALID_Pos   (0UL)                                                   /*!< Position of VALID field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_VALID_Msk   (0xFUL << SP_CAN_SPSYNC_DPPIMAP_VALID_Pos)              /*!< Bit mask of VALID field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_VALID_Min   (0x5UL)                                                 /*!< Min enumerator value of VALID field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_VALID_Max   (0x5UL)                                                 /*!< Max enumerator value of VALID field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_VALID_Valid (0x5UL)                                                 /*!< Register contents are a valid map                                    */
+
+/* ROLE0 @Bits 4..7 : Handler invoked by task entry 0 (DPPI channel 0) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_Pos    (4UL)                                                  /*!< Position of ROLE0 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE0_Pos)             /*!< Bit mask of ROLE0 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE0 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE0 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE0_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* ROLE1 @Bits 8..11 : Handler invoked by task entry 1 (DPPI channel 1) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_Pos    (8UL)                                                  /*!< Position of ROLE1 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE1_Pos)             /*!< Bit mask of ROLE1 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE1 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE1 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE1_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* ROLE2 @Bits 12..15 : Handler invoked by task entry 2 (DPPI channel 2) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_Pos    (12UL)                                                 /*!< Position of ROLE2 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE2_Pos)             /*!< Bit mask of ROLE2 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE2 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE2 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE2_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* ROLE3 @Bits 16..19 : Handler invoked by task entry 3 (DPPI channel 3) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_Pos    (16UL)                                                 /*!< Position of ROLE3 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE3_Pos)             /*!< Bit mask of ROLE3 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE3 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE3 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE3_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* ROLE4 @Bits 20..23 : Handler invoked by task entry 4 (no DPPI channel) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_Pos    (20UL)                                                 /*!< Position of ROLE4 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE4_Pos)             /*!< Bit mask of ROLE4 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE4 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE4 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE4_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* ROLE5 @Bits 24..27 : Handler invoked by task entry 5 (no DPPI channel) */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_Pos    (24UL)                                                 /*!< Position of ROLE5 field.                                             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_Msk    (0xFUL << SP_CAN_SPSYNC_DPPIMAP_ROLE5_Pos)             /*!< Bit mask of ROLE5 field.             */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_Min    (0x0UL)                                                /*!< Min enumerator value of ROLE5 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_Max    (0x4UL)                                                /*!< Max enumerator value of ROLE5 field.                                 */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_NONE   (0x0UL)                                                /*!< Task dispatches nothing                                              */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_DPPI0  (0x1UL)                                                /*!< Start a prepared request (green0_fsm_handle_dppi_0)                  */
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_CONFIG (0x2UL)                                                /*!< Parse a new configuration (green0_fsm_handle_config), target of the
+                                                                                                     *   __CSB barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_ACTION (0x3UL)                                                /*!< Run a prepared action (green0_fsm_handle_action), target of the __ASB
+                                                                                                     *   barrier*/
+  #define SP_CAN_SPSYNC_DPPIMAP_ROLE5_STOP   (0x4UL)                                                /*!< Abort what is running (green0_fsm_handle_stop), target of the __SSB
+                                                                                                     *   barrier*/
+
+/* PERMIT @Bits 28..31 : Per slot permission to subscribe the DPPI channel, bit n for task entry n */
+  #define SP_CAN_SPSYNC_DPPIMAP_PERMIT_Pos (28UL)                                                   /*!< Position of PERMIT field.                                            */
+  #define SP_CAN_SPSYNC_DPPIMAP_PERMIT_Msk (0xFUL << SP_CAN_SPSYNC_DPPIMAP_PERMIT_Pos)              /*!< Bit mask of PERMIT field.          */
 
 /* ====================================================== Struct SP_CAN ====================================================== */
 /**
@@ -469,7 +577,7 @@ typedef struct                                                                  
     __IOM NRF_SP_CAN_RXFRAME_Type  RXFRAME[4];                                                      /*!< (@ 0x000000A8) sCAN frame configuration                              */
     __IOM NRF_SP_CAN_STATUS_Type   STATUS;                                                          /*!< (@ 0x000000E8) SCAN status                                           */
     __IOM NRF_SP_CAN_SPSYNC_Type   SPSYNC;                                                          /*!< (@ 0x000000EC) Registers used to acknowledge API function calls      */
-} NRF_SP_CAN_Type;                                                                                  /*!< Size = 260 (0x104)                                                   */
+} NRF_SP_CAN_Type;                                                                                  /*!< Size = 264 (0x108)                                                   */
 
 /* SP_CAN_TASKS_START: Trigger this task to start a request (RX/TX) */
   #define SP_CAN_TASKS_START_ResetValue (0x00000000UL)                                              /*!< Reset value of TASKS_START register.                               */
@@ -529,56 +637,56 @@ typedef struct                                                                  
   #define SP_CAN_EVENTS_TXCOMPLETE_ResetValue (0x00000000UL)                                        /*!< Reset value of EVENTS_TXCOMPLETE register.                   */
 
 /* EVENTS_TXCOMPLETE @Bit 0 : This event signals that SCAN has completed a TX operation */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos             (0UL)                          /*!< Position of EVENTS_TXCOMPLETE field.                       */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos          (0UL)                             /*!< Position of EVENTS_TXCOMPLETE field.                       */
   #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Msk                                                                       \
                                                                      (0x1UL << SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos) \
                                                                                                     /*!< Bit mask
                                                                                                      * of EVENTS_TXCOMPLETE field.*/
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Min             (0x0UL)                        /*!< Min enumerator value of EVENTS_TXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Max             (0x1UL)                        /*!< Max enumerator value of EVENTS_TXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_NotGenerated    (0x0UL)                        /*!< Event not generated                             */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Generated       (0x1UL)                        /*!< Event generated                                    */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Min          (0x0UL)                           /*!< Min enumerator value of EVENTS_TXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Max          (0x1UL)                           /*!< Max enumerator value of EVENTS_TXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_NotGenerated (0x0UL)                           /*!< Event not generated                             */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Generated    (0x1UL)                           /*!< Event generated                                    */
 
 /* SP_CAN_EVENTS_RXCOMPLETE: This event signals that SCAN has finished RX after an ID match */
   #define SP_CAN_EVENTS_RXCOMPLETE_ResetValue (0x00000000UL)                                        /*!< Reset value of EVENTS_RXCOMPLETE register.                   */
 
 /* EVENTS_RXCOMPLETE @Bit 0 : This event signals that SCAN has finished RX after an ID match */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos             (0UL)                          /*!< Position of EVENTS_RXCOMPLETE field.                       */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos          (0UL)                             /*!< Position of EVENTS_RXCOMPLETE field.                       */
   #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Msk                                                                       \
                                                                      (0x1UL << SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos) \
                                                                                                     /*!< Bit mask
                                                                                                      * of EVENTS_RXCOMPLETE field.*/
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Min             (0x0UL)                        /*!< Min enumerator value of EVENTS_RXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Max             (0x1UL)                        /*!< Max enumerator value of EVENTS_RXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_NotGenerated    (0x0UL)                        /*!< Event not generated                             */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Generated       (0x1UL)                        /*!< Event generated                                    */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Min          (0x0UL)                           /*!< Min enumerator value of EVENTS_RXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Max          (0x1UL)                           /*!< Max enumerator value of EVENTS_RXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_NotGenerated (0x0UL)                           /*!< Event not generated                             */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Generated    (0x1UL)                           /*!< Event generated                                    */
 
 /* SP_CAN_EVENTS_ERRORDETECTED: This event signals that SCAN has detected an error. */
   #define SP_CAN_EVENTS_ERRORDETECTED_ResetValue (0x00000000UL)                                     /*!< Reset value of EVENTS_ERRORDETECTED register.             */
 
 /* EVENTS_ERRORDETECTED @Bit 0 : This event signals that SCAN has detected an error. */
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos             (0UL)                    /*!< Position of EVENTS_ERRORDETECTED field.              */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos (0UL)                                /*!< Position of EVENTS_ERRORDETECTED field.              */
   #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Msk \
                                                                            (0x1UL << SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos)
                                                                                                     /*!< Bit mask of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Min             (0x0UL)                  /*!< Min enumerator value of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Max             (0x1UL)                  /*!< Max enumerator value of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_NotGenerated    (0x0UL)                  /*!< Event not generated                       */
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Generated       (0x1UL)                  /*!< Event generated                              */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Min          (0x0UL)                     /*!< Min enumerator value of EVENTS_ERRORDETECTED field.*/
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Max          (0x1UL)                     /*!< Max enumerator value of EVENTS_ERRORDETECTED field.*/
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_NotGenerated (0x0UL)                     /*!< Event not generated                       */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Generated    (0x1UL)                     /*!< Event generated                              */
 
 /* SP_CAN_EVENTS_STATECHANGED: This event signals that SCAN's state has changed. */
   #define SP_CAN_EVENTS_STATECHANGED_ResetValue (0x00000000UL)                                      /*!< Reset value of EVENTS_STATECHANGED register.               */
 
 /* EVENTS_STATECHANGED @Bit 0 : This event signals that SCAN's state has changed. */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos             (0UL)                      /*!< Position of EVENTS_STATECHANGED field.                 */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos          (0UL)                         /*!< Position of EVENTS_STATECHANGED field.                 */
   #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Msk                                                                           \
                                                                          (0x1UL << SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos) \
                                                                                                     /*!<
                                                                                                      * Bit mask of EVENTS_STATECHANGED field.*/
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Min             (0x0UL)                    /*!< Min enumerator value of EVENTS_STATECHANGED field.   */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Max             (0x1UL)                    /*!< Max enumerator value of EVENTS_STATECHANGED field.   */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_NotGenerated    (0x0UL)                    /*!< Event not generated                         */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Generated       (0x1UL)                    /*!< Event generated                                */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Min          (0x0UL)                       /*!< Min enumerator value of EVENTS_STATECHANGED field.   */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Max          (0x1UL)                       /*!< Max enumerator value of EVENTS_STATECHANGED field.   */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_NotGenerated (0x0UL)                       /*!< Event not generated                         */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Generated    (0x1UL)                       /*!< Event generated                                */
 
 /* SP_CAN_PUBLISH_TXCOMPLETE: Publish configuration for event TXCOMPLETE */
   #define SP_CAN_PUBLISH_TXCOMPLETE_ResetValue (0x00000000UL)                                       /*!< Reset value of PUBLISH_TXCOMPLETE register.                 */

@@ -98,6 +98,7 @@ typedef struct
 {
     uint32_t filter;
     uint32_t id_mask;
+    uint32_t filterwidth; /**< Width of ID/mask match: Standard (11-bit) or Extended (29-bit). */
 } nrf_can_rxfilter_t;
 
 /** @brief CAN frame structure. */
@@ -160,6 +161,13 @@ NRF_STATIC_INLINE void nrf_can_rxfilter_inmailbox_set(NRF_CAN_Type * p_reg,
                                                       uint8_t        value);
 
 NRF_STATIC_INLINE bool nrf_can_rxfilter_inmailbox_get(NRF_CAN_Type const * p_reg, uint8_t index);
+
+NRF_STATIC_INLINE void nrf_can_rxfilter_filterwidth_set(NRF_CAN_Type * p_reg,
+                                                        uint8_t        index,
+                                                        uint8_t        value);
+
+NRF_STATIC_INLINE uint8_t nrf_can_rxfilter_filterwidth_get(NRF_CAN_Type const * p_reg,
+                                                           uint8_t              index);
 
 NRF_STATIC_INLINE void nrf_can_set_parsing_timing(NRF_CAN_Type * p_reg);
 
@@ -261,15 +269,22 @@ NRF_STATIC_INLINE void nrf_can_rxfilter_set(NRF_CAN_Type *             p_reg,
                                             uint8_t                    index)
 {
     p_reg->RXFILTER[index].IDFILTER = p_rxfilter->filter & SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Msk;
-    p_reg->RXFILTER[index].IDMASK   = p_rxfilter->id_mask & SP_CAN_RXFILTER_IDMASK_MASK_Msk;
+    p_reg->RXFILTER[index].IDMASK   = (p_rxfilter->id_mask & SP_CAN_RXFILTER_IDMASK_MASK_Msk) |
+                                      ((p_rxfilter->filterwidth
+                                        << SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos) &
+                                       SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk);
 }
 
 NRF_STATIC_INLINE void nrf_can_rxfilter_get(NRF_CAN_Type const * p_reg,
                                             nrf_can_rxfilter_t * p_rxfilter,
                                             uint8_t              index)
 {
-    p_rxfilter->filter  = p_reg->RXFILTER[index].IDFILTER & SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Msk;
-    p_rxfilter->id_mask = p_reg->RXFILTER[index].IDMASK & SP_CAN_RXFILTER_IDMASK_MASK_Msk;
+    p_rxfilter->filter = p_reg->RXFILTER[index].IDFILTER &
+                         SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Msk;
+    p_rxfilter->id_mask     = p_reg->RXFILTER[index].IDMASK & SP_CAN_RXFILTER_IDMASK_MASK_Msk;
+    p_rxfilter->filterwidth = (p_reg->RXFILTER[index].IDMASK &
+                               SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk)
+                              >> SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos;
 }
 
 NRF_STATIC_INLINE void nrf_can_rxfilter_usefilter_set(NRF_CAN_Type * p_reg,
@@ -330,6 +345,23 @@ NRF_STATIC_INLINE bool nrf_can_rxfilter_inmailbox_get(NRF_CAN_Type const * p_reg
         return true;
     }
     return false;
+}
+
+NRF_STATIC_INLINE void nrf_can_rxfilter_filterwidth_set(NRF_CAN_Type * p_reg,
+                                                        uint8_t        index,
+                                                        uint8_t        value)
+{
+    p_reg->RXFILTER[index].IDMASK = (p_reg->RXFILTER[index].IDMASK &
+                                     ~SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk) |
+                                    ((value << SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos) &
+                                     SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk);
+}
+
+NRF_STATIC_INLINE uint8_t nrf_can_rxfilter_filterwidth_get(NRF_CAN_Type const * p_reg,
+                                                           uint8_t              index)
+{
+    return (uint8_t)((p_reg->RXFILTER[index].IDMASK & SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk)
+                     >> SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos);
 }
 
 NRF_STATIC_INLINE void nrf_can_set_parsing_timing(NRF_CAN_Type * p_reg)

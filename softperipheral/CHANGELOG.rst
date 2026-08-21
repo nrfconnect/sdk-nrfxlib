@@ -9,6 +9,32 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.4.1
+**********************
+
+This version contains an initial release of the Soft Peripheral sCAN.
+
+This version also extends capabilities and provides minor bug fixes for current soft peripherals.
+See the following list of changes:
+
+* Added:
+
+  * The first implementation of Soft Peripheral sCAN for nRF54L Series SoCs.
+    For details, see the :ref:`scan_changelog` page.
+
+  * Soft Peripheral sEMMC has been extended to support SD card.
+    For details, see the :ref:`semmc_changelog` page.
+
+  * Introducing new role mapping scheme per slot for Application and FLPR communication. 
+    Every slot binds a FLPR task index and a Soft Peripheral sync barrier.
+    Certain task indexes in a slot can be triggered by a DPPI event if the corresponding subscription is enabled
+    (applicable if the task index is DPPI capable).
+
+* Bug fixes:
+
+  * Change in error types for Soft Peripheral sQSPI.
+    For details, see the :ref:`sqspi_changelog` page.
+
 nRF Connect SDK v3.2.0
 **********************
 
