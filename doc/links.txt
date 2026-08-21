@@ -34,6 +34,11 @@
 
 .. _`nRF21540`: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
 
+.. _`Thread CIDs for nRF54LM20B`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf54lm20a/page/COMP/nrf54lm20a/nrf54lm20a_thread_cids.html
+.. _`Thread CIDs for nRF54LM20A`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf54lm20a/page/COMP/nrf54lm20a/nrf54lm20a_thread_cids.html
+.. _`Thread CIDs for nRF54L15`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf54l15/page/COMP/nrf54l15/nrf54l15_thread_cids.html
+.. _`Thread CIDs for nRF54L10`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf54l10/page/COMP/nrf54l10/nrf54l10_thread_cids.html
+.. _`Thread CIDs for nRF54L05`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf54l05/page/COMP/nrf54l05/nrf54l05_thread_cids.html
 .. _`Thread CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_thread_cids.html
 .. _`Thread CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_thread_cids.html
 .. _`Thread CIDs for nRF52833`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52833/page/COMP/nrf52833/nrf52833_thread_cids.html

@@ -24,8 +24,14 @@ For the full list of configuration options that were used during compilation of 
 Certified libraries
 *******************
 
-Check the following compatibility matrices for information about which library variants and versions are certified for a specific device:
+Check the following compatibility matrices for information about which library variants and versions are certified for a specific device.
+Each matrix maps the parent Certification ID (CID) to the |NCS| releases that provide the certified OpenThread libraries.
 
+* `Thread CIDs for nRF54LM20B`_
+* `Thread CIDs for nRF54LM20A`_
+* `Thread CIDs for nRF54L15`_
+* `Thread CIDs for nRF54L10`_
+* `Thread CIDs for nRF54L05`_
 * `Thread CIDs for nRF5340`_
 * `Thread CIDs for nRF52840`_
 * `Thread CIDs for nRF52833`_
