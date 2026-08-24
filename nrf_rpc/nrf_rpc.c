@@ -142,6 +142,7 @@ static struct nrf_rpc_os_event internal_task_consumed;
 
 static struct nrf_rpc_os_mutex cleanup_mutex;
 static struct nrf_rpc_cleanup_handler *cleanup_handlers;
+static void reset_group_init_state(void);
 
 /* Array with all defiend groups */
 NRF_RPC_AUTO_ARR(nrf_rpc_groups_array, "grp");
@@ -1216,6 +1217,9 @@ int nrf_rpc_bind(void)
 	void *iter;
 	const struct nrf_rpc_group *group;
 
+	/* Start bind from a full clean group-init state. */
+	reset_group_init_state();
+
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
 		const struct nrf_rpc_tr *transport = group->transport;
 		struct nrf_rpc_group_data *data = group->data;
@@ -1255,16 +1259,24 @@ int nrf_rpc_bind(void)
 	return err;
 }
 
-void nrf_rpc_unbind(void)
+static void reset_group_init_state(void)
 {
 	void *iter;
 	const struct nrf_rpc_group *group;
 
+	/* Clear signal and counter for a fresh WAIT_ON_INIT cycle. */
+	nrf_rpc_os_event_reset(&groups_init_event);
 	initialized_group_count = 0;
 
+	/* Allow groups to be counted as first_init again. */
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
 		group->data->dst_group_id = NRF_RPC_ID_UNKNOWN;
 	}
+}
+
+void nrf_rpc_unbind(void)
+{
+	reset_group_init_state();
 }
 
 int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
