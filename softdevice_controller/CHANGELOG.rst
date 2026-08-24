@@ -49,6 +49,8 @@ Changes
   This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs. (DRGN-29194)
 * Deprecated the vendor-specific HCI command Transmitter Carrier Frequency Test, as it has been added as a subcommand to the new HCI VS DTM command.
   See the "Added" section for details. (DRGN-28862)
+* Updated the validation criteria for the procedure interval when receiving an ``LL_CS_REQ`` PDU during the Channel Sounding Start procedure.
+  This change improves interoperability with other controllers. (DRGN-28833)
 
 Bug fixes
 =========
