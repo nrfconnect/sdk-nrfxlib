@@ -12,9 +12,17 @@ All the notable changes to this project are documented on this page.
 nRF Connect SDK v3.4.1
 **********************
 
+Changes
+=======
+
+* Updated the validation criteria for the procedure interval when receiving an ``LL_CS_REQ`` PDU during the Channel Sounding Start procedure.
+  This change improves interoperability with other controllers. (DRGN-28833)
+
 Bug fixes
 =========
 
+* Fixed a rare issue where the controller could assert when an ACL connection was terminated or lost while a CIS connection was active.
+  This would only occur when ``NSE > 1`` and high CPU load delayed fetching the disconnection complete event for the CIS. (DRGN-29446)
 * Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
 * Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
   The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
