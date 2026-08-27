@@ -58,6 +58,10 @@
 
 .. _`nPM1300 Evaluation Kit`: https://docs.nordicsemi.com/bundle/ug_npm1300_ek/page/UG/nPM1300_EK/intro.html
 
+.. _`anomaly 79`: https://docs.nordicsemi.com/bundle/errata_nRF52832_Rev3/page/ERR/nRF52832/Rev3/latest/anomaly_832_79.html
+.. _`anomaly 190`: https://docs.nordicsemi.com/bundle/errata_nRF52840_Rev3/page/ERR/nRF52840/Rev3/latest/anomaly_840_190.html
+.. _`anomaly 70`: https://docs.nordicsemi.com/bundle/errata_nRF5340_Rev1/page/ERR/nRF5340/Rev1/latest/anomaly_340_70.html
+
 .. _`Zigbee CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_zigbee_cids.html
 .. _`Zigbee CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_zigbee_cids.html
 .. _`Zigbee CIDs for nRF52833`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52833/page/COMP/nrf52833/nrf52833_zigbee_cids.html
