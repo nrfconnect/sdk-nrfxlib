@@ -210,6 +210,12 @@ extern "C" {
  */
 #define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 60) : 0)
 
+/** @brief Maximum memory required when supporting Channel Classification.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_CHANNEL_CLASSIFICATION(num_links) ((num_links) > 0 ? (13 + (num_links) * 67) : 0)
+
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
  * @param[in] num_links Total number of peripheral and central links supported.
@@ -284,7 +290,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (256 + (buffer_count) * 278)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (254 + (buffer_count) * 278)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -292,7 +298,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (671 + (tx_buffer_count - 1) * 255 + (rx_buffer_count) * 279)
+    (666 + (tx_buffer_count - 1) * 255 + (rx_buffer_count) * 279)
 
 /** Memory required for the periodic adv list.
  *
@@ -1434,6 +1440,36 @@ void sdc_support_connection_subrating_central(void);
  *       it is called at the right time.
  */
 void sdc_support_connection_subrating_peripheral(void);
+
+/** @brief Support Channel Classification for central role.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Channel Classification.
+ *
+ * @note The application is required to call both @ref sdc_support_channel_classification_central()
+ *       and @ref sdc_support_channel_classification_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_classification_central(void);
+
+/** @brief Support Channel Classification for peripheral role.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Channel Classification.
+ *
+ * @note The application is required to call both @ref sdc_support_channel_classification_central()
+ *       and @ref sdc_support_channel_classification_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_classification_peripheral(void);
 
 /** @brief Support Extended Feature Set
  *

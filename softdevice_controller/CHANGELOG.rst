@@ -33,6 +33,9 @@ Added
   The application must now call these APIs to enable FEM or coex integration.
   This allows applications to reduce the NVM usage of SDC when these features are not required.
   Applications implementing MPSL coexistence without enabling :kconfig:option:`CONFIG_MPSL_CX` will now need to enable :kconfig:option:`CONFIG_BT_CTLR_SDC_MPSL_COEX`. (DRGN-29256)
+* :ref:`Experimental <nrf:software_maturity>` support for the Channel Classification feature and the LE Read and Write AFH Channel Assessment Mode HCI commands.
+  Autonomous channel assessment is not supported. (DRGN-27485)
+* :ref:`Experimental <nrf:software_maturity>` vendor-specific HCI command for the central role to enable or disable channel classification reporting on an ACL connection: :c:func:`sdc_hci_cmd_vs_channel_reporting_enable`. (DRGN-27485)
 
 Changes
 =======
@@ -51,6 +54,8 @@ Changes
   See the "Added" section for details. (DRGN-28862)
 * Updated the validation criteria for the procedure interval when receiving an ``LL_CS_REQ`` PDU during the Channel Sounding Start procedure.
   This change improves interoperability with other controllers. (DRGN-28833)
+* The :c:func:`sdc_hci_cmd_le_periodic_adv_create_sync` function now returns the error code ``0x11`` if ``Sync_CTE_Type`` is not ``0``. (DRGN-27655)
+* The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
 
 Bug fixes
 =========
@@ -65,6 +70,7 @@ Bug fixes
 * Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
 * Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
 * Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, could assert when responding in multiple response slots in the same subevent. (DRGN-29455)
 
 nRF Connect SDK v3.4.0
 **********************

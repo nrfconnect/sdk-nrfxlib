@@ -82,6 +82,11 @@ extern "C" {
  */
 #define HCI_ISO_TX_SDU_ARRIVAL_MARGIN_US 1000
 
+/** @brief Temporary define to return the command complete event immediately for the
+ * LE Set Periodic Advertising Response Data command.
+ */
+#define SDC_HCI_PAWR_SYNC_RETURN_IMMEDIATELY 1
+
 typedef enum
 {
   SDC_HCI_MSG_TYPE_NONE = 0x00,
