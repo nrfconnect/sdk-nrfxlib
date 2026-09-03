@@ -56,6 +56,8 @@ Changes
   This change improves interoperability with other controllers. (DRGN-28833)
 * The :c:func:`sdc_hci_cmd_le_periodic_adv_create_sync` function now returns the error code ``0x11`` if ``Sync_CTE_Type`` is not ``0``. (DRGN-27655)
 * The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
+* The controller now returns the error code ``0x11`` if the LE Set Periodic Advertising Response Data command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission.
+  See the :ref:`softdevice_controller_limitations` section. (DRGN-29455)
 
 Bug fixes
 =========
@@ -71,6 +73,10 @@ Bug fixes
 * Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
 * Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, could assert when responding in multiple response slots in the same subevent. (DRGN-29455)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, kept response data that was never transmitted because the periodic advertising synchronization was terminated or lost.
+  The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
+* Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
+  This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
 
 nRF Connect SDK v3.4.0
 **********************
