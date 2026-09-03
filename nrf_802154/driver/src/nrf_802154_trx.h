@@ -267,7 +267,9 @@ bool nrf_802154_trx_rssi_sample_is_available(void);
 
 /**@brief Returns last measured RSSI sample.
  *
- * @return RSSI sample. Returned value must be scaled using API provided by nrf_802154_rssi.h.
+ * @note The returned value is signed, and should be cast to int8_t.
+ *
+ * @return RSSI sample with temperature and gain correction.
  */
 uint8_t nrf_802154_trx_rssi_last_sample_get(void);
 
