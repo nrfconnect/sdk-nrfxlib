@@ -298,7 +298,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (666 + (tx_buffer_count - 1) * 255 + (rx_buffer_count) * 279)
+    (420 + (tx_buffer_count) * 254 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *
@@ -308,9 +308,9 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file */
 #define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
-#define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (283)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (461)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (161)
+#define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (188)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (170)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 #define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
 
