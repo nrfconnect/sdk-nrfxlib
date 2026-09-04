@@ -123,6 +123,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_TRANSMITTER_CARRIER_TEST = 0xfd23,
     /** @brief See @ref sdc_hci_cmd_vs_channel_reporting_enable(). */
     SDC_HCI_OPCODE_CMD_VS_CHANNEL_REPORTING_ENABLE = 0xfd24,
+    /** @brief See @ref sdc_hci_cmd_vs_iso_data_too_late_report_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_ISO_DATA_TOO_LATE_REPORT_ENABLE = 0xfd25,
 };
 
 /** @brief VS subevent Code values. */
@@ -140,6 +142,8 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_CHANNEL_CLASSIFICATION_REPORT = 0x87,
     /** @brief See @ref sdc_hci_subevent_vs_channel_reporting_enable_complete_t. */
     SDC_HCI_SUBEVENT_VS_CHANNEL_REPORTING_ENABLE_COMPLETE = 0x88,
+    /** @brief See @ref sdc_hci_subevent_vs_iso_data_too_late_t. */
+    SDC_HCI_SUBEVENT_VS_ISO_DATA_TOO_LATE = 0x89,
 };
 
 /** @brief CS Parameter Set types. */
@@ -439,6 +443,22 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t conn_handle;
 } sdc_hci_subevent_vs_channel_reporting_enable_complete_t;
 
+/** @brief ISO Data provided too late event.
+ *
+ * This event indicates that the host likely provided ISO data to the controller
+ * too late for transmission.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    /** @brief The provided packet sequence number. */
+    uint16_t packet_sequence_number;
+    /** @brief The provided transmission timestamp. */
+    uint32_t tx_time_stamp;
+    /** @brief The limit which the tx_time_stamp exceeded. */
+    uint32_t tx_time_stamp_limit;
+} sdc_hci_subevent_vs_iso_data_too_late_t;
+
 /** @} end of HCI_EVENTS */
 
 /**
@@ -560,6 +580,14 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
+
 /** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -571,14 +599,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_vs_dtm_test_end_return_t;
-
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -787,6 +807,10 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t packet_sequence_number;
     /** @brief Synchronization reference of the sent SDU. */
     uint32_t tx_time_stamp;
+    /** @brief The last possible tx_time_stamp which would guarantee transmission of the provided
+     *         data in all subevents applicable to that data.
+     */
+    uint32_t tx_time_stamp_limit;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
 
 /** @brief Set the default BIG reserved time command parameter(s). */
@@ -917,14 +941,21 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t max_delay;
 } sdc_hci_cmd_vs_channel_reporting_enable_t;
 
+/** @brief ISO Data Too Late Event Reports enable command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
+    uint8_t enable;
+} sdc_hci_cmd_vs_iso_data_too_late_report_enable_t;
+
 /** @brief VS Hidden Vs Dtm Command command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     /** @brief Command parameters (union of all sub-command parameter structs). */
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_test_end_t test_end;
         sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
+        sdc_hci_cmd_vs_dtm_test_end_t test_end;
     } command_parameters;
 } sdc_hci_cmd_vs_dtm_command_t;
 
@@ -2091,6 +2122,30 @@ __deprecated uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_v
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_channel_reporting_enable(const sdc_hci_cmd_vs_channel_reporting_enable_t * p_params);
+
+/** @brief ISO Data Too Late Event Reports enable.
+ *
+ * This vendor specific command is used to enable or disable generation of
+ * VS_ISO_Data_Too_Late events. See @ref sdc_hci_subevent_vs_iso_data_too_late_t.
+ *
+ * When enabled, the controller will start producing reports whenever
+ * the host provided ISO Data too late for transmission.
+ *
+ * If the application does not pull a report in time, it will be overwritten.
+ *
+ * After HCI Reset, this feature is disabled.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_iso_data_too_late_report_enable(const sdc_hci_cmd_vs_iso_data_too_late_report_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 
