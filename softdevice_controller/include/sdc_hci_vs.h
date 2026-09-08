@@ -140,6 +140,8 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_CHANNEL_CLASSIFICATION_REPORT = 0x87,
     /** @brief See @ref sdc_hci_subevent_vs_channel_reporting_enable_complete_t. */
     SDC_HCI_SUBEVENT_VS_CHANNEL_REPORTING_ENABLE_COMPLETE = 0x88,
+    /** @brief See @ref sdc_hci_subevent_vs_iso_tx_data_processed_event_t. */
+    SDC_HCI_SUBEVENT_VS_ISO_TX_DATA_PROCESSED_EVENT = 0x89,
 };
 
 /** @brief CS Parameter Set types. */
@@ -438,6 +440,35 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t status;
     uint16_t conn_handle;
 } sdc_hci_subevent_vs_channel_reporting_enable_complete_t;
+
+/** @brief ISO Tx Data processed event.
+ *
+ * This event gives information about how ISO Tx Data was processed by the controller.
+ * The provided information allows the application to tune when to provide ISO data to the
+ * controller for transmission.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    /** @brief The assigned packet sequence number. See the SoftDevice Controller documentation
+     *         describing how to provide ISO data for more details.
+     */
+    uint16_t packet_sequence_number;
+    /** @brief Indicates whether the ISO data was provided in time for transmission. This
+     *         corresponds to tx_time_stamp being greater than tx_time_stamp_limit.
+     */
+    uint8_t was_scheduled_for_transmission;
+    /** @brief The assigned transmission timestamp. See @ref sdc_hci_cmd_vs_iso_read_tx_timestamp
+     *         for details about the transmission timestamp. See the SoftDevice Controller
+     *         documentation describing how to provide ISO data for more details.
+     */
+    uint32_t tx_time_stamp;
+    /** @brief The last possible transmission timestamp where the SoftDevice Controller will
+     *         guarantee transmission of the ISO data. See @ref sdc_hci_cmd_vs_iso_read_tx_timestamp
+     *         for details about the transmission timestamp.
+     */
+    uint32_t tx_time_stamp_limit;
+} sdc_hci_subevent_vs_iso_tx_data_processed_event_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -787,6 +818,10 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t packet_sequence_number;
     /** @brief Synchronization reference of the sent SDU. */
     uint32_t tx_time_stamp;
+    /** @brief The last possible tx_time_stamp which would guarantee transmission of the provided
+     *         data in all subevents applicable to that data.
+     */
+    uint32_t tx_time_stamp_limit;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
 
 /** @brief Set the default BIG reserved time command parameter(s). */
