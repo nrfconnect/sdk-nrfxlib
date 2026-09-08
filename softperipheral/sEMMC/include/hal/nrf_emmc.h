@@ -61,6 +61,8 @@ typedef enum
     NRF_EMMC_RESPONSE_R3   = SP_EMMC_COMMAND_CMD_RESPTYPE_R3,   /**< R3 response. */
     NRF_EMMC_RESPONSE_R4   = SP_EMMC_COMMAND_CMD_RESPTYPE_R4,   /**< R4 response. */
     NRF_EMMC_RESPONSE_R5   = SP_EMMC_COMMAND_CMD_RESPTYPE_R5,   /**< R5 response. */
+    NRF_EMMC_RESPONSE_R6   = SP_EMMC_COMMAND_CMD_RESPTYPE_R6,   /**< R6 response. */
+    NRF_EMMC_RESPONSE_R7   = SP_EMMC_COMMAND_CMD_RESPTYPE_R7,   /**< R7 response. */
 } nrf_emmc_response_type_t;
 
 /** @brief EMMC response processing types. */
@@ -77,6 +79,13 @@ typedef enum
     NRF_EMMC_BUS_WIDTH_4_LANES = SP_EMMC_CONFIG_BUSWIDTH_BUSWIDTH_FOURLANES,  /**< 4-lane data transfer. */
     NRF_EMMC_BUS_WIDTH_8_LANES = SP_EMMC_CONFIG_BUSWIDTH_BUSWIDTH_EIGHTLANES, /**< 8-lane data transfer. */
 } nrf_emmc_bus_width_t;
+
+/** @brief EMMC data transfer direction. */
+typedef enum
+{
+    NRF_EMMC_DIRECTION_WR = SP_EMMC_DATA_DIRECTION_DIRECTION_WR, /**< Write direction. */
+    NRF_EMMC_DIRECTION_RD = SP_EMMC_DATA_DIRECTION_DIRECTION_RD, /**< Read direction. */
+} nrf_emmc_direction_t;
 
 /** @brief EMMC configuration structure. */
 typedef struct
@@ -100,10 +109,13 @@ typedef struct
 /** @brief EMMC data transfer structure. */
 typedef struct
 {
-    uint32_t buffer_addr; /**< Buffer address. */
+    uint32_t             buffer_addr; /**< Buffer address. */
     // uint32_t target_addr; /**< Target address. */
-    uint32_t block_size;  /**< Block size. */
-    uint32_t block_num;   /**< Number of blocks. */
+    uint32_t             block_size;  /**< Block size. */
+    uint32_t             block_num;   /**< Number of blocks. */
+    uint32_t             blocks_done; /**< Number of completed blocks (read-only). */
+    nrf_emmc_direction_t direction;   /**< Data transfer direction. */
+    bool                 skipdatacrc; /**< Skip checking for valid data CRC. */
 } nrf_emmc_data_t;
 
 NRF_STATIC_INLINE void nrf_emmc_task_trigger(NRF_EMMC_Type * p_reg, nrf_emmc_task_t task);
@@ -133,6 +145,10 @@ NRF_STATIC_INLINE void nrf_emmc_config_set(NRF_EMMC_Type *           p_reg,
 NRF_STATIC_INLINE void nrf_emmc_config_get(NRF_EMMC_Type const * p_reg,
                                            nrf_emmc_config_t *   p_config);
 
+NRF_STATIC_INLINE void nrf_emmc_polling_set(NRF_EMMC_Type * p_reg, uint32_t timeout_us);
+
+NRF_STATIC_INLINE void nrf_emmc_polling_clear(NRF_EMMC_Type * p_reg);
+
 NRF_STATIC_INLINE void nrf_emmc_command_set(NRF_EMMC_Type *            p_reg,
                                             nrf_emmc_command_t const * p_cmd);
 
@@ -155,11 +171,7 @@ NRF_STATIC_INLINE void nrf_emmc_data_set(NRF_EMMC_Type * p_reg, nrf_emmc_data_t 
 
 NRF_STATIC_INLINE void nrf_emmc_data_get(NRF_EMMC_Type const * p_reg, nrf_emmc_data_t * p_data);
 
-NRF_STATIC_INLINE void nrf_emmc_set_num_blocks(NRF_EMMC_Type *         p_reg,
-                                               nrf_emmc_data_t const * p_data);
-
-NRF_STATIC_INLINE void nrf_emmc_get_num_blocks(NRF_EMMC_Type const * p_reg,
-                                               nrf_emmc_data_t *     p_data);
+NRF_STATIC_INLINE uint32_t nrf_emmc_get_num_blocks_done(NRF_EMMC_Type const * p_reg);
 
 NRF_STATIC_INLINE void nrf_emmc_status_set(NRF_EMMC_Type * p_reg,
                                            uint32_t        error_mask);
@@ -248,6 +260,18 @@ NRF_STATIC_INLINE void nrf_emmc_config_get(NRF_EMMC_Type const * p_reg,
     p_config->ready_to_transfer = p_reg->CONFIG.READYTOTRANSFER;
 }
 
+NRF_STATIC_INLINE void nrf_emmc_polling_set(NRF_EMMC_Type * p_reg, uint32_t timeout_us)
+{
+    p_reg->CONFIG.POLLMODE = SP_EMMC_CONFIG_POLLMODE_POLLMODE_POLL;
+    p_reg->CONFIG.TIMEOUT  = timeout_us;
+}
+
+NRF_STATIC_INLINE void nrf_emmc_polling_clear(NRF_EMMC_Type * p_reg)
+{
+    p_reg->CONFIG.POLLMODE = SP_EMMC_CONFIG_POLLMODE_POLLMODE_NOPOLL;
+    p_reg->CONFIG.TIMEOUT  = 0;
+}
+
 NRF_STATIC_INLINE void nrf_emmc_config_set_ready_to_transfer(NRF_EMMC_Type *           p_reg,
                                                              nrf_emmc_config_t const * p_config)
 {
@@ -314,28 +338,32 @@ NRF_STATIC_INLINE void nrf_emmc_data_set(NRF_EMMC_Type * p_reg, nrf_emmc_data_t 
 {
     p_reg->DATA.BUFFERADDR = p_data->buffer_addr;
     // p_reg->DATA.TARGETADDR = p_data->target_addr;
-    p_reg->DATA.BLOCKSIZE = p_data->block_size;
-    p_reg->DATA.BLOCKNUM  = p_data->block_num;
+    p_reg->DATA.BLOCKSIZE  = p_data->block_size;
+    p_reg->DATA.BLOCKNUM   = p_data->block_num;
+    p_reg->DATA.BLOCKSDONE = 0;
+    p_reg->DATA.DIRECTION  = (uint32_t)p_data->direction &
+                             SP_EMMC_DATA_DIRECTION_DIRECTION_Msk;
+    p_reg->DATA.SKIPDATACRC = p_data->skipdatacrc
+                                  ? SP_EMMC_DATA_SKIPDATACRC_SKIPDATACRC_SKIPDATACRC
+                                  : SP_EMMC_DATA_SKIPDATACRC_SKIPDATACRC_CHECKDATACRC;
 }
 
 NRF_STATIC_INLINE void nrf_emmc_data_get(NRF_EMMC_Type const * p_reg, nrf_emmc_data_t * p_data)
 {
     p_data->buffer_addr = p_reg->DATA.BUFFERADDR;
     // p_data->target_addr = p_reg->DATA.TARGETADDR;
-    p_data->block_size = p_reg->DATA.BLOCKSIZE;
-    p_data->block_num  = p_reg->DATA.BLOCKNUM;
+    p_data->block_size  = p_reg->DATA.BLOCKSIZE;
+    p_data->block_num   = p_reg->DATA.BLOCKNUM;
+    p_data->blocks_done = p_reg->DATA.BLOCKSDONE;
+    p_data->direction   = (nrf_emmc_direction_t)(p_reg->DATA.DIRECTION &
+                                                 SP_EMMC_DATA_DIRECTION_DIRECTION_Msk);
+    p_data->skipdatacrc = (p_reg->DATA.SKIPDATACRC &
+                           SP_EMMC_DATA_SKIPDATACRC_SKIPDATACRC_Msk) != 0;
 }
 
-NRF_STATIC_INLINE void nrf_emmc_set_num_blocks(NRF_EMMC_Type *         p_reg,
-                                               nrf_emmc_data_t const * p_data)
+NRF_STATIC_INLINE uint32_t nrf_emmc_get_num_blocks_done(NRF_EMMC_Type const * p_reg)
 {
-    p_reg->DATA.BLOCKNUM = p_data->block_num;
-}
-
-NRF_STATIC_INLINE void nrf_emmc_get_num_blocks(NRF_EMMC_Type const * p_reg,
-                                               nrf_emmc_data_t *     p_data)
-{
-    p_data->block_num = p_reg->DATA.BLOCKNUM;
+    return p_reg->DATA.BLOCKSDONE;
 }
 
 NRF_STATIC_INLINE void nrf_emmc_status_set(NRF_EMMC_Type * p_reg,
@@ -353,8 +381,7 @@ NRF_STATIC_INLINE bool nrf_emmc_status_error_check(uint32_t status)
 {
     return (status &
             (SP_EMMC_STATUS_STATUS_CMDTIMEOUT_Msk | SP_EMMC_STATUS_STATUS_CMDCRCERROR_Msk |
-             SP_EMMC_STATUS_STATUS_DATACRCERROR_Msk |
-             SP_EMMC_STATUS_STATUS_RETRYEXCEEDED_Msk | SP_EMMC_STATUS_STATUS_PROTOCOLERR_Msk)) !=
+             SP_EMMC_STATUS_STATUS_DATACRCERROR_Msk | SP_EMMC_STATUS_STATUS_PROTOCOLERR_Msk)) !=
            0;
 }
 

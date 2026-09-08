@@ -7,9 +7,7 @@
 #ifndef NRF_SQSPI_H__
 #define NRF_SQSPI_H__
 
-#include <nrfx.h>
-#include <drivers/nrfx_errors.h>
-#include <nrf_config_sqspi.h>
+#include "nrf_config_sqspi.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +58,16 @@ typedef enum
     NRF_SQSPI_RESULT_OK,      ///< Operation finished successfully
     NRF_SQSPI_RESULT_ABORTED, ///< Operation was aborted
 } nrf_sqspi_evt_xfer_done_t;
+
+typedef enum
+{
+    NRF_SQSPI_SUCCESS = 0,
+    NRF_SQSPI_ERROR_BUSY,
+    NRF_SQSPI_ERROR_UNSUPPORTED,
+    NRF_SQSPI_ERROR_INVALID_PARAM,
+    NRF_SQSPI_ERROR_INVALID_STATE,
+    NRF_SQSPI_ERROR_HW_FAULT,
+} nrf_sqspi_error_t;
 
 /** @brief QSPI event reported by a @ref nrf_sqspi_callback_t function. */
 typedef struct
@@ -524,12 +532,19 @@ typedef struct
  * @param[in] p_qspi   Identifier of the QSPI instance to initialize.
  * @param[in] p_config Pointer to the structure with the initial configuration.
  *
- * @retval NRFX_SUCCESS             Initialization was successful.
- * @retval NRFX_ERROR_ALREADY       The driver is already initialized.
- * @retval NRFX_ERROR_INVALID_PARAM The pin configuration is incorrect.
+ * @retval NRF_SQSPI_SUCCESS        Initialization was successful.
+ * @retval NRF_SQSPI_ERROR_INVALID_STATE The driver is already initialized.
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM The pin configuration is incorrect.
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_sqspi_dppi_role_map_set or @ref nrf_sqspi_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
-nrfx_err_t nrf_sqspi_init(nrf_sqspi_t const *     p_qspi,
-                          nrf_sqspi_cfg_t const * p_config);
+nrf_sqspi_error_t nrf_sqspi_init(nrf_sqspi_t const *     p_qspi,
+                                 nrf_sqspi_cfg_t const * p_config);
 
 /**
  * @brief  Check if the QSPI driver instance is initialized.
@@ -557,13 +572,13 @@ bool nrf_sqspi_init_check(nrf_sqspi_t const * p_qspi);
  * @param[in] p_qspi   Identifier of the QSPI instance to reconfigure.
  * @param[in] p_config Pointer to the structure with the new configuration.
  *
- * @retval NRFX_SUCCESS             Reconfiguration was successful.
- * @retval NRFX_ERROR_INVALID_STATE The driver is not initialized or is
+ * @retval NRF_SQSPI_SUCCESS             Reconfiguration was successful.
+ * @retval NRF_SQSPI_ERROR_INVALID_STATE The driver is not initialized or is
  * activated.
- * @retval NRFX_ERROR_INVALID_PARAM The pin configuration is incorrect.
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM The pin configuration is incorrect.
  */
-nrfx_err_t nrf_sqspi_reconfigure(nrf_sqspi_t const *     p_qspi,
-                                 nrf_sqspi_cfg_t const * p_config);
+nrf_sqspi_error_t nrf_sqspi_reconfigure(nrf_sqspi_t const *     p_qspi,
+                                        nrf_sqspi_cfg_t const * p_config);
 
 /**
  * @brief  Uninitialize the QSPI driver instance.
@@ -575,6 +590,13 @@ nrfx_err_t nrf_sqspi_reconfigure(nrf_sqspi_t const *     p_qspi,
  * states restrictions.
  *
  * @param[in] p_qspi Identifier of the QSPI instance to uninitialize.
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_sqspi_dppi_role_map_set or @ref nrf_sqspi_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
 void nrf_sqspi_uninit(nrf_sqspi_t const * p_qspi);
 
@@ -589,20 +611,18 @@ void nrf_sqspi_uninit(nrf_sqspi_t const * p_qspi);
  * @param[in]    p_context User-defined context passed as is to the callback
  * function.
  *
- * @retval NRFX_SUCCESS             Device configured successfully
- * @retval NRFX_ERROR_BUSY          The device is during a transfer. Can't
+ * @retval NRF_SQSPI_SUCCESS             Device configured successfully
+ * @retval NRF_SQSPI_ERROR_BUSY          The device is during a transfer. Can't
  * reconfigure
- * @retval NRFX_ERROR_NOMEM         Not enough memory to support more serial
- * devices
- * @retval NRFX_ERROR_INVALID_PARAM At least one configuration option has
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM At least one configuration option has
  * invalid value
- * @retval NRFX_ERROR_NOT_SUPPORTED At least one configuration option is not
+ * @retval NRF_SQSPI_ERROR_UNSUPPORTED At least one configuration option is not
  * supported by this driver
  */
-nrfx_err_t nrf_sqspi_dev_cfg(nrf_sqspi_t const *         p_qspi,
-                             nrf_sqspi_dev_cfg_t const * p_config,
-                             nrf_sqspi_callback_t        callback,
-                             void *                      p_context);
+nrf_sqspi_error_t nrf_sqspi_dev_cfg(nrf_sqspi_t const *         p_qspi,
+                                    nrf_sqspi_dev_cfg_t const * p_config,
+                                    nrf_sqspi_callback_t        callback,
+                                    void *                      p_context);
 
 /**
  * @brief Configure the data format for the device
@@ -618,12 +638,12 @@ nrfx_err_t nrf_sqspi_dev_cfg(nrf_sqspi_t const *         p_qspi,
  * formatting is configured.
  * @param[in] p_data_fmt Data format to set.
  *
- * @retval NRFX_SUCCESS             Data format configured successfully
- * @retval NRFX_ERROR_INVALID_PARAM At least one configuration option has
+ * @retval NRF_SQSPI_SUCCESS             Data format configured successfully
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM At least one configuration option has
  * invalid value
  */
-nrfx_err_t nrf_sqspi_dev_data_fmt_set(nrf_sqspi_t const *    p_qspi,
-                                      nrf_sqspi_data_fmt_t * p_data_fmt);
+nrf_sqspi_error_t nrf_sqspi_dev_data_fmt_set(nrf_sqspi_t const *    p_qspi,
+                                             nrf_sqspi_data_fmt_t * p_data_fmt);
 
 /**
  * @brief Function for activating the QSPI driver instance.
@@ -633,10 +653,67 @@ nrfx_err_t nrf_sqspi_dev_data_fmt_set(nrf_sqspi_t const *    p_qspi,
  *
  * @param[in] p_qspi Identifier of the QSPI instance to activate.
  *
- * @retval NRFX_SUCCESS       The peripheral is scheduled to be activated.
- * @retval NRFX_ERROR_ALREADY The peripheral is already activated.
+ * @retval NRF_SQSPI_SUCCESS       The peripheral is scheduled to be activated.
+ * @retval NRF_SQSPI_ERROR_INVALID_STATE The peripheral is already activated.
  */
-nrfx_err_t nrf_sqspi_activate(nrf_sqspi_t const * p_qspi);
+nrf_sqspi_error_t nrf_sqspi_activate(nrf_sqspi_t const * p_qspi);
+
+/**
+ * @brief Bind the soft peripheral's tasks to handler roles, as one map.
+ *
+ * Tasks are addressed as entries: entries 0 to SP_DPPI_SLOT_COUNT-1 are the DPPI slots, where slot
+ * n is channel n of the SoC's DPPI instance, and the remaining entries are tasks with no DPPI path
+ * at all. @p p_roles holds one SP_DPPI_ROLE_* per entry, so the whole map changes in one step and
+ * no intermediate map is ever in force - a role that is being moved is never briefly unassigned.
+ *
+ * A role must appear at most once: both a task register write and a DPPI event for a role reach the
+ * same handler, so it has to resolve to a single task. Moving a role moves everything that reaches
+ * it, including the barrier this driver raises for it.
+ *
+ * This does not enable anything - use @ref nrf_sqspi_dppi_subscribe_enable per slot for that, and
+ * note that the permissions already in force are preserved. Call once after activation and before
+ * the first transfer: publishing reprograms interrupt state for every task whose binding moves, so
+ * it is rejected while a transfer is in flight.
+ *
+ * @param[in] p_qspi Driver instance.
+ * @param[in] p_roles Array of SP_TASK_ENTRY_COUNT roles, indexed by task entry.
+ *
+ * @retval NRF_SQSPI_SUCCESS             Map published to the soft peripheral.
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM A role is out of range or claimed by two entries.
+ * @retval NRF_SQSPI_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SQSPI_ERROR_BUSY          A transfer is in progress or prepared; nothing was published.
+ */
+nrf_sqspi_error_t nrf_sqspi_dppi_role_map_set(nrf_sqspi_t const * p_qspi,
+                                              const uint8_t *     p_roles);
+
+/**
+ * @brief Permit or forbid the soft peripheral to subscribe a DPPI slot.
+ *
+ * Nothing is permitted by default, so an unmodified application is never driven from the DPPI
+ * fabric and is unaffected by traffic other subsystems (for example MPSL/SDC) generate on the same
+ * DPPI instance. Permission is per slot and independent of the role binding.
+ *
+ * Permission is necessary but not sufficient: the soft peripheral connects a permitted slot only
+ * in the states where that subscription is meaningful, and disconnects it again afterwards. The
+ * task itself stays triggerable through its task register regardless of this setting.
+ *
+ * Like @ref nrf_sqspi_dppi_role_map_set, this publishes over a configuration barrier and is rejected
+ * while a transfer is in flight. Note also that permitting the slot carrying the start role does not
+ * connect it immediately: the soft peripheral arms that channel when it next reaches the state where
+ * the subscription is meaningful.
+ *
+ * @param[in] p_qspi Driver instance.
+ * @param[in] slot   Slot index, less than @ref SP_DPPI_SLOT_COUNT.
+ * @param[in] enable True to permit the subscription, false to revoke it.
+ *
+ * @retval NRF_SQSPI_SUCCESS             Permission published to the soft peripheral.
+ * @retval NRF_SQSPI_ERROR_INVALID_PARAM Slot out of range.
+ * @retval NRF_SQSPI_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SQSPI_ERROR_BUSY          A transfer is in progress or prepared; nothing was published.
+ */
+nrf_sqspi_error_t nrf_sqspi_dppi_subscribe_enable(nrf_sqspi_t const * p_qspi,
+                                                  uint8_t             slot,
+                                                  bool                enable);
 
 /**
  * @brief Function for deactivating the QSPI driver instance.
@@ -652,9 +729,9 @@ nrfx_err_t nrf_sqspi_activate(nrf_sqspi_t const * p_qspi);
  *
  * @param[in] p_qspi Identifier of the QSPI instance to deactivate.
  *
- * @retval NRFX_SUCCESS  The driver instance has been activated.
+ * @retval NRF_SQSPI_SUCCESS  The driver instance has been activated.
  */
-nrfx_err_t nrf_sqspi_deactivate(nrf_sqspi_t const * p_qspi);
+nrf_sqspi_error_t nrf_sqspi_deactivate(nrf_sqspi_t const * p_qspi);
 
 /**
  * @brief Transfer data using the serial interface
@@ -676,13 +753,13 @@ nrfx_err_t nrf_sqspi_deactivate(nrf_sqspi_t const * p_qspi);
  *
  * If the controller mode transfer is in progress, a new transfer can be
  * requested. If the driver is capable of queueing the requested transfer, the
- * function returns NRFX_SUCCESS. If not, it returns NRFX_ERROR_BUSY. If the
+ * function returns NRF_SQSPI_SUCCESS. If not, it returns NRF_SQSPI_ERROR_BUSY. If the
  * target mode transfer is idle waiting for the remote controller, new transfer
  * requests abort the idling transfer and the @ref nrf_sqspi_callback_t is
  * called to indicate aborted transfer. If the target mode transfer is activated
  * by the remote controller, a new requested transfer can be queued by the
  * driver. If the driver is capable of queuing the new transfer, the function
- * returns NRFX_SUCCESS. Otherwise, it returns NRFX_ERROR_BUSY.
+ * returns NRF_SQSPI_SUCCESS. Otherwise, it returns NRF_SQSPI_ERROR_BUSY.
  *
  * By default, when the @ref NRF_SQSPI_FLAG_HOLD_XFER flag is not set, the
  * transfer starts immediately if the device is configured in a controller mode.
@@ -706,14 +783,14 @@ nrfx_err_t nrf_sqspi_deactivate(nrf_sqspi_t const * p_qspi);
  * @param[in] xfer_count Number of transfers in the array pointed by @p p_xfer.
  * @param[in] flags      Transfer options (0 for default settings).
  *
- * @retval NRFX_SUCCESS    The transfer is started
- * @retval NRFX_ERROR_BUSY There is ongoing transfer or XIP mode blocks other
+ * @retval NRF_SQSPI_SUCCESS    The transfer is started
+ * @retval NRF_SQSPI_ERROR_BUSY There is ongoing transfer or XIP mode blocks other
  * transfers
  */
-nrfx_err_t nrf_sqspi_xfer(nrf_sqspi_t const *      p_qspi,
-                          nrf_sqspi_xfer_t const * p_xfer,
-                          size_t                   xfer_count,
-                          uint32_t                 flags);
+nrf_sqspi_error_t nrf_sqspi_xfer(nrf_sqspi_t const *      p_qspi,
+                                 nrf_sqspi_xfer_t const * p_xfer,
+                                 size_t                   xfer_count,
+                                 uint32_t                 flags);
 
 /**
  * @brief Prepare the serial interface to transfer the data.
@@ -727,24 +804,24 @@ nrfx_err_t nrf_sqspi_xfer(nrf_sqspi_t const *      p_qspi,
  *
  * If the controller mode transfer is in progress, a new transfer can be
  * requested. If the driver is capable of queueing the requested transfer, the
- * function returns NRFX_SUCCESS. If not, it returns NRFX_ERROR_BUSY. If the
+ * function returns NRF_SQSPI_SUCCESS. If not, it returns NRF_SQSPI_ERROR_BUSY. If the
  * target mode transfer is idle waiting for the remote controller, new transfer
  * requests abort the idling transfer and the @ref nrf_sqspi_callback_t is
  * called to indicate aborted transfer. If the target mode transfer is activated
  * by the remote controller, a new requested transfer can be queued by the
  * driver. If the driver is capable of queuing the new transfer, the function
- * returns NRFX_SUCCESS. Otherwise, it returns NRFX_ERROR_BUSY.
+ * returns NRF_SQSPI_SUCCESS. Otherwise, it returns NRF_SQSPI_ERROR_BUSY.
  *
  * @param[in] p_qspi     Identifier of the QSPI instance transferring data.
  * @param[in] p_xfer     Pointer to a structure describing the data transfer.
  * @param[in] xfer_count Number of transfers in the array pointed by @p p_xfer.
  *
- * @retval NRFX_SUCCESS    The transfer is prepared
- * @retval NRFX_ERROR_BUSY There is ongoing transfer
+ * @retval NRF_SQSPI_SUCCESS    The transfer is prepared
+ * @retval NRF_SQSPI_ERROR_BUSY There is ongoing transfer
  */
-nrfx_err_t nrf_sqspi_xfer_prepare(nrf_sqspi_t const *      p_qspi,
-                                  nrf_sqspi_xfer_t const * p_xfer,
-                                  size_t                   xfer_count);
+nrf_sqspi_error_t nrf_sqspi_xfer_prepare(nrf_sqspi_t const *      p_qspi,
+                                         nrf_sqspi_xfer_t const * p_xfer,
+                                         size_t                   xfer_count);
 
 /**
  * @brief Get an address of the task register to start the prepared transfer.

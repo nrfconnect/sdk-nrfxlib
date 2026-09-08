@@ -272,12 +272,12 @@ The following table details the memory region, which should be non-cacheable:
      - Size
    * - sEMMC firmware
      - ``SP_FIRMWARE_ADDR``
-     - 0x3740
+     - 0x3C00
    * - sEMMC execution RAM
-     - ``SP_FIRMWARE_ADDR`` + 0x3740
+     - ``SP_FIRMWARE_ADDR`` + 0x3C00
      - 0x600
    * - sEMMC virtual register interface
-     - ``SP_FIRMWARE_ADDR`` + 0x3D40
+     - ``SP_FIRMWARE_ADDR`` + 0x4200
      - 0x200
    * - Context saving
      - 0x2f890000
