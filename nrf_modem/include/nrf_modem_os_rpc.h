@@ -152,6 +152,15 @@ uintptr_t nrf_modem_os_rpc_sigdev_modem_get(void);
 int nrf_modem_os_rpc_cellcore_boot(void);
 
 /**
+ * @brief Request IronSide SE to boot the cellcore into bootloader mode.
+ *
+ * @param loader_addr Base address of the shared memory region used for DFU.
+ *
+ * @return 0 on success, a negative errno otherwise.
+ */
+int nrf_modem_os_rpc_cellcore_boot_bootloader(uint32_t loader_addr);
+
+/**
  * @brief Open an RPC instance.
  *
  * @param instance Pointer to RPC instance.
