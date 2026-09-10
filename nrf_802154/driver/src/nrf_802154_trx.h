@@ -310,7 +310,7 @@ bool nrf_802154_trx_receive_is_buffer_missing(void);
  *
  * @param p_receive_buffer If NULL the next call to @ref nrf_802154_trx_receive_frame or
  *                         @ref nrf_802154_trx_receive_ack will not be able to receive.
- *                         If not NULL it must point to MAX_PACKET_SIZE + 1 (see nrf_802154_const.h)
+ *                         If not NULL it must point to MAX_PACKET_BUFFER_SIZE (see nrf_802154_const.h)
  *                         buffer where received frame will be stored.
  *
  * @retval true  If operation solved missing buffer condition (see @ref nrf_802154_trx_receive_is_buffer_missing)
@@ -477,6 +477,13 @@ void nrf_802154_trx_abort(void);
  *
  * @return Current state of the TRX module.*/
 trx_state_t nrf_802154_trx_state_get(void);
+
+/**
+ * @brief Gets the PHY the RADIO peripheral was most recently configured for.
+ *
+ * @return PHY the RADIO peripheral was most recently configured for.
+ */
+nrf_802154_phy_t nrf_802154_trx_phy_get(void);
 
 /**
  * @brief Gets (D)PPI channel used to trigger ramp up procedure start.

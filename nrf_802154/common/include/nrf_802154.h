@@ -183,6 +183,22 @@ void nrf_802154_tx_power_set(int8_t power);
  */
 int8_t nrf_802154_tx_power_get(void);
 
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+/**
+ * @brief Set the PHY (experimental).
+ *
+ * @param[in] phy  Identifies PHY to be used in later communication.
+ */
+void nrf_802154_phy_set(nrf_802154_phy_t phy);
+
+/**
+ * @brief Get the currently configured PHY (experimental).
+ *
+ * @returns Currently configured PHY.
+ */
+nrf_802154_phy_t nrf_802154_phy_get(void);
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 
 /**

@@ -301,6 +301,11 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmitted_raw(
                                                                                   remote_ack_handle,
                                                                                   ack_hdata_len));
 
+    /* The GFSK PHY is not supported over serialized interface. Populate
+     * the field explicitly so callers don't observe a raw zero from the
+     * decoder scratch buffer. */
+    metadata.data.transmitted.phy = NRF_802154_PHY_OQPSK_250KBPS;
+
     p_ack = metadata.data.transmitted.p_ack;
 
     if (siz < 0)

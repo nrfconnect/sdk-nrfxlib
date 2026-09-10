@@ -15,6 +15,40 @@ Main branch - nRF 802.15.4 Radio Driver
 
 Notable changes
 ===============
+* Added experimental support for the GFSK 2 Mbps PHY, operating alongside the standard O-QPSK 250 kbps PHY. (KRKNWK-21997)
+  The feature is disabled by default.
+  Enable it by setting the :c:macro:`NRF_802154_GFSK_2MBPS_PHY_ENABLED` configuration macro to ``1``.
+  When disabled, PHY switching is compiled out and the driver behaves identically to earlier releases.
+  Currently, the feature is supported only on the nRF54L15 SoCs.
+
+Added
+=====
+* Added the :c:type:`nrf_802154_phy_t` type with the values :c:macro:`NRF_802154_PHY_OQPSK_250KBPS` and :c:macro:`NRF_802154_PHY_EXP1_GFSK_2MBPS`.
+* Added the :c:func:`nrf_802154_phy_set` and :c:func:`nrf_802154_phy_get` functions to select and query the currently configured PHY.
+  These functions are compiled only when :c:macro:`NRF_802154_GFSK_2MBPS_PHY_ENABLED` is ``1``.
+* Added the ``phy`` field to :c:struct:`nrf_802154_transmit_done_metadata_t` (inside the ``data.transmitted`` union) to report the PHY used to transmit the frame.
+* Added the :kconfig:option:`CONFIG_NRF_802154_GFSK_2MBPS_PHY_ENABLED` Kconfig option for the |NCS| build system.
+  When this option is enabled, the build defines :c:macro:`NRF_802154_GFSK_2MBPS_PHY_ENABLED` as ``1``, which enables :c:func:`nrf_802154_phy_set` and :c:func:`nrf_802154_phy_get`. (KRKNWK-21997)
+
+Minor changes
+=============
+* The timestamp conversion helpers (:c:func:`nrf_802154_timestamp_end_to_phr_convert`, :c:func:`nrf_802154_timestamp_phr_to_shr_convert`, :c:func:`nrf_802154_timestamp_phr_to_mhr_convert`) take an additional ``phy`` argument when :c:macro:`NRF_802154_GFSK_2MBPS_PHY_ENABLED` is ``1``.
+  The original two-argument prototypes are used when it is ``0``.
+* The symbol-timing constants in :file:`nrf_802154_const.h` are split into per-PHY families: :c:macro:`PHY_OQPSK_US_PER_SYMBOL`, :c:macro:`PHY_OQPSK_SYMBOLS_PER_OCTET`, :c:macro:`PHY_OQPSK_SHR_SYMBOLS`, :c:macro:`PHY_GFSK_US_PER_OCTET`, :c:macro:`PHY_GFSK_SYMBOLS_PER_OCTET`, and :c:macro:`PHY_GFSK_SHR_SYMBOLS`.
+  When :c:macro:`NRF_802154_GFSK_2MBPS_PHY_ENABLED` is ``0``, the legacy names :c:macro:`PHY_US_PER_SYMBOL`, :c:macro:`PHY_SYMBOLS_PER_OCTET`, and :c:macro:`PHY_SHR_SYMBOLS` remain available as aliases of the ``PHY_OQPSK_*`` variants for backwards compatibility.
+
+Removed
+=======
+
+* Removed unused macros :c:macro:`PHR_LENGTH_MASK` and :c:macro:`MAX_PHY_FRAME_TIME_US`.
+* Removed the deprecated helpers :c:func:`nrf_802154_first_symbol_timestamp_get` and :c:func:`nrf_802154_mhr_timestamp_get`.
+  Compose the equivalent timestamps from :c:func:`nrf_802154_timestamp_end_to_phr_convert`, :c:func:`nrf_802154_timestamp_phr_to_shr_convert`, and :c:func:`nrf_802154_timestamp_phr_to_mhr_convert` instead.
+
+nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Notable changes
+===============
 
 * Separate maps for pending bits and IEs are replaced with a single map that stores the peer records containing both pending bits an IEs.
   There are two such maps, one for short addresses and one for extended addresses.

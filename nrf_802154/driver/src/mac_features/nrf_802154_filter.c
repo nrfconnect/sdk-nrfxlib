@@ -49,8 +49,11 @@
 #include <string.h>
 
 #include "nrf_802154_const.h"
+#include "nrf_802154_common_utils.h"
 #include "nrf_802154_frame.h"
 #include "nrf_802154_pib.h"
+#include "nrf_802154_trx.h"
+#include "nrf_802154_utils.h"
 
 #define FCF_CHECK_OFFSET           (PHR_SIZE + FCF_SIZE)
 #define PANID_CHECK_OFFSET         (DEST_ADDR_OFFSET)
@@ -443,7 +446,9 @@ nrf_802154_rx_error_t nrf_802154_filter_frame_part(
         NRF_802154_ASSERT(nrf_802154_frame_parse_level_get(
                               p_frame_data) >= PARSE_LEVEL_FCF_OFFSETS);
 
-        if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > MAX_PACKET_SIZE))
+        uint16_t max_psdu_size = nrf_802154_max_psdu_size_get(nrf_802154_trx_phy_get());
+
+        if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > max_psdu_size))
         {
             return NRF_802154_RX_ERROR_INVALID_LENGTH;
         }

@@ -67,14 +67,16 @@ static inline void nrf_802154_frame_parser_data_clear(nrf_802154_frame_t * p_fra
  * @param[in]    p_frame               Pointer to a frame.
  * @param[in]    valid_data_len        Number of valid bytes in the frame.
  * @param[in]    requested_parse_level Requested parse level.
+ * @param[in]    phy                   PHY for the frame validation rules.
  * @param[out]   p_parser_data         Pointer to a parser data that will be initialized.
  *
  * @retval  true  The parsing succeeded and requested parse level was achieved.
  * @retval  false The parsing failed or requested parse level could not be achieved.
  */
 bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
-                                       uint8_t                         valid_data_len,
+                                       uint16_t                        valid_data_len,
                                        nrf_802154_frame_parser_level_t requested_parse_level,
+                                       nrf_802154_phy_t                phy,
                                        nrf_802154_frame_t            * p_parser_data);
 
 /**
@@ -94,7 +96,7 @@ bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
  */
 bool nrf_802154_frame_parser_valid_data_extend(
     nrf_802154_frame_t            * p_parser_data,
-    uint8_t                         valid_data_len,
+    uint16_t                        valid_data_len,
     nrf_802154_frame_parser_level_t requested_parse_level);
 
 #endif // NRF_802154_FRAME_PARSER_H

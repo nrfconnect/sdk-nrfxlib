@@ -36,6 +36,12 @@
 #include "nrf_802154_const.h"
 #include "nrf_802154_nrfx_addons.h"
 
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+#define PHY_ARG phy
+#else /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+#define PHY_ARG NRF_802154_PHY_OQPSK_250KBPS
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+
 uint8_t nrf_802154_energy_level_from_dbm_calculate(int8_t ed_dbm)
 {
     return nrf_802154_addons_energy_level_from_dbm_calculate(ed_dbm);
@@ -46,33 +52,53 @@ uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm)
     return dbm - ED_RSSIOFFS;
 }
 
-uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
+static uint16_t phy_shr_us(nrf_802154_phy_t phy)
 {
-    uint32_t frame_symbols = PHY_SHR_SYMBOLS;
-
-    frame_symbols += (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+    if (phy == NRF_802154_PHY_EXP1_GFSK_2MBPS)
+    {
+        return PHY_GFSK_SHR_SYMBOLS * PHY_GFSK_US_PER_OCTET / PHY_GFSK_SYMBOLS_PER_OCTET;
+    }
+    else
+    {
+        return PHY_OQPSK_SHR_SYMBOLS * PHY_OQPSK_US_PER_SYMBOL;
+    }
 }
 
-uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
+static uint16_t phy_octets_to_us(uint16_t octets, nrf_802154_phy_t phy)
 {
-    return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
+    if (phy == NRF_802154_PHY_EXP1_GFSK_2MBPS)
+    {
+        return octets * PHY_GFSK_US_PER_OCTET;
+    }
+    else
+    {
+        return octets * PHY_OQPSK_SYMBOLS_PER_OCTET * PHY_OQPSK_US_PER_SYMBOL;
+    }
 }
 
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length, nrf_802154_phy_t phy)
+#else /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length)
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 {
-    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+    return end_timestamp - (uint64_t)phy_octets_to_us((uint16_t)PHR_SIZE + psdu_length, PHY_ARG);
 }
 
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp, nrf_802154_phy_t phy)
+#else /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 {
-    return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
+    return phr_timestamp - (uint64_t)phy_shr_us(PHY_ARG);
 }
 
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+uint64_t nrf_802154_timestamp_phr_to_mhr_convert(uint64_t phr_timestamp, nrf_802154_phy_t phy)
+#else /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 uint64_t nrf_802154_timestamp_phr_to_mhr_convert(uint64_t phr_timestamp)
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 {
-    return phr_timestamp + (PHR_SIZE * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
+    return phr_timestamp + (uint64_t)phy_octets_to_us(PHR_SIZE, PHY_ARG);
 }

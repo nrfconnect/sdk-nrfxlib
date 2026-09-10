@@ -165,6 +165,18 @@ typedef uint8_t nrf_802154_term_t;
 #define NRF_802154_TERM_802154 0x01 /**< Request terminates the ongoing 802.15.4 operation. */
 
 /**
+ * @brief PHY type.
+ *
+ * Possible values:
+ * - @ref NRF_802154_PHY_OQPSK_250KBPS
+ * - @ref NRF_802154_PHY_EXP1_GFSK_2MBPS
+ */
+typedef uint8_t nrf_802154_phy_t;
+
+#define NRF_802154_PHY_OQPSK_250KBPS   0U /**< O-QPSK 250kbit/s 2.4GHz PHY as specified by the IEEE 802.15.4-2024 chapter 13. */
+#define NRF_802154_PHY_EXP1_GFSK_2MBPS 2U /**< GFSK 2Mbit/s at 2.4GHz PHY (experimental). */
+
+/**
  * @brief Structure for configuring CCA.
  */
 typedef struct
@@ -471,16 +483,17 @@ typedef struct
     {
         struct
         {
-            uint8_t * p_ack; /**< A pointer to a buffer that contains PHR and PSDU of the received ACK. The first byte
-                              *   in the buffer is the length of the frame (PHR). The following bytes contain the ACK frame itself (PSDU). The length byte
-                              *   (PHR) includes FCS. FCS is already verified by the hardware and may be modified by the hardware.
-                              *   If ACK was not requested or requested but not received, @ref p_ack is set to NULL. */
-            uint8_t  length; /**< Length of the received ACK payload or 0 if @ref p_ack is NULL. */
-            int8_t   power;  /**< RSSI of the received frame or 0 if @ref p_ack is NULL. */
-            uint8_t  lqi;    /**< LQI of the received frame or 0 if @ref p_ack is NULL. */
-            uint64_t time;   /**< Timestamp taken when the last symbol of ACK is received. If @ref p_ack is NULL, this field is set to 0, but is considered invalid. */
-        } transmitted;       /**< Result values for a successful frame transmission. */
-    } data;                  /**< Result values that are valid only for successful operations. */
+            uint8_t * p_ack;      /**< A pointer to a buffer that contains PHR and PSDU of the received ACK. The first byte
+                                   *   in the buffer is the length of the frame (PHR). The following bytes contain the ACK frame itself (PSDU). The length byte
+                                   *   (PHR) includes FCS. FCS is already verified by the hardware and may be modified by the hardware.
+                                   *   If ACK was not requested or requested but not received, @ref p_ack is set to NULL. */
+            uint8_t  length;      /**< Length of the received ACK payload or 0 if @ref p_ack is NULL. */
+            int8_t   power;       /**< RSSI of the received frame or 0 if @ref p_ack is NULL. */
+            uint8_t  lqi;         /**< LQI of the received frame or 0 if @ref p_ack is NULL. */
+            uint64_t time;        /**< Timestamp taken when the last symbol of ACK is received. If @ref p_ack is NULL, this field is set to 0, but is considered invalid. */
+            nrf_802154_phy_t phy; /**< PHY used to transmit the frame. */
+        } transmitted;            /**< Result values for a successful frame transmission. */
+    } data;                       /**< Result values that are valid only for successful operations. */
 } nrf_802154_transmit_done_metadata_t;
 
 /**

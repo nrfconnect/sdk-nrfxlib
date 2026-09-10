@@ -86,6 +86,7 @@ typedef enum
     REQ_TYPE_MODULATED_CARRIER,
     REQ_TYPE_BUFFER_FREE,
     REQ_TYPE_CHANNEL_UPDATE,
+    REQ_TYPE_PHY_UPDATE,
     REQ_TYPE_CCA_CFG_UPDATE,
     REQ_TYPE_RSSI_MEASURE,
     REQ_TYPE_RSSI_GET,
@@ -175,6 +176,12 @@ typedef struct
             req_originator_t req_orig; ///< Request originator.
             bool           * p_result; ///< Channel update request result.
         } channel_update;              ///< Channel update request details.
+
+        struct
+        {
+            req_originator_t req_orig; ///< Request originator.
+            bool           * p_result; ///< PHY update request result.
+        } phy_update;                  ///< PHY update request details.
 
         struct
         {
@@ -569,6 +576,23 @@ static void swi_channel_update(req_originator_t req_orig, bool * p_result)
 }
 
 /**
+ * @brief Notifies the core module that the next higher layer has requested a PHY change.
+ *
+ * @param[out] p_result Pointer where the result to be returned by
+ *                      nrf_802154_request_phy_update should be written by the swi handler.
+ */
+static void swi_phy_update(req_originator_t req_orig, bool * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                     = REQ_TYPE_PHY_UPDATE;
+    p_slot->data.phy_update.p_result = p_result;
+    p_slot->data.phy_update.req_orig = req_orig;
+
+    req_exit();
+}
+
+/**
  * @brief Notifies the core module that the next higher layer has requested a CCA configuration
  * change.
  * @param[out] p_result Pointer where the result to be returned by
@@ -813,6 +837,11 @@ bool nrf_802154_request_channel_update(req_originator_t req_orig)
     REQUEST_FUNCTION(nrf_802154_core_channel_update, swi_channel_update, bool, req_orig)
 }
 
+bool nrf_802154_request_phy_update(req_originator_t req_orig)
+{
+    REQUEST_FUNCTION(nrf_802154_core_phy_update, swi_phy_update, bool, req_orig)
+}
+
 bool nrf_802154_request_cca_cfg_update(void)
 {
     REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_cca_cfg_update, swi_cca_cfg_update, bool)
@@ -971,6 +1000,11 @@ static void irq_handler_req_event(void)
             case REQ_TYPE_CHANNEL_UPDATE:
                 *(p_slot->data.channel_update.p_result) =
                     nrf_802154_core_channel_update(p_slot->data.channel_update.req_orig);
+                break;
+
+            case REQ_TYPE_PHY_UPDATE:
+                *(p_slot->data.phy_update.p_result) =
+                    nrf_802154_core_phy_update(p_slot->data.phy_update.req_orig);
                 break;
 
             case REQ_TYPE_CCA_CFG_UPDATE:

@@ -44,7 +44,9 @@
 
 #include "nrf_802154_frame.h"
 
+#include "nrf_802154_common_utils.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_utils.h"
 #include "nrf_802154_utils_byteorder.h"
 
 /***************************************************************************************************
@@ -368,7 +370,7 @@ static bool full_parse(nrf_802154_frame_t * p_parser_data)
     const uint8_t * p_iterator;
 
     if (((psdu_length + PHR_SIZE) != p_parser_data->valid_data_len) ||
-        (psdu_length > MAX_PACKET_SIZE))
+        (psdu_length > nrf_802154_max_psdu_size_get(p_parser_data->phy)))
     {
         return false;
     }
@@ -528,11 +530,13 @@ static bool parse_state_advance(nrf_802154_frame_t            * p_parser_data,
 }
 
 bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
-                                       uint8_t                         valid_data_len,
+                                       uint16_t                        valid_data_len,
                                        nrf_802154_frame_parser_level_t requested_parse_level,
+                                       nrf_802154_phy_t                phy,
                                        nrf_802154_frame_t            * p_parser_data)
 {
-    if ((p_frame == NULL) || (valid_data_len > (MAX_PACKET_SIZE + PHR_SIZE)))
+    if ((p_frame == NULL) ||
+        (valid_data_len > (nrf_802154_max_psdu_size_get(phy) + PHR_SIZE)))
     {
         return false;
     }
@@ -540,6 +544,7 @@ bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
     p_parser_data->p_frame        = p_frame;
     p_parser_data->valid_data_len = valid_data_len;
     p_parser_data->parse_level    = PARSE_LEVEL_NONE;
+    p_parser_data->phy            = phy;
 
     memset(&p_parser_data->mhr, NRF_802154_FRAME_INVALID_OFFSET, sizeof(p_parser_data->mhr));
     memset(&p_parser_data->mac_payload,
@@ -554,10 +559,10 @@ bool nrf_802154_frame_parser_data_init(uint8_t                       * p_frame,
 
 bool nrf_802154_frame_parser_valid_data_extend(
     nrf_802154_frame_t            * p_parser_data,
-    uint8_t                         valid_data_len,
+    uint16_t                        valid_data_len,
     nrf_802154_frame_parser_level_t requested_parse_level)
 {
-    if (valid_data_len > (MAX_PACKET_SIZE + PHR_SIZE))
+    if (valid_data_len > (nrf_802154_max_psdu_size_get(p_parser_data->phy) + PHR_SIZE))
     {
         return false;
     }

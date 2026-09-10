@@ -43,6 +43,7 @@
 #define NRF_802154_HW_UTILS_H_
 
 #include <nrfx.h>
+#include <hal/nrf_radio.h>
 
 #ifdef __STATIC_INLINE__
 #undef __STATIC_INLINE__
@@ -106,9 +107,9 @@ __STATIC_INLINE__ void yopan_158_workaround(void);
 /**
  * @brief Applies ERRATA-117
  *
- * Shall be called after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
+ * Shall be called after setting the RADIO mode.
  */
-__STATIC_INLINE__ void errata_117_apply(void);
+__STATIC_INLINE__ void errata_117_apply(nrf_radio_mode_t radio_mode);
 #endif /* NRF53_ERRATA_117_ENABLE_WORKAROUND */
 
 #if NRF54L_ERRATA_6_ENABLE_WORKAROUND
@@ -242,12 +243,25 @@ __STATIC_INLINE__ void yopan_158_workaround(void)
 
 #if NRF53_ERRATA_117_ENABLE_WORKAROUND
 
-__STATIC_INLINE__ void errata_117_apply(void)
+__STATIC_INLINE__ void errata_117_apply(nrf_radio_mode_t radio_mode)
 {
 #ifndef CONFIG_SOC_SERIES_BSIM_NRFXX
+    uint32_t ficr_reg;
 
-    /* Register at 0x01FF0084. */
-    uint32_t ficr_reg = nrf_802154_hw_offset_read(FICR_BASE, 0x84UL);
+    switch (radio_mode)
+    {
+        case NRF_RADIO_MODE_IEEE802154_250KBIT:
+        case NRF_RADIO_MODE_BLE_2MBIT:
+        case NRF_RADIO_MODE_NRF_2MBIT:
+            /* Register at 0x01FF0084. */
+            ficr_reg = nrf_802154_hw_offset_read(FICR_BASE, 0x84UL);
+            break;
+
+        default:
+            /* Register at 0x01FF0080. */
+            ficr_reg = nrf_802154_hw_offset_read(FICR_BASE, 0x80UL);
+            break;
+    }
 
     /* Register at 0x41008588. */
     nrf_802154_hw_offset_write(RADIO_BASE, 0x588UL, ficr_reg);

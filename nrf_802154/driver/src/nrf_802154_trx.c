@@ -86,66 +86,71 @@
 #define SHORTS_IDLE           0
 
 /// Value set to SHORTS register for RX operation.
-#if !defined(NRF52_SERIES)
-#define SHORTS_RX             (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK |    \
+#define SHORTS_RX             (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK |\
+                               m_radio_short_rx_some_end_disable |     \
                                SHORT_ADDRESS_BCSTART)
-#else
-#define SHORTS_RX             (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                               NRF_RADIO_SHORT_END_DISABLE_MASK |       \
-                               SHORT_ADDRESS_BCSTART)
-#endif
 
 #define SHORTS_RX_FREE_BUFFER (NRF_RADIO_SHORT_RXREADY_START_MASK)
 
 #define SHORTS_TX_ACK         (NRF_RADIO_SHORT_TXREADY_START_MASK | \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+                               m_radio_short_tx_some_end_disable)
 
 #if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
 /* The short CCAIDLE_TXEN is not used */
-#define SHORTS_CCAIDLE_TXEN 0U
+#define SHORTS_CCAIDLE_TXEN             0U
 #else
-#define SHORTS_CCAIDLE_TXEN NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK
+#define SHORTS_CCAIDLE_TXEN             NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK
 #endif
 
-#define SHORTS_MULTI_CCA_TX (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
-                             SHORTS_CCAIDLE_TXEN |                   \
-                             NRF_RADIO_SHORT_TXREADY_START_MASK |    \
-                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_MULTI_CCA_TX             (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                                         SHORTS_CCAIDLE_TXEN |                   \
+                                         NRF_RADIO_SHORT_TXREADY_START_MASK |    \
+                                         m_radio_short_tx_some_end_disable)
 
-#define SHORTS_CCA_TX       (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
-                             NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK |  \
-                             SHORTS_CCAIDLE_TXEN |                   \
-                             NRF_RADIO_SHORT_TXREADY_START_MASK |    \
-                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_CCA_TX                   (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                                         NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK |  \
+                                         SHORTS_CCAIDLE_TXEN |                   \
+                                         NRF_RADIO_SHORT_TXREADY_START_MASK |    \
+                                         m_radio_short_tx_some_end_disable)
 
-#define SHORTS_TX           (NRF_RADIO_SHORT_TXREADY_START_MASK | \
-                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_TX                       (NRF_RADIO_SHORT_TXREADY_START_MASK | \
+                                         m_radio_short_tx_some_end_disable)
 
-#if !defined(NRF52_SERIES)
-#define SHORTS_RX_ACK       (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
-#else
-#define SHORTS_RX_ACK       (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                             NRF_RADIO_SHORT_END_DISABLE_MASK)
+#define SHORTS_RX_ACK                   (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
+                                         m_radio_short_rx_some_end_disable)
 
-#endif
+#define SHORTS_MOD_CARRIER              (NRF_RADIO_SHORT_TXREADY_START_MASK | \
+                                         m_radio_short_tx_some_end_start)
 
-#define SHORTS_MOD_CARRIER  (NRF_RADIO_SHORT_TXREADY_START_MASK | \
-                             NRF_RADIO_SHORT_PHYEND_START_MASK)
+#define SHORTS_ED                       (NRF_RADIO_SHORT_READY_EDSTART_MASK)
 
-#define SHORTS_ED           (NRF_RADIO_SHORT_READY_EDSTART_MASK)
+#define SHORTS_CCA                      (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                                         NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK)
 
-#define SHORTS_CCA          (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
-                             NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK)
+#define CRC_LENGTH                      2               ///< Length of CRC in 802.15.4 frames [bytes]
+#define CRC_POLYNOMIAL                  0x011021        ///< Polynomial used for CRC calculation in 802.15.4 frames
 
-#define CRC_LENGTH          2                                    ///< Length of CRC in 802.15.4 frames [bytes]
-#define CRC_POLYNOMIAL      0x011021                             ///< Polynomial used for CRC calculation in 802.15.4 frames
+#define PHR_SIZE_IN_BITS                (PHR_SIZE * 8U) ///< Size of PHR field in bits.
+#define GFSK_PREAMBLE_LENGTH            2               ///< Lenght of the preamble in the GFSK PHY.
+#define GFSK_LONG_ADDRESS_PREFIX_LENGTH 1               ///< Lenght of the long address prefix in the GFSK PHY.
+
+/**
+ * @brief Length in bytes of the Base Address field, used to program RADIO PCNF0.BALEN in the GFSK PHY.
+ *
+ * The RADIO packet's SHR in the GFSK mode is composed of a GFSK preamble and an address field.
+ * The address field is composed of the Base Address plus a one-byte Address Prefix (e.g. BALEN=3
+ * yields a total on-air address of 4 bytes). So to the Base Address occupies whatever is left of
+ * the SHR octets after the preamble and the address prefix.
+ */
+#define GFSK_BASE_ADDRESS_LENGTH        ((PHY_GFSK_SHR_SYMBOLS /       \
+                                          PHY_GFSK_SYMBOLS_PER_OCTET) -\
+                                         GFSK_PREAMBLE_LENGTH -        \
+                                         GFSK_LONG_ADDRESS_PREFIX_LENGTH)
 
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-#define MAX_RAMPDOWN_CYCLES (50 * (SystemCoreClock / 1000000UL)) ///< Maximum number of busy wait loop cycles that radio ramp-down is allowed to take
+#define MAX_RAMPDOWN_CYCLES             (50 * (SystemCoreClock / 1000000UL)) ///< Maximum number of busy wait loop cycles that radio ramp-down is allowed to take
 #else
-#define MAX_RAMPDOWN_CYCLES 10
+#define MAX_RAMPDOWN_CYCLES             10
 #endif
 
 /* Macro to turn off radio high voltage.
@@ -263,6 +268,11 @@ static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver s
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
 static volatile uint8_t  m_remaining_cca_attempts;
+static nrf_802154_phy_t  m_phy = NRF_802154_PHY_OQPSK_250KBPS;
+static uint32_t          m_radio_short_rx_some_end_disable;
+static uint32_t          m_radio_short_tx_some_end_disable;
+static uint32_t          m_radio_short_tx_some_end_start;
+static uint32_t          m_radio_int_end_or_phyend_mask;
 
 #if defined(NRF_802154_TRX_PA_MODULATION_FIX)
 static bool m_pa_modulation_fix_enabled = true;
@@ -694,6 +704,7 @@ void nrf_802154_trx_module_reset(void)
 #if defined(NRF_802154_TRX_PA_MODULATION_FIX)
     m_pa_modulation_fix_enabled = true;
 #endif /* NRF_802154_TRX_PA_MODULATION_FIX */
+    m_phy = NRF_802154_PHY_OQPSK_250KBPS;
 
     memset(&m_flags, 0, sizeof(m_flags));
 }
@@ -705,6 +716,138 @@ void nrf_802154_trx_init(void)
     nrf_802154_trx_module_reset();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void radio_mode_set(nrf_radio_mode_t radio_mode)
+{
+    nrf_radio_mode_set(NRF_RADIO, radio_mode);
+
+#if NRF54L_ERRATA_6_ENABLE_WORKAROUND
+    if (radio_mode == NRF_RADIO_MODE_IEEE802154_250KBIT)
+    {
+        // Apply MLTPAN-6
+        mltpan_6_apply();
+    }
+#endif /* NRF54L_ERRATA_6_ENABLE_WORKAROUND */
+
+#if NRF53_ERRATA_117_ENABLE_WORKAROUND
+    // Apply ERRATA-117 after setting RADIO mode
+    errata_117_apply(radio_mode);
+#endif /* NRF53_ERRATA_117_ENABLE_WORKAROUND */
+
+    /* If we are using PHYEND_DISABLE or END_DISABLE short depends
+     * on SoC series, radio mode and operation to perfrom.
+     * Precalculate shorts here.
+     */
+#if defined(NRF52_SERIES)
+    if (radio_mode != NRF_RADIO_MODE_IEEE802154_250KBIT)
+    {
+        m_radio_short_rx_some_end_disable = NRF_RADIO_SHORT_END_DISABLE_MASK;
+        m_radio_short_tx_some_end_disable = NRF_RADIO_SHORT_END_DISABLE_MASK;
+        m_radio_short_tx_some_end_start   = NRF_RADIO_SHORT_END_START_MASK;
+        m_radio_int_end_or_phyend_mask    = NRF_RADIO_INT_END_MASK;
+    }
+    else
+    {
+        m_radio_short_rx_some_end_disable = NRF_RADIO_SHORT_END_DISABLE_MASK;
+        m_radio_short_tx_some_end_disable = NRF_RADIO_SHORT_PHYEND_DISABLE_MASK;
+        m_radio_short_tx_some_end_start   = NRF_RADIO_SHORT_PHYEND_START_MASK;
+        m_radio_int_end_or_phyend_mask    = NRF_RADIO_INT_PHYEND_MASK;
+    }
+#else
+    m_radio_short_rx_some_end_disable = NRF_RADIO_SHORT_PHYEND_DISABLE_MASK;
+    m_radio_short_tx_some_end_disable = NRF_RADIO_SHORT_PHYEND_DISABLE_MASK;
+    m_radio_short_tx_some_end_start   = NRF_RADIO_SHORT_PHYEND_START_MASK;
+    m_radio_int_end_or_phyend_mask    = NRF_RADIO_INT_PHYEND_MASK;
+#endif
+
+}
+
+static void radio_phy_oqpsk_250kbps_setup(void)
+{
+    radio_mode_set(NRF_RADIO_MODE_IEEE802154_250KBIT);
+
+    nrf_radio_packet_conf_t packet_conf =
+    {
+        .lflen  = PHR_SIZE_IN_BITS,
+        .plen   = NRF_RADIO_PREAMBLE_LENGTH_32BIT_ZERO,
+        .crcinc = true,
+        .maxlen = OQPSK_MAX_PACKET_SIZE,
+    };
+
+    nrf_radio_packet_configure(NRF_RADIO, &packet_conf);
+}
+
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+static void radio_phy_exp1_gfsk_2mbps_setup(void)
+{
+    radio_mode_set(NRF_RADIO_MODE_BLE_2MBIT);
+
+    nrf_radio_packet_conf_t packet_conf =
+    {
+        .plen    = NRF_RADIO_PREAMBLE_LENGTH_16BIT,
+        .balen   = GFSK_BASE_ADDRESS_LENGTH,
+        .lflen   = PHR_SIZE_IN_BITS,
+        .crcinc  = true,
+        .maxlen  = GFSK_MAX_PACKET_SIZE,
+        .whiteen = true,
+    };
+
+    nrf_radio_packet_configure(NRF_RADIO, &packet_conf);
+
+    /* The Polynominal for data whitening is fixed to D^7 + D^4 + 1
+     * on nRF52. Due to interoperability this polynominal must be used also on other SoCs.
+     *
+     * Initial Value for whitening: all ones.
+     */
+    nrf_radio_datawhiteiv_set(NRF_RADIO, 0x7FU);
+
+    /* In BLE 2M Mode we need to set the Logical Address to use for transmission.
+     * Logical Address 0 is used. The BASE0 and PREFIX.AP0 registers constitute
+     * the ADDRESS field when transmitting.
+     */
+    nrf_radio_txaddress_set(NRF_RADIO, 0);
+    /* For reception we provide a mask of Logical Addresses to use.
+     * Because Logical Address 0 is used only, the bit number 0 is only set.
+     */
+    nrf_radio_rxaddresses_set(NRF_RADIO, (1U << 0));
+
+    nrf_radio_base0_set(NRF_RADIO, 0x11B27800);
+    nrf_radio_prefix0_set(NRF_RADIO, 0x04);
+}
+
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+
+static void radio_phy_setup(nrf_802154_phy_t phy)
+{
+    switch (phy)
+    {
+        case NRF_802154_PHY_OQPSK_250KBPS:
+            radio_phy_oqpsk_250kbps_setup();
+            break;
+
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+        case NRF_802154_PHY_EXP1_GFSK_2MBPS:
+            radio_phy_exp1_gfsk_2mbps_setup();
+            break;
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+
+        default:
+            NRF_802154_ASSERT(false);
+            break;
+    }
+
+    m_phy = phy;
+}
+
+static void radio_phy_update(void)
+{
+    nrf_802154_phy_t phy = nrf_802154_pib_phy_get();
+
+    if (phy != m_phy)
+    {
+        radio_phy_setup(phy);
+    }
 }
 
 void nrf_802154_trx_enable(void)
@@ -724,28 +867,9 @@ void nrf_802154_trx_enable(void)
     }
 #endif
 
-    nrf_radio_packet_conf_t packet_conf;
-
-    nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_IEEE802154_250KBIT);
-
-#if NRF54L_ERRATA_6_ENABLE_WORKAROUND
-    // Apply MLTPAN-6
-    mltpan_6_apply();
-#endif /* NRF54L_ERRATA_6_ENABLE_WORKAROUND */
-
-#if NRF53_ERRATA_117_ENABLE_WORKAROUND
-    // Apply ERRATA-117 after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
-    errata_117_apply();
-#endif /* NRF53_ERRATA_117_ENABLE_WORKAROUND */
+    radio_phy_setup(nrf_802154_pib_phy_get());
 
     pa_modulation_fix_apply(true);
-
-    memset(&packet_conf, 0, sizeof(packet_conf));
-    packet_conf.lflen  = 8;
-    packet_conf.plen   = NRF_RADIO_PREAMBLE_LENGTH_32BIT_ZERO;
-    packet_conf.crcinc = true;
-    packet_conf.maxlen = MAX_PACKET_SIZE;
-    nrf_radio_packet_configure(NRF_RADIO, &packet_conf);
 
     NRF_802154_TRX_ENABLE_INTERNAL();
 
@@ -1158,6 +1282,8 @@ void nrf_802154_trx_receive_frame(uint8_t                                bcc,
 
     m_flags.rssi_settled = false;
 
+    radio_phy_update();
+
     uint8_t * p_receive_buffer = mp_receive_buffer;
 
     if (p_receive_buffer != NULL)
@@ -1405,6 +1531,7 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
 
     m_flags.ccastarted_notif_en = false;
 
+    radio_phy_update();
     txpower_set(p_tx_power->radio_tx_power);
 
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
@@ -1426,7 +1553,8 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
 
     // Enable IRQs
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_PHYEND);
-    ints_to_enable |= NRF_RADIO_INT_PHYEND_MASK;
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_END);
+    ints_to_enable |= m_radio_int_end_or_phyend_mask;
 
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
@@ -1481,9 +1609,9 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
                                  const nrf_802154_fal_tx_power_split_t * p_tx_power_split)
 {
     /* Assumptions on peripherals
-     * TIMER is running, is counting from value saved in m_timer_value_on_radio_end_event,
-     * which trigered on END event, which happened RX_PHYEND_EVENT_LATENCY_US us after frame
-     * on air receive was finished.
+     * TIMER is running. Its counter was resumed from m_timer_value_on_radio_end_event on
+     * RADIO.EVENTS_END, which fires after a PHY-dependent latency from the last bit received on air.
+     * The latency value can be obtained via nrf_802154_phy_rx_end_event_latency_us_get().
      * RADIO is DISABLED
      * PPIs are DISABLED
      */
@@ -1496,8 +1624,10 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
 
     m_trx_state = TRX_STATE_TXACK;
 
+    uint32_t rx_end_event_latency_us = nrf_802154_phy_rx_end_event_latency_us_get(m_phy);
+
     // Set TIMER's CC to the moment when ramp-up should occur.
-    if (delay_us <= TX_RAMP_UP_TIME + RX_PHYEND_EVENT_LATENCY_US)
+    if (delay_us <= TX_RAMP_UP_TIME + rx_end_event_latency_us)
     {
         timer_stop_and_clear();
         nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1508,7 +1638,7 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
 
     uint32_t timer_cc_ramp_up_start = m_timer_value_on_radio_end_event + delay_us -
                                       TX_RAMP_UP_TIME -
-                                      RX_PHYEND_EVENT_LATENCY_US;
+                                      rx_end_event_latency_us;
 
     nrf_timer_cc_set(NRF_802154_TIMER_INSTANCE,
                      NRF_TIMER_CC_CHANNEL1,
@@ -1551,6 +1681,7 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
     nrf_802154_trx_antenna_update();
 
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_PHYEND);
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_END);
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
 
     // Set PPIs
@@ -1596,12 +1727,12 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
     if (result)
     {
 #if !defined(NRF53_SERIES)
-        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK |
+        uint32_t ints_to_enable = m_radio_int_end_or_phyend_mask |
                                   NRF_RADIO_INT_ADDRESS_MASK |
                                   NRF_RADIO_INT_DISABLED_MASK;
 
 #else
-        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK |
+        uint32_t ints_to_enable = m_radio_int_end_or_phyend_mask |
                                   NRF_RADIO_INT_ADDRESS_MASK;
 
 #endif
@@ -1628,7 +1759,7 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
 
         /* No callbacks will be called */
 #else // !NRF_802154_TRX_TEST_MODE_ALLOW_LATE_TX_ACK
-        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK;
+        uint32_t ints_to_enable = m_radio_int_end_or_phyend_mask | NRF_RADIO_INT_ADDRESS_MASK;
 
         nrf_radio_int_enable(NRF_RADIO, ints_to_enable);
 
@@ -1807,6 +1938,11 @@ trx_state_t nrf_802154_trx_state_get(void)
     return m_trx_state;
 }
 
+nrf_802154_phy_t nrf_802154_trx_phy_get(void)
+{
+    return m_phy;
+}
+
 uint32_t nrf_802154_trx_ramp_up_ppi_channel_get(void)
 {
     return nrf_802154_trx_ppi_for_ramp_up_channel_id_get();
@@ -1980,6 +2116,8 @@ void nrf_802154_trx_standalone_cca(void)
 
     RADIO_HIGH_VOLTAGE_DISABLE();
 
+    radio_phy_update();
+
     // Set shorts
     nrf_radio_shorts_set(NRF_RADIO, SHORTS_CCA);
 
@@ -2041,6 +2179,8 @@ void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p
 
     m_trx_state = TRX_STATE_CONTINUOUS_CARRIER;
 
+    radio_phy_update();
+
     // Set Tx Power
     txpower_set(p_tx_power->radio_tx_power);
 
@@ -2100,6 +2240,8 @@ void nrf_802154_trx_modulated_carrier(const void                            * p_
     NRF_802154_ASSERT(p_transmit_buffer != NULL);
 
     m_trx_state = TRX_STATE_MODULATED_CARRIER;
+
+    radio_phy_update();
 
     // Set Tx Power
     txpower_set(p_tx_power->radio_tx_power);
@@ -2174,6 +2316,8 @@ void nrf_802154_trx_energy_detection(uint32_t ed_count)
 #endif
 
     RADIO_HIGH_VOLTAGE_DISABLE();
+
+    radio_phy_update();
 
     nrf_radio_ed_loop_count_set(NRF_RADIO, ed_count);
 
@@ -2415,6 +2559,7 @@ static void txframe_finish_disable_ints(void)
 
     nrf_radio_int_disable(NRF_RADIO,
                           NRF_RADIO_INT_PHYEND_MASK |
+                          NRF_RADIO_INT_END_MASK |
                           NRF_RADIO_INT_CCAIDLE_MASK |
                           NRF_RADIO_INT_CCABUSY_MASK |
                           NRF_RADIO_INT_ADDRESS_MASK |
@@ -2522,7 +2667,9 @@ static void txack_finish(void)
     RADIO_HIGH_VOLTAGE_DISABLE();
 
     nrf_radio_int_disable(NRF_RADIO,
-                          NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK |
+                          NRF_RADIO_INT_PHYEND_MASK |
+                          NRF_RADIO_INT_END_MASK |
+                          NRF_RADIO_INT_ADDRESS_MASK |
                           NRF_RADIO_INT_DISABLED_MASK);
 
     /* Current state of peripherals
@@ -2552,7 +2699,10 @@ static void transmit_ack_abort(void)
 
     timer_stop_and_clear();
 
-    nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK);
+    nrf_radio_int_disable(NRF_RADIO,
+                          NRF_RADIO_INT_PHYEND_MASK |
+                          NRF_RADIO_INT_END_MASK |
+                          NRF_RADIO_INT_ADDRESS_MASK);
 
     radio_robust_disable();
 
@@ -2849,6 +2999,15 @@ void nrf_802154_radio_irq_handler(void)
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_CRCOK);
 
         irq_handler_crcok();
+    }
+
+    if (nrf_radio_int_enable_check(NRF_RADIO, NRF_RADIO_INT_END_MASK) &&
+        nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_END))
+    {
+        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_END);
+
+        /* Note: Event END is handled exactly as PHYEND */
+        irq_handler_phyend();
     }
 
     if (nrf_radio_int_enable_check(NRF_RADIO, NRF_RADIO_INT_PHYEND_MASK) &&

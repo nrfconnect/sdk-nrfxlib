@@ -41,8 +41,10 @@
 #include "mac_features/nrf_802154_tx_timestamp_provider.h"
 
 #include "mac_features/nrf_802154_frame.h"
-#include "nrf_802154_utils_byteorder.h"
+#include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_sl_timer.h"
+#include "nrf_802154_trx.h"
+#include "nrf_802154_utils_byteorder.h"
 
 #if NRF_802154_TX_TIMESTAMP_PROVIDER_ENABLED
 
@@ -118,14 +120,25 @@ void nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
     {
         return;
     }
-    /* This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
+
+    nrf_802154_phy_t phy = nrf_802154_trx_phy_get();
+
+    /* For NRF_RADIO_MODE_IEEE802154_250KBIT mode:
+     * This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
      * in 802.15.4 transmit sequence RADIO.FRAMESTART event is triggered after the SHR is
      * transmitted (nRF52840 PS v1.7 -- 6.20.12.6 Transmit sequence). However, RADIO.ADDRESS
      * event is also triggered in 802.15.4 transmit sequence with a constant 32us offset.
      * This handler is therefore expected to execute 32us before the SHR transmission ends.
-     *
      * This function executes approximately 32us before the first bit of PHR.
      * The calculation takes it into account by adding 32us to the current time.
+     *
+     * For NRF_RADIO_MODE_BLE_2MBIT mode:
+     * This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
+     * in BLE transmit sequence RADIO.ADDRESS event is triggered after the ADDRESS field is
+     * transmitted (nRF54L15 PS v1.0 -- 8.17.6 Transmit sequence). This driver's implementation
+     * uses the ADDRESS field as a part of NRF_RADIO_MODE_IEEE802154_250KBIT's equivalent of SHR,
+     * therefore RADIO.ADDRESS event is triggered 4us before MHR is aired. The calculation
+     * below takes it into account by adding 4us to the current time.
      */
     NRF_STATIC_ASSERT(NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE == 4,
                       "Currently, only TX timestamp size 4 can be handled.");
@@ -133,7 +146,8 @@ void nrf_802154_tx_timestamp_provider_tx_started_hook(uint8_t * p_frame)
      * Since the timestamp size is 32 bits (4 bytes),
      * only the least significant 32 bits are used.
      */
-    m_tx_timestamp_us = (uint32_t)(nrf_802154_sl_timer_current_time_get()) + 32U;
+    m_tx_timestamp_us = (uint32_t)(nrf_802154_sl_timer_current_time_get()) +
+                        nrf_802154_phy_tx_address_to_phr_us(phy);
     host_32_to_little(m_tx_timestamp_us, mp_tx_timestamp_addr);
 
     mp_tx_timestamp_addr = NULL;

@@ -220,6 +220,7 @@ static void rx_data_clear(void)
     (void)nrf_802154_frame_parser_data_init(mp_current_rx_buffer->data,
                                             0U,
                                             PARSE_LEVEL_NONE,
+                                            nrf_802154_pib_phy_get(),
                                             &m_current_rx_frame_data);
     nrf_802154_ack_generator_reset();
 
@@ -468,6 +469,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     metadata.data.transmitted.p_ack = p_ack;
     metadata.data.transmitted.power = power;
     metadata.data.transmitted.lqi   = lqi;
+    metadata.data.transmitted.phy   = nrf_802154_trx_phy_get();
 
     if (p_ack == NULL)
     {
@@ -475,7 +477,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     }
     else
     {
-        metadata.data.transmitted.length = p_ack[0];
+        metadata.data.transmitted.length = p_ack[PHR_OFFSET];
         metadata.data.transmitted.time   = nrf_802154_stat_timestamp_read_last_ack_end_timestamp();
     }
 
@@ -1189,7 +1191,8 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
  */
 static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 {
-    uint8_t cca_attempts = m_tx.cca ? (1 + m_tx.extra_cca_attempts) : 0;
+    uint8_t          cca_attempts = m_tx.cca ? (1 + m_tx.extra_cca_attempts) : 0;
+    nrf_802154_phy_t phy          = nrf_802154_pib_phy_get();
 
     bool cca = cca_attempts > 0;
 
@@ -1200,7 +1203,8 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 
     uint32_t duration = nrf_802154_tx_duration_get(nrf_802154_frame_length_get(&m_tx.frame),
                                                    cca,
-                                                   tx_frame_ack_is_requested(&m_tx.frame));
+                                                   tx_frame_ack_is_requested(&m_tx.frame),
+                                                   phy);
 
     if (!nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
     {
@@ -1268,7 +1272,7 @@ static bool tx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
         adjustments.tx_started.time_to_radio_address_us += TX_RAMP_UP_TIME;
     }
 
-    adjustments.tx_started.time_to_radio_address_us += PHY_US_TIME_FROM_SYMBOLS(PHY_SHR_SYMBOLS);
+    adjustments.tx_started.time_to_radio_address_us += nrf_802154_phy_shr_us_get(phy);
 
     nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
 
@@ -1778,7 +1782,8 @@ void nrf_802154_trx_receive_ack_phr_received(void)
     {
         uint16_t duration = nrf_802154_frame_duration_get(curr_rx_buffer[PHR_OFFSET],
                                                           false,
-                                                          false);
+                                                          false,
+                                                          nrf_802154_trx_phy_get());
 
         (void)nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_HIGH);
     }
@@ -2078,7 +2083,8 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
          */
         uint8_t psdu_length = nrf_802154_frame_length_get(&m_current_rx_frame_data);
 
-        if (psdu_length > 0 && psdu_length <= MAX_PACKET_SIZE)
+        if (psdu_length > 0 &&
+            psdu_length <= nrf_802154_max_psdu_size_get(nrf_802154_trx_phy_get()))
         {
             filter_result = NRF_802154_RX_ERROR_NONE;
         }
@@ -2126,8 +2132,9 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     if (!m_flags.rx_timeslot_requested)
     {
         uint16_t duration = nrf_802154_rx_duration_get(
-            mp_current_rx_buffer->data[0],
-            nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data));
+            mp_current_rx_buffer->data[PHR_OFFSET],
+            nrf_802154_frame_ar_bit_is_set(&m_current_rx_frame_data),
+            nrf_802154_trx_phy_get());
 
         if (nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
         {
@@ -2220,6 +2227,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
     uint8_t             * p_received_data = mp_current_rx_buffer->data;
     nrf_802154_rx_error_t filter_result   = NRF_802154_RX_ERROR_RUNTIME;
+    nrf_802154_phy_t      phy             = nrf_802154_trx_phy_get();
 
     /* Latch RSSI and LQI values before sending ACK */
     m_last_rssi = rssi_last_measurement_get();
@@ -2237,7 +2245,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
         if (filter_result == NRF_802154_RX_ERROR_NONE)
         {
-            uint16_t duration = nrf_802154_ack_duration_with_turnaround_get();
+            uint16_t duration = nrf_802154_ack_duration_with_turnaround_get(phy);
 
             if (nrf_802154_rsch_timeslot_request(duration, RSCH_TIMESLOT_PRIO_LOW))
             {
@@ -2262,7 +2270,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
         if (ts != NRF_802154_NO_TIMESTAMP)
         {
-            ts -= RX_PHYEND_EVENT_LATENCY_US;
+            ts -= nrf_802154_phy_rx_end_event_latency_us_get(phy);
         }
 
         nrf_802154_stat_timestamp_write_last_rx_end_timestamp(ts);
@@ -2317,7 +2325,7 @@ void nrf_802154_trx_receive_frame_received(void)
                     nrf_802154_bsim_utils_core_hooks_adjustments_t adjustments;
 
                     adjustments.tx_ack_started.time_to_radio_address_us =
-                        ACK_IFS + TX_RAMP_UP_TIME + PHY_US_TIME_FROM_SYMBOLS(PHY_SHR_SYMBOLS);
+                        ACK_IFS + TX_RAMP_UP_TIME + nrf_802154_phy_shr_us_get(phy);
 
                     nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
 
@@ -2402,7 +2410,10 @@ static inline bool tx_started_core_hooks_will_fit_within_timeslot(const uint8_t 
         return true;
     }
 
-    uint32_t estimated_max_hook_time = nrf_802154_frame_duration_get(p_frame[0], false, true) / 2U;
+    uint32_t estimated_max_hook_time = nrf_802154_frame_duration_get(p_frame[PHR_OFFSET],
+                                                                     false,
+                                                                     true,
+                                                                     nrf_802154_trx_phy_get()) / 2U;
 
     return nrf_802154_rsch_timeslot_us_left_get() >= estimated_max_hook_time;
 }
@@ -2489,9 +2500,10 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
         m_flags.tx_diminished_prio = false;
 
         /* We calculate the timestamp when ccaidle must happened. */
-        ts -= nrf_802154_frame_duration_get(m_tx.frame.p_frame[0],
+        ts -= nrf_802154_frame_duration_get(m_tx.frame.p_frame[PHR_OFFSET],
                                             true,
-                                            true) + RX_TX_TURNAROUND_TIME;
+                                            true,
+                                            nrf_802154_trx_phy_get()) + RX_TX_TURNAROUND_TIME;
 
         nrf_802154_stat_timestamp_write_last_cca_idle_timestamp(ts);
     }
@@ -2643,6 +2655,7 @@ void nrf_802154_trx_receive_ack_received(void)
     bool result = nrf_802154_frame_parser_data_init(p_ack_data,
                                                     p_ack_data[PHR_OFFSET] + PHR_SIZE,
                                                     PARSE_LEVEL_ADDRESSING_END,
+                                                    nrf_802154_trx_phy_get(),
                                                     &m_current_rx_frame_data);
 
     if (result && ack_match_check(&m_tx.frame, &m_current_rx_frame_data))
@@ -3281,6 +3294,36 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
 
             default:
                 /* Don't perform any additional action in any other state. */
+                break;
+        }
+
+        nrf_802154_critical_section_exit();
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return result;
+}
+
+bool nrf_802154_core_phy_update(req_originator_t req_orig)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = critical_section_enter_and_verify_timeslot_length();
+
+    if (result)
+    {
+        switch (m_state)
+        {
+            case RADIO_STATE_RX:
+                if (current_operation_terminate(NRF_802154_TERM_802154, req_orig, true))
+                {
+                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                }
+                break;
+
+            default:
+                // Don't perform any additional action in any other state.
                 break;
         }
 

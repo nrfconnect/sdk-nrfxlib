@@ -88,6 +88,7 @@ typedef struct
 typedef struct
 {
     int8_t                  tx_power;                             ///< Transmit power.
+    nrf_802154_phy_t        phy;                                  ///< PHY type.
     uint8_t                 pan_id[PAN_ID_SIZE];                  ///< Pan Id of this node.
     uint8_t                 short_addr[SHORT_ADDRESS_SIZE];       ///< Short Address of this node.
     uint8_t                 alt_short_addr[SHORT_ADDRESS_SIZE];   ///< Alternate short address of this node.
@@ -186,6 +187,7 @@ void nrf_802154_pib_init(void)
     m_data.pan_coord       = false;
     m_data.channel         = 11;
     m_data.tx_power        = 0;
+    m_data.phy             = NRF_802154_PHY_OQPSK_250KBPS;
 
     memset(m_data.pan_id, 0xff, sizeof(m_data.pan_id));
     m_data.short_addr[0] = 0xfe;
@@ -277,6 +279,16 @@ int8_t nrf_802154_pib_tx_power_get(void)
 void nrf_802154_pib_tx_power_set(int8_t dbm)
 {
     m_data.tx_power = dbm;
+}
+
+void nrf_802154_pib_phy_set(nrf_802154_phy_t phy)
+{
+    m_data.phy = phy;
+}
+
+nrf_802154_phy_t nrf_802154_pib_phy_get(void)
+{
+    return m_data.phy;
 }
 
 const uint8_t * nrf_802154_pib_pan_id_get(void)

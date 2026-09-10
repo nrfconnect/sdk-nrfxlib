@@ -154,6 +154,11 @@ bool nrf_802154_request_channel_update(req_originator_t req_orig)
     REQUEST_FUNCTION_PARMS(nrf_802154_core_channel_update, bool, req_orig)
 }
 
+bool nrf_802154_request_phy_update(req_originator_t req_orig)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_phy_update, bool, req_orig)
+}
+
 bool nrf_802154_request_cca_cfg_update(void)
 {
     REQUEST_FUNCTION(nrf_802154_core_cca_cfg_update)

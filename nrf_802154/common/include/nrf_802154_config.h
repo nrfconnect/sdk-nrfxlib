@@ -604,6 +604,16 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_GFSK_2MBPS_PHY_ENABLED
+ *
+ * Enables the GFSK 2 Mbps PHY in addition to the standard O-QPSK 250 kbps PHY.
+ * This is an experimental feature.
+ */
+#ifndef NRF_802154_GFSK_2MBPS_PHY_ENABLED
+#define NRF_802154_GFSK_2MBPS_PHY_ENABLED 0
+#endif
+
+/**
  * @def NRF_802154_NOTIFICATION_IMPL_DIRECT
  *
  * Use nrf_802154_notification_direct.c implementation.

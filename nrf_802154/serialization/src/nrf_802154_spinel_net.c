@@ -62,7 +62,7 @@
 
 /**@brief A pointer to the last transmitted ACK frame. */
 static const uint8_t * volatile mp_last_tx_ack;
-static uint8_t                  m_ack[ACK_MAX_SIZE + PHR_SIZE];
+static uint8_t                  m_ack[ACK_MAX_BUFFER_SIZE];
 
 static void local_transmitted_frame_ptr_free(void * p_frame)
 {

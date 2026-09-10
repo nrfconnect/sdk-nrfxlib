@@ -122,6 +122,6 @@ void nrf_802154_tx_work_buffer_is_dynamic_data_updated_set(void);
  *
  * @param[in]  offset  Offset of encryption plain text to be set.
  */
-void nrf_802154_tx_work_buffer_plain_text_offset_set(uint8_t offset);
+void nrf_802154_tx_work_buffer_plain_text_offset_set(uint16_t offset);
 
 #endif // NRF_802154_TX_WORK_BUFFER_H_

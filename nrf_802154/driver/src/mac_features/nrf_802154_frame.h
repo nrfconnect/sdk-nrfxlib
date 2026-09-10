@@ -42,6 +42,7 @@
 
 #include "nrfx.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_types.h"
 #include "nrf_802154_utils_byteorder.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -139,7 +140,7 @@ typedef struct
 {
     uint8_t                       * p_frame;        ///< Pointer to a buffer containing the frame bytes.
     nrf_802154_frame_parser_level_t parse_level;    ///< Current frame parse level.
-    uint8_t                         valid_data_len; ///< Number of valid bytes in the frame.
+    uint16_t                        valid_data_len; ///< Number of valid bytes in the frame.
 
     struct
     {
@@ -181,7 +182,9 @@ typedef struct
         uint8_t aux_sec_hdr_end_offset;    ///< Auxiliary Security Header offset.
         uint8_t key_src_size;              ///< Key Source size.
         uint8_t mic_size;                  ///< Message Integrity Code size.
-    } helper;
+    }                helper;
+
+    nrf_802154_phy_t phy;                  ///< PHY.
 } nrf_802154_frame_t;
 
 /**

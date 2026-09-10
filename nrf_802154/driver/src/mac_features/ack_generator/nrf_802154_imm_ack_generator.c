@@ -50,7 +50,7 @@
 
 #define IMM_ACK_INITIALIZER {IMM_ACK_LENGTH, ACK_HEADER_WITH_PENDING, 0x00, 0x00, 0x00, 0x00}
 
-static uint8_t m_ack_data[IMM_ACK_LENGTH + PHR_SIZE];
+static uint8_t m_ack_data[IMM_ACK_BUFFER_SIZE];
 
 void nrf_802154_imm_ack_generator_init(void)
 {

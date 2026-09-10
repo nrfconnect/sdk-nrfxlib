@@ -51,6 +51,7 @@
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_request.h"
 #include "nrf_802154_sl_timer.h"
+#include "nrf_802154_trx.h"
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 #include "nrf_802154_bsim_utils.h"
@@ -112,8 +113,10 @@ static void timeout_timer_start(void)
 {
     uint64_t                  now = nrf_802154_sl_timer_current_time_get();
     nrf_802154_sl_timer_ret_t ret;
+    nrf_802154_phy_t          phy = nrf_802154_trx_phy_get();
 
-    m_dt = m_timeout + IMM_ACK_DURATION + nrf_802154_frame_duration_get(mp_frame[0], false, true);
+    m_dt = m_timeout + nrf_802154_imm_ack_duration_get(phy) +
+           nrf_802154_frame_duration_get(mp_frame[PHR_OFFSET], false, true, phy);
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     /**
      * In simulation, this function is executed immediately after setting up Tx ramp-up instead of

@@ -39,11 +39,11 @@
 #include "nrf_802154_const.h"
 #include "nrf_802154_tx_work_buffer.h"
 
-static uint8_t   m_work_buffer[MAX_PACKET_SIZE + PHR_SIZE]; ///< Work buffer.
-static uint8_t * mp_original_frame;                         ///< Pointer to the original frame the work buffer is currently bound to.
-static uint8_t   m_plain_text_offset;                       ///< Offset of encryption plain text.
-static bool      m_is_secured;                              ///< Flag that indicates if work buffer has been successfully secured.
-static bool      m_is_dynamic_data_updated;                 ///< Flag that indicates if work buffer has had dynamic data successfully updated.
+static uint8_t   m_work_buffer[MAX_PACKET_BUFFER_SIZE]; ///< Work buffer.
+static uint8_t * mp_original_frame;                     ///< Pointer to the original frame the work buffer is currently bound to.
+static uint16_t  m_plain_text_offset;                   ///< Offset of encryption plain text.
+static bool      m_is_secured;                          ///< Flag that indicates if work buffer has been successfully secured.
+static bool      m_is_dynamic_data_updated;             ///< Flag that indicates if work buffer has had dynamic data successfully updated.
 
 void nrf_802154_tx_work_buffer_reset(const nrf_802154_transmitted_frame_props_t * p_frame_props)
 {
@@ -87,7 +87,7 @@ void nrf_802154_tx_work_buffer_original_frame_update(
         return;
     }
 
-    uint8_t work_buffer_len = m_work_buffer[PHR_OFFSET] + PHR_SIZE;
+    uint16_t work_buffer_len = m_work_buffer[PHR_OFFSET] + PHR_SIZE;
 
     if (m_is_dynamic_data_updated && m_is_secured)
     {
@@ -117,7 +117,7 @@ void nrf_802154_tx_work_buffer_is_dynamic_data_updated_set(void)
     m_is_dynamic_data_updated = true;
 }
 
-void nrf_802154_tx_work_buffer_plain_text_offset_set(uint8_t offset)
+void nrf_802154_tx_work_buffer_plain_text_offset_set(uint16_t offset)
 {
     m_plain_text_offset = offset;
 }

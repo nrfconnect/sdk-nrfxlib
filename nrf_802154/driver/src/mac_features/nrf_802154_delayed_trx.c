@@ -58,6 +58,7 @@
 #include "nrf_802154_request.h"
 #include "nrf_802154_utils.h"
 #include "nrf_802154_tx_power.h"
+#include "nrf_802154_trx.h"
 #include "rsch/nrf_802154_rsch.h"
 #include "nrf_802154_sl_timer.h"
 #include "nrf_802154_sl_utils.h"
@@ -462,7 +463,9 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
     __DMB();
     uint8_t  psdu_length   = p_dly_op_data->rx.extension_frame.psdu_length;
     bool     ack_requested = p_dly_op_data->rx.extension_frame.ack_requested;
-    uint32_t frame_length  = nrf_802154_rx_duration_get(psdu_length, ack_requested);
+    uint32_t frame_length  = nrf_802154_rx_duration_get(psdu_length,
+                                                        ack_requested,
+                                                        nrf_802154_trx_phy_get());
 
     if (nrf_802154_sl_time64_is_in_future(now, sof_timestamp + frame_length))
     {

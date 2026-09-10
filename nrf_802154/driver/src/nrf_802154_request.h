@@ -189,6 +189,16 @@ bool nrf_802154_request_antenna_update(void);
 bool nrf_802154_request_channel_update(req_originator_t req_orig);
 
 /**
+ * @brief Requests the driver to update the PHY used by the RADIO peripheral.
+ *
+ * @param req_orig   Module that originates this request.
+ *
+ * @retval  true   The PHY update was perfomed.
+ * @retval  false  The driver could not perform the PHY update.
+ */
+bool nrf_802154_request_phy_update(req_originator_t req_orig);
+
+/**
  * @brief Requests the driver to update the CCA configuration used by the RADIO peripheral.
  */
 bool nrf_802154_request_cca_cfg_update(void);

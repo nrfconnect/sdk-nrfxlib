@@ -44,7 +44,10 @@
 #include <string.h>
 
 #include "nrf_802154_const.h"
+#include "nrf_802154_common_utils.h"
+#include "nrf_802154_trx.h"
 #include "nrf_802154_tx_work_buffer.h"
+#include "nrf_802154_utils.h"
 #if defined(CONFIG_MPSL)
 #include "mpsl_ecb.h"
 #else
@@ -564,7 +567,9 @@ bool nrf_802154_aes_ccm_transform_prepare(const nrf_802154_aes_ccm_data_t * p_ae
         offset = p_aes_ccm_data->plain_text_data - p_aes_ccm_data->raw_frame;
     }
 
-    NRF_802154_ASSERT((offset >= 0) && (offset <= MAX_PACKET_SIZE + PHR_SIZE));
+    uint16_t max_offset = nrf_802154_max_psdu_size_get(nrf_802154_trx_phy_get()) + PHR_SIZE;
+
+    NRF_802154_ASSERT((offset >= 0) && (offset <= max_offset));
 
     nrf_802154_tx_work_buffer_plain_text_offset_set(offset);
     mp_work_buffer = nrf_802154_tx_work_buffer_enable_for(p_aes_ccm_data->raw_frame);

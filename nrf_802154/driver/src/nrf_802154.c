@@ -90,7 +90,7 @@
  * If none of functions using this buffer is called and link time optimization is enabled, this
  * buffer should be removed by linker.
  */
-static uint8_t m_tx_buffer[RAW_PAYLOAD_OFFSET + MAX_PACKET_SIZE];
+static uint8_t m_tx_buffer[MAX_PACKET_BUFFER_SIZE];
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
@@ -122,6 +122,23 @@ int8_t nrf_802154_tx_power_get(void)
 
     return nrf_802154_tx_power_split_pib_power_get(&split_power);
 }
+
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+void nrf_802154_phy_set(nrf_802154_phy_t phy)
+{
+    if (nrf_802154_pib_phy_get() != phy)
+    {
+        nrf_802154_pib_phy_set(phy);
+        (void)nrf_802154_request_phy_update(REQ_ORIG_HIGHER_LAYER);
+    }
+}
+
+nrf_802154_phy_t nrf_802154_phy_get(void)
+{
+    return nrf_802154_pib_phy_get();
+}
+
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 
 bool nrf_802154_coex_rx_request_mode_set(nrf_802154_coex_rx_request_mode_t mode)
 {
@@ -512,6 +529,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                           
     bool                  result;
     nrf_802154_frame_t    frame;
     nrf_802154_tx_error_t error;
+    nrf_802154_phy_t      phy = nrf_802154_pib_phy_get();
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -523,6 +541,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                           
     result = nrf_802154_frame_parser_data_init(p_data,
                                                p_data[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_FULL,
+                                               phy,
                                                &frame);
 
 #if NRF_802154_TX_DIAGNOSTIC_MODE
@@ -531,6 +550,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw(uint8_t                           
         result = nrf_802154_frame_parser_data_init(p_data,
                                                    p_data[PHR_OFFSET] + PHR_SIZE,
                                                    PARSE_LEVEL_NONE,
+                                                   phy,
                                                    &frame);
     }
 #endif
@@ -564,6 +584,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
     nrf_802154_frame_t                frame;
     nrf_802154_tx_error_t             error;
     nrf_802154_transmit_at_metadata_t metadata_default;
+    nrf_802154_phy_t                  phy = nrf_802154_pib_phy_get();
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -576,6 +597,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
     result = nrf_802154_frame_parser_data_init(p_data,
                                                p_data[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_FULL,
+                                               phy,
                                                &frame);
 
 #if NRF_802154_TX_DIAGNOSTIC_MODE
@@ -584,6 +606,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_raw_at(
         result = nrf_802154_frame_parser_data_init(p_data,
                                                    p_data[PHR_OFFSET] + PHR_SIZE,
                                                    PARSE_LEVEL_NONE,
+                                                   phy,
                                                    &frame);
     }
 #endif
@@ -704,7 +727,7 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data)
     bool    result = false;
     uint8_t length = p_data[RAW_LENGTH_OFFSET];
 
-    if (length <= MAX_PACKET_SIZE)
+    if (length <= nrf_802154_max_psdu_size_get(nrf_802154_pib_phy_get()))
     {
         memcpy(m_tx_buffer, p_data, RAW_PAYLOAD_OFFSET + length);
         result = nrf_802154_request_modulated_carrier(NRF_802154_TERM_NONE, m_tx_buffer);
@@ -866,6 +889,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
     bool                  result;
     nrf_802154_frame_t    frame;
     nrf_802154_tx_error_t error;
+    nrf_802154_phy_t      phy = nrf_802154_pib_phy_get();
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -877,6 +901,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
     result = nrf_802154_frame_parser_data_init(p_data,
                                                p_data[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_FULL,
+                                               phy,
                                                &frame);
 
 #if NRF_802154_TX_DIAGNOSTIC_MODE
@@ -885,6 +910,7 @@ nrf_802154_tx_error_t nrf_802154_transmit_csma_ca_raw(
         result = nrf_802154_frame_parser_data_init(p_data,
                                                    p_data[PHR_OFFSET] + PHR_SIZE,
                                                    PARSE_LEVEL_NONE,
+                                                   phy,
                                                    &frame);
     }
 #endif

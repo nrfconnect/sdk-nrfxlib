@@ -263,6 +263,13 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data);
 bool nrf_802154_core_channel_update(req_originator_t req_orig);
 
 /**
+ * @brief Notify the core module that the next higher layer requested the change of the PHY.
+ *
+ * @param[in]  req_orig   Module that originates this request.
+ */
+bool nrf_802154_core_phy_update(req_originator_t req_orig);
+
+/**
  * @brief Notify the core module that the next higher layer requested the change
  * of the CCA configuration.
  */

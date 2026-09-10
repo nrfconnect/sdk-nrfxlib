@@ -143,6 +143,20 @@ int8_t nrf_802154_pib_tx_power_get(void);
 void nrf_802154_pib_tx_power_set(int8_t dbm);
 
 /**
+ * @brief Set the PHY type.
+ *
+ * @param[in] phy PHY type.
+ */
+void nrf_802154_pib_phy_set(nrf_802154_phy_t phy);
+
+/**
+ * @brief Get the PHY type.
+ *
+ * @return PHY type.
+ */
+nrf_802154_phy_t nrf_802154_pib_phy_get(void);
+
+/**
  * @brief Gets the PAN ID used by this device.
  *
  * @returns Pointer to the buffer containing the PAN ID value (2 bytes, little-endian).

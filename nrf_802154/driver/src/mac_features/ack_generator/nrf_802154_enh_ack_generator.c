@@ -63,7 +63,7 @@ typedef enum
 
 static ack_state_t m_ack_state;
 
-static uint8_t            m_ack[ENH_ACK_MAX_SIZE + PHR_SIZE];
+static uint8_t            m_ack[ENH_ACK_BUFFER_SIZE];
 static nrf_802154_frame_t m_ack_data;
 static const uint8_t    * mp_ie_data;
 static uint8_t            m_ie_data_len;
@@ -637,7 +637,15 @@ void nrf_802154_enh_ack_generator_reset(void)
 #endif /* NRF_802154_ENCRYPTION_ENABLED */
 
     memset(m_ack, 0U, sizeof(m_ack));
-    (void)nrf_802154_frame_parser_data_init(m_ack, 0U, PARSE_LEVEL_NONE, &m_ack_data);
+    /* We do not care about the parser initialization PHY as it will be overwritten by the next call
+     * to nrf_802154_enh_ack_generator_create and the valid data size is 0 so no validation is needed.
+     * Otherwise the reset functionality would require the reset handler to be aware of the PHY.
+     */
+    (void)nrf_802154_frame_parser_data_init(m_ack,
+                                            0U,
+                                            PARSE_LEVEL_NONE,
+                                            NRF_802154_PHY_OQPSK_250KBPS,
+                                            &m_ack_data);
     mp_ie_data    = 0U;
     m_ie_data_len = 0U;
     m_ack_state   = ACK_STATE_RESET;
@@ -650,6 +658,8 @@ uint8_t * nrf_802154_enh_ack_generator_create(
     switch (ack_state_get())
     {
         case ACK_STATE_RESET:
+            m_ack_data.phy = p_frame_data->phy;
+
             ack_state_set(ACK_STATE_PROCESSING);
             SWITCH_CASE_FALLTHROUGH;
 

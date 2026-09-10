@@ -44,6 +44,8 @@
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_nrfx_addons.h"
+#include "nrf_802154_procedures_duration.h"
+#include "nrf_802154_trx.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
 #include "nrf_802154_sl_timer.h"
@@ -56,7 +58,7 @@
 
 #if NRF_802154_IE_WRITER_ENABLED
 
-#define CSL_US_PER_UNIT (IE_CSL_SYMBOLS_PER_UNIT * PHY_US_PER_SYMBOL)
+#define CSL_US_PER_UNIT (IE_CSL_SYMBOLS_PER_UNIT * PHY_OQPSK_US_PER_SYMBOL)
 
 typedef enum
 {
@@ -106,20 +108,49 @@ static bool csl_phase_calc(uint32_t * p_csl_phase, uint16_t csl_period, uint64_t
         if (result)
         {
             /*
+             * The IEEE 802.15.4-2015 specification is unclear about which point in time the CSL Phase
+             * should refer to. Following the latest developments in the Thread specification, here
+             * it is going to be calculated relative to the beginning of the MHR.
+             *
+             *
+             * For NRF_RADIO_MODE_IEEE802154_250KBIT mode:
              * This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
              * in 802.15.4 transmit sequence RADIO.FRAMESTART event is triggered after the SHR is
              * transmitted (nRF52840 PS v1.7 -- 6.20.12.6 Transmit sequence). However, RADIO.ADDRESS
              * event is also triggered in 802.15.4 transmit sequence with a constant 32us offset.
              * This handler is therefore expected to execute 32us before the SHR transmission ends.
-             *
-             * The IEEE 802.15.4-2015 specification is unclear about which point in time the CSL Phase
-             * should refer to. Following the latest developments in the Thread specification, here
-             * it is going to be calculated relative to the beginning of the MHR. This function
-             * executes approximately 2 * 32us = 64us before the first bit of MHR. The calculation
+             * This function executes approximately 2 * 32us = 64us before the first bit of MHR. The calculation
              * below takes it into account by adding 64us to the current time.
+             *
+             * O-QPSK transmit sequence:
+             *
+             *     PREAMBLE                        SFD     PHR     MHR ...
+             *   |--------------------------------|--------|--------|---- ...
+             *                                    ^        ^
+             *                               ADDRESS      FRAMESTART
+             *                                    |<-32us->|
+             *                                    |<------64us----->|
+             *
+             * For NRF_RADIO_MODE_BLE_2MBIT mode:
+             * This function is executed in the handler of RADIO.ADDRESS event. According to the IPS,
+             * in BLE transmit sequence RADIO.ADDRESS event is triggered after the ADDRESS field is
+             * transmitted (nRF54L15 PS v1.0 -- 8.17.6 Transmit sequence). This driver's implementation
+             * uses the ADDRESS field as a part of NRF_RADIO_MODE_IEEE802154_250KBIT's equivalent of SHR,
+             * therefore RADIO.ADDRESS event is triggered 4us before MHR is aired. The calculation
+             * below takes it into account by adding 4us to the current time.
+             *
+             * GFSK transmit sequence:
+             *
+             *     PREAMBLE        ADDRESS                         PHR     MHR ...
+             *   |---------------|-------------------------------|-------|-----...
+             *                                                   ^
+             *                                              ADDRESS
+             *                                                   |<-4us->|
              */
-            uint64_t csl_ref_time_us = nrf_802154_sl_timer_current_time_get() + 64;
-            uint32_t csl_period_us   = csl_period * IE_CSL_SYMBOLS_PER_UNIT * PHY_US_PER_SYMBOL;
+            nrf_802154_phy_t phy             = nrf_802154_trx_phy_get();
+            uint64_t         csl_ref_time_us = nrf_802154_sl_timer_current_time_get() +
+                                               nrf_802154_phy_tx_address_to_mhr_us(phy);
+            uint32_t csl_period_us = csl_period * CSL_US_PER_UNIT;
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
             /**

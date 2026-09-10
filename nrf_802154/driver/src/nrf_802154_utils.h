@@ -36,6 +36,10 @@
 #define NRF_802154_UTILS_H__
 
 #include "nrf_802154_assert.h"
+#include "nrf_802154_config.h"
+#include "nrf_802154_const.h"
+#include "nrf_802154_types.h"
+
 #include <stdint.h>
 #include "nrfx.h"
 #include <lib/nrfx_coredep.h>
@@ -121,6 +125,15 @@ __STATIC_INLINE__ void nrf_802154_mcu_critical_exit(nrf_802154_mcu_critical_stat
  * @return Time in RTC ticks.
  */
 __STATIC_INLINE__ uint64_t NRF_802154_US_TO_RTC_TICKS(uint64_t time);
+
+/**
+ * @brief Get the maximum PSDU size for a given PHY.
+ *
+ * @param[in]  phy  The PHY to get the maximum PSDU size for.
+ *
+ * @return The maximum PSDU size in bytes.
+ */
+__STATIC_INLINE__ uint8_t nrf_802154_max_psdu_size_get(nrf_802154_phy_t phy);
 
 #ifndef NRF_802154_UTILS_DECLARE_ONLY
 
@@ -217,6 +230,16 @@ __STATIC_INLINE__ uint64_t NRF_802154_US_TO_RTC_TICKS(uint64_t time)
     result += u1;
 
     return result;
+}
+
+__STATIC_INLINE__ uint8_t nrf_802154_max_psdu_size_get(nrf_802154_phy_t phy)
+{
+    if (NRF_802154_GFSK_2MBPS_PHY_ENABLED && phy == NRF_802154_PHY_EXP1_GFSK_2MBPS)
+    {
+        return GFSK_MAX_PACKET_SIZE;
+    }
+
+    return OQPSK_MAX_PACKET_SIZE;
 }
 
 #endif /* NRF_802154_UTILS_DECLARE_ONLY */

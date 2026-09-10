@@ -40,6 +40,8 @@
 #ifndef NRF_802154_CONST_H_
 #define NRF_802154_CONST_H_
 
+#include "nrf_802154_config.h"
+
 #define RAW_LENGTH_OFFSET               0                                            /**< Byte containing the frame length in a raw frame. */
 #define RAW_PAYLOAD_OFFSET              1                                            /**< Offset of the frame payload in a raw frame */
 
@@ -124,7 +126,6 @@
 #define PAN_ID_OFFSET                   4                                            /**< Offset of PAN ID in the Data frame (+1 for the frame length byte). */
 
 #define PHR_OFFSET                      0                                            /**< Offset of the PHY header in a frame. */
-#define PHR_LENGTH_MASK                 0x7f                                         /**< Mask of the PHR length field. */
 
 #define PSDU_OFFSET                     1                                            /**< Offset of the PHY payload. */
 
@@ -158,13 +159,22 @@
 #define KEY_ID_MODE_1_SIZE              1                                            /**< Size of the 0x01 Key Identifier Mode field. */
 #define KEY_ID_MODE_2_SIZE              5                                            /**< Size of the 0x10 Key Identifier Mode field. */
 #define KEY_ID_MODE_3_SIZE              9                                            /**< Size of the 0x11 Key Identifier Mode field. */
-#define MAX_PACKET_SIZE                 127                                          /**< Maximum size of the radio packet. */
+#define OQPSK_MAX_PACKET_SIZE           127                                          /**< Maximum size of the radio packet for the O-QPSK PHY. */
+#define GFSK_MAX_PACKET_SIZE            255                                          /**< Maximum size of the radio packet for the GFSK PHY. */
 #define MIC_32_SIZE                     4                                            /**< Size of MIC with the MIC-32 and ENC-MIC-32 security attributes. */
 #define MIC_64_SIZE                     8                                            /**< Size of MIC with the MIC-64 and ENC-MIC-64 security attributes. */
 #define MIC_128_SIZE                    16                                           /**< Size of MIC with the MIC-128 and ENC-MIC-128 security attributes. */
 #define PAN_ID_SIZE                     2                                            /**< Size of the PAN ID. */
 #define PHR_SIZE                        1                                            /**< Size of the PHR field. */
 #define SECURITY_CONTROL_SIZE           1                                            /**< Size of the Security Control field. */
+#define IMM_ACK_BUFFER_SIZE             (IMM_ACK_LENGTH + PHR_SIZE)                  /**< Size of the IMM-ACK buffer. */
+#if NRF_802154_GFSK_2MBPS_PHY_ENABLED
+#define MAX_PACKET_BUFFER_SIZE          (GFSK_MAX_PACKET_SIZE + PHR_SIZE)            /**< Maximum size of a packet buffer with GFSK PHY support. */
+#define MAX_PACKET_SIZE                 GFSK_MAX_PACKET_SIZE                         /**< Maximum size of a radio packet with GFSK PHY support. */
+#else /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
+#define MAX_PACKET_BUFFER_SIZE          (OQPSK_MAX_PACKET_SIZE + PHR_SIZE)           /**< Maximum size of a packet buffer without GFSK PHY support. */
+#define MAX_PACKET_SIZE                 OQPSK_MAX_PACKET_SIZE                        /**< Maximum size of a radio packet without GFSK PHY support. */
+#endif /* NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 
 #define AES_CCM_KEY_SIZE                16                                           /**< Size of AES CCM Key. */
 
@@ -176,9 +186,23 @@
 #define ACK_IFS                         TURNAROUND_TIME                              /**< ACK Inter Frame Spacing [us] - delay between last symbol of received frame and first symbol of transmitted ACK. */
 #define UNIT_BACKOFF_PERIOD             (TURNAROUND_TIME + CCA_TIME)                 /**< Number of symbols in the basic time period used by CSMA-CA algorithm (aUnitBackoffPeriod), in (us). */
 
-#define PHY_US_PER_SYMBOL               16                                           /**< Duration of a single symbol in microseconds (us). */
-#define PHY_SYMBOLS_PER_OCTET           2                                            /**< Number of symbols in a single byte (octet). */
-#define PHY_SHR_SYMBOLS                 10                                           /**< Number of symbols in the Synchronization Header (SHR). */
+#define PHY_OQPSK_US_PER_SYMBOL         16                                           /**< Duration of a single symbol in microseconds (us) for O-QPSK PHY. */
+#define PHY_OQPSK_SYMBOLS_PER_OCTET     2                                            /**< Number of symbols in a single byte (octet) for O-QPSK PHY. */
+#define PHY_OQPSK_SHR_SYMBOLS           10                                           /**< Number of symbols in the Synchronization Header (SHR) for O-QPSK PHY. */
+
+#define PHY_GFSK_US_PER_OCTET           4                                            /**< Duration of a single octet in microseconds (us) for GFSK PHY. */
+#define PHY_GFSK_SYMBOLS_PER_OCTET      8                                            /**< Number of symbols in a single byte (octet) for GFSK PHY. */
+#define PHY_GFSK_SHR_SYMBOLS            48                                           /**< Number of symbols in the Synchronization Header (SHR) for GFSK PHY. */
+
+#if !NRF_802154_GFSK_2MBPS_PHY_ENABLED
+/* Backwards-compatible aliases for the pre-multi-PHY macros. When GFSK
+ * is compiled out only O-QPSK exists, so exposing PHY_* under their old
+ * names is unambiguous.
+ */
+#define PHY_US_PER_SYMBOL               PHY_OQPSK_US_PER_SYMBOL
+#define PHY_SYMBOLS_PER_OCTET           PHY_OQPSK_SYMBOLS_PER_OCTET
+#define PHY_SHR_SYMBOLS                 PHY_OQPSK_SHR_SYMBOLS
+#endif /* !NRF_802154_GFSK_2MBPS_PHY_ENABLED */
 
 #define PHY_MIN_RECEIVER_SENSITIVITY    -85                                          /**< Lowest receiver sensitivity level in dBm according to 802.15.4-2020 specification, chapter 12.3.4 */
 
@@ -228,8 +252,8 @@
 #define IE_DATA_OFFSET                  0x02                                         /**< Information element data offset. */
 #define IE_HEADER_ELEMENT_ID_OFFSET     0x07                                         /**< Bit offset of Element ID field in a Header IE header. */
 
-#define ENH_ACK_MAX_SIZE                MAX_PACKET_SIZE                              /**< Maximum length of the Enh-ACK frame. */
-#define ACK_MAX_SIZE                    ENH_ACK_MAX_SIZE                             /**< Maximum length of the ACK frame. */
+#define ENH_ACK_BUFFER_SIZE             MAX_PACKET_BUFFER_SIZE                       /**< Maximum size of the Enh-ACK buffer. */
+#define ACK_MAX_BUFFER_SIZE             ENH_ACK_BUFFER_SIZE                          /**< Maximum size of the ACK buffer. */
 
 typedef enum
 {
