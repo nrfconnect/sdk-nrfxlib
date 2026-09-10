@@ -10,6 +10,15 @@ sQSPI changelog
 All the notable changes to sQSPI are documented on this page.
 Refer to :ref:`intro_soft_peripherals_platform_support` for supported devices for each version.
 
+v1.2.2
+******
+
+See the list of changes for the current release.
+
+* Added:
+
+  * Fixes for all devices, sQSPI is not sensitive to DPPI channels by default.
+
 v1.2.1
 ******
 
