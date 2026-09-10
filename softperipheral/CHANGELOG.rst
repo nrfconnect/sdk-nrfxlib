@@ -9,6 +9,17 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.4.1
+**********************
+
+This version focuses on fixing a common bug in all existing soft peripherals.
+See the following list of changes:
+
+* Bug fixes:
+  
+  * Fixed clash with MPSL/SDC, Soft Peripherals are not sensitive to the
+    allocated DPPI channels for SDC/MPSL anymore.
+
 nRF Connect SDK v3.2.0
 **********************
 

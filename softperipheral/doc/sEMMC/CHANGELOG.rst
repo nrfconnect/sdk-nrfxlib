@@ -10,6 +10,15 @@ sEMMC changelog
 All the notable changes to sEMMC are documented on this page.
 Refer to :ref:`intro_soft_peripherals_platform_support` for supported Nordic devices for each version.
 
+v1.1.2
+******
+
+See the list of changes for the current release.
+
+* Added:
+
+  * Fixes for all devices, sEMMC is not sensitive to DPPI channels by default.
+
 v0.1.1
 ******
 
