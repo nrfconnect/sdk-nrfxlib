@@ -1369,7 +1369,7 @@ bool nrf_802154_trx_rssi_measure_is_started(void)
     return m_flags.rssi_started;
 }
 
-uint8_t nrf_802154_trx_rssi_last_sample_get(void)
+int8_t nrf_802154_trx_rssi_last_sample_get(void)
 {
     int8_t  lna_gain_db                     = 0;
     uint8_t rssi_sample_minus_dbm           = nrf_radio_rssi_sample_get(NRF_RADIO);
