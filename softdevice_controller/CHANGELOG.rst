@@ -77,9 +77,6 @@ Bug fixes
   The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
 * Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
   This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
-* Fixed an issue where the controller could set a sub-optimal base event in the ``LL_SUBRATE_IND`` PDU when initiating connection subrating.
-  This would only occur when the connection event counter was close to wrapping, and could cause overlapping multilink scheduling. (DRGN-29751)
-* Fixed an issue where the controller, acting as a central, could use an incorrect anchor point when a subrate factor greater than ``1`` was used and another conflicting role was running. (DRGN-29737)
 
 nRF Connect SDK v3.4.0
 **********************
