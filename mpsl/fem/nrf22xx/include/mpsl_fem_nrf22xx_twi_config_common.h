@@ -15,8 +15,8 @@
  * @{
  */
 
-#ifndef MPSL_FEM_TWI_CONFIG_COMMON_H__
-#define MPSL_FEM_TWI_CONFIG_COMMON_H__
+#ifndef MPSL_FEM_NRF22XX_TWI_CONFIG_COMMON_H__
+#define MPSL_FEM_NRF22XX_TWI_CONFIG_COMMON_H__
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -171,6 +171,6 @@ typedef struct
 }
 #endif
 
-#endif // MPSL_FEM_TWI_CONFIG_COMMON_H__
+#endif // MPSL_FEM_NRF22XX_TWI_CONFIG_COMMON_H__
 
 /**@} */
