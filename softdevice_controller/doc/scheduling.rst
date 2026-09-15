@@ -32,7 +32,9 @@ Timing-activities and priorities
 
 The |controller| supports running multiple connections, Advertisers, Scanners, and timeslot events simultaneously.
 
-In |NCS|, flash access is scheduled within MPSL Timeslot events.
+In |NCS|, flash access is, by default, scheduled within MPSL timeslot events.
+This synchronization may be disabled so that flash is accessed without synchronizing with MPSL timeslots.
+Timing-events that overlap the flash operation may be missed or delayed, with no guarantee that the |controller| will meet all scheduling deadlines.
 
 Advertiser and broadcaster timing-events are scheduled as early as possible.
 Peripheral link timing-events follow the timings dictated by the connected peer, while central link timing-events are added relative to already running central link timing-events.
