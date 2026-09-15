@@ -80,6 +80,7 @@ Bug fixes
 * Fixed an issue where the controller could set a sub-optimal base event in the ``LL_SUBRATE_IND`` PDU when initiating connection subrating.
   This would only occur when the connection event counter was close to wrapping, and could cause overlapping multilink scheduling. (DRGN-29751)
 * Fixed an issue where the controller, acting as a central, could use an incorrect anchor point when a subrate factor greater than ``1`` was used and another conflicting role was running. (DRGN-29737)
+* Fixed an issue where the controller, acting as a central, would elevate scheduling priority for an extended period when sending a control procedure with an instant to a peripheral using a large peripheral latency. (DRGN-29680)
 
 nRF Connect SDK v3.4.0
 **********************
