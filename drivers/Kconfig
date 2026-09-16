@@ -1,0 +1,6 @@
+menu "Device Drivers"
+
+rsource "mspi/Kconfig"
+rsource "sdhc/Kconfig"
+
+endmenu
