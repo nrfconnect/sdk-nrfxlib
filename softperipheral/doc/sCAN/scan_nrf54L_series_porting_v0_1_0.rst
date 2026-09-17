@@ -8,6 +8,7 @@ sCAN nRF54L Series porting guide
    :depth: 2
 
 This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sCAN application on an nRF54L Series device.
+This guide targets applications built with the nRF Connect SDK and Zephyr.
 
 .. _scan_nrf54l_series_porting_guide_code:
 
@@ -53,7 +54,7 @@ The following list is a detailed breakdown of the necessary paths:
 
   * :file:`softperipheral/include` - Soft peripherals register interface and metadata
   * :file:`softperipheral/sCAN/include` - sCAN register interface and driver header
-  * :file:`softperipheral/sCAN/include/nrf54l` - The sCAN firmware for the Fast Lightweight Perpipheral Processor (FLPR)
+  * :file:`softperipheral/sCAN/include/nrf54l` - The sCAN firmware for the Fast Lightweight Peripheral Processor (FLPR)
 
 To override the configuration enums in :file:`nrf_config_scan.h`, use the ``zephyr_compile_definitions`` macro in your application:
 
@@ -238,7 +239,7 @@ Next, the ``cpuflpr_vpr`` block and the subsequent block handle the allocation o
              #size-cells = <1>;
              ranges;
 
-             softperiph_ram: memory@2003B400 {
+             softperiph_ram: memory@2007B400 {
                reg = <0x2007B400 0x4400>;
                ranges = <0 0x2007B400 0x4400>;
                #address-cells = <1>;
@@ -388,5 +389,7 @@ For sCAN to communicate with the application core, the sCAN IRQ handler must be 
 The following code line registers the IRQ handler to FLPR:
 
 .. code-block:: c
+
+   #define VPR_NODE DT_NODELABEL(cpuflpr_vpr)
 
    IRQ_CONNECT(DT_IRQN(VPR_NODE), DT_IRQ(VPR_NODE, priority), nrfx_isr, nrf_scan_irq_handler, 0);
