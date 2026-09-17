@@ -268,4 +268,4 @@ At this point this feature should be considered experimental with the following 
    * - sCAN
      - Yes
      - - Tested for roles:
-          - none supported yet
+          - Doesn't support subscriptions

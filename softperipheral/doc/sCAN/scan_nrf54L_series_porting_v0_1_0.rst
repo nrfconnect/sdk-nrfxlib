@@ -357,7 +357,7 @@ To initialize the sCAN struct on an nRF54L Series device, use the following line
  .. code-block:: c
 
     #define SP_REGIF_BASE (SP_FIRMWARE_ADDR + 0x4200)
-    //or, from DTS: 
+    //or, from DTS:
     #define SP_FIRMWARE_ADDR DT_REG_ADDR(DT_NODELABEL(softperiph_ram))
     #define SP_REGIF_BASE DT_REG_ADDR(DT_NODELABEL(scan))
 
