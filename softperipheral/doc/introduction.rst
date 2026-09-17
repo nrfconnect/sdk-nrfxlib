@@ -13,7 +13,7 @@ It also allows to include additional instances of a peripheral in case the platf
 
 In most cases, the features and performance of a soft peripheral are equivalent to those of a hardware peripheral.
 However, there may be some limitations.
-For more information, see the :ref:`sqspi_limitations` and :ref:`semmc_limitations` pages.
+For more information, see the limitations page for the relevant soft peripheral.
 
 The operation of a soft peripheral is abstracted, and its control is facilitated through a user interface managed through the nrfx driver API.
 This user interface is a set of functions that the application can call to interact with the peripheral.

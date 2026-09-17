@@ -1,9 +1,9 @@
 .. _scan_timing:
 
-sCAN baudrate settings
-######################
+sCAN baud rate settings
+#######################
 
-The sCAN API exposes baudrate settings through :c:struct:`nrf_scan_timing_t`, which in turn is used by :c:func:`nrf_scan_timing`.
+The sCAN API exposes baud rate settings through :c:struct:`nrf_scan_timing_t`, which is passed to :c:func:`nrf_scan_timing`.
 These parameters are translated into a value for FLPR's internal counters.
 
 Parameter calculation follows the CAN Specification 2.0 A/B and paper CiA99.
@@ -20,15 +20,30 @@ Assuming the SoC is running at highest base clock frequency, FLPR's frequency is
       .. math::
          \text{max_device_freq_hz}=128000000
 
-A time quanta is the base unit for the configuration parameters
+A time quantum is the base unit for the configuration parameters.
+The number of time quanta in each bit is calculated as follows:
 
 .. math::
 
-   tq = \left\lfloor \frac{\text{max_device_freq_hz}}
+   \text{num_tq_per_bit} = \left\lfloor \frac{\text{max_device_freq_hz}}
         {\text{nrf_scan_timing_t.prescaler} \cdot \text{desired_baud_rate}} \right\rceil
 
 
-This is an example configuration for baudrate of 1Mbps:
+This value must match the number of configured time quanta in a bit, including the synchronization segment:
+
+.. math::
+
+   \text{num_tq_per_bit} = 1 + \text{prop_seg} + \text{phase_seg1} + \text{phase_seg2}
+
+The timing parameters must meet the following constraints:
+
+* ``prescaler`` must be at least ``8``.
+* ``prop_seg`` and ``phase_seg1`` must each be between ``1`` and ``8``.
+* ``phase_seg2`` must be between ``1`` and ``phase_seg1``.
+* The sum of ``prop_seg``, ``phase_seg1``, and ``phase_seg2`` must be at least ``7``.
+* ``sjw`` must be between ``1`` and the lower of ``phase_seg1`` and ``4``.
+
+The following is an example configuration for a baud rate of 1 Mbps:
 
 .. code-block:: c
 

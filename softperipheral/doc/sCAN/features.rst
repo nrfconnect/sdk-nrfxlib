@@ -22,7 +22,7 @@ sCAN supports the following modes of operation:
 * LISTENONLY - Do not send dominant bits
 * ONESHOT - TX attempted only once
 
-.. _semmc_features_mailboxes_and_filters:
+.. _scan_features_mailboxes_and_filters:
 
 Mailboxes and filters
 *********************
