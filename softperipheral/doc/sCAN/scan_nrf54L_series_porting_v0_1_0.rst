@@ -7,7 +7,7 @@ sCAN nRF54L Series porting guide
    :local:
    :depth: 2
 
-This page provides a comprehensive overview of the code structure, file hierarchy, and essential configurations and requirements needed to successfully port and implement an sCAN application on an nRF54L Series device.
+This page describes the code structure, file hierarchy, configuration, and requirements for implementing an sCAN application on an nRF54L Series device.
 This guide targets applications built with the nRF Connect SDK and Zephyr.
 
 .. _scan_nrf54l_series_porting_guide_code:
@@ -32,7 +32,7 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
           │   │   └── nrf_can.h
           │   ├── nrf54l
           │   │   ├── scan_firmware.h
-          │   │   └── scan_firmware_v0.1.0.h
+          │   │   ├── scan_firmware_v0.1.0.h
           │   │   └── ...
           │   ├── nrf_config_scan.h
           │   ├── nrf_sp_can.h
@@ -41,71 +41,71 @@ This structure shows the relevant files and directories in the `sdk-nrfxlib`_ re
               └── nrf_scan.c
 
 .. note::
-   The main interface for sCAN is in the :file:`nrf_scan.h` file.
+   The :file:`nrf_scan.h` file provides the main sCAN interface.
 
 Header files
 ============
 
-sCAN application requires specific header files used by the driver code.
+An sCAN application requires the header files used by the driver.
 You must include paths to these files in the build environment's list of include paths.
-The following list is a detailed breakdown of the necessary paths:
+The following paths are required:
 
 * Repository internal paths:
 
-  * :file:`softperipheral/include` - Soft peripherals register interface and metadata
-  * :file:`softperipheral/sCAN/include` - sCAN register interface and driver header
-  * :file:`softperipheral/sCAN/include/nrf54l` - The sCAN firmware for the Fast Lightweight Peripheral Processor (FLPR)
+  * :file:`softperipheral/include` - Soft peripheral register interface and metadata.
+  * :file:`softperipheral/sCAN/include` - sCAN register interface and driver header file.
+  * :file:`softperipheral/sCAN/include/nrf54l` - sCAN firmware for the Fast Lightweight Peripheral Processor (FLPR).
 
-To override the configuration enums in :file:`nrf_config_scan.h`, use the ``zephyr_compile_definitions`` macro in your application:
+To override the configuration options in :file:`nrf_config_scan.h`, use the ``zephyr_compile_definitions`` macro in your application:
 
 .. code-block:: c
 
-   // Example call for enabling the sCAN
+   // Enable sCAN.
    zephyr_compile_definitions("NRF_SCAN_ENABLED=1")
 
 Compiling source files
 ======================
 
-For a sCAN application to function properly, you must compile the driver implementation from the source file :file:`nrf_scan.c`.
+For an sCAN application to function properly, compile the driver implementation in :file:`nrf_scan.c`.
 
 Application core and FLPR configuration
 ***************************************
 
-You must adjust the settings for the nRF54L Series SoC to run at highest base clock frequency.
+Configure the nRF54L Series SoC to run at its highest base clock frequency.
 
-To work with any of the following settings, ensure you have allocated memory for the data pointers used by the sCAN driver.
-The memory is independent from the one outlined in the :ref:`scan_nrf54L_series_porting_guide_ram_configuration` subsection.
-It is designated to function as shared memory for communication purposes, rather than containing the sCAN executable code.
+Before applying the following settings, allocate memory for the data pointers used by the sCAN driver.
+This memory is separate from the memory described in the :ref:`scan_nrf54L_series_porting_guide_ram_configuration` section.
+It provides shared memory for communication and does not contain the sCAN executable code.
 
 Security configuration
 ======================
 
-Configure the security settings for the nRF54L Series device based on the operational requirements of your application.
+Configure the security settings of the nRF54L Series device to meet the requirements of your application.
 
 Secure environment
 ------------------
 
-In a secure configuration, both the application core and the FLPR core of the nRF54L Series device must operate within a secure environment enabled by TrustZone Secure.
+In a secure configuration, both the application core and the FLPR core must operate in a TrustZone secure environment.
 
-The following example code snippet shows how the application code can configure permissions for the FLPR instance:
+The following example configures permissions for the FLPR instance:
 
 .. code-block:: c
 
-  // NOTE: Setting FLPR to secure
+  // Set FLPR to secure.
   NRF_SPU00_S->PERIPH[0xC].PERM = (SPU_PERIPH_PERM_SECATTR_Secure << SPU_PERIPH_PERM_SECATTR_Pos);
 
 Non-secure environment
 ----------------------
 
-In a non-secure configuration, both the application core and the FLPR core of the nRF54L Series device must operate outside the secure environment (without TrustZone Secure).
+In a non-secure configuration, both the application core and the FLPR core must operate outside the TrustZone secure environment.
 
 .. _scan_nrf54l_series_porting_guide_gpio_config:
 
 GPIO configuration
 ******************
 
-The provided table details the configuration for each GPIO pin used in the sCAN application.
-The following options are available, assuming that the FLPR core has access to these ports and pins:
+The following table describes the configuration of each GPIO pin used by the sCAN application.
+This configuration assumes that the FLPR core has access to the listed port and pins.
 
  .. list-table::
    :widths: 10 10 20 20 20
@@ -130,12 +130,12 @@ The following options are available, assuming that the FLPR core has access to t
 Configuring pins
 ================
 
-Any conflicting peripherals and existing memory partitions on the same port as sCAN must be disabled in the devicetree overlay, depending on your requirements.
-See an example code snippet of a devicetree overlay that grants FLPR access to the necessary pins.
+In the devicetree overlay, disable peripherals that conflict with sCAN on the same port and any conflicting memory partitions.
+The following example grants FLPR access to the required pins.
 
-The first part of the snippet, the ``pinctrl`` block, configures the relevant GPIOs as described in the :ref:`scan_nrf54l_series_porting_guide_gpio_config` section.
+The ``pinctrl`` block configures the GPIOs as described in the :ref:`scan_nrf54l_series_porting_guide_gpio_config` section.
 
-Next, the ``cpuflpr_vpr`` block and the subsequent block handle the allocation of the VPR memory region and the RAM used by sCAN.
+The ``cpuflpr_vpr`` block and the subsequent block allocate the VPR memory region and the RAM used by sCAN.
 
 .. tabs::
 
@@ -255,11 +255,11 @@ Next, the ``cpuflpr_vpr`` block and the subsequent block handle the allocation o
            };
          };
 
-You will need the following lines in your application to apply the pin configuration from your sCAN board overlay, as well as to initialize the Soft Peripheral:
+Add the following code to your application to apply the pin configuration from the sCAN board overlay:
 
 .. code-block:: c
 
-   //The following lines in your setup functions apply the FLPR pins to PINCTRL:
+   // Apply the FLPR pin configuration.
 
    uint32_t io[2] = {
        NRF_PIN_PORT_TO_PIN_NUMBER(2, 2), // TX
@@ -277,9 +277,9 @@ You will need the following lines in your application to apply the pin configura
 Memory retention configuration
 ******************************
 
-The sCAN soft peripheral requires RAM retention in order to go into the lowest power consumption mode, which can be called through the :c:func:`nrf_scan_disable` function.
+The sCAN soft peripheral requires RAM retention to enter its lowest-power mode through the :c:func:`nrf_scan_disable` function.
 
-Assuming there is an access to the peripheral ``MEMCONF``, the following code snippet illustrates how to enable FLPR RAM retention, followed by disabling and re-enabling, and finally how to disable RAM retention:
+If the application has access to the ``MEMCONF`` peripheral, use the following sequence to enable FLPR RAM retention, disable and re-enable sCAN, and then disable RAM retention:
 
 .. code-block:: c
 
@@ -295,13 +295,13 @@ Assuming there is an access to the peripheral ``MEMCONF``, the following code sn
 RAM configuration
 *****************
 
-The sCAN Soft Peripheral operates from RAM.
+The sCAN soft peripheral operates from RAM.
 
 .. note::
-   sCAN supports Position Independent Code (PIC), which allows an application to determine where to load the Soft Peripheral firmware.
+   sCAN supports position-independent code (PIC), allowing the application to select where to load the soft peripheral firmware.
 
 Your build environment must reserve the required RAM and ensure that it is readable and writable by both the application core and the FLPR core.
-The following table details the memory regions required for your nRF54L Series device:
+The following tables describe the memory regions required for each supported nRF54L Series device:
 
 .. tabs::
 
@@ -350,32 +350,39 @@ The following table details the memory regions required for your nRF54L Series d
           - 0x200 (but the entire block should be retained)
 
 The build environment described in the :ref:`scan_nrf54l_series_porting_guide_code` section must comply with these requirements.
-This includes proper settings in linker scripts, device tree specifications (DTS), and resource allocation.
+This includes appropriate linker script settings, devicetree specifications (DTS), and resource allocation.
 
-To initialize the sCAN struct on an nRF54L Series device, use the following lines:
+Define the virtual register interface address manually as follows:
 
- .. code-block:: c
+.. code-block:: c
 
-    #define SP_REGIF_BASE (SP_FIRMWARE_ADDR + 0x4200)
-    //or, from DTS:
-    #define SP_FIRMWARE_ADDR DT_REG_ADDR(DT_NODELABEL(softperiph_ram))
-    #define SP_REGIF_BASE DT_REG_ADDR(DT_NODELABEL(scan))
+   #define SP_REGIF_BASE (SP_FIRMWARE_ADDR + 0x4200)
 
-    // Initialize sCAN with the virtual register interface placed at SP_REGIF_BASE
-    static nrf_scan_t m_scan = {.p_reg = (void *)SP_REGIF_BASE, .drv_inst_idx = 0};
+Alternatively, obtain the firmware and virtual register interface addresses from the devicetree:
 
-Ensure that ``SP_FIRMWARE_ADDR`` is set so that it does not overlap with the context saving address.
-For nRF54L Series devices, the firmware is placed before the context saving address.
-This means, that ``SP_FIRMWARE_ADDR`` plus the component sizes listed in the table must be of a lower value than the context saving address.
+.. code-block:: c
 
-The values in the table below have been tested and are considered production-ready for ``SP_FIRMWARE_ADDR``:
+   #define SP_FIRMWARE_ADDR DT_REG_ADDR(DT_NODELABEL(softperiph_ram))
+   #define SP_REGIF_BASE DT_REG_ADDR(DT_NODELABEL(scan))
+
+Initialize the sCAN instance with the virtual register interface at ``SP_REGIF_BASE``:
+
+.. code-block:: c
+
+   static nrf_scan_t m_scan = {.p_reg = (void *)SP_REGIF_BASE, .drv_inst_idx = 0};
+
+Set ``SP_FIRMWARE_ADDR`` so that the allocated memory does not overlap the context-saving address.
+On nRF54L Series devices, the firmware is placed before this address.
+Therefore, the end of the memory regions listed in the tables must be lower than the context-saving address.
+
+The following ``SP_FIRMWARE_ADDR`` values have been tested and are considered production-ready:
 
 .. list-table:: sCAN firmware address values
    :widths: 15 20
    :header-rows: 1
 
    * - Device
-     - `SP_FIRMWARE_ADDR`
+     - ``SP_FIRMWARE_ADDR``
    * - nRF54L15
      - 0x2003B400
    * - nRF54LM20
@@ -385,8 +392,8 @@ The values in the table below have been tested and are considered production-rea
 IRQ connection
 **************
 
-For sCAN to communicate with the application core, the sCAN IRQ handler must be registered.
-The following code line registers the IRQ handler to FLPR:
+Register the sCAN IRQ handler so that sCAN can communicate with the application core.
+The following code connects the FLPR interrupt to the handler:
 
 .. code-block:: c
 

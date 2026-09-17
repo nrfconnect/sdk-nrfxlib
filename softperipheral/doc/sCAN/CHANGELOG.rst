@@ -15,12 +15,12 @@ v0.1.0
 
 This is an initial release.
 
-* Added the following support for nRF54L Series devices:
+* Added support for the following features on nRF54L Series devices:
 
-  * Standard and extended message formats
-  * API used to send/receive Data and Remote frames
-  * Protocol-handled Error (sending/receiving) and Overload (only receiving) frames.
-  * Error detection and signaling
-  * Fault confinement
-  * Mailbox system
-  * Message filtering via ID and mask with configurable bit width
+  * Standard and extended message formats.
+  * API-based transmission and reception of data and remote frames.
+  * Protocol-level transmission and reception of error frames, and reception of overload frames.
+  * Error detection and signaling.
+  * Fault confinement.
+  * Mailbox system.
+  * Message filtering using an ID and mask with a configurable bit width.
