@@ -18,7 +18,8 @@ This is an initial release.
 * Added the following support for nRF54L Series devices:
 
   * Standard and extended message formats
-  * All types of frames: Data, Remote, Error, Overload
+  * API used to send/receive Data and Remote frames
+  * Protocol-handled Error (sending/receiving) and Overload (only receiving) frames.
   * Error detection and signaling
   * Fault confinement
   * Mailbox system

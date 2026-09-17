@@ -27,7 +27,7 @@ sCAN supports the following modes of operation:
 Mailboxes and filters
 *********************
 
-sCAN uses a mailbox system, each with an associated data frame and filter. Mailboxes will lock themselves after a filter match to prevent loosing frames.
+sCAN uses a mailbox system, each with an associated data frame and filter. Mailboxes will lock themselves after a filter match to avoid overwriting an unread frame.
 sCAN API provides convenience functions for unlocking a mailbox after the frame has been processed by the user application.
 
 The filtering system is based on an ID/mask pair, the bit width of the filter can be configured to be standard (11bit) or extended (29bit).

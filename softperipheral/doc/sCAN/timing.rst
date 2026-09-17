@@ -21,15 +21,15 @@ Assuming the SoC is running at highest base clock frequency, FLPR's frequency is
          \text{max_device_freq_hz}=128000000
 
 A time quantum is the base unit for the configuration parameters.
-The number of time quanta in each bit is calculated as follows:
 
 .. math::
 
-   \text{num_tq_per_bit} = \left\lfloor \frac{\text{max_device_freq_hz}}
+   \text{tq} = \left\lfloor \frac{\text{max_device_freq_hz}}
         {\text{nrf_scan_timing_t.prescaler} \cdot \text{desired_baud_rate}} \right\rceil
 
 
-This value must match the number of configured time quanta in a bit, including the synchronization segment:
+Configuration parameters make up a transmitted bit.
+The number of time quanta per each transmitted bit is calculated as follows:
 
 .. math::
 
