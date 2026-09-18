@@ -1216,6 +1216,9 @@ int nrf_rpc_bind(void)
 	void *iter;
 	const struct nrf_rpc_group *group;
 
+	/* Clear any stale signal from a previous bind cycle before waiting again. */
+	nrf_rpc_os_event_reset(&groups_init_event);
+
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
 		const struct nrf_rpc_tr *transport = group->transport;
 		struct nrf_rpc_group_data *data = group->data;
@@ -1261,6 +1264,7 @@ void nrf_rpc_unbind(void)
 	const struct nrf_rpc_group *group;
 
 	initialized_group_count = 0;
+	nrf_rpc_os_event_reset(&groups_init_event);
 
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array, const struct nrf_rpc_group)) {
 		group->data->dst_group_id = NRF_RPC_ID_UNKNOWN;
