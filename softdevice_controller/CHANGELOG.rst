@@ -58,6 +58,8 @@ Changes
 * The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
 * The controller now returns the error code ``0x11`` if the LE Set Periodic Advertising Response Data command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission.
   See the :ref:`softdevice_controller_limitations` section. (DRGN-29455)
+* When a central connection uses subrating, the controller now schedules other concurrent roles around the subrated connection events only.
+  This change improves scheduling performance when multiple subrated connections are active. (DRGN-29752)
 
 Bug fixes
 =========
