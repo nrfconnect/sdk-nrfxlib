@@ -21,12 +21,20 @@
 extern "C" {
 #endif
 
-/** @brief Digest buffer length. */
+/** @brief Digest buffer length, in words.
+ *
+ *  The modem returns a 256-bit digest on nRF91 Series devices and a 384-bit digest on
+ *  nRF92 Series devices.
+ */
+#if defined(CONFIG_SOC_SERIES_NRF91)
 #define NRF_MODEM_BOOTLOADER_DIGEST_LEN 8
+#elif defined(CONFIG_SOC_SERIES_NRF92)
+#define NRF_MODEM_BOOTLOADER_DIGEST_LEN 12
+#endif
 /** @brief UUID buffer length. */
 #define NRF_MODEM_BOOTLOADER_UUID_LEN   36
 
-/** @brief Storage for 256-bit digest/hash replies. */
+/** @brief Storage for digest/hash replies. */
 struct nrf_modem_bootloader_digest {
 	uint32_t data[NRF_MODEM_BOOTLOADER_DIGEST_LEN];
 };
@@ -75,9 +83,7 @@ int nrf_modem_bootloader_bl_write(void *src, uint32_t len);
  * @param[in]   len    Length of the data to be written.
  *
  * @retval 0 on success.
- * @retval -NRF_EINVAL When src pointer is NULL, or user tries to upload too big
- *                 bootloader, or addr parameter is zero after a bootloader
- *                 upload.
+ * @retval -NRF_EINVAL When src pointer is NULL, or addr parameter is zero.
  * @retval -NRF_EOPNOTSUPP If the modem is not in a state to receive.
  * @retval -NRF_EPERM When modem did not accept the flash programming request.
  * @retval -NRF_ENOEXEC When flash programming failed.
@@ -105,13 +111,16 @@ int nrf_modem_bootloader_update(void);
 /**
  * @brief Read a digest hash data from the modem.
  *
+ * @note On nRF92 Series devices, only one segment can be digested per call.
+ *
  * @param[in]   segments        Firmware segments.
  * @param[in]   num_segments    Number of firmware segments.
  * @param[out]  digest_buffer   Pointer to the buffer to store digest hash data.
  *
  * @retval 0 on success.
- * @retval -NRF_EINVAL When digest_buffer pointer is NULL.
- * @retval -NRF_EOPNOTSUPP If bootloader is not programmed.
+ * @retval -NRF_EINVAL When digest_buffer or segments pointer is NULL, or num_segments is zero.
+ * @retval -NRF_EOPNOTSUPP If bootloader is not programmed, or more than one segment
+ *                 is requested on nRF92 Series devices.
  * @retval -NRF_EPERM When modem did not accept RPC command.
  * @retval -NRF_ENOEXEC When RPC command failed.
  * @retval -NRF_ETIMEDOUT When modem did not respond.
