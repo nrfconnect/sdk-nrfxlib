@@ -9,7 +9,7 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v3.2.x
+nRF Connect SDK v3.2.6
 **********************
 
 Bug fixes
