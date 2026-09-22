@@ -1,0 +1,2 @@
+add_subdirectory_ifdef(CONFIG_MSPI mspi)
+add_subdirectory_ifdef(CONFIG_SDHC sdhc)
