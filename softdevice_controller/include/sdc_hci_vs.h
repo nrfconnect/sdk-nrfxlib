@@ -560,6 +560,14 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
+
 /** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -571,14 +579,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_vs_dtm_test_end_return_t;
-
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -923,8 +923,8 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Command parameters (union of all sub-command parameter structs). */
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_test_end_t test_end;
         sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
+        sdc_hci_cmd_vs_dtm_test_end_t test_end;
     } command_parameters;
 } sdc_hci_cmd_vs_dtm_command_t;
 
