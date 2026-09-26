@@ -3,3 +3,5 @@ build:
   kconfig: Kconfig.nrfxlib
   depends:
   - hal_nordic
+  settings:
+    module_ext_root: .
