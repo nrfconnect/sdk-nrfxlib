@@ -83,6 +83,8 @@ Bug fixes
   This would only occur when the connection event counter was close to wrapping, and could cause overlapping multilink scheduling. (DRGN-29751)
 * Fixed an issue where the controller, acting as a central, could use an incorrect anchor point when a subrate factor greater than ``1`` was used and another conflicting role was running. (DRGN-29737)
 * Fixed an issue where the controller, acting as a central, would elevate scheduling priority for an extended period when sending a control procedure with an instant to a peripheral using a large peripheral latency. (DRGN-29680)
+* Fixed an issue where the LE Enhanced Connection Complete event or the LE Extended Advertising Report event could report the identity address of a device in the resolving list instead of the address of the actual peer.
+  This could happen when scanning and initiating at the same time with different scan parameters. (DRGN-28181)
 
 nRF Connect SDK v3.4.0
 **********************

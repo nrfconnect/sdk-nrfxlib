@@ -21,6 +21,8 @@ Timing-activities run to completion and cannot be interrupted by other timing-ac
 For example, timing-activity :math:`\mathsf{A}` and timing-activity :math:`\mathsf{B}` request a timing-event at overlapping times with the same priority.
 Timing-activity :math:`\mathsf{A}` gets the timing-event because it requested it earlier than timing-activity :math:`\mathsf{B}`.
 If timing-activity :math:`\mathsf{B}` increases its priority and requests again, it can only get the timing-event if timing-activity :math:`\mathsf{A}` has not already started and there is enough time to change the timing-event schedule.
+The scanner timing-activity is an exception to this rule, and is scheduled cooperatively.
+See the :ref:`primary_channel_scanner_timing` section for more details.
 
 .. note::
    The figures in this chapter do not illustrate all packets that are sent over the air.
@@ -32,7 +34,10 @@ Timing-activities and priorities
 
 The |controller| supports running multiple connections, Advertisers, Scanners, and timeslot events simultaneously.
 
-In |NCS|, flash access is scheduled within MPSL Timeslot events.
+In |NCS|, NVM access is scheduled within MPSL timeslot events by default.
+You can disable this synchronization to access NVM without synchronizing with MPSL timeslots.
+Disabling synchronization can reduce code size and improve throughput.
+Timing-events that overlap the NVM operation may be missed or delayed, which may degrade |controller| performance.
 
 Advertiser and broadcaster timing-events are scheduled as early as possible.
 Peripheral link timing-events follow the timings dictated by the connected peer, while central link timing-events are added relative to already running central link timing-events.
@@ -397,6 +402,7 @@ The sections only refer to scanner timing-events, but initiator timing-events ar
      The priority of scanner and initiator timing-events are different.
      See :ref:`scheduling_priorities_table` for details.
 
+.. _primary_channel_scanner_timing:
 
 Primary channel Scanner timing
 ==============================
@@ -442,7 +448,18 @@ In the following figure there is free time available between link timing-events,
 
 The |controller| will avoid causing other timing-events to be dropped when scheduling new primary channel scanner timing-events.
 Other timing-events, such as advertising, may be interleaved with the scanning activity.
+
+When the scan window is smaller than the scan interval, the scan window is aborted if it conflicts with a higher-priority timing-activity.
+
+.. figure:: pic/schedule/scanner_timing_abort.svg
+   :alt: Alt text: A diagram showing other timing activity aborting primary channel scan window
+   :align: center
+   :width: 80%
+
+   Scanner timing - primary channel scanning aborted by other timing activity
+
 Additionally, when the scan window is equal to the scan interval, the |controller| will always return to primary channel scanning after the interleaved timing-event.
+It will return to the aborted scan window and channel if time allows, otherwise it will resume scanning in a new window on a new channel.
 
 .. figure:: pic/schedule/scanner_timing_coop.svg
    :alt: Alt text: A diagram showing other timing activities interleaving primary channel scanning.
