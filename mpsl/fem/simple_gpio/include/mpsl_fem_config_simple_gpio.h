@@ -53,12 +53,81 @@ typedef struct
         int8_t   pa_gain_db;
         /** Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   lna_gain_db;
+        /** Effective TX/RX gain in dB when the Front End Module bypass path is selected.
+         *  This parameter is usually negative to express attenuation.
+         *
+         *  Set to 0 to disable bypass handling. A non-zero value together with enabled
+         *  @ref tx_bypass_pin_config and/or @ref rx_bypass_pin_config (on SoCs with DPPI) selects
+         *  bypass TX via @ref mpsl_fem_tx_power_split and bypass RX via @ref mpsl_fem_lna_is_configured.
+         */
+        int8_t bypass_gain_db;
     } fem_config;
 
     /** Power Amplifier pin configuration. */
     mpsl_fem_gpiote_pin_config_t pa_pin_config;
     /** Low Noise Amplifier pin configuration. */
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
+    /**
+     * TX bypass pin configuration.
+     *
+     * GPIO used to select the Front End Module TX bypass path (lower gain/attenuated TX) as
+     * opposed to the PA path. Works together with @c fem_config.bypass_gain_db.
+     *
+     * Bypass is active only when @c fem_config.bypass_gain_db is not @c 0 and
+     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true. On nRF52 series (PPI) TX bypass is
+     * not supported.
+     *
+     * When MPSL chooses bypass for a transmission, PA timing also drives this pin (activate and
+     * deactivate in parallel with @c pa_pin_config). When MPSL chooses the PA path, @c pa_pin_config
+     * alone is driven and this pin is left out of PA activation.
+     *
+     * Same configuration as @c lna_pin_config:
+     * On some devices the TX bypass select shares the LNA control line. Set this field equal to
+     * @c lna_pin_config (same GPIO, @c active_high, @c enable, and @c gpiote_ch_id). The driver
+     * detects the shared pin and routes bypass GPIOTE tasks through the LNA tasks so hardware
+     * timing stays consistent.
+     *
+     * Dedicated bypass GPIO:
+     * Use a different GPIO and GPIOTE channel than @c lna_pin_config and @c pa_pin_config. The
+     * driver toggles that line together with @c pa_pin_config only for bypass TX.
+     *
+     * Same GPIO as @c pa_pin_config:
+     * Not supported for normal Front End Module wiring (PA and bypass are separate controls).
+     */
+    mpsl_fem_gpiote_pin_config_t tx_bypass_pin_config;
+    /**
+     * RX bypass pin configuration.
+     *
+     * GPIO used to select the Front End Module RX bypass path as opposed to the LNA path.
+     * Works together with @c fem_config.bypass_gain_db.
+     *
+     * RX bypass is active only when @c fem_config.bypass_gain_db is not @c 0 and
+     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true. On nRF52 series (PPI) RX bypass is
+     * not supported.
+     *
+     * When enabled, @ref mpsl_fem_lna_is_configured reports @c fem_config.bypass_gain_db instead
+     * of @c fem_config.lna_gain_db, and LNA timing drives this pin in parallel with
+     * @c lna_pin_config on activate and deactivate.
+     *
+     * Same configuration as @c pa_pin_config:
+     * On some devices the RX bypass select shares the PA control line. Set this field equal to
+     * @c pa_pin_config (same GPIO, @c active_high, @c enable, and @c gpiote_ch_id). The driver
+     * aliases RX bypass GPIOTE tasks to the PA tasks.
+     *
+     * Same configuration as @c tx_bypass_pin_config:
+     * When one GPIO selects bypass for both TX and RX, set this field equal to
+     * @c tx_bypass_pin_config. The driver aliases RX bypass tasks to the TX bypass tasks (after
+     * TX bypass/LNA aliasing is applied).
+     *
+     * Dedicated bypass GPIO:
+     * Use a different GPIO and GPIOTE channel than @c pa_pin_config, @c tx_bypass_pin_config,
+     * and @c lna_pin_config. The driver toggles that line together with @c lna_pin_config for
+     * every reception.
+     *
+     * Same GPIO as @c lna_pin_config:
+     * Not supported.
+     */
+    mpsl_fem_gpiote_pin_config_t rx_bypass_pin_config;
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
