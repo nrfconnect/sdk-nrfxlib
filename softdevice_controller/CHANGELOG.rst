@@ -9,7 +9,7 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v3.2.6
+nRF Connect SDK v3.2.x
 **********************
 
 Bug fixes
@@ -20,12 +20,19 @@ Bug fixes
 * Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
   The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
 * Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
+* Fixed an issue where the controller, acting as a central, could use an incorrect anchor point when a subrate factor greater than ``1`` was used and another conflicting role was running. (DRGN-29737)
+* Fixed an issue where the controller could set a sub-optimal base event in the ``LL_SUBRATE_IND`` PDU when initiating connection subrating.
+  This would only occur when the connection event counter was close to wrapping, and could cause overlapping multilink scheduling. (DRGN-29751)
+* Fixed an issue where the controller, acting as a central, would elevate scheduling priority for an extended period when sending a control procedure with an instant to a peripheral using a large peripheral latency. (DRGN-29680)
 
 Changes
 =======
 
 * The controller acting as a central will now schedule continuation events only if it has received a packet from the peer device in the previous subrated connection event or in any subsequent continuation events.
   This change improves scheduling performance with multiple links. (DRGN-27952)
+* When a central connection uses subrating, the controller now schedules other concurrent roles around the subrated connection events only.
+  This change improves scheduling performance when multiple subrated connections are active. (DRGN-29752)
+
 
 nRF Connect SDK v3.2.4
 **********************
