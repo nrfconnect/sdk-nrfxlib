@@ -49,11 +49,17 @@ if(CONFIG_MPSL_BUILD_TYPE_LIB)
       set(lib_dir_path ${lib_dir_path}/soft-float)
     endif()
 
-    if(NOT EXISTS "${lib_dir_path}/libmpsl.a")
+    if(CONFIG_MPSL_LOG_HANDLER)
+      set(lib_name libmpsl_log.a)
+    else()
+      set(lib_name libmpsl.a)
+    endif()
+
+    if(NOT EXISTS "${lib_dir_path}/${lib_name}")
       message(FATAL_ERROR "This combination of SoC and floating point ABI is not supported by the MPSL lib.")
     endif()
 
-    zephyr_link_libraries(${lib_dir_path}/libmpsl.a)
+    zephyr_link_libraries(${lib_dir_path}/${lib_name})
   endif()
 
   zephyr_include_directories(include)
