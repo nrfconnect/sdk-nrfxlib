@@ -1413,6 +1413,17 @@ void sdc_support_bis_sink(void);
  */
 void sdc_support_qos_channel_survey(void);
 
+/** @brief Support channel index in standard LE Advertising Reports
+ *
+ * After this API is called, the controller appends the advertising channel
+ * index after RSSI in standard LE Advertising Report events.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_chan_idx_in_adv_report(void);
+
 /** @brief Support Connection Subrating for central role
  *
  * After this API is called, the controller will support the HCI commands
