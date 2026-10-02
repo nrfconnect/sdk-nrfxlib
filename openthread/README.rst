@@ -33,5 +33,3 @@ Each matrix maps the parent Certification ID (CID) to the |NCS| releases that pr
 * `Thread CIDs for nRF54L10`_
 * `Thread CIDs for nRF54L05`_
 * `Thread CIDs for nRF5340`_
-* `Thread CIDs for nRF52840`_
-* `Thread CIDs for nRF52833`_
