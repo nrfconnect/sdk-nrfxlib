@@ -28,7 +28,7 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
   elseif(CONFIG_SOC_NRF9220_CPUAPP)
     cmake_path(APPEND lib_path nrf9220)
   else()
-    assert(0 "Unsupported SOC. Got '${CONFIG_SOC}'")
+    return()
   endif()
 
   # Floating ABI
