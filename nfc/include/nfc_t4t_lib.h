@@ -73,9 +73,6 @@
  *        * @ref nfc_t4t_emulation_start
  *        * ... running in RAW emulation mode
  *
- * @note If you are using nRF52832 chip (in IC rev. Engineering B or
- * Engineering C) or if You are using nRF52840 chip (in IC rev. Engineering A,
- * B or C) library will use TIMER 4 to apply workarounds for the anomalies.
  */
 
 #include <stdbool.h>
@@ -183,8 +180,6 @@ typedef enum
 	NFC_T4T_PARAM_FWI,
 	/**< Frame Wait Time parameter.
 	 *   The maximum allowed value is limited by the NFC_T4T_PARAM_FWI_MAX parameter.
-	 *   In case of nRF52832 the maximum allowed value is 4,
-	 *   setting the parameter higher will result in silent truncation to 4.
 	 */
 
 	NFC_T4T_PARAM_FDT_MIN,	

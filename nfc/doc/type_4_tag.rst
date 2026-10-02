@@ -31,7 +31,6 @@ Supported device families
 
 The Type 4 Tag library supports the following device families:
 
-* nRF52 Series
 * nRF53 Series
 * nRF54L Series
 * nRF54H Series
