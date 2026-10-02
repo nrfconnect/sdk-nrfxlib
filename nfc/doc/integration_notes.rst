@@ -14,7 +14,6 @@ Supported device families
 
 The NFC libraries support the following device families on SoCs where the NFCT peripheral is available:
 
-* nRF52 Series
 * nRF53 Series
 * nRF54L Series
 * nRF54H Series
@@ -41,7 +40,6 @@ NFCT driver Timer instance
 The NFCT driver uses one timer peripheral to implement errata workarounds on affected SoCs.
 The timer is required on devices with the following anomalies:
 
-* nRF52 Series `anomaly 79`_ and `anomaly 190`_
 * nRF53 Series `anomaly 70`_
 * nRF54L Series anomaly 60
 * nRF71 Series anomaly 60
@@ -60,8 +58,6 @@ The following table lists the default values on affected SoCs:
 
    * - Device family
      - Default Timer instance
-   * - nRF52 Series
-     - TIMER4
    * - nRF53 Series
      - TIMER2
    * - nRF54L Series
