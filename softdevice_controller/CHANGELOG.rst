@@ -40,6 +40,7 @@ Added
 Changes
 =======
 
+* Removed support for nRF52 series
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
@@ -85,6 +86,8 @@ Bug fixes
 * Fixed an issue where the controller, acting as a central, would elevate scheduling priority for an extended period when sending a control procedure with an instant to a peripheral using a large peripheral latency. (DRGN-29680)
 * Fixed an issue where the LE Enhanced Connection Complete event or the LE Extended Advertising Report event could report the identity address of a device in the resolving list instead of the address of the actual peer.
   This could happen when scanning and initiating at the same time with different scan parameters. (DRGN-28181)
+* Fixed a rare issue where the controller, acting as an Isochronous Broadcaster, could transmit a BIGInfo with an invalid BIG offset.
+  This would only occur with an ISO interval longer than 245 ms. (DRGN-30055)
 
 nRF Connect SDK v3.4.0
 **********************
