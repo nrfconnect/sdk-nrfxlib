@@ -11,7 +11,7 @@ endif()
 if(CONFIG_WIFI_NRF71_PATCH_MANIFEST_FILE STREQUAL "")
   message(WARNING
     "No WIFI_NRF71_PATCH_MANIFEST_FILE default for the selected "
-    "WIFI_NRF71_PATCH_VERSION"
+    "WIFI_NRF71_PATCH_VARIANT"
   )
   return()
 endif()
@@ -22,20 +22,79 @@ get_filename_component(fw_dir ${manifest_file} DIRECTORY)
 set(merge_script ${ZEPHYR_BASE}/scripts/build/mergehex.py)
 set(zephyr_dir ${APPLICATION_BINARY_DIR}/zephyr)
 
-# Patch geometry
+function(nrf7120_wifi_patch_partition_end nodelabel output_var)
+  dt_nodelabel(path NODELABEL ${nodelabel} QUIET)
+  if(NOT path)
+    set(${output_var} 0 PARENT_SCOPE)
+    return()
+  endif()
+
+  dt_reg_addr(start PATH ${path})
+  dt_reg_size(size PATH ${path})
+  math(EXPR end "${start} + ${size}")
+  set(${output_var} ${end} PARENT_SCOPE)
+endfunction()
+
+# Active application slot bounds from devicetree
 dt_chosen(code_partition PROPERTY "zephyr,code-partition")
 dt_reg_addr(patch_region_start PATH ${code_partition})
 dt_reg_size(patch_region_size PATH ${code_partition})
 math(EXPR patch_region_end "${patch_region_start} + ${patch_region_size}")
 
-# WICR node
-dt_nodelabel(wicr_node NODELABEL wicr REQUIRED)
-dt_node_has_status(wicr_enabled PATH ${wicr_node} STATUS okay)
-if(NOT wicr_enabled)
-  message(WARNING
-    "CONFIG_WIFI_NRF71_PATCH requires the wicr devicetree node to be enabled"
-  )
-  return()
+# Primary slot ends from devicetree (not hardcoded constants).
+nrf7120_wifi_patch_partition_end(slot0_partition slot0_end)
+nrf7120_wifi_patch_partition_end(slot0_ns_partition slot0_ns_end)
+
+if(CONFIG_WIFI_NRF71_PATCH_AUTO)
+  set(auto_slot_label "")
+  set(auto_min_distance -1)
+
+  foreach(slot_label IN ITEMS slot0_partition slot0_ns_partition)
+    if(${slot_label} STREQUAL "slot0_partition")
+      set(slot_end ${slot0_end})
+    else()
+      set(slot_end ${slot0_ns_end})
+    endif()
+
+    if(slot_end EQUAL 0)
+      continue()
+    endif()
+
+    math(EXPR delta "${patch_region_end} - ${slot_end}")
+    if(delta LESS 0)
+      math(EXPR distance "0 - ${delta}")
+    else()
+      set(distance ${delta})
+    endif()
+
+    if(auto_min_distance LESS 0 OR distance LESS auto_min_distance)
+      set(auto_min_distance ${distance})
+      set(auto_slot_label ${slot_label})
+    endif()
+  endforeach()
+
+  if(auto_slot_label STREQUAL "")
+    message(STATUS
+      "Wi-Fi patch: auto mode, code partition ends at ${patch_region_end} "
+      "(no slot0 or slot0_ns node in devicetree)"
+    )
+  else()
+    if(auto_slot_label STREQUAL "slot0_partition")
+      set(auto_slot_end ${slot0_end})
+    else()
+      set(auto_slot_end ${slot0_ns_end})
+    endif()
+
+    if(auto_min_distance GREATER 0)
+      message(WARNING
+        "Wi-Fi patch: code partition end ${patch_region_end} does not match "
+        "${auto_slot_label} end ${auto_slot_end}; closest distance "
+        "${auto_min_distance} bytes"
+      )
+    else()
+      message(STATUS "Wi-Fi patch: auto-selected ${auto_slot_label}")
+    endif()
+  endif()
 endif()
 
 # Manifest parsing
@@ -51,8 +110,11 @@ if(patch_count EQUAL 0)
   return()
 endif()
 
-# Patch validation
+# Patch validation against Kconfig expectations
 set(patches)
+set(kconfig_origins lmac ${CONFIG_WIFI_NRF71_PATCH_LMAC_ORIGIN} umac ${CONFIG_WIFI_NRF71_PATCH_UMAC_ORIGIN})
+set(kconfig_sizes lmac ${CONFIG_WIFI_NRF71_PATCH_LMAC_SIZE} umac ${CONFIG_WIFI_NRF71_PATCH_UMAC_SIZE})
+
 math(EXPR last_idx "${patch_count} - 1")
 foreach(idx RANGE ${last_idx})
   string(JSON name GET "${manifest}" "patches" ${idx} "name")
@@ -60,78 +122,82 @@ foreach(idx RANGE ${last_idx})
   string(JSON manifest_origin GET "${manifest}" "patches" ${idx} "origin")
   string(JSON manifest_size GET "${manifest}" "patches" ${idx} "size")
 
-  dt_prop(patch_node PATH ${wicr_node} PROPERTY "firmware-${name}rompatchaddr")
-  dt_reg_addr(origin PATH "${patch_node}")
-  dt_reg_size(size PATH "${patch_node}")
+  list(FIND kconfig_origins ${name} origin_idx)
+  if(origin_idx LESS 0)
+    message(WARNING "Manifest defines unknown Wi-Fi patch '${name}'")
+    return()
+  endif()
 
-  if(origin STREQUAL "" OR origin STREQUAL "NONE"
-     OR size STREQUAL "" OR size STREQUAL "NONE")
+  math(EXPR origin_idx "${origin_idx} + 1")
+  list(GET kconfig_origins ${origin_idx} kconfig_origin)
+  math(EXPR kconfig_origin_addr "${kconfig_origin}")
+
+  list(FIND kconfig_sizes ${name} size_idx)
+  math(EXPR size_idx "${size_idx} + 1")
+  list(GET kconfig_sizes ${size_idx} kconfig_size)
+
+  math(EXPR manifest_origin_addr "${manifest_origin}")
+  math(EXPR manifest_size_int "${manifest_size}")
+
+  if(NOT manifest_origin_addr EQUAL kconfig_origin_addr)
     message(WARNING
-      "${name} patch devicetree entry does not provide a patch region. "
-      "Please include:\n"
-        "${CONFIG_WIFI_NRF71_PATCH_DTSI_FILE}"
+      "${name} patch origin mismatch: manifest=${manifest_origin}, "
+      "Kconfig=${kconfig_origin}"
     )
     return()
   endif()
 
-  math(EXPR addr "${origin}")
-  math(EXPR end "${addr} + ${size}")
-  math(EXPR manifest_addr "${manifest_origin}")
-
-  if(NOT addr EQUAL manifest_addr OR NOT size EQUAL manifest_size)
+  if(NOT manifest_size_int EQUAL kconfig_size)
     message(WARNING
-      "${name} patch address mismatch: devicetree has origin=${origin} "
-      "size=${size}, manifest expects origin=${manifest_origin} "
-      "size=${manifest_size}. Please include:\n"
-        "${CONFIG_WIFI_NRF71_PATCH_DTSI_FILE}"
+      "${name} patch size mismatch: manifest=${manifest_size}, "
+      "Kconfig=${kconfig_size}"
     )
     return()
   endif()
 
-  if(size LESS_EQUAL 0)
-    message(WARNING "${name} patch size from devicetree must be greater than zero")
+  if(manifest_size_int LESS_EQUAL 0)
+    message(WARNING "${name} patch size must be greater than zero")
     return()
   endif()
 
   set(bin ${fw_dir}/${file})
+  if(NOT IS_ABSOLUTE ${bin})
+    set(bin ${fw_dir}/${file})
+  endif()
+
   if(NOT EXISTS ${bin})
     message(WARNING "${name} patch binary not found: ${bin}")
     return()
   endif()
 
   file(SIZE ${bin} bin_size)
-  if(NOT bin_size EQUAL size)
+  if(NOT bin_size EQUAL manifest_size_int)
     message(WARNING
-      "${name} patch binary size mismatch: devicetree=${size}, "
+      "${name} patch binary size mismatch: manifest=${manifest_size_int}, "
       "file=${bin_size}"
     )
     return()
   endif()
 
-  set(${name}_bin ${bin})
-  set(${name}_origin ${origin})
-  set(${name}_addr ${addr})
-  set(${name}_size ${size})
+  math(EXPR addr "${manifest_origin}")
+  math(EXPR end "${addr} + ${manifest_size_int}")
 
   if(addr LESS patch_region_start OR end GREATER patch_region_end)
     message(WARNING
-      "${name} patch [${origin}, ${end}) is outside code partition "
+      "${name} patch [${manifest_origin}, ${end}) is outside code partition "
       "[${patch_region_start}, ${patch_region_end})"
     )
     return()
   endif()
 
+  set(${name}_bin ${bin})
+  set(${name}_origin ${manifest_origin})
+  set(${name}_addr ${addr})
+  set(${name}_size ${manifest_size_int})
   list(APPEND patches ${name})
 endforeach()
 
 # Linker reservations
-#
-# Each patch gets a NOLOAD section at its target address.
-#
-# The LD template inserts these snippets before the 4-byte .last_section.
-# This moves .last_section past the highest patch, so _flash_used includes the
-# full span through the patch plus alignment and four bytes. The CMake linker
-# generator keeps fixed NOLOAD reservations out of the FLASH usage total.
 if(NOT CONFIG_CMAKE_LINKER_GENERATOR)
   set(linker_dir ${CMAKE_CURRENT_BINARY_DIR}/linker)
   file(MAKE_DIRECTORY ${linker_dir})
@@ -148,7 +214,6 @@ foreach(name IN LISTS patches)
       MIN_SIZE ${${name}_size}
     )
   else()
-    # Variable names must match the placeholders in the linker template.
     set(section_name wifi_${name}_patch)
     set(patch_origin ${${name}_addr})
     set(patch_size ${${name}_size})
@@ -162,11 +227,6 @@ foreach(name IN LISTS patches)
 endforeach()
 
 # Post-build merge
-#
-# TF-M provides secure and non-secure HEX files separately. The merge script
-# combines them with the Wi-Fi patch(es) into a single HEX file for flashing.
-
-# Keep the KERNEL_NAME-based prefix aligned with image_signing.cmake.
 set(merged_prefix ${zephyr_dir}/${KERNEL_NAME}.nrf7120)
 set(merged_hex ${merged_prefix}.hex)
 set(merged_bin ${merged_prefix}.bin)
@@ -216,7 +276,6 @@ list(APPEND merge_command
 )
 
 if(CONFIG_BOOTLOADER_MCUBOOT)
-  # Ensure the merged image is generated before MCUboot signing runs.
   set_property(GLOBAL APPEND PROPERTY extra_post_build_commands ${merge_command})
   set_property(GLOBAL APPEND PROPERTY extra_post_build_byproducts ${merge_byproducts})
 else()
@@ -231,7 +290,6 @@ else()
   add_custom_target(nrf71_wifi_patch_merge ALL DEPENDS ${merge_byproducts})
 endif()
 
-# Flash runner override
 if(NOT CONFIG_BOOTLOADER_MCUBOOT)
   set_target_properties(runners_yaml_props_target PROPERTIES
     hex_file ${merged_hex}

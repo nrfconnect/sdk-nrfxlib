@@ -8,6 +8,7 @@ if WIFI_NRF71
 
 config WIFI_NRF71_PATCH
 	bool "Include nRF7120 Wi-Fi ROM patches in the application image"
+	default y
 	depends on !IS_BOOTLOADER_IMG
 	help
 	  The Wi-Fi ROM patches are placed at fixed internal NVM addresses
@@ -15,18 +16,33 @@ config WIFI_NRF71_PATCH
 	  including the application and the Wi-Fi ROM patches is signed and
 	  delivered as part of standard firmware updates.
 
+	  When enabled, patch MRAM origins are supplied through Kconfig and
+	  validated against the devicetree code partition. When disabled,
+	  devicetree defines the slot layout and WICR patch addresses.
+
 	  Note: The regular ELF-derived artifacts do not contain Wi-Fi patch
 	  data. Only the merged output used for programming and signing
 	  includes the patches.
 
 if WIFI_NRF71_PATCH
 
-choice WIFI_NRF71_PATCH_VERSION
-	prompt "nRF7120 Wi-Fi ROM patch version"
-	default WIFI_NRF71_PATCH_VERSION_0_1_0
+config WIFI_NRF71_PATCH_OVERRIDE_ORIGINS
+	bool "Override Wi-Fi ROM patch MRAM origins"
+	default y
 	help
-	  Out-of-tree modules can add further choice entries with matching
-	  WIFI_NRF71_PATCH_MANIFEST_FILE and WIFI_NRF71_PATCH_DTSI_FILE values.
+	  When enabled, LMAC and UMAC patch MRAM origins can be set manually.
+	  When disabled, origins are supplied by the nrf71_wifi module for the
+	  selected patch variant.
+
+choice WIFI_NRF71_PATCH_VARIANT
+	prompt "nRF7120 Wi-Fi ROM patch variant"
+	default WIFI_NRF71_PATCH_AUTO
+	help
+	  Select a fixed patch drop or let the build pick the variant whose
+	  slot layout best matches the active devicetree code partition.
+
+config WIFI_NRF71_PATCH_AUTO
+	bool "Auto (match devicetree slot layout)"
 
 config WIFI_NRF71_PATCH_VERSION_0_1_0
 	bool "0.1.0"
@@ -34,16 +50,24 @@ config WIFI_NRF71_PATCH_VERSION_0_1_0
 endchoice
 
 config WIFI_NRF71_PATCH_MANIFEST_FILE
-	string
-	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/manifest.json" if WIFI_NRF71_PATCH_VERSION_0_1_0
+	string "Wi-Fi ROM patch manifest"
+	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/manifest.json" \
+		if WIFI_NRF71_PATCH_VERSION_0_1_0 || WIFI_NRF71_PATCH_AUTO
 	help
-	  Specifies the path to the Wi-Fi ROM patch manifest file.
+	  Path to the Wi-Fi ROM patch manifest for the selected variant.
+	  Override this to use an alternate manifest during development.
 
-config WIFI_NRF71_PATCH_DTSI_FILE
-	string
-	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/nrf7120_wifi_patch.dtsi" if WIFI_NRF71_PATCH_VERSION_0_1_0
-	help
-	  Specifies the path to the Wi-Fi ROM patch devicetree overlay file.
+config WIFI_NRF71_PATCH_LMAC_ORIGIN
+	default 0x100000 if WIFI_NRF71_PATCH_VERSION_0_1_0 || WIFI_NRF71_PATCH_AUTO
+
+config WIFI_NRF71_PATCH_UMAC_ORIGIN
+	default 0x104F50 if WIFI_NRF71_PATCH_VERSION_0_1_0 || WIFI_NRF71_PATCH_AUTO
+
+config WIFI_NRF71_PATCH_LMAC_SIZE
+	default 20296 if WIFI_NRF71_PATCH_VERSION_0_1_0 || WIFI_NRF71_PATCH_AUTO
+
+config WIFI_NRF71_PATCH_UMAC_SIZE
+	default 24904 if WIFI_NRF71_PATCH_VERSION_0_1_0 || WIFI_NRF71_PATCH_AUTO
 
 endif # WIFI_NRF71_PATCH
 
