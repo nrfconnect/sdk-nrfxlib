@@ -18,6 +18,11 @@ Added
 
 * Experimental support for TX/RX bypass on simple GPIO Front-End Modules, including devices that share bypass control with LNA/PA pins (for example, SKY66409-11). (KRKNWK-22452)
 
+Changes
+=======
+
+* The nRF52 Series platform will no longer be updated with new development. (DRGN-29657)
+
 Bug fixes
 =========
 
