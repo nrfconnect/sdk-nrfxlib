@@ -13,14 +13,26 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Experimental support for TX/RX bypass on simple GPIO Front-End Modules, including devices that share bypass control with LNA/PA pins (for example, SKY66409-11). (KRKNWK-22452)
+
 Bug fixes
 =========
 
+* Fixed a rare issue on the nRF54L Series where MPSL could assert with IDs ``0x28ed`` and ``0x274e`` when the HFXO required manual tuning.
+  This could occur, with a very low probability, when ``NRF_CLOCK`` ``EVENTS_XOTUNERROR`` or ``EVENTS_XOTUNEFAILURE`` was triggered while radio events were scheduled. (DRGN-29773)
 * Fixed an issue where :c:func:`mpsl_init` would hang indefinitely when called after :c:func:`mpsl_uninit` if HFCLK24M was still active.
   This could occur if USB was active when :c:func:`mpsl_init` was called.
   This issue applies only to the nRF54LM Series devices. (DRGN-29129)
 * Fixed an issue where releasing HFCLK24M using the :c:func:`mpsl_clock_hfclk_src_release` function would leave the clock running, causing increased power consumption.
   This issue applies only to the nRF54LM Series devices. (DRGN-29277)
+
+Removed
+=======
+
+* Removed support for the nRF2220 Front-End Module. (KRKNWK-22331)
 
 nRF Connect SDK v3.4.0
 **********************

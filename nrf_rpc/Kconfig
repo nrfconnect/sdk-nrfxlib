@@ -46,6 +46,13 @@ config NRF_RPC_GROUP_INIT_WAIT_TIME
 	  The number of milliseconds to wait for the remote cores to send group
 	  init packets with destination group IDs. Set to -1 to wait forever.
 
+config NRF_RPC_STOP_WAIT_TIME
+	int "RPC stop wait timeout in milliseconds"
+	default 1000
+	help
+	  The number of milliseconds to wait in nrf_rpc_stop() for all in-flight
+	  RPC processing to complete. Set to -1 to wait forever.
+
 config NRF_RPC_GROUP_DEFAULT_INITIATOR
 	bool "Initiate group binding by default"
 	default y

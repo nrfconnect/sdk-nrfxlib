@@ -61,6 +61,20 @@
 #define IS_FICR_REG_SET(_ficr_reg) ((_ficr_reg) != FICR_REG_RESET_VALUE)
 
 /**
+ * @def NRF54L_FIR_4205_ENABLE_WORKAROUND
+ *
+ * Enables the FIR-4205 workaround on affected nRF54L devices.
+ *
+ * @note FIR-4205 requires a PAN, therefore the current implementation uses the ticket
+ *       ID for tracking.
+ */
+#if defined(NRF54LC10A_XXAA) || defined(NRF54LV10A_XXAA)
+#define NRF54L_FIR_4205_ENABLE_WORKAROUND 1
+#else
+#define NRF54L_FIR_4205_ENABLE_WORKAROUND 0
+#endif
+
+/**
  * @brief Read peripheral register at a given offset.
  *
  * @param[in]  base_addr Base addres of a peripheral instance.
@@ -119,6 +133,15 @@ __STATIC_INLINE__ void errata_117_apply(void);
  */
 __STATIC_INLINE__ void mltpan_6_apply(void);
 #endif /* NRF54L_ERRATA_6_ENABLE_WORKAROUND */
+
+#if NRF54L_FIR_4205_ENABLE_WORKAROUND
+/**
+ * @brief Apply FIR-4205 workaround.
+ *
+ * Shall be called after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
+ */
+__STATIC_INLINE__ void fir_4205_apply(void);
+#endif /* NRF54L_FIR_4205_ENABLE_WORKAROUND */
 
 #if NRF52_CONFIGURATION_254_ENABLE
 /**
@@ -270,6 +293,20 @@ __STATIC_INLINE__ void mltpan_6_apply(void)
 }
 
 #endif /* NRF54L_ERRATA_6_ENABLE_WORKAROUND */
+
+#if NRF54L_FIR_4205_ENABLE_WORKAROUND
+
+__STATIC_INLINE__ void fir_4205_apply(void)
+{
+#ifndef CONFIG_SOC_SERIES_BSIM_NRFXX
+
+    /* Apply FIR-4205. */
+    nrf_802154_hw_offset_write(RADIO_BASE, 0xB40UL, 0x25A4A42DUL);
+
+#endif /* CONFIG_SOC_SERIES_BSIM_NRFXX */
+}
+
+#endif /* NRF54L_FIR_4205_ENABLE_WORKAROUND */
 
 #if NRF52_CONFIGURATION_254_ENABLE
 

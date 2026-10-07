@@ -159,8 +159,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 891
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    803
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 883
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
@@ -209,6 +209,12 @@ extern "C" {
  * @param[in] num_links Total number of peripheral and central links supported.
  */
 #define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 60) : 0)
+
+/** @brief Maximum memory required when supporting Channel Classification.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_CHANNEL_CLASSIFICATION(num_links) ((num_links) > 0 ? (13 + (num_links) * 67) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -284,7 +290,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (256 + (buffer_count) * 278)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (254 + (buffer_count) * 278)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -292,7 +298,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (671 + (tx_buffer_count - 1) * 255 + (rx_buffer_count) * 279)
+    (420 + (tx_buffer_count) * 254 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *
@@ -302,9 +308,9 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file */
 #define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
-#define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (283)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (461)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (161)
+#define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (188)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (170)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 #define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
 
@@ -1407,6 +1413,17 @@ void sdc_support_bis_sink(void);
  */
 void sdc_support_qos_channel_survey(void);
 
+/** @brief Support channel index in standard LE Advertising Reports
+ *
+ * After this API is called, the controller appends the advertising channel
+ * index after RSSI in standard LE Advertising Report events.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_chan_idx_in_adv_report(void);
+
 /** @brief Support Connection Subrating for central role
  *
  * After this API is called, the controller will support the HCI commands
@@ -1434,6 +1451,36 @@ void sdc_support_connection_subrating_central(void);
  *       it is called at the right time.
  */
 void sdc_support_connection_subrating_peripheral(void);
+
+/** @brief Support Channel Classification for central role.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Channel Classification.
+ *
+ * @note The application is required to call both @ref sdc_support_channel_classification_central()
+ *       and @ref sdc_support_channel_classification_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_classification_central(void);
+
+/** @brief Support Channel Classification for peripheral role.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Channel Classification.
+ *
+ * @note The application is required to call both @ref sdc_support_channel_classification_central()
+ *       and @ref sdc_support_channel_classification_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_channel_classification_peripheral(void);
 
 /** @brief Support Extended Feature Set
  *

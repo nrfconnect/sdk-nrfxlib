@@ -9,6 +9,19 @@ When working with sEMMC, you should be aware of the following limitations.
    :local:
    :depth: 2
 
+v1.0.0
+******
+
+Refer to the following detailed descriptions of current limitations (most apply for use with SD card):
+
+* sEMMC has only been tested with SDSC and SDHC memory capacity classes.
+* sEMMC supports both Default (3.3V <= 25MHz) and High Speed (3.3V <= 50MHz) modes on nRF54L series devices.
+* sEMMC High Speed mode may require a short tuning loop (not the same as ``CMD19``, simple write and read) to calculate a value for :c:var:`nrf_semmc_config_t.read_delay`.
+* sEMMC is supported on nRF54H20 at low frequencies (3.3V <= 21MHz) on P9 but the use of high speed pins on P7 requires external hardware since it operates at 1.8V only.
+* sEMMC supports voltage switching via CMD11. SDR12 (<= 21MHz) tested on L series devices.
+* sEMMC CMD12 behavior requires the sequence: :c:func:`nrf_semmc_abort` followed by CMD12. This limitation applies for usage with both SD card and eMMC.
+* sEMMC API now requires extra parameters, see :ref:`semmc_changelog`.
+
 v0.1.1
 ******
 

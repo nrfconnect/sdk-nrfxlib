@@ -3425,18 +3425,9 @@ int8_t nrf_802154_sl_ant_div_rssi_measure_get(void)
 
     if (nrf_802154_trx_rssi_measure_is_started())
     {
-        while (!nrf_802154_trx_rssi_sample_is_available())
-        {
-            /* Intentionally empty: This function is called from a critical section.
-             * WFE would not be waken up by a RADIO event.
-             */
-        }
+        rssi_measurement_wait();
 
-        uint8_t rssi_sample = nrf_802154_trx_rssi_last_sample_get();
-
-        rssi_sample = nrf_802154_rssi_sample_corrected_get(rssi_sample);
-
-        result = -((int8_t)rssi_sample);
+        result = rssi_last_measurement_get();
     }
 
     return result;

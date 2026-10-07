@@ -80,3 +80,7 @@ DRGN-21246: Unsupported BIG parameters
 DRGN-26820: On nRF54H20, SDC memory pool must not be located in global RAM
   Accessing memory in global RAM is costly from performance and power perspective.
   Also, the radio and CCM DMA cannot access global RAM.
+
+DRGN-29455: LE Set Periodic Advertising Response Data command must be used in chronological order
+  For a given sync handle, response data must be set in increasing order of event counter, subevent, and response slot.
+  If the command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission, the controller returns the error code ``0x11`` (Unsupported Feature or Parameter Value).

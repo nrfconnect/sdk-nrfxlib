@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+Removed
+=======
+
+* Removed support for the nRF52 Series devices.
+
 nRF Connect SDK v3.2.0
 **********************
 

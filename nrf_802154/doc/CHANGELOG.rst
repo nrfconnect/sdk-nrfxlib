@@ -13,6 +13,20 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Added
+=====
+
+* Added production support for the nRF54LC10A SoC (CPU application, secure and non-secure).
+
+Bug fixes
+=========
+
+* Implemented a workaround for the FIR-4205 issue affecting the nRF54LC10A and nRF54LV10A.
+  During the ACK reception, RADIO could perform an invalid SYNC, resulting in a frame loss rate of approximately 2%.
+  The invalid SYNC causes a CRC error because RADIO returns a junk frame.
+  The workaround adjusts the threshold of the synchronization correlator. (KRKNWK-22187)
+* Fixed antenna diversity selecting the weaker antenna due to incorrect RSSI correction handling. (KRKNWK-22432)
+
 nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

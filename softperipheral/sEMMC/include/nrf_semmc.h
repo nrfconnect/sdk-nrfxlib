@@ -79,6 +79,13 @@ typedef enum
     NRF_SEMMC_CMD49_SET_TIME             = 49,
 } nrf_semmc_cmd_t;
 
+/** @brief Data transfer direction definitions */
+typedef enum
+{
+    NRF_SEMMC_WRITE = 0,
+    NRF_SEMMC_READ  = 1,
+} nrf_semmc_data_direction_t;
+
 typedef enum
 {
     NRF_SEMMC_RESP_NONE,
@@ -88,6 +95,8 @@ typedef enum
     NRF_SEMMC_RESP_R3,
     NRF_SEMMC_RESP_R4,
     NRF_SEMMC_RESP_R5,
+    NRF_SEMMC_RESP_R6,
+    NRF_SEMMC_RESP_R7,
 } nrf_semmc_resp_type_t;
 
 typedef enum
@@ -179,9 +188,11 @@ typedef struct
  */
 typedef struct
 {
-    void *   buffer;     ///< MCU bus address - pointer to data buffer for transfer
-    uint32_t block_size; ///< Size of each block in bytes
-    uint32_t num_blocks; ///< Number of blocks to transfer
+    void *   buffer;              ///< MCU bus address - pointer to data buffer for transfer
+    uint32_t block_size;          ///< Size of each block in bytes
+    uint32_t num_blocks;          ///< Number of blocks to transfer
+    uint32_t transfer_direction;  ///< Transfer direction, @ref nrf_semmc_data_direction_t can be used to set this value
+    uint8_t  skip_data_crc_check; ///< Skip data CRC check
     /*
      * The block_addr is intentionally not included here as it's supplied in the
      * 'arg' field of the associated command descriptor (nrf_semmc_cmd_desc_t)
@@ -219,6 +230,13 @@ typedef struct
  * @retval NRF_SEMMC_ERROR_INVALID_PARAM Invalid or NULL parameter provided.
  * @retval NRF_SEMMC_ERROR_HW_FAULT   Hardware initialization failed.
  * @retval NRF_SEMMC_ERROR_INTERNAL   Internal error during initialization.
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_semmc_dppi_role_map_set or @ref nrf_semmc_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
 nrf_semmc_error_t nrf_semmc_init(nrf_semmc_t const *       p_semmc,
                                  nrf_semmc_event_handler_t handler,
@@ -234,6 +252,13 @@ nrf_semmc_error_t nrf_semmc_init(nrf_semmc_t const *       p_semmc,
  * states restrictions related to VPR.
  *
  * @param[in] p_semmc Identifier of the sEMMC instance to uninitialize.
+ *
+ * @note Initialization restores the default DPPI task/role map and clears every subscription
+ *       permission: the soft peripheral applies the reset value of its @c SPSYNC.DPPIMAP register
+ *       while starting, and this driver resets the matching host-side state. Anything published
+ *       with @ref nrf_semmc_dppi_role_map_set or @ref nrf_semmc_dppi_subscribe_enable therefore does
+ *       not survive an uninit/init cycle and has to be published again afterwards, before the first
+ *       request. Nothing has to be undone before uninit.
  */
 void nrf_semmc_uninit(nrf_semmc_t const * p_semmc);
 
@@ -295,6 +320,8 @@ nrf_semmc_error_t nrf_semmc_disable(nrf_semmc_t const * p_semmc);
  * @param cmd_count   Number of transfers in the array pointed by @p p_cmd.
  * @param flags      Transfer options (0 for default settings).
  *
+ * @note @p p_transfer set to NULL means there is no data transfer associated with a given command
+ *
  * @retval NRF_SEMMC_SUCCESS         Command started successfully; completion will be reported via callback.
  * @retval NRF_SEMMC_ERROR_BUSY      Driver is busy with another operation.
  * @retval NRF_SEMMC_ERROR_INVALID_PARAM Invalid parameter(s) provided.
@@ -327,6 +354,8 @@ nrf_semmc_error_t nrf_semmc_cmd(nrf_semmc_t const *         p_semmc,
  * by the remote controller, a new requested transfer can be queued by the
  * driver. If the driver is capable of queuing the new transfer, the function
  * returns NRF_SEMMC_SUCCESS. Otherwise, it returns NRF_SEMMC_ERROR_BUSY.
+ *
+ * @note @p p_transfer set to NULL means there is no data transfer associated with a given command
  *
  * @param p_semmc    Pointer to the eMMC driver instance.
  * @param p_cmd      Pointer to the command descriptor structure.
@@ -384,6 +413,102 @@ uint32_t * nrf_semmc_start_task_address_get(nrf_semmc_t const * p_semmc);
  * @retval NRF_SEMMC_ERROR_INTERNAL   Internal error during abort.
  */
 nrf_semmc_error_t nrf_semmc_abort(nrf_semmc_t const * p_semmc);
+
+/**
+ * @brief Bind the soft peripheral's tasks to handler roles, as one map.
+ *
+ * Tasks are addressed as entries: entries 0 to SP_DPPI_SLOT_COUNT-1 are the DPPI slots, where slot
+ * n is channel n of the SoC's DPPI instance, and the remaining entries are tasks with no DPPI path
+ * at all. @p p_roles holds one SP_DPPI_ROLE_* per entry, so the whole map changes in one step and
+ * no intermediate map is ever in force - a role that is being moved is never briefly unassigned.
+ *
+ * A role must appear at most once: both a task register write and a DPPI event for a role reach the
+ * same handler, so it has to resolve to a single task. Moving a role moves everything that reaches
+ * it, including the barrier this driver raises for it.
+ *
+ * This does not enable anything - use @ref nrf_semmc_dppi_subscribe_enable per slot for that, and
+ * note that the permissions already in force are preserved. Call once after initialization and
+ * before the first transfer: publishing reprograms interrupt state for every task whose binding
+ * moves, so it is rejected while a transfer is in flight.
+ *
+ * @param[in] p_semmc Driver instance.
+ * @param[in] p_roles Array of SP_TASK_ENTRY_COUNT roles, indexed by task entry.
+ *
+ * @retval NRF_SEMMC_SUCCESS             Map published to the soft peripheral.
+ * @retval NRF_SEMMC_ERROR_INVALID_PARAM A role is out of range or claimed by two entries.
+ * @retval NRF_SEMMC_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SEMMC_ERROR_BUSY          A transfer is in progress or prepared; nothing was published.
+ */
+nrf_semmc_error_t nrf_semmc_dppi_role_map_set(nrf_semmc_t const * p_semmc,
+                                              const uint8_t *     p_roles);
+
+/**
+ * @brief Permit or forbid the soft peripheral to subscribe a DPPI slot.
+ *
+ * Nothing is permitted by default, so an unmodified application is never driven from the DPPI
+ * fabric and is unaffected by traffic other subsystems (for example MPSL/SDC) generate on the same
+ * DPPI instance. Permission is per slot and independent of the role binding.
+ *
+ * Permission is necessary but not sufficient: the soft peripheral connects a permitted slot only
+ * in the states where that subscription is meaningful, and disconnects it again afterwards. The
+ * task itself stays triggerable through its task register regardless of this setting.
+ *
+ * Like @ref nrf_semmc_dppi_role_map_set, this publishes over a configuration barrier and is rejected
+ * while a transfer is in flight. Note also that permitting the slot carrying the start role does not
+ * connect it immediately: the soft peripheral arms that channel when it next reaches the state where
+ * the subscription is meaningful.
+ *
+ * @param[in] p_semmc Driver instance.
+ * @param[in] slot    Slot index, less than @ref SP_DPPI_SLOT_COUNT.
+ * @param[in] enable  True to permit the subscription, false to revoke it.
+ *
+ * @retval NRF_SEMMC_SUCCESS             Permission published to the soft peripheral.
+ * @retval NRF_SEMMC_ERROR_INVALID_PARAM Slot out of range.
+ * @retval NRF_SEMMC_ERROR_INVALID_STATE Driver not initialized.
+ * @retval NRF_SEMMC_ERROR_BUSY          A transfer is in progress or prepared; nothing was published.
+ */
+nrf_semmc_error_t nrf_semmc_dppi_subscribe_enable(nrf_semmc_t const * p_semmc,
+                                                  uint8_t             slot,
+                                                  bool                enable);
+
+/**
+ * @brief Wait for DAT0 to be released high by the card, optionally resuming SDCLK
+ * without driving CMD or DATx.
+ *
+ * Callable at any time the driver is not actively processing a command. Not
+ * restricted to use as a tail of any specific preceding command.
+ *
+ * When called after SD CMD11: The driver resumes SDCLK at the frequency last configured in nrf_semmc_config_t.
+ * When called after an R1b command: SDCLK is already running;
+ *
+ * In both cases:
+ * - CMD and DAT[3:0] remain tri-stated for the duration of the call.
+ * - Returns once DAT0 goes high or timeout_us elapses.
+ *
+ * @param p_semmc Pointer to the driver instance.
+ * @param timeout_us Maximum wait in microseconds.
+ * SD §4.2.4.2 allows 1000 μs from SDCLK resume to DAT0 high.
+ * eMMC erase busy may require up to 300 000 000 μs (JESD84 §6.14.1).
+ *
+ * @retval NRF_SEMMC_SUCCESS DAT0 went high within timeout.
+ * @retval NRF_SEMMC_ERROR_TIMEOUT DAT0 did not go high within timeout_us.
+ **/
+
+nrf_semmc_error_t nrf_semmc_dat0_busy_poll(nrf_semmc_t const * p_semmc, uint32_t timeout_us);
+
+/**
+ * @brief Return the number of blocks written to the transfer buffer so far.
+ *
+ * May be called while a transfer is in progress. The value increments after
+ * each block is fully committed to the address in nrf_semmc_transfer_desc_t.buffer.
+ * Reaches num_blocks at or before NRF_SEMMC_EVT_XFER_DONE fires.
+ *
+ * @note status must be checked for timeout error bit after return
+ *
+ * @param p_semmc Pointer to the driver instance.
+ * @returns Number of blocks completed (0 if no transfer in progress or not yet started).
+ */
+uint32_t nrf_semmc_blocks_done_get(nrf_semmc_t const * p_semmc);
 
 /**
  * @brief Returns true if an operation is still in progress.

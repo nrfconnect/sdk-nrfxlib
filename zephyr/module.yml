@@ -1,5 +1,7 @@
 build:
-  cmake-ext: True
+  cmake: zephyr
   kconfig: Kconfig.nrfxlib
   depends:
   - hal_nordic
+  settings:
+    dts_root: .

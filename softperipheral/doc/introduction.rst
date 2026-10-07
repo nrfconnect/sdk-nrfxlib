@@ -13,7 +13,7 @@ It also allows to include additional instances of a peripheral in case the platf
 
 In most cases, the features and performance of a soft peripheral are equivalent to those of a hardware peripheral.
 However, there may be some limitations.
-For more information, see the :ref:`sqspi_limitations` and :ref:`semmc_limitations` pages.
+For more information, see the limitations page for the relevant soft peripheral.
 
 The operation of a soft peripheral is abstracted, and its control is facilitated through a user interface managed through the nrfx driver API.
 This user interface is a set of functions that the application can call to interact with the peripheral.
@@ -50,18 +50,30 @@ The following table shows which soft peripherals and their versions are supporte
           - v1.0.0 with the NCS v3.1.0
           - v1.1.0 with the NCS v3.1.0
           - v1.2.1 with the NCS v3.2.0
+          - v2.0.0 with the NCS v3.4.1
        - nRF54LM20 SoC:
           - v1.2.1 with the NCS v3.2.0
+          - v2.0.0 with the NCS v3.4.1
        - nRF54H20 SoC:
           - v0.1.0 with the NCS v3.0.0
           - v1.1.0 with the NCS v3.1.0
           - v1.2.1 with the NCS v3.2.0
+          - v2.0.0 with the NCS v3.4.1
    * - sEMMC
      - - nRF54L Series SoCs
        - nRF54H Series SoCs
      - - nRF54L15 SoC:
           - v0.1.1 with the NCS v3.2.0
+          - v1.0.0 with the NCS v3.4.1
        - nRF54LM20 SoC:
           - v0.1.1 with the NCS v3.2.0
+          - v1.0.0 with the NCS v3.4.1
        - nRF54H20 SoC:
           - v0.1.1 with the NCS v3.2.0
+          - v1.0.0 with the NCS v3.4.1
+   * - sCAN
+     - - nRF54L Series SoCs
+     - - nRF54L15 SoC:
+          - v0.1.0 with the NCS v3.4.1
+       - nRF54LM20 SoC:
+          - v0.1.0 with the NCS v3.4.1

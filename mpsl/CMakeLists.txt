@@ -5,7 +5,8 @@
 #
 
 if(CONFIG_MPSL_BUILD_TYPE_LIB)
-  if(CONFIG_SOC_SERIES_BSIM_NRFXX OR CONFIG_SOC_SERIES_NRF52 OR CONFIG_SOC_NRF5340_CPUNET OR
+  if(CONFIG_SOC_SERIES_BSIM_NRF52X OR CONFIG_SOC_SERIES_BSIM_NRF53X OR
+    CONFIG_SOC_SERIES_BSIM_NRF54LX OR CONFIG_SOC_SERIES_NRF52 OR CONFIG_SOC_NRF5340_CPUNET OR
     CONFIG_SOC_NRF54H20_CPURAD OR CONFIG_SOC_SERIES_NRF54L OR CONFIG_SOC_SERIES_NRF71
   )
     add_subdirectory(fem)
@@ -48,11 +49,17 @@ if(CONFIG_MPSL_BUILD_TYPE_LIB)
       set(lib_dir_path ${lib_dir_path}/soft-float)
     endif()
 
-    if(NOT EXISTS "${lib_dir_path}/libmpsl.a")
+    if(CONFIG_MPSL_LOG_HANDLER)
+      set(lib_name libmpsl_log.a)
+    else()
+      set(lib_name libmpsl.a)
+    endif()
+
+    if(NOT EXISTS "${lib_dir_path}/${lib_name}")
       message(FATAL_ERROR "This combination of SoC and floating point ABI is not supported by the MPSL lib.")
     endif()
 
-    zephyr_link_libraries(${lib_dir_path}/libmpsl.a)
+    zephyr_link_libraries(${lib_dir_path}/${lib_name})
   endif()
 
   zephyr_include_directories(include)

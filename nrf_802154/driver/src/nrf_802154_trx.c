@@ -728,6 +728,11 @@ void nrf_802154_trx_enable(void)
 
     nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_IEEE802154_250KBIT);
 
+#if NRF54L_FIR_4205_ENABLE_WORKAROUND
+    // Apply FIR-4205
+    fir_4205_apply();
+#endif /* NRF54L_FIR_4205_ENABLE_WORKAROUND */
+
 #if NRF54L_ERRATA_6_ENABLE_WORKAROUND
     // Apply MLTPAN-6
     mltpan_6_apply();
@@ -1364,7 +1369,7 @@ bool nrf_802154_trx_rssi_measure_is_started(void)
     return m_flags.rssi_started;
 }
 
-uint8_t nrf_802154_trx_rssi_last_sample_get(void)
+int8_t nrf_802154_trx_rssi_last_sample_get(void)
 {
     int8_t  lna_gain_db                     = 0;
     uint8_t rssi_sample_minus_dbm           = nrf_radio_rssi_sample_get(NRF_RADIO);

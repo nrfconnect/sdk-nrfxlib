@@ -109,7 +109,7 @@ if NRF_802154_RADIO_DRIVER || NRF_802154_SERIALIZATION
 
 config NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US
 	int "Additional delay between triggering the TXEN task after the CCAIDLE event."
-	default 5 if SOC_COMPATIBLE_NRF54LX && (MPSL_FEM_NRF2220 || MPSL_FEM_NRF2240)
+	default 5 if SOC_COMPATIBLE_NRF54LX && MPSL_FEM_NRF2240
 	default 0
 	help
 		The value of this option is passed to the `NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US`

@@ -55,6 +55,10 @@ enum sdc_hci_opcode_cb
     SDC_HCI_OPCODE_CMD_CB_HOST_BUFFER_SIZE = 0xc33,
     /** @brief See @ref sdc_hci_cmd_cb_host_number_of_completed_packets(). */
     SDC_HCI_OPCODE_CMD_CB_HOST_NUMBER_OF_COMPLETED_PACKETS = 0xc35,
+    /** @brief See @ref sdc_hci_cmd_cb_read_afh_channel_assessment_mode(). */
+    SDC_HCI_OPCODE_CMD_CB_READ_AFH_CHANNEL_ASSESSMENT_MODE = 0xc48,
+    /** @brief See @ref sdc_hci_cmd_cb_write_afh_channel_assessment_mode(). */
+    SDC_HCI_OPCODE_CMD_CB_WRITE_AFH_CHANNEL_ASSESSMENT_MODE = 0xc49,
     /** @brief See @ref sdc_hci_cmd_cb_set_event_mask_page_2(). */
     SDC_HCI_OPCODE_CMD_CB_SET_EVENT_MASK_PAGE_2 = 0xc63,
     /** @brief See @ref sdc_hci_cmd_cb_read_authenticated_payload_timeout(). */
@@ -250,6 +254,18 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t num_handles;
     sdc_hci_cb_host_number_of_completed_packets_array_params_t array_params[];
 } sdc_hci_cmd_cb_host_number_of_completed_packets_t;
+
+/** @brief Read AFH Channel Assessment Mode return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t afh_channel_assessment_mode;
+} sdc_hci_cmd_cb_read_afh_channel_assessment_mode_return_t;
+
+/** @brief Write AFH Channel Assessment Mode command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t afh_channel_assessment_mode;
+} sdc_hci_cmd_cb_write_afh_channel_assessment_mode_t;
 
 /** @brief Set Event Mask Page 2 command parameter(s). */
 typedef union __PACKED __ALIGN(1)
@@ -595,6 +611,84 @@ uint8_t sdc_hci_cmd_cb_host_buffer_size(const sdc_hci_cmd_cb_host_buffer_size_t 
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_cb_host_number_of_completed_packets(const sdc_hci_cmd_cb_host_number_of_completed_packets_t * p_params);
+
+/** @brief Read AFH Channel Assessment Mode.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.3.53
+ *
+ * This command reads the value for the AFH_Channel_Assessment_Mode parameter.
+ * The AFH_Channel_Assessment_Mode parameter controls whether the Controller’s
+ * channel assessment scheme is enabled or disabled.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_Read_AFH_Channel_Assessment_Mode command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_cb_read_afh_channel_assessment_mode(sdc_hci_cmd_cb_read_afh_channel_assessment_mode_return_t * p_return);
+
+/** @brief Write AFH Channel Assessment Mode.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.3.54
+ *
+ * This command writes the value for the AFH_Channel_Assessment_Mode parameter.
+ * The AFH_Channel_Assessment_Mode parameter controls whether the Controller’s
+ * channel assessment scheme is enabled or disabled.
+ *
+ * Disabling channel assessment forces all channels to be unknown in the
+ * local classification for the BR/EDR physical transport, but does not affect the
+ * AFH_reporting_mode or support for the HCI_Set_AFH_Host_Channel_Classification
+ * command. A BR/EDR Peripheral in the AFH_reporting_enabled state shall continue to
+ * send LMP channel classification messages for any changes to the channel classification
+ * caused by either this command (altering the AFH_Channel_Assessment_Mode)
+ * or HCI_Set_AFH_Host_Channel_Classification command (providing a new channel
+ * classification from the Host).
+ *
+ * Disabling channel assessment also forces all channels to be unknown in the local
+ * classification for the LE physical transport. If channel classification reporting is enabled
+ * by the Central, then the following rules apply to the Peripheral:
+ *
+ * • Irrespective of whether channel assessment is enabled or disabled by the Host, the
+ *   Controller shall continue to send LL_CHANNEL_STATUS_IND PDUs for any changes
+ *   to the channel classification caused by the HCI_LE_Set_Host_Channel_Classification
+ *   command.
+ * • If channel assessment has been enabled by the Host, the Controller shall send
+ *   LL_CHANNEL_STATUS_IND PDUs for any changes to the channel classification
+ *   caused by the HCI_LE_Set_Host_Channel_Classification command and for any
+ *   changes reported by the channel assessment scheme.
+ * • The Controller shall send an LL_CHANNEL_STATUS_IND PDU whenever the
+ *   channel classification changes because this command changes the channel
+ *   assessment mode.
+ *
+ * If the AFH_Channel_Assessment_Mode parameter is enabled and the Controller
+ * does not support a channel assessment scheme, other than via the
+ * HCI_Set_AFH_Host_Channel_Classification command (for BR/EDR) or via the
+ * HCI_LE_Set_Host_Channel_Classification command (for LE), then a Status parameter
+ * of ‘Channel Assessment Not Supported’ should be returned. See [Vol1] Part F,
+ * Controller Error Codes for a list of error codes and descriptions.
+ * If the Controller supports a channel assessment scheme then the default
+ * AFH_Channel_Assessment_Mode is enabled, otherwise the default is disabled.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_Write_AFH_Channel_Assessment_Mode command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_cb_write_afh_channel_assessment_mode(const sdc_hci_cmd_cb_write_afh_channel_assessment_mode_t * p_params);
 
 /** @brief Set Event Mask Page 2.
  *

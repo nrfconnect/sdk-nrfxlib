@@ -122,7 +122,11 @@ struct nrf_modem_shmem_cfg {
  *
  *  @note: The size of this area is build constant.
  */
+#if defined(CONFIG_SOC_SERIES_NRF91)
 #define NRF_MODEM_SHMEM_BOOTLOADER_SIZE 0x2018
+#elif defined(CONFIG_SOC_SERIES_NRF92)
+#define NRF_MODEM_SHMEM_BOOTLOADER_SIZE 0x481C
+#endif
 
 /** @brief Shared memory configuration in bootloader mode.
  *  The base address must be word-aligned (4 bytes).
@@ -263,7 +267,6 @@ int nrf_modem_init(const struct nrf_modem_init_params *init_params);
  * @retval -NRF_EACCES Bad root digest.
  * @retval -NRF_ETIMEDOUT Operation timed out.
  * @retval -NRF_EIO Bootloader fault.
- * @retval -NRF_ENOSYS Operation not available.
  */
 int nrf_modem_bootloader_init(const struct nrf_modem_bootloader_init_params *init_params);
 

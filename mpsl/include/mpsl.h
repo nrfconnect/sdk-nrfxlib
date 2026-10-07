@@ -101,6 +101,35 @@ void mpsl_uninit(void);
  */
 bool mpsl_is_initialized(void);
 
+/** @brief MPSL tokenized log handlers.
+ *
+ *  Registered with @ref mpsl_log_handlers_set().
+ *  Structure includes multiple callbacks for formatted log messages
+ *  with up to 3 formatted arguments.
+ *
+ *  @param[in] id      Unique log entry id. Consists of library id (3rd byte) and unique message id (two least significant bytes).
+ *  @param[in] a0..a2  Captured argument words.
+ */
+typedef struct mpsl_log_handlers {
+	void (*log0)(uint32_t id);
+	void (*log1)(uint32_t id, uint32_t a0);
+	void (*log2)(uint32_t id, uint32_t a0, uint32_t a1);
+	void (*log3)(uint32_t id, uint32_t a0, uint32_t a1, uint32_t a2);
+} mpsl_log_handlers_t;
+
+/** @brief Register the handlers for the log library
+ *
+ * When the log handlers are registered, MPSL and dependent libraries will call
+ * functions provided in @p handlers.
+ *
+ * @param[in] handlers  The log handlers, or NULL to disable log forwarding.
+ *                      The handlers are copied and stored internally.
+ *
+ * @retval 0           Success.
+ * @retval -NRF_EPERM  This API must be called before @ref mpsl_init().
+ */
+int32_t mpsl_log_handlers_set(const mpsl_log_handlers_t *handlers);
+
 /** @brief Obtain build revision
  *
  * The application must provide a buffer that is at least @ref MPSL_BUILD_REVISION_SIZE

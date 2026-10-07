@@ -16,6 +16,8 @@ It covers setup, integration, and operational guidelines for using each soft per
    :caption: Subpages:
 
    doc/introduction.rst
+   doc/dppi_integration.rst
    doc/sQSPI/README.rst
    doc/sEMMC/README.rst
+   doc/sCAN/README.rst
    CHANGELOG.rst
