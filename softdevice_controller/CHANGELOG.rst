@@ -30,6 +30,7 @@ Bug fixes
 * Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
 * Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
 * Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, would leak Peripheral contexts on disconnect. (DRGN-30124)
 * Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
   This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
 
