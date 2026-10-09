@@ -60,7 +60,9 @@ foreach(idx RANGE ${last_idx})
   string(JSON manifest_origin GET "${manifest}" "patches" ${idx} "origin")
   string(JSON manifest_size GET "${manifest}" "patches" ${idx} "size")
 
-  dt_prop(patch_node PATH ${wicr_node} PROPERTY "firmware-${name}rompatchaddr")
+  string(JSON wicr_property GET "${manifest}" "patches" ${idx} "wicr_property")
+
+  dt_prop(patch_node PATH ${wicr_node} PROPERTY "${wicr_property}")
   dt_reg_addr(origin PATH "${patch_node}")
   dt_reg_size(size PATH "${patch_node}")
 
@@ -102,8 +104,7 @@ foreach(idx RANGE ${last_idx})
   file(SIZE ${bin} bin_size)
   if(NOT bin_size EQUAL size)
     message(WARNING
-      "${name} patch binary size mismatch: devicetree=${size}, "
-      "file=${bin_size}"
+      "${name} patch binary size mismatch: devicetree=${size}, file=${bin_size}"
     )
     return()
   endif()
@@ -128,13 +129,31 @@ endforeach()
 #
 # Each patch gets a NOLOAD section at its target address.
 #
-# The LD template inserts these snippets before the 4-byte .last_section.
-# This moves .last_section past the highest patch, so _flash_used includes the
-# full span through the patch plus alignment and four bytes. The CMake linker
-# generator keeps fixed NOLOAD reservations out of the FLASH usage total.
+# The sections are emitted in list order. Every section that follows them in
+# the image, including the 4-byte .last_section, starts at the end of the last
+# one. Requiring ascending, non-overlapping regions makes that the highest end,
+# so _flash_used includes the full span through the highest region plus
+# alignment and four bytes. The CMake linker generator keeps fixed NOLOAD
+# reservations out of the FLASH usage total.
+set(previous_end 0)
+foreach(name IN LISTS patches)
+  set(region_addr ${${name}_addr})
+  if(region_addr LESS previous_end)
+    message(WARNING
+      "${name} region at ${region_addr} overlaps or precedes the previous "
+      "region ending at ${previous_end}. Regions must be in ascending order."
+    )
+    return()
+  endif()
+  math(EXPR previous_end "${region_addr} + ${${name}_size}")
+endforeach()
+
 if(NOT CONFIG_CMAKE_LINKER_GENERATOR)
   set(linker_dir ${CMAKE_CURRENT_BINARY_DIR}/linker)
   file(MAKE_DIRECTORY ${linker_dir})
+  set(lmac_sort_key 0wifi0lmac)
+  set(umac_sort_key 0wifi1umac)
+  set(rf_params_sort_key 0wifi2rfparams)
 endif()
 
 foreach(name IN LISTS patches)
@@ -157,7 +176,12 @@ foreach(name IN LISTS patches)
       ${linker_dir}/wifi_${name}_patch.ld
       @ONLY
     )
-    zephyr_linker_sources(SECTIONS ${linker_dir}/wifi_${name}_patch.ld)
+    if(NOT DEFINED ${name}_sort_key)
+      message(FATAL_ERROR "No linker sort key defined for ${name}")
+    endif()
+    zephyr_linker_sources(SECTIONS SORT_KEY ${${name}_sort_key}
+      ${linker_dir}/wifi_${name}_patch.ld
+    )
   endif()
 endforeach()
 
