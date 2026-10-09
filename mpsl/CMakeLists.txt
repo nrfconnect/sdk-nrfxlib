@@ -5,17 +5,15 @@
 #
 
 if(CONFIG_MPSL_BUILD_TYPE_LIB)
-  if(CONFIG_SOC_SERIES_BSIM_NRF52X OR CONFIG_SOC_SERIES_BSIM_NRF53X OR
-    CONFIG_SOC_SERIES_BSIM_NRF54LX OR CONFIG_SOC_SERIES_NRF52 OR CONFIG_SOC_NRF5340_CPUNET OR
-    CONFIG_SOC_NRF54H20_CPURAD OR CONFIG_SOC_SERIES_NRF54L OR CONFIG_SOC_SERIES_NRF71
+  if(CONFIG_SOC_SERIES_BSIM_NRF53X OR CONFIG_SOC_SERIES_BSIM_NRF54LX OR
+    CONFIG_SOC_NRF5340_CPUNET OR CONFIG_SOC_NRF54H20_CPURAD OR CONFIG_SOC_SERIES_NRF54L OR
+    CONFIG_SOC_SERIES_NRF71
   )
     add_subdirectory(fem)
 
     set(lib_dir_path "${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 
-    if(CONFIG_SOC_SERIES_NRF52)
-      set(lib_dir_path ${lib_dir_path}nrf52)
-    elseif(CONFIG_SOC_NRF5340_CPUNET)
+    if(CONFIG_SOC_NRF5340_CPUNET)
       set(lib_dir_path ${lib_dir_path}nrf53)
     elseif(CONFIG_SOC_NRF54H20_CPURAD)
       set(lib_dir_path ${lib_dir_path}nrf54h)
@@ -29,8 +27,6 @@ if(CONFIG_MPSL_BUILD_TYPE_LIB)
       set(lib_dir_path ${lib_dir_path}nrf54l)
     elseif(CONFIG_SOC_SERIES_NRF71)
       set(lib_dir_path ${lib_dir_path}nrf71)
-    elseif(CONFIG_SOC_SERIES_BSIM_NRF52X)
-      set(lib_dir_path ${lib_dir_path}nrf52_bsim)
     elseif(CONFIG_SOC_SERIES_BSIM_NRF53X)
       set(lib_dir_path ${lib_dir_path}nrf53_bsim)
     elseif(CONFIG_SOC_SERIES_BSIM_NRF54LX)
