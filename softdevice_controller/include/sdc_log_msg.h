@@ -7,15 +7,12 @@
 #ifndef SDC_LOG_MSG_H__
 #define SDC_LOG_MSG_H__
 
-#include <stdint.h>
+#include "mpsl_log_types.h"
 
-struct sdc_log_msg_entry {
-	uint16_t id;
-	uint8_t level;
-	const char *fmt;
-};
+#define SDC_LOG_MSGS_LIB_ID   1u
+#define SDC_LOG_MSGS_LIB_NAME "SDC"
 
-static const struct sdc_log_msg_entry sdc_log_msgs[] = {
+static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0001u, 1, "Fault handler is NULL" },
 #endif

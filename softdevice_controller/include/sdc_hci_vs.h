@@ -597,7 +597,7 @@ typedef struct __PACKED __ALIGN(1)
      *         1,000 us steps are also accepted.
      */
     uint32_t conn_interval_us;
-    /** @brief Slave latency for the connection in number of connection events. */
+    /** @brief Peripheral latency for the connection in number of connection events. */
     uint16_t conn_latency;
     /** @brief Supervision timeout for the LE Link in 10 ms units. Range 100 ms to 32 s. */
     uint16_t supervision_timeout;
@@ -1330,7 +1330,7 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * regardless of the requested peripheral latency. This option consumes the most power.
  *
  * In wait_for_ack mode, the peripheral will wake up on every connection event if
- * it has not received an ACK from the master for at least peripheral latency events.
+ * it has not received an ACK from the central for at least peripheral latency events.
  * This configuration may increase the power consumption in environments with a lot of radio
  * activity.
  *
