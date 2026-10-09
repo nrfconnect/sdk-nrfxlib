@@ -13,10 +13,15 @@
 		umac_rom_patch_addr: memory@105160 {
 			reg = <0x105160 25204>;
 		};
+
+		rf_params_addr: memory@10b3e0 {
+			reg = <0x10b3e0 600>;
+		};
 	};
 };
 
 &wicr {
+	data-rfparams = <&rf_params_addr>;
 	firmware-lmacrompatchaddr = <&lmac_rom_patch_addr>;
 	firmware-umacrompatchaddr = <&umac_rom_patch_addr>;
 };

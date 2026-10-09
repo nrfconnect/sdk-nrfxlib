@@ -15,6 +15,9 @@ config WIFI_NRF71_PATCH
 	  including the application and the Wi-Fi ROM patches is signed and
 	  delivered as part of standard firmware updates.
 
+	  RF parameters bundled with the selected patch version are included
+	  in the same image.
+
 	  Note: The regular ELF-derived artifacts do not contain Wi-Fi patch
 	  data. Only the merged output used for programming and signing
 	  includes the patches.
