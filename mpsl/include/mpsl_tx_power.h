@@ -38,6 +38,9 @@ enum MPSL_PHY
     MPSL_PHY_BLE_2M,
     MPSL_PHY_BLE_LR125Kbit,
     MPSL_PHY_BLE_LR500Kbit,
+    MPSL_PHY_BLE_2MBIT_CSA_2BT0,
+    MPSL_PHY_BLE_1MBIT_CSA,
+    MPSL_PHY_BLE_2MBIT_CSA,
     MPSL_PHY_Ieee802154_250Kbit,
     MPSL_PHY_NRF_1Mbit,
     MPSL_PHY_NRF_2Mbit,
@@ -64,6 +67,7 @@ typedef struct
      *
      *  The function @ref mpsl_tx_power_channel_map_set supports only the following @c phy values:
      *  @c MPSL_PHY_BLE_1M, @c MPSL_PHY_BLE_2M, @c MPSL_PHY_BLE_LR125Kbit, @c MPSL_PHY_BLE_LR500Kbit,
+     *  @c MPSL_PHY_BLE_2MBIT_CSA_2BT0, @c MPSL_PHY_BLE_1MBIT_CSA, @c MPSL_PHY_BLE_2MBIT_CSA,
      *  @c MPSL_PHY_Ieee802154_250Kbit .
      */
     mpsl_phy_t phy;
