@@ -147,6 +147,12 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
+/** @brief Default number of decision instructions tests that can be stored in the controller.
+ *
+ * The Core Specification requires the Controller to support at least 8 tests.
+ */
+#define SDC_DEFAULT_SCAN_DECISION_INSTRUCTIONS_COUNT 8
+
 /**
  * @defgroup sdc_mem_defines Memory requirement defines
  *
@@ -389,6 +395,12 @@ extern "C" {
  */
 #define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 379) : 0)
 
+/** @brief Maximum memory required when supporting decision-based advertising filtering while scanning.
+ *
+ * @param[in] num_tests Total number of decision instructions tests supported.
+ */
+#define SDC_MEM_SCAN_DECISION_INSTRUCTIONS(num_tests) (17 + (num_tests) * 19)
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the assertion handler.
@@ -480,6 +492,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_CS_CFG,
     /** See @ref sdc_cfg_t::extended_feature_page_count */
     SDC_CFG_TYPE_EXTENDED_FEATURE_PAGE_COUNT,
+    /** See @ref sdc_cfg_t::scan_decision_instructions_count. */
+    SDC_CFG_TYPE_SCAN_DECISION_INSTRUCTIONS_COUNT,
 };
 
 
@@ -755,6 +769,14 @@ typedef union
      * Default: @ref SDC_DEFAULT_EXTENDED_FEATURE_PAGE_COUNT.
      */
     uint8_t extended_feature_page_count;
+    /** Configures the maximum number of decision instructions tests that can be stored in the
+     *  controller when supporting decision-based advertising filtering while scanning.
+     *
+     *  The Core Specification requires the Controller to support at least 8 tests.
+     *
+     *  Default: @ref SDC_DEFAULT_SCAN_DECISION_INSTRUCTIONS_COUNT.
+     */
+    uint8_t scan_decision_instructions_count;
 } sdc_cfg_t;
 
 
@@ -1776,6 +1798,28 @@ void sdc_support_mpsl_coex(void);
  *       it is called at the right time.
  */
 void sdc_support_mpsl_fem(void);
+
+/** @brief Support Decision Based Advertising Filtering for the scanner.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Decision Based Advertising Filtering.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_decision_scan(void);
+
+/** @brief Support Decision Based Advertising Filtering for the advertiser.
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Decision Based Advertising Filtering.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_decision_adv(void);
 
 #ifdef __cplusplus
 }

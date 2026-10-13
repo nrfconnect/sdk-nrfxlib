@@ -265,6 +265,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SUBRATE_REQUEST = 0x207e,
     /** @brief See @ref sdc_hci_cmd_le_set_ext_adv_params_v2(). */
     SDC_HCI_OPCODE_CMD_LE_SET_EXT_ADV_PARAMS_V2 = 0x207f,
+    /** @brief See @ref sdc_hci_cmd_le_set_decision_data(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DECISION_DATA = 0x2080,
+    /** @brief See @ref sdc_hci_cmd_le_set_decision_instructions(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DECISION_INSTRUCTIONS = 0x2081,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_subevent_data(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SUBEVENT_DATA = 0x2082,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_response_data(). */
@@ -770,6 +774,14 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t change_on_scan_response_data_change : 1;
     uint8_t rfu : 6;
 } sdc_hci_le_set_data_related_address_changes_reasons_params_t;
+
+/** @brief LE Set Decision Instructions array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t test_flags;
+    uint8_t test_field;
+    uint8_t test_params[16];
+} sdc_hci_le_set_decision_instructions_array_params_t;
 
 /** @brief LE Set Extended Advertising Enable array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -3825,6 +3837,22 @@ typedef struct __PACKED __ALIGN(1)
 {
     int8_t selected_tx_power;
 } sdc_hci_cmd_le_set_ext_adv_params_v2_return_t;
+
+/** @brief LE Set Decision Data command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t adv_handle;
+    uint8_t decision_type_flags;
+    uint8_t decision_data_length;
+    uint8_t decision_data[];
+} sdc_hci_cmd_le_set_decision_data_t;
+
+/** @brief LE Set Decision Instructions command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_tests;
+    sdc_hci_le_set_decision_instructions_array_params_t array_params[];
+} sdc_hci_cmd_le_set_decision_instructions_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -10575,6 +10603,323 @@ uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * 
  */
 uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_params_v2_t * p_params,
                                              sdc_hci_cmd_le_set_ext_adv_params_v2_return_t * p_return);
+
+/** @brief LE Set Decision Data.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.144
+ *
+ * This command is used to set the decision data used by the specified advertising set in
+ * those advertising PDUs that contain decision data. This command may be issued at any
+ * time after an advertising set identified by the Advertising_Handle parameter has been
+ * created, regardless of whether advertising in that set is enabled or disabled. When an
+ * advertising set is created, Decision_Type_Flags shall be set to zero and there shall be
+ * zero octets of decision data.
+ *
+ * If advertising is currently enabled for the specified advertising set, the Controller
+ * shall use the new decision data in subsequent extended advertising events for this
+ * advertising set. If an extended advertising event is in progress when this command is
+ * issued, the Controller may use the old or new decision data for that event.
+ *
+ * If advertising is currently disabled for the specified advertising set, the decision data
+ * shall be kept by the Controller and used once advertising is enabled for that set. The
+ * decision data shall be discarded when the advertising set is removed.
+ *
+ * The Decision_Type_Flags and Decision_Data parameters specify the decision data to
+ * be used with the advertising set.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                        Error code
+ * MC     Advertising_Handle does not identify an advertising set.         Unknown Advertising
+ *                                                                         Identifier (0x42)
+ * MC     Decision_Data_Length is not large enough to contain the          Invalid HCI Command
+ *        subfields specified in Decision_Type_Flags.                      Parameters (0x12)
+ * </pre>
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_Set_Decision_Data command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_decision_data(const sdc_hci_cmd_le_set_decision_data_t * p_params);
+
+/** @brief LE Set Decision Instructions.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.145
+ *
+ * This command is used to set the decision instructions used when listening for
+ * advertisements containing decision PDUs (when either scanning or initiating a new
+ * connection). The Controller shall support at least 8 tests in the decision instructions.
+ *
+ * This command may be used while scanning or initiating is in progress. If so, the new
+ * decision instructions shall take effect before the HCI_Command_Complete event is sent
+ * to the Host and the change shall not take place while the decision instructions are being
+ * used to process a decision PDU (that is, each PDU is processed using either the old
+ * decision instructions or the new ones, but not a mixture).
+ *
+ * The Num_Tests parameter specifies the number of individual tests in the decision
+ * instructions.
+ *
+ * Decision procedure
+ *
+ * The Controller shall use the following procedure to apply the decision instructions
+ * specified by this command to each received ADV_DECISION_IND PDU and either
+ * accept or reject it.
+ *
+ * For each test in the instructions, the Controller shall apply that test to the received PDU
+ * to reach a pass or fail result as follows:
+ *
+ * 1.   Use the value of Test_Field[i] to determine whether the “relevant field” is present
+ *      in the PDU. This is some property, usually a specific field or subfield, of the
+ *      ADV_DECISION_IND PDU (it is still called the relevant field in this description even
+ *      if it is not a field).
+ * 2.   If the relevant field is not present, then use the value of bit 3 of Test_Flags[i] to
+ *      determine the result of the test.
+ * 3.   If the relevant field is present, then carry out the specific check for that field
+ *      described below, using Test_Parameters[i] to provide any additional parameters
+ *      needed. Use the value of bit 1 of Test_Flags[i] (if the check passed) or the value of
+ *      bit 2 of Test_Flags[i] (if the check failed) to determine the result of the test.
+ * Note: The effect of steps 2 and 3 is that each combination of values of bits 1 to 3 of
+ * Test_Flags[i] has the overall behavior shown in Table 7.5.
+ *
+ *  Bit of                   The test passes if and only if:
+ *  Test_Flags[i]
+ *  1         2      3
+ *  0         0      0       Never
+ *  0         0      1       The decision data does not contain the relevant field
+ *  0         1      0       The decision data contains the relevant field and the check fails
+ *  0         1      1       Either the decision data contains the relevant field and the check
+ * fails, OR the
+ *                           decision data does not contain the relevant field
+ *  1         0      0       The decision data contains the relevant field and the check passes
+ *  1         0      1       Either the decision data contains the relevant field and the check
+ * passes, OR the
+ *                           decision data does not contain the relevant field
+ *  1         1      0       The decision data contains the relevant field, irrespective of whether
+ * the check
+ *                           passes
+ *  1         1      1       Always
+ *
+ * Table 7.5: Conditions to pass a test based on the Test_Flags[i] value
+ *
+ * The Controller shall partition the list of tests into test groups based on bit 0 of
+ * Test_Flags[i]: if the bit is 0, then test i is in the same group as test i – 1; if the bit
+ * is 1, then test i is in a different group from all lower-numbered tests. A test group shall
+ * be classified as passing if all the tests in that group pass and failing if any of the tests in
+ * that group fail. See example 1 below.
+ *
+ * An ADV_DECISION_IND PDU shall be accepted if any of the test groups pass when
+ * applied to the PDU.
+ *
+ * The specific check for each relevant field is as follows:
+ *
+ * • If the relevant field is the Resolvable Tag, then the check passes if the Resolvable
+ *   Tag resolves against the 128-bit key provided in Test_Parameters[i] as shown in
+ *   Figure 7.7.
+ *
+ *
+ *
+ *
+ *      Figure 7.7: Interpretation of Test_Parameters[i] for tests on the Resolvable Tag
+ * • If the relevant field is the Arbitrary Data, then Test_Parameters[i] has the format given
+ *   in Figure 7.8.
+ *
+ *
+ *
+ *
+ *   Figure 7.8: Interpretation of Test_Parameters[i] for tests on the Arbitrary Data
+ *
+ *   The Controller shall append all-zero octets to the Arbitrary Data as necessary to
+ *   make the length equal to 8 octets. The Controller shall then apply a bitwise AND to
+ *   that value and Mask; the check passes if the result of this equals Target.
+ *   For example, if Test_Parameters[i] is the sequence of octets [FF FF F0 F0 CC CC 55
+ *   55 01 02 00 00 00 00 00 00], then an Arbitrary Data of [01 02 03 04] will pass the
+ *   check whereas [01 02 03 04 63 33] will fail because the fifth octet does not match.
+ * • If the relevant field is the RSSI field, then Test_Parameters[i] has the format given in
+ *   Figure 7.9.
+ *
+ *
+ *
+ *
+ *   Figure 7.9: Interpretation of Test_Parameters[i] for tests on the RSSI
+ *
+ *   The check passes if the RSSI value is between MinRSSI and MaxRSSI (both are
+ *   signed values in dBm).
+ * • If the relevant field is the AdvA field, then Test_Parameters[i] has the format given
+ *   in Figure 7.10 and the check depends on the value of the Check field as shown in
+ *   Table 7.6.
+ *   Figure 7.10: Interpretation of Test_Parameters[i] for tests on the AdvA field
+ *
+ *    Value                 Meaning
+ *    0                     The check passes if the AdvA field is for a device in the Filter Accept
+ * List. The
+ *                          Addresses are ignored.
+ *    1                     The check passes if the AdvA field specifies the same device as Address
+ * 1.
+ *                          Address 2 is ignored.
+ *    2                     The check passes if the AdvA field specifies the same device as Address
+ * 1 or
+ *                          as Address 2.
+ *    All other values      Reserved for future use.
+ *
+ *   Table 7.6: Interpretation of the Check field for tests on the AdvA field
+ *
+ *   The value of the Address type fields shall be 0x00 for a public address and 0x01 for a
+ *   random address.
+ *   To compare the AdvA field with an Address field, the AdvA is first resolved if it is a
+ *   resolvable private address and is then compared with the address and type of the
+ *   Address field; the check passes if they are the same. For example, if the Address
+ *   Type field is 0x00 and the Address address field is the sequence of octets [22 33 44
+ *   55 66 77], then the check passes only if the AdvA field specifies the public address
+ *   0x776655443322 or a resolvable private address that resolves to that address.
+ * • If the relevant field is the path loss, then Test_Parameters[i] has the format given in
+ *   Figure 7.11.
+ *
+ *
+ *
+ *
+ *   Figure 7.11: Interpretation of Test_Parameters[i] for tests on the path loss
+ *      The check passes if the path loss, calculated as the difference between the value of
+ *      the TxPower field and the RSSI value for the received PDU, is between MinLoss and
+ *      MaxLoss (both are unsigned values in dB).
+ * • If the relevant field is the AdvMode field, then Test_Parameters[i] has the format given
+ *   in Figure 7.12 and the check depends on the value of the EventType field as shown in
+ *   Table 7.7.
+ *
+ *
+ *
+ *
+ *      Figure 7.12: Interpretation of Test_Parameters[i] for tests on the AdvMode field
+ *
+ *      The check passes if the appropriate bit of the EventType field is 1.
+ *       Bit Number                Pass Criteria
+ *       0                         The check passes for non-connectable non-scannable undirected
+ * events
+ *       1                         The check passes for connectable undirected events
+ *       2                         The check passes for scannable undirected events
+ *       All other bits            Reserved for future use
+ *
+ *      Table 7.7: Interpretation of the EventType field for tests on the AdvMode field
+ *
+ * • If the relevant field is vendor-specific, then the check to be applied and the
+ *   interpretation of Test_Parameters[i] are also vendor-specific.
+ *
+ * Example 1
+ *
+ * In this example, the decision instructions consist of the two tests in Table 7.8:
+ *
+ *  Test                  Test_Flags       Test_Field        Test_Parameters
+ *  0                     0b0011           0                 Key
+ *  1                     0b0010           6                 0x05 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+ *                                                           0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+ *
+ * Table 7.8: Example 1 test instructions
+ *
+ * These instructions form a single test group. Test 0 passes if there is a Resolvable
+ * Tag field in the PDU that resolves against the key provided, while test 1 passes if the
+ * advertising is undirected and non-connectable.
+ * Therefore a PDU will be accepted if it resolves against the key and is undirected but not
+ * connectable.
+ *
+ * If the Test_Flags for test 1 were changed to 0b0011, the two tests would each form
+ * their own test group. A PDU would then be accepted if it resolved against the key or is
+ * undirected and non-connectable.
+ *
+ * Example 2
+ *
+ * In this example, the decision instructions consist of the three tests in Table 7.9:
+ *
+ *  Test            Test_Flags      Test_Field   Test_Parameters
+ *  0               0b0011          20           0xFF 0xFF 0xFF 0xFF 0x00 0x00 0x00 0x00
+ *                                               0x41 0x42 0x43 0x44 0x00 0x00 0x00 0x00
+ *  1               0b0011          36           0xFF 0xFF 0xFF 0xFF 0x00 0x00 0x00 0x00
+ *                                               0x45 0x46 0x47 0x48 0x00 0x00 0x00 0x00
+ *  2               0b0011          52           0xFF 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+ *                                               0x4A 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+ *
+ * Table 7.9: Example 2 test instructions
+ *
+ * These instructions each form their own test group, so a PDU will be accepted if any of
+ * the tests pass.
+ *
+ * • Test 0 passes if the Arbitrary Data is exactly four octets long, consisting of “ABCD”.
+ * • Test 1 passes if the Arbitrary Data is at least four octets long and begins with “EFGH”.
+ * • Test 2 passes if the Arbitrary Data is at most four octets long and begins with “J”.
+ *
+ * Example 3
+ *
+ * In this example, the decision instructions consist of the five tests in Table 7.10:
+ *
+ *  Test            Test_Flags      Test_Field   Test_Parameters
+ *  0               0b1001          0            Ignored
+ *  1               0b1010          8            0x50 0x64 0x00 0x00 0x00 0x00 0x00 0x00
+ *                                               0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+ *  2               0b0010          36           0xFF 0xFF 0xFF 0xFF 0x00 0x00 0x00 0x00
+ *                                               0x43 0x44 0x57 0x46 0x00 0x00 0x00 0x00
+ *  3               0b0011          0            Key
+ *  4               0b0010          18           0xDF 0xDF 0x00 0x00 0x00 0x00 0x00 0x00
+ *                                               0x42 0x54 0x00 0x00 0x00 0x00 0x00 0x00
+ *
+ * Table 7.10: Example 3 test instructions
+ * These instructions form two test groups, one consisting of tests 0 to 2 and the other of
+ * tests 3 and 4.
+ *
+ * Test 0 passes if there is no Resolvable Tag field in the PDU.
+ *
+ * Test 1 passes if the calculated path loss is between 80 dB and 100 dB or if the loss
+ * cannot be calculated (if the value of Test_Flags[1] had been 0b0010, test 1 would fail if
+ * the loss could not be calculated).
+ *
+ * Test 2 passes if the Arbitrary Data is at least 4 octets long and begins with “CDWF”.
+ *
+ * Test 3 passes if there is a Resolvable Tag field in the PDU and that tag resolves against
+ * the specified key.
+ *
+ * Test 4 passes if the Arbitrary Data consists of exactly two octets, which are “bt” in either
+ * case (because the bit distinguishing case is masked out for these two octets).
+ *
+ * Therefore:
+ *
+ * • A PDU not containing a Resolvable Tag will be accepted if it contains Arbitrary Data
+ *   beginning with “CDWF” and the path loss (if available) is within certain bounds.
+ * • A PDU containing a Resolvable Tag will be accepted if the tag resolves against the
+ *   key in Test_Parameters[3] and it is followed by one of “BT”, “Bt”, “bT”, or “bt”.
+ *
+ * Errors:
+ *
+ * See Section 4.5.2 for a list of error types and descriptions.
+ *
+ * <pre>
+ * Type   Condition                                                 Error code
+ * MC     Num_Tests is 0 or bit 0 of Test_Flags[0] is 0.            Invalid HCI Command Parameters
+ *                                                                  (0x12)
+ * MC     Num_Tests is greater than the maximum that the            Limit Reached (0x43)
+ *        Controller supports.
+ * </pre>
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_Set_Decision_Instructions command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_decision_instructions(const sdc_hci_cmd_le_set_decision_instructions_t * p_params);
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
