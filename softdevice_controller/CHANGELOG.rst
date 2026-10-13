@@ -9,6 +9,22 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.4.2
+**********************
+
+Changes
+=======
+* The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
+* The controller now returns the error code ``0x11`` if the LE Set Periodic Advertising Response Data command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission.
+  See the :ref:`softdevice_controller_limitations` section. (DRGN-29455)
+
+Bug fixes
+=========
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, could assert when responding in multiple response slots in the same subevent. (DRGN-29455)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, kept response data that was never transmitted because the periodic advertising synchronization was terminated or lost.
+  The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, would leak peripheral contexts on disconnect. (DRGN-30124)
+
 nRF Connect SDK v3.4.1
 **********************
 
