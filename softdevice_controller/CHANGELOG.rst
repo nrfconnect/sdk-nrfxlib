@@ -36,10 +36,12 @@ Added
 * :ref:`Experimental <nrf:software_maturity>` support for the Channel Classification feature and the LE Read and Write AFH Channel Assessment Mode HCI commands.
   Autonomous channel assessment is not supported. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` vendor-specific HCI command for the central role to enable or disable channel classification reporting on an ACL connection: :c:func:`sdc_hci_cmd_vs_channel_reporting_enable`. (DRGN-27485)
+* :ref:`Experimental <nrf:software_maturity>` support for the Decision Based Advertising Filtering feature. (DRGN-21221)
 
 Changes
 =======
 
+* Removed support for nRF52 series
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
@@ -60,6 +62,8 @@ Changes
   See the :ref:`softdevice_controller_limitations` section. (DRGN-29455)
 * When a central connection uses subrating, the controller now schedules other concurrent roles around the subrated connection events only.
   This change improves scheduling performance when multiple subrated connections are active. (DRGN-29752)
+* The controller now always cancels peripheral latency if the last received packet contained a CRC error.
+  This makes it less likely that a control procedure packet containing an instant is missed. (DRGN-29906)
 
 Bug fixes
 =========
@@ -77,6 +81,7 @@ Bug fixes
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, could assert when responding in multiple response slots in the same subevent. (DRGN-29455)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, kept response data that was never transmitted because the periodic advertising synchronization was terminated or lost.
   The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
+* Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, would leak peripheral contexts on disconnect. (DRGN-30124)
 * Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
   This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
 * Fixed an issue where the controller could set a sub-optimal base event in the ``LL_SUBRATE_IND`` PDU when initiating connection subrating.
@@ -85,6 +90,9 @@ Bug fixes
 * Fixed an issue where the controller, acting as a central, would elevate scheduling priority for an extended period when sending a control procedure with an instant to a peripheral using a large peripheral latency. (DRGN-29680)
 * Fixed an issue where the LE Enhanced Connection Complete event or the LE Extended Advertising Report event could report the identity address of a device in the resolving list instead of the address of the actual peer.
   This could happen when scanning and initiating at the same time with different scan parameters. (DRGN-28181)
+* Fixed a rare issue where the controller, acting as an Isochronous Broadcaster, could transmit a BIGInfo with an invalid BIG offset.
+  This would only occur with an ISO interval longer than 245 ms. (DRGN-30055)
+* Fixed an issue where the controller would assert when calling the :c:func:`sdc_hci_cmd_vs_compat_mode_window_offset_set` function if the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option was not enabled. (DRGN-30119)
 
 nRF Connect SDK v3.4.0
 **********************
