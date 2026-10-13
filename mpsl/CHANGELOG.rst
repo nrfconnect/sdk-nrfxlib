@@ -16,7 +16,13 @@ Main branch
 Added
 =====
 
+* :c:func:`mpsl_temperature_last_get`, to read the die temperature stored by the last :c:func:`mpsl_temperature_get` call. (DRGN-28399)
 * Experimental support for TX/RX bypass on simple GPIO Front-End Modules, including devices that share bypass control with LNA/PA pins (for example, SKY66409-11). (KRKNWK-22452)
+
+Changes
+=======
+
+* Removed support for nRF52 series
 
 Bug fixes
 =========
