@@ -560,14 +560,6 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
-
 /** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -579,6 +571,14 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_vs_dtm_test_end_return_t;
+
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -597,7 +597,7 @@ typedef struct __PACKED __ALIGN(1)
      *         1,000 us steps are also accepted.
      */
     uint32_t conn_interval_us;
-    /** @brief Slave latency for the connection in number of connection events. */
+    /** @brief Peripheral latency for the connection in number of connection events. */
     uint16_t conn_latency;
     /** @brief Supervision timeout for the LE Link in 10 ms units. Range 100 ms to 32 s. */
     uint16_t supervision_timeout;
@@ -923,8 +923,8 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Command parameters (union of all sub-command parameter structs). */
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
         sdc_hci_cmd_vs_dtm_test_end_t test_end;
+        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
     } command_parameters;
 } sdc_hci_cmd_vs_dtm_command_t;
 
@@ -1330,7 +1330,7 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * regardless of the requested peripheral latency. This option consumes the most power.
  *
  * In wait_for_ack mode, the peripheral will wake up on every connection event if
- * it has not received an ACK from the master for at least peripheral latency events.
+ * it has not received an ACK from the central for at least peripheral latency events.
  * This configuration may increase the power consumption in environments with a lot of radio
  * activity.
  *
