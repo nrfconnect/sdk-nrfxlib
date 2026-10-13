@@ -30,17 +30,18 @@
  * @file
  * @brief
  *   This file includes the mDNS related APIs.
- *
  */
 
-#ifndef OPENTHREAD_MULTICAST_DNS_H_
-#define OPENTHREAD_MULTICAST_DNS_H_
+#ifndef OPENTHREAD_MDNS_H_
+#define OPENTHREAD_MDNS_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <openthread/error.h>
 #include <openthread/instance.h>
 #include <openthread/ip6.h>
+#include <openthread/nat64.h>
 #include <openthread/platform/dnssd.h>
 
 #ifdef __cplusplus
@@ -57,12 +58,10 @@ extern "C" {
  *
  * The mDNS APIs are available when the mDNS support `OPENTHREAD_CONFIG_MULTICAST_DNS_ENABLE` is enabled and the
  * `OPENTHREAD_CONFIG_MULTICAST_DNS_PUBLIC_API_ENABLE` is also enabled.
- *
  */
 
 /**
  * Represents a request ID (`uint32_t` value) for registering a host, a service, or a key service.
- *
  */
 typedef otPlatDnssdRequestId otMdnsRequestId;
 
@@ -81,7 +80,6 @@ typedef otPlatDnssdRequestId otMdnsRequestId;
  * @param[in] aInstance     The OpenThread instance.
  * @param[in] aRequestId    The request ID.
  * @param[in] aError        Error indicating the outcome of request.
- *
  */
 typedef otPlatDnssdRegisterCallback otMdnsRegisterCallback;
 
@@ -101,7 +99,6 @@ typedef otPlatDnssdRegisterCallback otMdnsRegisterCallback;
  * @param[in] aInstance      The OpenThread instance.
  * @param[in] aName          The host name or the service instance label.
  * @param[in] aServiceType   The service type (e.g., `_tst._udp`).
- *
  */
 typedef void (*otMdnsConflictCallback)(otInstance *aInstance, const char *aName, const char *aServiceType);
 
@@ -111,7 +108,6 @@ typedef void (*otMdnsConflictCallback)(otInstance *aInstance, const char *aName,
  * This type is used to register or unregister a host (`otMdnsRegisterHost()` and `otMdnsUnregisterHost()`).
  *
  * See the description of each function for more details on how different fields are used in each case.
- *
  */
 typedef otPlatDnssdHost otMdnsHost;
 
@@ -121,7 +117,6 @@ typedef otPlatDnssdHost otMdnsHost;
  * This type is used to register or unregister a service (`otMdnsRegisterService()` and `otMdnsUnregisterService()`).
  *
  * See the description of each function for more details on how different fields are used in each case.
- *
  */
 typedef otPlatDnssdService otMdnsService;
 
@@ -129,19 +124,16 @@ typedef otPlatDnssdService otMdnsService;
  * Represents an mDNS key record.
  *
  * See `otMdnsRegisterKey()`, `otMdnsUnregisterKey()` for more details about fields in each case.
- *
  */
 typedef otPlatDnssdKey otMdnsKey;
 
 /**
  * Represents an mDNS entry iterator.
- *
  */
 typedef struct otMdnsIterator otMdnsIterator;
 
 /**
  * Represents a host/service/key entry state.
- *
  */
 typedef enum otMdnsEntryState
 {
@@ -150,6 +142,20 @@ typedef enum otMdnsEntryState
     OT_MDNS_ENTRY_STATE_CONFLICT,   ///< Name conflict was detected.
     OT_MDNS_ENTRY_STATE_REMOVING,   ///< Entry is being removed (sending "goodbye" announcements).
 } otMdnsEntryState;
+
+/**
+ * Represents a local host IPv4 or IPv6 address entry.
+ */
+typedef struct otMdnsLocalHostAddress
+{
+    bool     mIsIp6;        ///< Indicates whether the address is IPv6 (`true`) or IPv4 (`false`).
+    uint32_t mInfraIfIndex; ///< The infrastructure network interface index.
+    union
+    {
+        otIp6Address mIp6; ///< The IPv6 address (valid when `mIsIp6` is true).
+        otIp4Address mIp4; ///< The IPv4 address (valid when `mIsIp6` is false).
+    } mAddress;            ///< The address.
+} otMdnsLocalHostAddress;
 
 /**
  * Enables or disables the mDNS module.
@@ -164,8 +170,7 @@ typedef enum otMdnsEntryState
  * @param[in] aInfraIfIndex  The network interface index for mDNS operation. Value is ignored when disabling
  *
  * @retval OT_ERROR_NONE     Enabled or disabled the mDNS module successfully.
- * @retval OT_ERROR_ALREADY  mDNS is already enabled on an enable request or is already disabled on a disable request.
- *
+ * @retval OT_ERROR_FAILED   Failed to enable/disable mDNS.
  */
 otError otMdnsSetEnabled(otInstance *aInstance, bool aEnable, uint32_t aInfraIfIndex);
 
@@ -176,9 +181,41 @@ otError otMdnsSetEnabled(otInstance *aInstance, bool aEnable, uint32_t aInfraIfI
  *
  * @retval TRUE    The mDNS module is enabled
  * @retval FALSE   The mDNS module is disabled.
- *
  */
 bool otMdnsIsEnabled(otInstance *aInstance);
+
+/**
+ * Enables or disables the mDNS auto-enable mode.
+ *
+ * Requires `OPENTHREAD_CONFIG_BORDER_ROUTING_ENABLE`.
+ *
+ * When this mode is enabled, the mDNS module uses the same infrastructure network interface as the Border Routing
+ * manager. The mDNS module is then automatically enabled or disabled based on the operational state of that interface
+ * (see `otBorderRoutingInit()` and `otPlatInfraIfStateChanged()`).
+ *
+ * It is recommended to use the auto-enable mode on Border Routers. The default state of this mode at initialization
+ * is controlled by the `OPENTHREAD_CONFIG_MULTICAST_DNS_AUTO_ENABLE_ON_INFRA_IF` configuration.
+ *
+ * The auto-enable mode can be disabled by a call to `otMdnsSetAutoEnableMode(false)` or by an explicit call to
+ * `otMdnsSetEnabled()`. Deactivating the auto-enable mode with `otMdnsSetAutoEnableMode(false)` will not change the
+ * current operational state of the mDNS module (e.g., if it is currently enabled, it remains enabled).
+ *
+ * @param[in] aInstance   The OpenThread instance.
+ * @param[in] aEnable     A boolean to enable or disable the auto-enable mode.
+ */
+void otMdnsSetAutoEnableMode(otInstance *aInstance, bool aEnable);
+
+/**
+ * Indicates whether the auto-enable mode is enabled or disabled.
+ *
+ * Requires `OPENTHREAD_CONFIG_BORDER_ROUTING_ENABLE`.
+ *
+ * @param[in] aInstance   The OpenThread instance.
+ *
+ * @retval TRUE   The auto-enable mode is enabled.
+ * @retval FALSE  The auto-enable mode is disabled.
+ */
+bool otMdnsGetAutoEnableMode(otInstance *aInstance);
 
 /**
  * Sets whether the mDNS module is allowed to send questions requesting unicast responses referred to as "QU" questions.
@@ -190,7 +227,6 @@ bool otMdnsIsEnabled(otInstance *aInstance);
  *
  * @param[in] aInstance     The OpenThread instance.
  * @param[in] aAllow        Indicates whether or not to allow "QU" questions.
- *
  */
 void otMdnsSetQuestionUnicastAllowed(otInstance *aInstance, bool aAllow);
 
@@ -199,7 +235,6 @@ void otMdnsSetQuestionUnicastAllowed(otInstance *aInstance, bool aAllow);
  *
  * @retval TRUE  The mDNS module is allowed to send "QU" questions.
  * @retval FALSE The mDNS module is not allowed to send "QU" questions.
- *
  */
 bool otMdnsIsQuestionUnicastAllowed(otInstance *aInstance);
 
@@ -214,9 +249,31 @@ bool otMdnsIsQuestionUnicastAllowed(otInstance *aInstance);
  *
  * @param[in] aInstance     The OpenThread instance.
  * @param[in] aCallback     The conflict callback.
- *
  */
 void otMdnsSetConflictCallback(otInstance *aInstance, otMdnsConflictCallback aCallback);
+
+/**
+ * Gets the local host name.
+ *
+ * @param[in] aInstance     The OpenThread instance.
+ *
+ * @returns The local host name.
+ */
+const char *otMdnsGetLocalHostName(otInstance *aInstance);
+
+/**
+ * Sets the local host name.
+ *
+ * The local host name can be set only when the mDNS module is disabled. If not set the mDNS module itself will
+ * auto-generate the local host name.
+ *
+ * @param[in] aInstance   The OpenThread instance.
+ * @param[in] aName       The local host name to use, can be to `NULL` to allow the mDNS module to choose the name.
+ *
+ * @retval OT_ERROR_NONE            The local host name was successfully set.
+ * @retval OT_ERROR_INVALID_STATE   mDNS module is already enabled.
+ */
+otError otMdnsSetLocalHostName(otInstance *aInstance, const char *aName);
 
 /**
  * Registers or updates a host on mDNS.
@@ -252,7 +309,7 @@ void otMdnsSetConflictCallback(otInstance *aInstance, otMdnsConflictCallback aCa
  *
  * @retval OT_ERROR_NONE            Successfully started registration. @p aCallback will report the outcome.
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    The name in @p aHost is invalid.
  */
 otError otMdnsRegisterHost(otInstance            *aInstance,
                            const otMdnsHost      *aHost,
@@ -277,7 +334,7 @@ otError otMdnsRegisterHost(otInstance            *aInstance,
  *
  * @retval OT_ERROR_NONE            Successfully unregistered host.
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    The name in @p aHost is invalid.
  */
 otError otMdnsUnregisterHost(otInstance *aInstance, const otMdnsHost *aHost);
 
@@ -290,7 +347,8 @@ otError otMdnsUnregisterHost(otInstance *aInstance, const otMdnsHost *aHost);
  *   contain dot `.` character which is allowed in a service instance label.
  * - The `mServiceType` specifies the service type (e.g., "_tst._udp"). It is treated as multiple dot `.` separated
  *   labels. It MUST NOT contain the domain name.
- * - The `mHostName` field specifies the host name of the service. MUST NOT contain the domain name.
+ * - The `mHostName` field specifies the host name of the service if it is not NULL. Otherwise, if it is NULL, it
+ *   indicates that this service is for the local host (this device itself).
  * - The `mSubTypeLabels` is an array of strings representing sub-types associated with the service. Each array entry
  *   is a sub-type label. The `mSubTypeLabels can be NULL if there is no sub-type. Otherwise, the array length is
  *   specified by `mSubTypeLabelsLength`.
@@ -316,7 +374,7 @@ otError otMdnsUnregisterHost(otInstance *aInstance, const otMdnsHost *aHost);
  *
  * @retval OT_ERROR_NONE            Successfully started registration. @p aCallback will report the outcome.
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    A name in @p aService (instance, service type, sub-types, or host) is not valid.
  */
 otError otMdnsRegisterService(otInstance            *aInstance,
                               const otMdnsService   *aService,
@@ -344,7 +402,7 @@ otError otMdnsRegisterService(otInstance            *aInstance,
  *
  * @retval OT_ERROR_NONE            Successfully unregistered service.
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    A name in @p aService (instance or service type) is not valid.
  */
 otError otMdnsUnregisterService(otInstance *aInstance, const otMdnsService *aService);
 
@@ -375,7 +433,7 @@ otError otMdnsUnregisterService(otInstance *aInstance, const otMdnsService *aSer
  *
  * @retval OT_ERROR_NONE            Successfully started registration. @p aCallback will report the outcome.
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    A name in @p aKey is not valid.
  */
 otError otMdnsRegisterKey(otInstance            *aInstance,
                           const otMdnsKey       *aKey,
@@ -404,7 +462,7 @@ otError otMdnsRegisterKey(otInstance            *aInstance,
  *
  * @retval OT_ERROR_NONE            Successfully unregistered key
  * @retval OT_ERROR_INVALID_STATE   mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS    A name in @p aKey is not valid.
  */
 otError otMdnsUnregisterKey(otInstance *aInstance, const otMdnsKey *aKey);
 
@@ -418,7 +476,6 @@ otError otMdnsUnregisterKey(otInstance *aInstance, const otMdnsKey *aKey);
  * @param[in] aInstance    The OpenThread instance.
  *
  * @returns A pointer to the allocated iterator, or `NULL` if it fails to allocate.
- *
  */
 otMdnsIterator *otMdnsAllocateIterator(otInstance *aInstance);
 
@@ -429,7 +486,6 @@ otMdnsIterator *otMdnsAllocateIterator(otInstance *aInstance);
  *
  * @param[in] aInstance    The OpenThread instance.
  * @param[in] aIterator    The iterator to free.
- *
  */
 void otMdnsFreeIterator(otInstance *aInstance, otMdnsIterator *aIterator);
 
@@ -449,7 +505,6 @@ void otMdnsFreeIterator(otInstance *aInstance, otMdnsIterator *aIterator);
  * @retval OT_ERROR_NONE         @p aHost, @p aState, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextHost(otInstance       *aInstance,
                           otMdnsIterator   *aIterator,
@@ -473,7 +528,6 @@ otError otMdnsGetNextHost(otInstance       *aInstance,
  * @retval OT_ERROR_NONE         @p aService, @p aState, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextService(otInstance       *aInstance,
                              otMdnsIterator   *aIterator,
@@ -496,27 +550,44 @@ otError otMdnsGetNextService(otInstance       *aInstance,
  * @retval OT_ERROR_NONE         @p aKey, @p aState, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  Iterator is not valid.
- *
  */
 otError otMdnsGetNextKey(otInstance *aInstance, otMdnsIterator *aIterator, otMdnsKey *aKey, otMdnsEntryState *aState);
+
+/**
+ * Iterates over the local host IPv6 and IPv4 addresses tracked by OpenThread mDNS module.
+ *
+ * Requires `OPENTHREAD_CONFIG_MULTICAST_DNS_ENTRY_ITERATION_API_ENABLE`.
+ *
+ * The platform layer is responsible for monitoring and reporting all host IPv4 and IPv6 addresses to the OpenThread
+ * mDNS module, which then tracks the full address list (see `otPlatMdnsHandleHostAddressEvent()`). This function
+ * allows iteration through this tracked list, primarily intended for information and debugging purposes.
+ *
+ * @param[in]   aInstance           The OpenThread instance.
+ * @param[out]  aIterator           Pointer to the iterator to use.
+ * @param[out]  aAddress            Pointer to an `otMdnsLocalHostAddress` to output the next address entry.
+ *
+ * @retval OT_ERROR_NONE            The @p aAddress, and @p aIterator are updated successfully.
+ * @retval OT_ERROR_NOT_FOUND       Reached the end of the list.
+ * @retval OT_ERROR_INVALID_ARGS    Iterator is not valid.
+ */
+otError otMdnsGetNextLocalHostAddress(otInstance             *aInstance,
+                                      otMdnsIterator         *aIterator,
+                                      otMdnsLocalHostAddress *aAddress);
 
 /**
  * Represents a service browser.
  *
  * Refer to `otPlatDnssdBrowser` for documentation of member fields and `otMdnsStartBrowser()` for how they are used.
- *
  */
 typedef otPlatDnssdBrowser otMdnsBrowser;
 
 /**
  * Represents the callback function pointer type used to report a browse result.
- *
  */
 typedef otPlatDnssdBrowseCallback otMdnsBrowseCallback;
 
 /**
  * Represents a browse result.
- *
  */
 typedef otPlatDnssdBrowseResult otMdnsBrowseResult;
 
@@ -525,19 +596,16 @@ typedef otPlatDnssdBrowseResult otMdnsBrowseResult;
  *
  * Refer to `otPlatDnssdSrvResolver` for documentation of member fields and `otMdnsStartSrvResolver()` for how they are
  * used.
- *
  */
 typedef otPlatDnssdSrvResolver otMdnsSrvResolver;
 
 /**
  * Represents the callback function pointer type used to report an SRV resolve result.
- *
  */
 typedef otPlatDnssdSrvCallback otMdnsSrvCallback;
 
 /**
  * Represents an SRV resolver result.
- *
  */
 typedef otPlatDnssdSrvResult otMdnsSrvResult;
 
@@ -546,19 +614,16 @@ typedef otPlatDnssdSrvResult otMdnsSrvResult;
  *
  * Refer to `otPlatDnssdTxtResolver` for documentation of member fields and `otMdnsStartTxtResolver()` for how they are
  * used.
- *
  */
 typedef otPlatDnssdTxtResolver otMdnsTxtResolver;
 
 /**
  * Represents the callback function pointer type used to report a TXT resolve result.
- *
  */
 typedef otPlatDnssdTxtCallback otMdnsTxtCallback;
 
 /**
  * Represents a TXT resolver result.
- *
  */
 typedef otPlatDnssdTxtResult otMdnsTxtResult;
 
@@ -567,27 +632,38 @@ typedef otPlatDnssdTxtResult otMdnsTxtResult;
  *
  * Refer to `otPlatDnssdAddressResolver` for documentation of member fields and `otMdnsStartIp6AddressResolver()` or
  * `otMdnsStartIp4AddressResolver()` for how they are used.
- *
  */
 typedef otPlatDnssdAddressResolver otMdnsAddressResolver;
 
 /**
  * Represents the callback function pointer type use to report an IPv6/IPv4 address resolve result.
- *
  */
 typedef otPlatDnssdAddressCallback otMdnsAddressCallback;
 
 /**
  * Represents a discovered host address and its TTL.
- *
  */
 typedef otPlatDnssdAddressAndTtl otMdnsAddressAndTtl;
 
 /**
  * Represents address resolver result.
- *
  */
 typedef otPlatDnssdAddressResult otMdnsAddressResult;
+
+/**
+ * Represents a record query result.
+ */
+typedef otPlatDnssdRecordResult otMdnsRecordResult;
+
+/**
+ * Represents the callback function used to report a record querier result.
+ */
+typedef otPlatDnssdRecordCallback otMdnsRecordCallback;
+
+/**
+ * Represents a record querier.
+ */
+typedef otPlatDnssdRecordQuerier otMdnsRecordQuerier;
 
 /**
  * Starts a service browser.
@@ -608,7 +684,7 @@ typedef otPlatDnssdAddressResult otMdnsAddressResult;
  * @retval OT_ERROR_NONE           Browser started successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
  * @retval OT_ERROR_ALREADY        An identical browser (same service and callback) is already active.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aBrowser is invalid, or the callback is `NULL`.
  */
 otError otMdnsStartBrowser(otInstance *aInstance, const otMdnsBrowser *aBrowser);
 
@@ -622,7 +698,7 @@ otError otMdnsStartBrowser(otInstance *aInstance, const otMdnsBrowser *aBrowser)
  *
  * @retval OT_ERROR_NONE           Browser stopped successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aBrowser is invalid, or the callback is `NULL`.
  */
 otError otMdnsStopBrowser(otInstance *aInstance, const otMdnsBrowser *aBroswer);
 
@@ -647,7 +723,7 @@ otError otMdnsStopBrowser(otInstance *aInstance, const otMdnsBrowser *aBroswer);
  * @retval OT_ERROR_NONE           Resolver started successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
  * @retval OT_ERROR_ALREADY        An identical resolver (same service and callback) is already active.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStartSrvResolver(otInstance *aInstance, const otMdnsSrvResolver *aResolver);
 
@@ -661,7 +737,7 @@ otError otMdnsStartSrvResolver(otInstance *aInstance, const otMdnsSrvResolver *a
  *
  * @retval OT_ERROR_NONE           Resolver stopped successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStopSrvResolver(otInstance *aInstance, const otMdnsSrvResolver *aResolver);
 
@@ -686,7 +762,7 @@ otError otMdnsStopSrvResolver(otInstance *aInstance, const otMdnsSrvResolver *aR
  * @retval OT_ERROR_NONE           Resolver started successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
  * @retval OT_ERROR_ALREADY        An identical resolver (same service and callback) is already active.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStartTxtResolver(otInstance *aInstance, const otMdnsTxtResolver *aResolver);
 
@@ -700,7 +776,7 @@ otError otMdnsStartTxtResolver(otInstance *aInstance, const otMdnsTxtResolver *a
  *
  * @retval OT_ERROR_NONE           Resolver stopped successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStopTxtResolver(otInstance *aInstance, const otMdnsTxtResolver *aResolver);
 
@@ -725,7 +801,7 @@ otError otMdnsStopTxtResolver(otInstance *aInstance, const otMdnsTxtResolver *aR
  * @retval OT_ERROR_NONE           Resolver started successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
  * @retval OT_ERROR_ALREADY        An identical resolver (same host and callback) is already active.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStartIp6AddressResolver(otInstance *aInstance, const otMdnsAddressResolver *aResolver);
 
@@ -739,7 +815,7 @@ otError otMdnsStartIp6AddressResolver(otInstance *aInstance, const otMdnsAddress
  *
  * @retval OT_ERROR_NONE           Resolver stopped successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStopIp6AddressResolver(otInstance *aInstance, const otMdnsAddressResolver *aResolver);
 
@@ -765,7 +841,7 @@ otError otMdnsStopIp6AddressResolver(otInstance *aInstance, const otMdnsAddressR
  * @retval OT_ERROR_NONE           Resolver started successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
  * @retval OT_ERROR_ALREADY        An identical resolver (same host and callback) is already active.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStartIp4AddressResolver(otInstance *aInstance, const otMdnsAddressResolver *aResolver);
 
@@ -779,13 +855,72 @@ otError otMdnsStartIp4AddressResolver(otInstance *aInstance, const otMdnsAddress
  *
  * @retval OT_ERROR_NONE           Resolver stopped successfully.
  * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
- *
+ * @retval OT_ERROR_INVALID_ARGS   A name in @p aResolver is invalid, or the callback is `NULL`.
  */
 otError otMdnsStopIp4AddressResolver(otInstance *aInstance, const otMdnsAddressResolver *aResolver);
 
 /**
- * Represents additional information about a browser/resolver and its cached results.
+ * Starts a record querier.
  *
+ * Initiates a continuous query for a given `mRecordType` as specified in @p aQuerier. The queried name is specified
+ * by the combination of `mFirstLabel` and `mNextLabels` (optional rest of the labels) in @p aQuerier. The
+ * `mFirstLabel` MUST be non-NULL but `mNextLabels` can be `NULL` if there are no other labels. The `mNextLabels`
+ * MUST NOT include the domain name. The reason for a separate first label is to allow it to include a dot `.`
+ * character (as allowed for service instance labels).
+ *
+ * Discovered results are reported through the `mCallback` function in @p aQuerier, providing the record data bytes
+ * (RDATA). For NS, CNAME, SOA, PTR, MX, RP, AFSDB, RT, PX, SRV, KX, DNAME, and NSEC record types, the RDATA format
+ * contains one or more DNS names (which may use DNS name compression). For the above list, the reported record data
+ * bytes via @p mCallback will be decompressed to contain the full DNS name(s). For all other record types, the record
+ * data bytes are provided exactly as they appear in the received mDNS response. This aligns the implementation with
+ * RFC 6762 (section 18.14) regarding the use of name compression.
+ *
+ * A removed record data is indicated with a TTL value of zero. The callback may be invoked immediately with cached
+ * information (if available) and potentially before this function returns. When cached results are used, the reported
+ * TTL value will reflect the original TTL from the last received response.
+ *
+ * Multiple querier instances can be started for the same name, provided they use different callback functions.
+ *
+ * The record querier MUST not be used for record types PTR, SRV, TXT, A, and AAAA. Otherwise, `OT_ERROR_INVALID_ARGS`
+ * will be returned. For these, browsers/resolvers can be used. This design is intentional to enable the implementation
+ * of an "opportunistic cache mechanism", where, depending on currently active service browsers/resolvers, the mDNS
+ * implementation will also monitor and cache related records (e.g., when a service is resolved, the address records
+ * associated with its host name are cached even if there is no active address resolver for this hostname).
+ *
+ * The @p aQuerier and all its contained information (strings) are only valid during this call. The platform MUST save
+ * a copy of the information if it wants to retain the information after returning from this function.
+ *
+ * @param[in] aInstance   The OpenThread instance.
+ * @param[in] aQuerier    The record querier to be started.
+ *
+ * @retval OT_ERROR_NONE           Record @p aQuerier started successfully.
+ * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
+ * @retval OT_ERROR_ALREADY        An identical querier (same name, record type, and callback) is already active.
+ * @retval OT_ERROR_INVALID_ARGS   The `mRecordType` in @p aQuerier is invalid (MUST use browser/resolvers), or
+ *                                 a name in @p aQuerier is invalid, or the callback is `NULL`.
+ */
+otError otMdnsStartRecordQuerier(otInstance *aInstance, const otMdnsRecordQuerier *aQuerier);
+
+/**
+ * Stops a record querier.
+ *
+ * No action is performed if no matching querier with the same name and callback is currently active.
+ *
+ * The @p aQuerier and all its contained information (strings) are only valid during this call. The platform MUST save
+ * a copy of the information if it wants to retain the information after returning from this function.
+ *
+ * @param[in] aInstance   The OpenThread instance.
+ * @param[in] aQuerier    The record querier to be stopped.
+ *
+ * @retval OT_ERROR_NONE           Querier stopped successfully.
+ * @retval OT_ERROR_INVALID_STATE  mDNS module is not enabled.
+ * @retval OT_ERROR_INVALID_ARGS   The `mRecordType` in @p aQuerier is invalid (MUST use browser/resolvers), or
+ *                                 a name in @p aQuerier is invalid, or the callback is `NULL`.
+ */
+otError otMdnsStopRecordQuerier(otInstance *aInstance, const otMdnsRecordQuerier *aQuerier);
+
+/**
+ * Represents additional information about a browser/resolver and its cached results.
  */
 typedef struct otMdnsCacheInfo
 {
@@ -810,7 +945,6 @@ typedef struct otMdnsCacheInfo
  * @retval OT_ERROR_NONE         @p aBrowser, @p aInfo, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextBrowser(otInstance      *aInstance,
                              otMdnsIterator  *aIterator,
@@ -835,7 +969,6 @@ otError otMdnsGetNextBrowser(otInstance      *aInstance,
  * @retval OT_ERROR_NONE         @p aResolver, @p aInfo, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextSrvResolver(otInstance        *aInstance,
                                  otMdnsIterator    *aIterator,
@@ -860,7 +993,6 @@ otError otMdnsGetNextSrvResolver(otInstance        *aInstance,
  * @retval OT_ERROR_NONE         @p aResolver, @p aInfo, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextTxtResolver(otInstance        *aInstance,
                                  otMdnsIterator    *aIterator,
@@ -885,7 +1017,6 @@ otError otMdnsGetNextTxtResolver(otInstance        *aInstance,
  * @retval OT_ERROR_NONE         @p aResolver, @p aInfo, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextIp6AddressResolver(otInstance            *aInstance,
                                         otMdnsIterator        *aIterator,
@@ -910,7 +1041,6 @@ otError otMdnsGetNextIp6AddressResolver(otInstance            *aInstance,
  * @retval OT_ERROR_NONE         @p aResolver, @p aInfo, & @p aIterator are updated successfully.
  * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
  * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
- *
  */
 otError otMdnsGetNextIp4AddressResolver(otInstance            *aInstance,
                                         otMdnsIterator        *aIterator,
@@ -918,12 +1048,67 @@ otError otMdnsGetNextIp4AddressResolver(otInstance            *aInstance,
                                         otMdnsCacheInfo       *aInfo);
 
 /**
- * @}
+ * Iterates over record querier entries.
  *
+ * Requires `OPENTHREAD_CONFIG_MULTICAST_DNS_ENTRY_ITERATION_API_ENABLE`.
+ *
+ * On success, @p aQuerier is populated with information about the next querier . The `mCallback` field is always
+ * set to `NULL` as there may be multiple active querier with different callbacks. Other pointers within the
+ * `otMdnsRecordQuerier` structure remain valid until the next call to any OpenThread stack's public or platform
+ * API/callback.
+ *
+ * @param[in]  aInstance   The OpenThread instance.
+ * @param[in]  aIterator   Pointer to the iterator.
+ * @param[out] aQuerier    Pointer to an `otMdnsRecordQuerier` to return the information about the next one.
+ * @param[out] aInfo       Pointer to an `otMdnsCacheInfo` to return additional information.
+ *
+ * @retval OT_ERROR_NONE         @p aQuerier, @p aInfo, & @p aIterator are updated successfully.
+ * @retval OT_ERROR_NOT_FOUND    Reached the end of the list.
+ * @retval OT_ERROR_INVALID_ARG  @p aIterator is not valid.
+ */
+otError otMdnsGetNextRecordQuerier(otInstance          *aInstance,
+                                   otMdnsIterator      *aIterator,
+                                   otMdnsRecordQuerier *aQuerier,
+                                   otMdnsCacheInfo     *aInfo);
+
+/**
+ * Enables or disables verbose logging for the mDNS module at run-time.
+ *
+ * Requires `OPENTHREAD_CONFIG_MULTICAST_DNS_VERBOSE_LOGGING_ENABLE`.
+ *
+ * The initial state of verbose logging (enabled or disabled at startup) is determined by the configuration
+ * `OPENTHREAD_CONFIG_MULTICAST_DEFAULT_DNS_VERBOSE_LOGGING_STATE`.
+ *
+ * When enabled, the mDNS module emits verbose logs for every sent or received mDNS message, including the header and
+ * all question and resource records. These logs are generated regardless of the current log level configured on the
+ * device.
+ *
+ * This feature can generate a large volume of logs, so its use is recommended only during development, integration,
+ * or debugging.
+ *
+ * @param[in] aInstance  A pointer to an OpenThread instance.
+ * @param[in] aEnable    TRUE to enable verbose logging, FALSE to disable.
+ */
+void otMdnsSetVerboseLoggingEnabled(otInstance *aInstance, bool aEnable);
+
+/**
+ * Indicates whether verbose logging is enabled for the mDNS module.
+ *
+ * Requires `OPENTHREAD_CONFIG_MULTICAST_DNS_VERBOSE_LOGGING_ENABLE`.
+ *
+ * @param[in] aInstance  A pointer to an OpenThread instance.
+ *
+ * @retval TRUE   If verbose logging is enabled.
+ * @retval FALSE  If verbose logging is disabled.
+ */
+bool otMdnsIsVerboseLoggingEnabled(otInstance *aInstance);
+
+/**
+ * @}
  */
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // OPENTHREAD_MULTICAST_DNS_H_
+#endif // OPENTHREAD_MDNS_H_
