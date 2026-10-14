@@ -166,14 +166,12 @@ endforeach()
 # TF-M provides secure and non-secure HEX files separately. The merge script
 # combines them with the Wi-Fi patch(es) into a single HEX file for flashing.
 
-# Keep the KERNEL_NAME-based prefix aligned with image_signing.cmake.
-set(merged_prefix ${zephyr_dir}/${KERNEL_NAME}.nrf7120)
-set(merged_hex ${merged_prefix}.hex)
-set(merged_bin ${merged_prefix}.bin)
-set(merge_byproducts ${merged_hex} ${merged_bin})
-
+# Keep the merged file names aligned with image_signing.cmake in sdk-nrf, which
+# uses them as the MCUboot signing input.
+set(merged_prefix ${zephyr_dir}/${KERNEL_NAME}.wifi)
 set(merge_inputs ${zephyr_dir}/${KERNEL_HEX_NAME})
 if(CONFIG_BUILD_WITH_TFM)
+  set(merged_prefix ${zephyr_dir}/tfm_wifi_merged)
   set(merge_inputs "$<TARGET_PROPERTY:tfm,TFM_S_HEX_FILE>")
   if(CONFIG_TFM_USE_NS_APP)
     list(APPEND merge_inputs "$<TARGET_PROPERTY:tfm,TFM_NS_HEX_FILE>")
@@ -181,6 +179,10 @@ if(CONFIG_BUILD_WITH_TFM)
     list(APPEND merge_inputs ${zephyr_dir}/${KERNEL_HEX_NAME})
   endif()
 endif()
+
+set(merged_hex ${merged_prefix}.hex)
+set(merged_bin ${merged_prefix}.bin)
+set(merge_byproducts ${merged_hex} ${merged_bin})
 
 set(merge_command)
 set(merge_depends ${merge_inputs})
