@@ -41,6 +41,7 @@ Added
 Changes
 =======
 
+* Removed support for nRF52 series
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
