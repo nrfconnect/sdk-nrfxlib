@@ -35,7 +35,10 @@
 #ifndef OPENTHREAD_DATASET_UPDATER_H_
 #define OPENTHREAD_DATASET_UPDATER_H_
 
+#include <stdbool.h>
+
 #include <openthread/dataset.h>
+#include <openthread/error.h>
 #include <openthread/instance.h>
 
 #ifdef __cplusplus
@@ -48,7 +51,6 @@ extern "C" {
  * @{
  *
  * For FTD builds only, Dataset Updater includes functions to manage dataset updates.
- *
  */
 
 /**
@@ -64,7 +66,6 @@ extern "C" {
  *                                              a conflicting Dataset update.
  *
  * @param[in] aContext A pointer to the arbitrary context (provided by user in `otDatasetUpdaterRequestUpdate()`).
- *
  */
 typedef void (*otDatasetUpdaterCallback)(otError aError, void *aContext);
 
@@ -87,7 +88,6 @@ typedef void (*otDatasetUpdaterCallback)(otError aError, void *aContext);
  * @retval OT_ERROR_INVALID_ARGS   The @p aDataset is not valid (contains Active or Pending Timestamp).
  * @retval OT_ERROR_BUSY           Cannot start update, a previous one is ongoing.
  * @retval OT_ERROR_NO_BUFS        Could not allocated buffer to save Dataset.
- *
  */
 otError otDatasetUpdaterRequestUpdate(otInstance                 *aInstance,
                                       const otOperationalDataset *aDataset,
@@ -100,7 +100,6 @@ otError otDatasetUpdaterRequestUpdate(otInstance                 *aInstance,
  * Available when `OPENTHREAD_CONFIG_DATASET_UPDATER_ENABLE` is enabled.
  *
  * @param[in]  aInstance         A pointer to an OpenThread instance.
- *
  */
 void otDatasetUpdaterCancelUpdate(otInstance *aInstance);
 
@@ -113,13 +112,11 @@ void otDatasetUpdaterCancelUpdate(otInstance *aInstance);
  *
  * @retval TRUE    There is an ongoing update.
  * @retval FALSE   There is no ongoing update.
- *
  */
 bool otDatasetUpdaterIsUpdateOngoing(otInstance *aInstance);
 
 /**
  * @}
- *
  */
 
 #ifdef __cplusplus
