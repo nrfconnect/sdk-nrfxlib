@@ -9,6 +9,15 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.3.5
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
+* Fixed an issue where a peripheral connection could drop if a control procedure was received shortly after a Connection Subrate Update indication. (DRGN-29505)
+
 nRF Connect SDK v3.3.4
 **********************
 
