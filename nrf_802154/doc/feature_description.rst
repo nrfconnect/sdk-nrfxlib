@@ -63,14 +63,38 @@ The driver handles the pending bit as follows, depending on the protocol used:
 * Blacklist mode (Zigbee):
 
   * If the frame being acknowledged is not a data poll command frame, the pending bit is cleared (``0``).
-  * If the driver matches the source address with an entry in the array, the pending bit is cleared (``0``).
-  * If the array does not contain an address matching the source address and the frame being acknowledged is a data poll command frame, the pending bit is set (``1``).
+  * If the driver matches the source address with an entry in the peer table, the pending bit is cleared (``0``).
+  * If the peer table does not contain an address matching the source address and the frame being acknowledged is a data poll command frame, the pending bit is set (``1``).
 * Thread mode:
 
-  * If the driver matches the source address with an entry in the array, the pending bit is set (``1``).
-  * If the array does not contain an address matching the source address, the pending bit is cleared (``0``).
+  * If the driver matches the source address with an entry in the peer table, the pending bit is set (``1``).
+  * If the peer table does not contain an address matching the source address, the pending bit is cleared (``0``).
 
-The driver does not transmit the ACK frame if it cannot prepare the ACK frame before the transmission is ready to begin.
+.. _features_description_peer_table_capacity:
+
+Peer table capacity for automatic ACK generation
+************************************************
+
+When the driver sends an automatic ACK (Imm-ACK or Enh-ACK), it must finish preparing the frame in time for the required inter-frame spacing (see :ref:`features_description_automatic_sending_ack`).
+If it cannot prepare the ACK before the transmission is ready to begin, it does not transmit the ACK.
+During that window, the driver can look up the source address in a peer table.
+The driver can also apply the configured ACK behavior, for example:
+
+* Thread or Zigbee pending bit handling
+* Enh-ACK Information Element (IE) insertion
+* Link metrics or CSL-related IE content
+* Secured Enh-ACK processing
+
+The pending bit (Thread or Zigbee mode) and Enh-ACK Information Element (IE) data configured for a given source address share one peer record in the driver.
+Records are stored in two tables: one for short addresses and one for extended addresses.
+You can set the compile-time capacity of each table independently using :c:macro:`NRF_802154_PENDING_SHORT_ADDRESSES` and :c:macro:`NRF_802154_PENDING_EXTENDED_ADDRESSES`.
+In Zephyr, use :kconfig:option:`CONFIG_NRF_802154_PENDING_SHORT_ADDRESSES` and :kconfig:option:`CONFIG_NRF_802154_PENDING_EXTENDED_ADDRESSES`.
+
+Each table supports up to 512 entries when a supported platform has sufficient RAM, while the driver still relies on timely automatic ACKs.
+
+.. note::
+   When the driver runs on the nRF53 network core, the available RAM is limited (about 64 KiB).
+   The declared upper limit is 256 entries in each peer table (short and extended) instead of 512.
 
 .. _features_description_transmission:
 
@@ -255,6 +279,10 @@ As such, the higher layer must prepare a properly formatted frame and the enhanc
 To set the enhanced ACK data containing the CSL Information Element, the higher layer must call the :c:func:`nrf_802154_ack_data_set` function.
 
 .. note::
+   CSL Enh-ACK data is stored in the same peer tables as the pending bit.
+   Each configured source address consumes one slot, see :ref:`features_description_peer_table_capacity` for ``PENDING_*`` limits.
+
+.. note::
    This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer.
 
 .. _features_description_frame_security:
@@ -309,6 +337,10 @@ The injector module recognizes the following tokens, defined in :file:`nrf_80215
 * :c:macro:`IE_VENDOR_THREAD_RSSI_TOKEN`
 * :c:macro:`IE_VENDOR_THREAD_MARGIN_TOKEN`
 * :c:macro:`IE_VENDOR_THREAD_LQI_TOKEN`
+
+.. note::
+   Link Metrics IE templates use the same peer tables as the pending bit.
+   Each configured source address consumes one slot, see :ref:`features_description_peer_table_capacity` for ``PENDING_*`` limits.
 
 Performing retransmissions
 **************************
