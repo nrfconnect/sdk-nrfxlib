@@ -14,3 +14,7 @@ KRKNWK-11204: Transmitting an 802.15.4 frame with improperly populated Auxiliary
 
 KRKNWK-12482: Reception of correct frames will occasionally end in failure with error ``NRF_802154_RX_ERROR_RUNTIME``
   This issue can occur for the ``nrf5340dk_nrf5340_cpunet`` target if a custom application (other than ``nRF5340: Multiprotocol RPMsg`` sample or :zephyr:code-sample:`nrf_ieee802154_rpmsg` sample) is used.
+
+Peer table capacity when the driver runs on the nRF53 network core
+  When the 802.15.4 driver runs on the network core (for example nRF5340 ``cpunet``), the maximum limit for on-time automatic ACK generation is 256 peer table entries for each address type (short and extended) instead of 512.
+  See :ref:`features_description_peer_table_capacity`.

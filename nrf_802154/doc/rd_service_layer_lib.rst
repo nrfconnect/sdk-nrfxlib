@@ -18,8 +18,6 @@ It also provides an API to retrieve the capabilities of the binary in runtime.
 
 The service layer is available as a binary for the following SoCs:
 
-* nRF52833
-* nRF52840
 * nRF5340 Network Core
 * nRF54L15
 * nRF54L10
@@ -28,7 +26,7 @@ The service layer is available as a binary for the following SoCs:
 * nRF54LM20B
 * nRF54LC10A
 
-For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
+For the SOCs equipped with a floating-point unit (nRF54L Series), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
 For the other SOCs/SiPs, it is available only in the soft-float build version.
 
 When using the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the service layer automatically.
