@@ -17,6 +17,7 @@ Bug fixes
 
 * Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
 * Fixed an issue where a peripheral connection could drop if a control procedure was received shortly after a Connection Subrate Update indication. (DRGN-29505)
+* Fixed an issue where the controller, acting as a peripheral, could miss the first packet in a connection if the central sent it very late in the transmit window. (DRGN-29084)
 
 nRF Connect SDK v3.3.4
 **********************
