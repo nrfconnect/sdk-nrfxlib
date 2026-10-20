@@ -24,6 +24,7 @@ Bug fixes
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, kept response data that was never transmitted because the periodic advertising synchronization was terminated or lost.
   The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, would leak peripheral contexts on disconnect. (DRGN-30124)
+* Fixed an issue where the controller, acting as a peripheral, could miss the first packet in a connection if the central sent it very late in the transmit window. (DRGN-29084)
 
 nRF Connect SDK v3.4.1
 **********************
