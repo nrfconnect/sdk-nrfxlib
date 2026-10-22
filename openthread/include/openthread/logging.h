@@ -35,8 +35,13 @@
 #ifndef OPENTHREAD_LOGGING_H_
 #define OPENTHREAD_LOGGING_H_
 
+#include <stdarg.h>
+#include <stdint.h>
+
 #include <openthread/error.h>
+#include <openthread/instance.h>
 #include <openthread/platform/logging.h>
+#include <openthread/platform/toolchain.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,30 +54,72 @@ extern "C" {
  *   This module includes OpenThread logging related definitions.
  *
  * @{
- *
  */
 
 /**
- * Returns the current log level.
+ * Returns the current log level for a given OpenThread instance.
  *
  * If dynamic log level feature `OPENTHREAD_CONFIG_LOG_LEVEL_DYNAMIC_ENABLE` is enabled, this function returns the
- * currently set dynamic log level. Otherwise, this function returns the build-time configured log level.
+ * currently set dynamic log level:
+ * - In a single-instance configuration, it returns the instance's log level.
+ * - In a multi-instance configuration, it returns the instance-specific log level if it has been explicitly set
+ *   (see `otSetLogLevel()`). Otherwise, it returns the global log level (see `otLoggingGetLevel()`).
+ *
+ * If the dynamic log level feature is not enabled, this function returns the build-time configured log level.
+ *
+ * @param[in] aInstance  The OpenThread instance.
  *
  * @returns The log level.
+ */
+otLogLevel otGetLogLevel(otInstance *aInstance);
+
+/**
+ * Sets the log level for a given OpenThread instance.
  *
+ * @note This function requires `OPENTHREAD_CONFIG_LOG_LEVEL_DYNAMIC_ENABLE=1`.
+ *
+ * In a single-instance configuration, this function sets the log level for the instance.
+ *
+ * In a multi-instance configuration (`OPENTHREAD_CONFIG_MULTIPLE_INSTANCE_ENABLE`), if
+ * `OPENTHREAD_CONFIG_LOG_INSTANCE_AWARE_API_ENABLE` is not enabled, this function returns `OT_ERROR_NOT_CAPABLE`.
+ * When the log level is explicitly set on an instance, it overrides the global log level set using
+ * `otLoggingSetLevel()`.
+ *
+ * @param[in] aInstance  The OpenThread instance.
+ * @param[in] aLogLevel  The log level.
+ *
+ * @retval OT_ERROR_NONE          Successfully updated the log level.
+ * @retval OT_ERROR_INVALID_ARGS  Log level value is invalid.
+ * @retval OT_ERROR_NOT_CAPABLE   Instance-aware logging is not enabled in a multi-instance configuration.
+ */
+otError otSetLogLevel(otInstance *aInstance, otLogLevel aLogLevel);
+
+/**
+ * Returns the current global log level.
+ *
+ * In a single-instance configuration, this function behaves the same as `otGetLogLevel()`.
+ * In a multi-instance configuration, it returns the global log level which is used for all instances.
+ *
+ * @returns The global log level.
  */
 otLogLevel otLoggingGetLevel(void);
 
 /**
- * Sets the log level.
+ * Sets the global log level.
  *
  * @note This function requires `OPENTHREAD_CONFIG_LOG_LEVEL_DYNAMIC_ENABLE=1`.
  *
- * @param[in]  aLogLevel               The log level.
+ * In a single-instance configuration, this function behaves the same as `otSetLogLevel()` (which is the recommended
+ * function to use).
  *
- * @retval OT_ERROR_NONE            Successfully updated log level.
- * @retval OT_ERROR_INVALID_ARGS    Log level value is invalid.
+ * In a multi-instance configuration, it sets the global log level which is used by all instances. The log level can
+ * be explicitly set on a specific instance using `otSetLogLevel()`, which will then be used instead of the global
+ * value.
  *
+ * @param[in]  aLogLevel  The log level.
+ *
+ * @retval OT_ERROR_NONE          Successfully updated the log level.
+ * @retval OT_ERROR_INVALID_ARGS  Log level value is invalid.
  */
 otError otLoggingSetLevel(otLogLevel aLogLevel);
 
@@ -84,7 +131,6 @@ otError otLoggingSetLevel(otLogLevel aLogLevel);
  *
  * @param[in]  aFormat  The format string.
  * @param[in]  ...      Arguments for the format specification.
- *
  */
 void otLogCritPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
@@ -96,7 +142,6 @@ void otLogCritPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHE
  *
  * @param[in]  aFormat  The format string.
  * @param[in]  ...      Arguments for the format specification.
- *
  */
 void otLogWarnPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
@@ -108,7 +153,6 @@ void otLogWarnPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHE
  *
  * @param[in]  aFormat  The format string.
  * @param[in]  ...      Arguments for the format specification.
- *
  */
 void otLogNotePlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
@@ -120,7 +164,6 @@ void otLogNotePlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHE
  *
  * @param[in]  aFormat  The format string.
  * @param[in]  ...      Arguments for the format specification.
- *
  */
 void otLogInfoPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
@@ -132,7 +175,6 @@ void otLogInfoPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHE
  *
  * @param[in]  aFormat  The format string.
  * @param[in]  ...      Arguments for the format specification.
- *
  */
 void otLogDebgPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
@@ -145,7 +187,6 @@ void otLogDebgPlat(const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHE
  * @param[in]  aText         A string that is printed before the bytes.
  * @param[in]  aData         A pointer to the data buffer.
  * @param[in]  aDataLength   Number of bytes in @p aData.
- *
  */
 void otDumpCritPlat(const char *aText, const void *aData, uint16_t aDataLength);
 
@@ -158,7 +199,6 @@ void otDumpCritPlat(const char *aText, const void *aData, uint16_t aDataLength);
  * @param[in]  aText         A string that is printed before the bytes.
  * @param[in]  aData         A pointer to the data buffer.
  * @param[in]  aDataLength   Number of bytes in @p aData.
- *
  */
 void otDumpWarnPlat(const char *aText, const void *aData, uint16_t aDataLength);
 
@@ -171,7 +211,6 @@ void otDumpWarnPlat(const char *aText, const void *aData, uint16_t aDataLength);
  * @param[in]  aText         A string that is printed before the bytes.
  * @param[in]  aData         A pointer to the data buffer.
  * @param[in]  aDataLength   Number of bytes in @p aData.
- *
  */
 void otDumpNotePlat(const char *aText, const void *aData, uint16_t aDataLength);
 
@@ -184,7 +223,6 @@ void otDumpNotePlat(const char *aText, const void *aData, uint16_t aDataLength);
  * @param[in]  aText         A string that is printed before the bytes.
  * @param[in]  aData         A pointer to the data buffer.
  * @param[in]  aDataLength   Number of bytes in @p aData.
- *
  */
 void otDumpInfoPlat(const char *aText, const void *aData, uint16_t aDataLength);
 
@@ -197,7 +235,6 @@ void otDumpInfoPlat(const char *aText, const void *aData, uint16_t aDataLength);
  * @param[in]  aText         A string that is printed before the bytes.
  * @param[in]  aData         A pointer to the data buffer.
  * @param[in]  aDataLength   Number of bytes in @p aData.
- *
  */
 void otDumpDebgPlat(const char *aText, const void *aData, uint16_t aDataLength);
 
@@ -216,7 +253,6 @@ void otDumpDebgPlat(const char *aText, const void *aData, uint16_t aDataLength);
  * @param[in] aPlatModuleName   The platform sub-module name.
  * @param[in] aFormat           The format string.
  * @param[in] ...               Arguments for the format specification.
- *
  */
 void otLogPlat(otLogLevel aLogLevel, const char *aPlatModuleName, const char *aFormat, ...)
     OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(3, 4);
@@ -236,9 +272,9 @@ void otLogPlat(otLogLevel aLogLevel, const char *aPlatModuleName, const char *aF
  * @param[in] aPlatModuleName   The platform sub-module name.
  * @param[in] aFormat           The format string.
  * @param[in] aArgs             Arguments for the format specification.
- *
  */
-void otLogPlatArgs(otLogLevel aLogLevel, const char *aPlatModuleName, const char *aFormat, va_list aArgs);
+void otLogPlatArgs(otLogLevel aLogLevel, const char *aPlatModuleName, const char *aFormat, va_list aArgs)
+    OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(3, 0);
 
 /**
  * Emits a log message at a given log level.
@@ -249,7 +285,6 @@ void otLogPlatArgs(otLogLevel aLogLevel, const char *aPlatModuleName, const char
  * @param[in]  aLogLevel The log level.
  * @param[in]  aFormat   The format string.
  * @param[in]  ...       Arguments for the format specification.
- *
  */
 void otLogCli(otLogLevel aLogLevel, const char *aFormat, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(2, 3);
 
@@ -257,7 +292,6 @@ void otLogCli(otLogLevel aLogLevel, const char *aFormat, ...) OT_TOOL_PRINTF_STY
 
 /**
  * Represents information used for generating hex dump output.
- *
  */
 typedef struct
 {
@@ -288,13 +322,11 @@ typedef struct
  *
  * @retval OT_ERROR_NONE       Successfully generated the next line, `mLine` field in @p aInfo is updated.
  * @retval OT_ERROR_NOT_FOUND  Reached the end and no more line to generate.
- *
  */
 otError otLogGenerateNextHexDumpLine(otLogHexDumpInfo *aInfo);
 
 /**
  * @}
- *
  */
 
 #ifdef __cplusplus
