@@ -9,6 +9,21 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 3.4.2
+***************
+
+Core library
+============
+
+* Updated the :ref:`nrf_modem_rs_capture_api` documentation to state that the interface is provided for evaluation purposes only.
+
+Sockets
+=======
+
+* Added the :c:macro:`NRF_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384` cipher suite.
+
+* Fixed a bug where socket events would not be reported on modem fault and shutdown when using poll callbacks set with the :c:macro:`NRF_SO_POLLCB` socket option.
+
 nrf_modem 3.4.0
 ***************
 
