@@ -50,22 +50,37 @@ endfunction()
 
 macro(get_git_decribe repo)
   execute_process(
-    COMMAND           ${GIT_EXECUTABLE} describe --long
+    COMMAND ${GIT_EXECUTABLE} describe --tags --long
     WORKING_DIRECTORY ${repo}
-    RESULT_VARIABLE   git_return
-    OUTPUT_VARIABLE   git_describe
+    RESULT_VARIABLE git_return
+    OUTPUT_VARIABLE git_describe
     ERROR_QUIET
-    )
+  )
 
   if(NOT ${git_return} EQUAL 0)
     execute_process(
-      COMMAND           ${GIT_EXECUTABLE} rev-parse HEAD
+      COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
       WORKING_DIRECTORY ${repo}
-      RESULT_VARIABLE   git_return
-      OUTPUT_VARIABLE   git_describe
-      )
+      RESULT_VARIABLE git_return
+      OUTPUT_VARIABLE git_describe
+    )
   endif()
 endmacro()
+
+function(openthread_read_config_ignore_list ignore_file out_var)
+  set(ignore_path "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/cmake/${ignore_file}")
+  set(ignore_list "")
+  if(EXISTS "${ignore_path}")
+    file(READ "${ignore_path}" ignore_content)
+    string(REPLACE "\n" ";" ignore_content "${ignore_content}")
+    foreach(ignore_entry IN LISTS ignore_content)
+      if(NOT "${ignore_entry}" STREQUAL "")
+        list(APPEND ignore_list "${ignore_entry}")
+      endif()
+    endforeach()
+  endif()
+  set(${out_var} "${ignore_list}" PARENT_SCOPE)
+endfunction()
 
 # Store the configuration of the compiled OpenThread libraries
 # and set source and destination paths.
@@ -94,8 +109,9 @@ function(openthread_libs_configuration_write CONFIG_FILE NRFXLIB_RELEASE_TAG)
     list(APPEND LIB_CONFIGURATION "NRFXLIB_RELEASE_TAG=${NRFXLIB_RELEASE_TAG}\n")
   endif()
 
-  # Store all OT related variables
   get_cmake_property(_variableNames VARIABLES)
+
+  # Store all OT related variables
   list(APPEND OPENTHREAD_SETTINGS "\n###################### OpenThread configuration ##############\n\n")
   foreach (_variableName ${_variableNames})
     if("${_variableName}" MATCHES "^CONFIG_OPENTHREAD_.*|^OT_.*")
@@ -106,8 +122,7 @@ function(openthread_libs_configuration_write CONFIG_FILE NRFXLIB_RELEASE_TAG)
   list(APPEND LIB_CONFIGURATION ${OPENTHREAD_SETTINGS})
 
   # Store Crypto configuration
-  file(READ "cmake/crypto_config_ignore.txt" CRYPTO_IGNORE)
-  string(REPLACE "\n" ";" CRYPTO_IGNORE ${CRYPTO_IGNORE})
+  openthread_read_config_ignore_list(crypto_config_ignore.txt CRYPTO_IGNORE)
   list(APPEND LIB_CONFIGURATION "\n###################### Crypto configuration ##################\n\n")
   foreach (_variableName ${_variableNames})
     if("${_variableName}" MATCHES "^CONFIG_MBEDTLS_.*|^CONFIG_PSA_WANT_.*" AND NOT "${_variableName}" IN_LIST CRYPTO_IGNORE)
