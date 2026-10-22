@@ -35,8 +35,15 @@
 #ifndef OPENTHREAD_MESH_DIAG_H_
 #define OPENTHREAD_MESH_DIAG_H_
 
+#include <stdbool.h>
+#include <stdint.h>
+
+#include <openthread/error.h>
 #include <openthread/instance.h>
+#include <openthread/ip6.h>
+#include <openthread/netdiag.h>
 #include <openthread/thread.h>
+#include <openthread/platform/radio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,25 +58,26 @@ extern "C" {
  *   The Mesh Diagnostics APIs require `OPENTHREAD_CONFIG_MESH_DIAG_ENABLE` and `OPENTHREAD_FTD`.
  *
  * @{
- *
  */
 
 /**
  * Represents the set of configurations used when discovering mesh topology indicating which items to
  * discover.
  *
+ * The `mExtraTlvTypes` pointer can be NULL if `mExtraTlvTypesLength` is zero.
  */
 typedef struct otMeshDiagDiscoverConfig
 {
-    bool mDiscoverIp6Addresses : 1; ///< Whether or not to discover IPv6 addresses of every router.
-    bool mDiscoverChildTable : 1;   ///< Whether or not to discover children of every router.
+    bool           mDiscoverIp6Addresses : 1; ///< Whether or not to discover IPv6 addresses of every router.
+    bool           mDiscoverChildTable : 1;   ///< Whether or not to discover children of every router.
+    const uint8_t *mExtraTlvTypes;            ///< An array of extra Net Diag TLV types to request from every router.
+    uint8_t        mExtraTlvTypesLength;      ///< The length of the `mExtraTlvTypes` array. Can be zero.
 } otMeshDiagDiscoverConfig;
 
 /**
  * An opaque iterator to iterate over list of IPv6 addresses of a router.
  *
  * Pointers to instance of this type are provided in `otMeshDiagRouterInfo`.
- *
  */
 typedef struct otMeshDiagIp6AddrIterator otMeshDiagIp6AddrIterator;
 
@@ -77,22 +85,31 @@ typedef struct otMeshDiagIp6AddrIterator otMeshDiagIp6AddrIterator;
  * An opaque iterator to iterate over list of children of a router.
  *
  * Pointers to instance of this type are provided in `otMeshDiagRouterInfo`.
- *
  */
 typedef struct otMeshDiagChildIterator otMeshDiagChildIterator;
+
+/**
+ * An opaque iterator to iterate over the list of extra Network Diagnostic TLVs returned by a router.
+ *
+ * Pointers to instances of this type are provided in `otMeshDiagRouterInfo`.
+ */
+typedef struct otMeshDiagTlvIterator otMeshDiagTlvIterator;
+
+/**
+ * Represents information about a parsed Network Diagnostic TLV.
+ */
+typedef otNetworkDiagTlv otMeshDiagTlvInfo;
 
 /**
  * Specifies that Thread Version is unknown.
  *
  * This is used in `otMeshDiagRouterInfo` for `mVersion` property when device does not provide its version. This
  * indicates that device is likely running 1.3.0 (version value 4) or earlier.
- *
  */
 #define OT_MESH_DIAG_VERSION_UNKNOWN 0xffff
 
 /**
  * Represents information about a router in Thread mesh discovered using `otMeshDiagDiscoverTopology()`.
- *
  */
 typedef struct otMeshDiagRouterInfo
 {
@@ -112,7 +129,6 @@ typedef struct otMeshDiagRouterInfo
      * The array is indexed based on Router ID. `mLinkQualities[routerId]` indicates the incoming link quality, the
      * router sees to the router with `routerId`. Link quality is a value in [0, 3]. Value zero indicates no link.
      * Larger value indicate better link quality (as defined by Thread specification).
-     *
      */
     uint8_t mLinkQualities[OT_NETWORK_MAX_ROUTER_ID + 1];
 
@@ -124,7 +140,6 @@ typedef struct otMeshDiagRouterInfo
      *
      * The pointer can be NULL when there was no request to discover IPv6 addresses (in `otMeshDiagDiscoverConfig`) or
      * if the router did not provide the list.
-     *
      */
     otMeshDiagIp6AddrIterator *mIp6AddrIterator;
 
@@ -136,14 +151,22 @@ typedef struct otMeshDiagRouterInfo
      *
      * The pointer can be NULL when there was no request to discover children (in `otMeshDiagDiscoverConfig`) or
      * if the router did not provide the list.
-     *
      */
     otMeshDiagChildIterator *mChildIterator;
+
+    /**
+     * A pointer to an iterator to go through the list of extra Network Diagnostic TLVs returned by the router.
+     *
+     * The pointer is valid only while `otMeshDiagRouterInfo` is valid. It can be used in `otMeshDiagGetNextTlvInfo`
+     * to iterate through the extra TLVs returned by the router.
+     *
+     * The pointer may be NULL if there are no extra TLVs (in `otMeshDiagDiscoverConfig`).
+     */
+    otMeshDiagTlvIterator *mTlvIterator;
 } otMeshDiagRouterInfo;
 
 /**
  * Represents information about a discovered child in Thread mesh using `otMeshDiagDiscoverTopology()`.
- *
  */
 typedef struct otMeshDiagChildInfo
 {
@@ -166,12 +189,44 @@ typedef struct otMeshDiagChildInfo
  *                         OT_ERROR_RESPONSE_TIMEOUT   Timed out waiting for response from one or more routers.
  * @param[in] aRouterInfo  The discovered router info (can be null if `aError` is OT_ERROR_RESPONSE_TIMEOUT).
  * @param[in] aContext     Application-specific context.
- *
  */
 typedef void (*otMeshDiagDiscoverCallback)(otError aError, otMeshDiagRouterInfo *aRouterInfo, void *aContext);
 
 /**
  * Starts network topology discovery.
+ *
+ * This function initiates a query to discover routers in the Thread network.
+ *
+ * The @p aConfig configuration controls what optional topology information is discovered:
+ * - If `mDiscoverIp6Addresses` is set to true, the list of IPv6 addresses for each router is discovered.
+ * - If `mDiscoverChildTable` is set to true, the list of children for each router is discovered.
+ *
+ * The @p aConfig parameter can be used to request additional standard Network Diagnostic TLVs to be retrieved from
+ * each discovered router during topology discovery. These extra TLVs can then be accessed via the `mTlvIterator` in
+ * the callback's router info.
+ *
+ * The following restrictions and recommendations apply to the use of `mExtraTlvTypes`:
+ * - It MUST NOT contain any of the TLV types that are already requested by the discovery process itself.
+ *   These are:
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_SHORT_ADDRESS`
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_EXT_ADDRESS`
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_ROUTE`
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_VERSION`
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_IP6_ADDR_LIST`
+ *   - `OT_NETWORK_DIAGNOSTIC_TLV_CHILD_TABLE`
+ *   If any of these types are included in @p aConfig.mExtraTlvTypes, `OT_ERROR_INVALID_ARGS` is returned.
+ * - The total number of requested TLV types is limited to 32. This limit applies to all TLV types combined, including
+ *   those automatically added by the discovery process and any additional TLVs specified by the caller in
+ *   `mExtraTlvTypes`. If the total count exceeds this limit, `OT_ERROR_NO_BUFS` is returned.
+ * - It is highly recommended to keep the number of additional TLVs small. Requesting many or large TLVs increases the
+ *   size of the Network Diagnostics responses, which can cause message fragmentation, higher network traffic, or
+ *   response packet drops.
+ * - Additional TLVs should be restricted to small metadata elements useful during topology discovery (for example,
+ *   `OT_NETWORK_DIAGNOSTIC_TLV_VENDOR_NAME`, `OT_NETWORK_DIAGNOSTIC_TLV_VENDOR_MODEL`, etc).
+ *   For retrieving larger information (like counters, etc.), separate individual queries should be sent to specific
+ *   nodes instead of using this method.
+ * - The @p aConfig struct and the memory pointed to by its @p mExtraTlvTypes array do not need to persist beyond
+ *   the call to this function.
  *
  * @param[in] aInstance        The OpenThread instance.
  * @param[in] aConfig          The configuration to use for discovery (e.g., which items to discover).
@@ -181,8 +236,8 @@ typedef void (*otMeshDiagDiscoverCallback)(otError aError, otMeshDiagRouterInfo 
  * @retval OT_ERROR_NONE            The network topology discovery started successfully.
  * @retval OT_ERROR_BUSY            A previous discovery request is still ongoing.
  * @retval OT_ERROR_INVALID_STATE   Device is not attached.
- * @retval OT_ERROR_NO_BUFS         Could not allocate buffer to send discovery messages.
- *
+ * @retval OT_ERROR_NO_BUFS         Could not allocate buffer to send discovery messages or too many extra TLVs.
+ * @retval OT_ERROR_INVALID_ARGS    Invalid @p aConfig (e.g., includes restricted extra TLVs as listed above).
  */
 otError otMeshDiagDiscoverTopology(otInstance                     *aInstance,
                                    const otMeshDiagDiscoverConfig *aConfig,
@@ -193,7 +248,6 @@ otError otMeshDiagDiscoverTopology(otInstance                     *aInstance,
  * Cancels an ongoing topology discovery if there is one, otherwise no action.
  *
  * When ongoing discovery is cancelled, the callback from `otMeshDiagDiscoverTopology()` will not be called anymore.
- *
  */
 void otMeshDiagCancel(otInstance *aInstance);
 
@@ -210,7 +264,6 @@ void otMeshDiagCancel(otInstance *aInstance);
  *
  * @retval OT_ERROR_NONE       Successfully retrieved the next address. @p aIp6Address and @p aIterator are updated.
  * @retval OT_ERROR_NOT_FOUND  No more address. Reached the end of the list.
- *
  */
 otError otMeshDiagGetNextIp6Address(otMeshDiagIp6AddrIterator *aIterator, otIp6Address *aIp6Address);
 
@@ -225,9 +278,22 @@ otError otMeshDiagGetNextIp6Address(otMeshDiagIp6AddrIterator *aIterator, otIp6A
  *
  * @retval OT_ERROR_NONE       Successfully retrieved the next child. @p aChildInfo and @p aIterator are updated.
  * @retval OT_ERROR_NOT_FOUND  No more child. Reached the end of the list.
- *
  */
 otError otMeshDiagGetNextChildInfo(otMeshDiagChildIterator *aIterator, otMeshDiagChildInfo *aChildInfo);
+
+/**
+ * Iterates through the discovered extra Network Diagnostic TLVs of a router.
+ *
+ * This function MUST be used from the callback `otMeshDiagDiscoverCallback()` and use the `mTlvIterator` from the
+ * `aRouterInfo` struct that is provided as input to the callback.
+ *
+ * @param[in,out]  aIterator    The TLV iterator to use.
+ * @param[out]     aTlvInfo     A pointer to return the extra TLV info (if any).
+ *
+ * @retval OT_ERROR_NONE       Successfully retrieved the next extra TLV. @p aTlvInfo and @p aIterator are updated.
+ * @retval OT_ERROR_NOT_FOUND  No more extra TLVs. Reached the end of the list.
+ */
+otError otMeshDiagGetNextTlvInfo(otMeshDiagTlvIterator *aIterator, otMeshDiagTlvInfo *aTlvInfo);
 
 /**
  * Represents information about a child entry from `otMeshDiagQueryChildTable()`.
@@ -237,7 +303,6 @@ otError otMeshDiagGetNextChildInfo(otMeshDiagChildIterator *aIterator, otMeshDia
  * layer,  while `mMessageErrorRate` tracks the IPv6 message error rate (above MAC layer and after MAC retries) when
  * an IPv6 message is dropped. For example, if the message is large and requires 6LoWPAN fragmentation, message tx is
  * considered as failed if one of its fragment frame tx fails (for example, never acked).
- *
  */
 typedef struct otMeshDiagChildEntry
 {
@@ -275,7 +340,6 @@ typedef struct otMeshDiagChildEntry
  *                         OT_ERROR_RESPONSE_TIMEOUT   Timed out waiting for response.
  * @param[in] aChildEntry  The child entry (can be null if `aError` is OT_ERROR_RESPONSE_TIMEOUT or OT_ERROR_NONE).
  * @param[in] aContext     Application-specific context.
- *
  */
 typedef void (*otMeshDiagQueryChildTableCallback)(otError                     aError,
                                                   const otMeshDiagChildEntry *aChildEntry,
@@ -294,7 +358,6 @@ typedef void (*otMeshDiagQueryChildTableCallback)(otError                     aE
  * @retval OT_ERROR_INVALID_ARGS   The @p aRloc16 is not a valid router RLOC16.
  * @retval OT_ERROR_INVALID_STATE  Device is not attached.
  * @retval OT_ERROR_NO_BUFS        Could not allocate buffer to send query messages.
- *
  */
 otError otMeshDiagQueryChildTable(otInstance                       *aInstance,
                                   uint16_t                          aRloc16,
@@ -315,7 +378,6 @@ otError otMeshDiagQueryChildTable(otInstance                       *aInstance,
  * @param[in] aIp6AddrIterator  An iterator to go through the IPv6 addresses of the child with @p aRloc using
  *                              `otMeshDiagGetNextIp6Address()`. Set to NULL on `OT_ERROR_RESPONSE_TIMEOUT`.
  * @param[in] aContext          Application-specific context.
- *
  */
 typedef void (*otMeshDiagChildIp6AddrsCallback)(otError                    aError,
                                                 uint16_t                   aChildRloc16,
@@ -335,7 +397,6 @@ typedef void (*otMeshDiagChildIp6AddrsCallback)(otError                    aErro
  * @retval OT_ERROR_INVALID_ARGS   The @p aRloc16 is not a valid  RLOC16.
  * @retval OT_ERROR_INVALID_STATE  Device is not attached.
  * @retval OT_ERROR_NO_BUFS        Could not allocate buffer to send query messages.
- *
  */
 otError otMeshDiagQueryChildrenIp6Addrs(otInstance                     *aInstance,
                                         uint16_t                        aRloc16,
@@ -350,7 +411,6 @@ otError otMeshDiagQueryChildrenIp6Addrs(otInstance                     *aInstanc
  * layer,  while `mMessageErrorRate` tracks the IPv6 message error rate (above MAC layer and after MAC retries) when
  * an IPv6 message is dropped. For example, if the message is large and requires 6LoWPAN fragmentation, message tx is
  * considered as failed if one of its fragment frame tx fails (for example, never acked).
- *
  */
 typedef struct otMeshDiagRouterNeighborEntry
 {
@@ -378,7 +438,6 @@ typedef struct otMeshDiagRouterNeighborEntry
  *                            OT_ERROR_RESPONSE_TIMEOUT   Timed out waiting for response.
  * @param[in] aNeighborEntry  The neighbor entry (can be null if `aError` is RESPONSE_TIMEOUT or NONE).
  * @param[in] aContext        Application-specific context.
- *
  */
 typedef void (*otMeshDiagQueryRouterNeighborTableCallback)(otError                              aError,
                                                            const otMeshDiagRouterNeighborEntry *aNeighborEntry,
@@ -397,7 +456,6 @@ typedef void (*otMeshDiagQueryRouterNeighborTableCallback)(otError              
  * @retval OT_ERROR_INVALID_ARGS   The @p aRloc16 is not a valid router RLOC16.
  * @retval OT_ERROR_INVALID_STATE  Device is not attached.
  * @retval OT_ERROR_NO_BUFS        Could not allocate buffer to send query messages.
- *
  */
 otError otMeshDiagQueryRouterNeighborTable(otInstance                                *aInstance,
                                            uint16_t                                   aRloc16,
@@ -405,8 +463,30 @@ otError otMeshDiagQueryRouterNeighborTable(otInstance                           
                                            void                                      *aContext);
 
 /**
- * @}
+ * Sets the response timeout value to use for any future mesh diagnostic queries.
  *
+ * The default response timeout value is specified by `OPENTHREAD_CONFIG_MESH_DIAG_RESPONSE_TIMEOUT` configuration.
+ *
+ * Changing the response timeout does not impact any ongoing query.
+ *
+ * The provided @p aTimeout value will be clamped to stay between 50 milliseconds and 10 minutes.
+ *
+ * @param[in] aInstance  A pointer to an OpenThread instance.
+ * @param[in] aTimeout   The timeout interval in milliseconds.
+ */
+void otMeshDiagSetResponseTimeout(otInstance *aInstance, uint32_t aTimeout);
+
+/**
+ * Gets the response timeout value.
+ *
+ * @param[in] aInstance  A pointer to an OpenThread instance.
+ *
+ * @returns The response timeout interval in milliseconds.
+ */
+uint32_t otMeshDiagGetResponseTimeout(otInstance *aInstance);
+
+/**
+ * @}
  */
 
 #ifdef __cplusplus

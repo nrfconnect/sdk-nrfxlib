@@ -29,8 +29,11 @@
 #ifndef OPENTHREAD_PLATFORM_DEBUG_UART_H_
 #define OPENTHREAD_PLATFORM_DEBUG_UART_H_
 
+#include <stdarg.h>
+#include <stdint.h>
+
 #include <openthread/error.h>
-#include <openthread/platform/logging.h>
+#include <openthread/platform/toolchain.h>
 
 /**
  * @file
@@ -80,7 +83,7 @@ extern "C" {
  *
  * This is a WEAK symbol that can easily be overridden as needed.
  */
-void otPlatDebugUart_printf(const char *fmt, ...);
+void otPlatDebugUart_printf(const char *fmt, ...) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 2);
 
 /**
  * Standard vprintf() to the debug uart, with no log decoration.
@@ -98,7 +101,7 @@ void otPlatDebugUart_printf(const char *fmt, ...);
  * symbol because the platform provides a UART_vprintf() like
  * function that can handle an arbitrary length output.
  */
-void otPlatDebugUart_vprintf(const char *fmt, va_list ap);
+void otPlatDebugUart_vprintf(const char *fmt, va_list ap) OT_TOOL_PRINTF_STYLE_FORMAT_ARG_CHECK(1, 0);
 
 /**
  * Platform specific write single byte to Debug Uart
@@ -128,7 +131,6 @@ int otPlatDebugUart_kbhit(void);
  *
  * @retval (negative) no data available, see otPlatDebugUart_kbhit()
  * @retval (0x00..0x0ff) data byte value
- *
  */
 int otPlatDebugUart_getc(void);
 
@@ -179,13 +181,11 @@ void otPlatDebugUart_puts_no_nl(const char *s);
  * @returns OT_ERROR_FAILED
  *
  * Platforms that desire this MUST provide an implementation.
- *
  */
 otError otPlatDebugUart_logfile(const char *filename);
 
 /**
  * @}
- *
  */
 
 #ifdef __cplusplus
