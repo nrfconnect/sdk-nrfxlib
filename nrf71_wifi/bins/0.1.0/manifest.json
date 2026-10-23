@@ -5,13 +5,13 @@
       "name": "lmac",
       "file": "lmac_patch.bin",
       "origin": "0x100000",
-      "size": 21328
+      "size": 21508
     },
     {
       "name": "umac",
       "file": "umac_patch.bin",
-      "origin": "0x105350",
-      "size": 27580
+      "origin": "0x105410",
+      "size": 28144
     }
   ]
 }
