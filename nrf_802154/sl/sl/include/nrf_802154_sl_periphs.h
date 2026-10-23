@@ -34,8 +34,6 @@
 #define NRF_802154_EGU_INSTANCE_NO 0
 #elif defined(NRF_802154_SOC_NRF54L_SERIES)
 #define NRF_802154_EGU_INSTANCE_NO 10
-#elif defined(NRF_802154_SOC_NRF54H_SERIES)
-#define NRF_802154_EGU_INSTANCE_NO 020
 #endif
 #endif
 
@@ -227,27 +225,5 @@
 #define NRF_802154_SL_DPPIC_INSTANCE NRFX_CONCAT_2(NRF_DPPIC, NRF_802154_SL_DPPIC_INSTANCE_NO)
 
 #endif // defined(NRF_802154_SOC_NRF54L_SERIES)
-
-#if defined(NRF_802154_SOC_NRF54H_SERIES)
-
-/**
- * @def NRF_802154_SL_DPPIC_INSTANCE_NO
- *
- * Id of the DPPIC instance used by the driver to connect peripherals to radio.
- *
- */
-#ifndef NRF_802154_SL_DPPIC_INSTANCE_NO
-#define NRF_802154_SL_DPPIC_INSTANCE_NO 020
-#endif
-
-/**
- * @def NRF_802154_SL_DPPIC_INSTANCE
- *
- * The DPPIC instance used by the driver to connect peripherals to radio.
- *
- */
-#define NRF_802154_SL_DPPIC_INSTANCE NRFX_CONCAT_2(NRF_DPPIC, NRF_802154_SL_DPPIC_INSTANCE_NO)
-
-#endif // defined(NRF_802154_SOC_NRF54H_SERIES)
 
 #endif // NRF_802154_SL_PERIPHS_H__

@@ -66,16 +66,7 @@
 #include "nrf_802154_utils_byteorder.h"
 #include "platform/nrf_802154_irq.h"
 
-#if defined(NRF54H_SERIES)
-#include "hal/nrf_spu.h"
-#define PPIB_RAD  NRF_PPIB020
-#define PPIB_CCM  NRF_PPIB030
-#ifndef NRF_DPPIC030
-#define DPPIC_CCM ((NRF_DPPIC_Type *)0x53032000)
-#else
-#define DPPIC_CCM NRF_DPPIC030
-#endif
-#elif defined(NRF54L_SERIES)
+#if defined(NRF54L_SERIES)
 #define PPIB_RAD  NRF_PPIB10
 #define PPIB_CCM  NRF_PPIB00
 #define DPPIC_CCM NRF_DPPIC00
@@ -193,11 +184,6 @@ static void ccm_configure(void)
 {
     if (!m_initialized)
     {
-        // DMASEC is set to non-secure by default, which prevents the CCM from accessing
-        // secure memory. Change the DMASEC to secure.
-#if defined(NRF54H_SERIES)
-        nrf_spu_periph_perm_dmasec_set(NRF_SPU030, 10, true);
-#endif
         nrf_802154_irq_init(nrfx_get_irq_number(NRF_802154_CCM_INSTANCE),
                             NRF_802154_ECB_PRIORITY,
                             ccm_irq_handler);
