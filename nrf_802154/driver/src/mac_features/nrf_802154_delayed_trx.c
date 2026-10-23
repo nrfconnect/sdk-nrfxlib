@@ -80,13 +80,6 @@ NRF_STATIC_ASSERT(NRF_CONFIG_CPU_FREQ_MHZ == 128,
                   "Currently nrf-802154 only works when frequency is 128MHz");
 #define TX_SETUP_TIME_MAX 185u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
 #define RX_SETUP_TIME_MAX 150u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
-#elif defined(NRF54H_SERIES)
-#ifndef TX_SETUP_TIME_MAX
-#define TX_SETUP_TIME_MAX 400u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
-#endif
-#ifndef RX_SETUP_TIME_MAX
-#define RX_SETUP_TIME_MAX 400u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
-#endif
 #endif
 
 /**

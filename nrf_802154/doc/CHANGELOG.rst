@@ -26,6 +26,7 @@ Removed
 * Support for the nRF52 Series.
 * The antenna diversity user guide and related figures.
   Antenna diversity feature was implemented only on the nRF52 Series.
+* Support for the nRF54H20 SoC.
 
 nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
 **************************************************
