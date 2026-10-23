@@ -7,21 +7,16 @@
 / {
 	soc {
 		lmac_rom_patch_addr: memory@100000 {
-			reg = <0x100000 21328>;
+			reg = <0x100000 22336>;
 		};
 
-		umac_rom_patch_addr: memory@105350 {
-			reg = <0x105350 27580>;
-		};
-
-		rf_params_addr: memory@10bf10 {
-			reg = <0x10bf10 600>;
+		umac_rom_patch_addr: memory@105740 {
+			reg = <0x105740 28404>;
 		};
 	};
 };
 
 &wicr {
-	data-rfparams = <&rf_params_addr>;
 	firmware-lmacrompatchaddr = <&lmac_rom_patch_addr>;
 	firmware-umacrompatchaddr = <&umac_rom_patch_addr>;
 };
