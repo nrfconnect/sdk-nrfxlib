@@ -6,21 +6,14 @@
       "file": "lmac_patch.bin",
       "wicr_property": "firmware-lmacrompatchaddr",
       "origin": "0x100000",
-      "size": 21328
+      "size": 22336
     },
     {
       "name": "umac",
       "file": "umac_patch.bin",
       "wicr_property": "firmware-umacrompatchaddr",
-      "origin": "0x105350",
-      "size": 27580
-    },
-    {
-      "name": "rf_params",
-      "file": "rf_params.bin",
-      "wicr_property": "data-rfparams",
-      "origin": "0x10BF10",
-      "size": 600
+      "origin": "0x105740",
+      "size": 28404
     }
   ]
 }
