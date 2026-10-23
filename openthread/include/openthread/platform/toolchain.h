@@ -51,14 +51,12 @@
  *    @endcode
  *
  * @{
- *
  */
 
 #ifndef OPENTHREAD_PLATFORM_TOOLCHAIN_H_
 #define OPENTHREAD_PLATFORM_TOOLCHAIN_H_
 
 #include <stdbool.h>
-#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,7 +72,6 @@ extern "C" {
  *       as attribute [[nodiscard]]).
  * @note To suppress the 'unused-result' warning/error, please use the
  *       '-Wno-unused-result' compiler option.
- *
  */
 #if defined(__clang__) && (__clang_major__ >= 4 || (__clang_major__ >= 3 && __clang_minor__ >= 9))
 #define OT_MUST_USE_RESULT __attribute__((warn_unused_result))
@@ -86,7 +83,6 @@ extern "C" {
  * @def OT_TOOL_PACKED_BEGIN
  *
  * Compiler-specific indication that a class or struct must be byte packed.
- *
  */
 
 /**
@@ -94,21 +90,18 @@ extern "C" {
  *
  * Indicate to the compiler a nested struct or union to be packed
  * within byte packed class or struct.
- *
  */
 
 /**
  * @def OT_TOOL_PACKED_END
  *
  * Compiler-specific indication at the end of a byte packed class or struct.
- *
  */
 
 /**
  * @def OT_TOOL_WEAK
  *
  * Compiler-specific weak symbol modifier.
- *
  */
 
 /**
@@ -126,7 +119,6 @@ extern "C" {
  *
  * @param[in] aFmtIndex    The argument index of the format string.
  * @param[in] aStartIndex  The argument index of the first argument to check against the format string.
- *
  */
 
 // =========== TOOLCHAIN SELECTION : START ===========
@@ -189,14 +181,12 @@ extern "C" {
  * @def OT_UNUSED_VARIABLE
  *
  * Suppress unused variable warning in specific toolchains.
- *
  */
 
 /**
  * @def OT_UNREACHABLE_CODE
  *
  * Suppress Unreachable code warning in specific toolchains.
- *
  */
 
 #if defined(__ICCARM__)
@@ -289,7 +279,6 @@ extern "C" {
  * @def OT_FALL_THROUGH
  *
  * Suppress fall through warning in specific compiler.
- *
  */
 #if defined(__cplusplus) && (__cplusplus >= 201703L)
 #define OT_FALL_THROUGH [[fallthrough]]
@@ -304,9 +293,76 @@ extern "C" {
     } while (false) /* fallthrough */
 #endif
 
+// A known false positive warning occurs on some GCC toolchains,
+// resulting in "error: writing x byte into a region of size 0". The following
+// macros are used to suppress this warning/error in specific code blocks.
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+
+#define OT_SUPPRESS_GCC_STRING_OP_BEGIN \
+    _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic warning \"-Wstringop-overflow=0\"")
+#define OT_SUPPRESS_GCC_STRING_OP_END _Pragma("GCC diagnostic pop")
+
+#else
+
+#define OT_SUPPRESS_GCC_STRING_OP_BEGIN
+#define OT_SUPPRESS_GCC_STRING_OP_END
+
+#endif
+
+/**
+ * @def OT_LIFETIME_BOUND
+ *
+ * Compiler-specific indication that a function or method return value's lifetime is bound to a parameter or `this`.
+ */
+
+/**
+ * @def OT_NOESCAPE
+ *
+ * Compiler-specific indication that a pointer or reference parameter does not escape the function scope.
+ */
+
+/**
+ * @def OT_GSL_OWNER
+ *
+ * Compiler-specific indication that a class or struct is a resource owner for lifetime safety analysis.
+ */
+
+/**
+ * @def OT_GSL_POINTER
+ *
+ * Compiler-specific indication that a class or struct is a non-owning view or pointer for lifetime safety analysis.
+ */
+#if defined(__cplusplus) && defined(__clang__) && defined(__has_cpp_attribute)
+#if __has_cpp_attribute(clang::lifetimebound)
+#define OT_LIFETIME_BOUND [[clang::lifetimebound]]
+#endif
+#if __has_cpp_attribute(clang::noescape)
+#define OT_NOESCAPE [[clang::noescape]]
+#endif
+#if __has_cpp_attribute(gsl::Owner)
+#define OT_GSL_OWNER [[gsl::Owner]]
+#endif
+#if __has_cpp_attribute(gsl::Pointer)
+#define OT_GSL_POINTER [[gsl::Pointer]]
+#endif
+#endif
+
+#ifndef OT_LIFETIME_BOUND
+#define OT_LIFETIME_BOUND
+#endif
+#ifndef OT_NOESCAPE
+#define OT_NOESCAPE
+#endif
+#ifndef OT_GSL_OWNER
+#define OT_GSL_OWNER
+#endif
+#ifndef OT_GSL_POINTER
+#define OT_GSL_POINTER
+#endif
+
 /**
  * @}
- *
  */
 
 #ifdef __cplusplus
