@@ -12,7 +12,7 @@ function(nrf_802154_zephyr_add_platform_glue platform_dir)
           ${platform_dir}/nrf_802154_hp_timer.c
           ${platform_dir}/nrf_802154_platform_sl_lptimer_zephyr.c
       )
-    elseif(CONFIG_SOC_SERIES_NRF54H OR CONFIG_SOC_SERIES_NRF54L)
+    elseif(CONFIG_SOC_SERIES_NRF54L)
       target_sources(nrf-802154-platform
         PRIVATE
           ${platform_dir}/nrf_802154_platform_timestamper.c
