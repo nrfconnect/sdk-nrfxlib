@@ -900,7 +900,7 @@ int32_t sdc_default_tx_power_set(int8_t requested_power_level);
 
 /** @brief Set antenna switch callback used by Channel Sounding
  *
- * @param[in] antenna_switch_cb Antenna Switching callback used to control an antennna switch
+ * @param[in] antenna_switch_cb Antenna Switching callback used to control an antenna switch
  *                              in the case of a multiantenna application. May be NULL if no
  *                              antenna switching is needed. See
  *                              @ref sdc_cfg_cs_cfg_t::num_antennas_supported.
