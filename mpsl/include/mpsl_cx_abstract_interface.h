@@ -53,8 +53,8 @@ typedef struct
  * @note This must be used by Coexistence implementation "constructor" and this is the only case
  * in which it can be used.
  *
- * @retval   0               The "link" was successfuly created.
- * @retval   -NRF_EPERM      Some error occured (e.g. null pointer was passed).
+ * @retval   0               The "link" was successfully created.
+ * @retval   -NRF_EPERM      Some error occurred (e.g. null pointer was passed).
  */
 int32_t mpsl_cx_interface_set(const mpsl_cx_interface_t * p_methods);
 
