@@ -256,6 +256,11 @@ else()
     VERBATIM
   )
   add_custom_target(nrf71_wifi_patch_merge ALL DEPENDS ${merge_byproducts})
+
+  # Inform sysbuild about the outputs to allow creating proper dependencies
+  set(BYPRODUCT_WIFI_PATCH_MERGED_HEX_NAME ${merged_hex}
+    CACHE FILEPATH "Wi-Fi patch merged hex file" FORCE
+  )
 endif()
 
 # Flash runner override
