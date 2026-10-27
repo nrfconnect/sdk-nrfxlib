@@ -100,14 +100,6 @@ extern "C" {
     (NRF_802154_RX_BUFFERS + NRF_802154_MAX_DISREGARDABLE_NOTIFICATIONS + 4 + 1)
 
 /**
- * @brief Temporary macro to detect new API signatures.
- *
- * The macro is used during transition to new API declarations, where the TX functions return
- * an error code instead of a boolean value.
- */
-#define NRF_802154_TX_FUNCTIONS_RETURN_ERROR_CODE
-
-/**
  * @brief Initializes the 802.15.4 driver.
  *
  * This function initializes the RADIO peripheral in the @ref RADIO_STATE_SLEEP state.
