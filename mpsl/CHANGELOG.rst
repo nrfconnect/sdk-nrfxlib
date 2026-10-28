@@ -10,6 +10,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.4.2
+**********************
+
+Added
+=====
+
+* Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series devices (DRGN-28737).
+
 nRF Connect SDK v3.4.1
 **********************
 
