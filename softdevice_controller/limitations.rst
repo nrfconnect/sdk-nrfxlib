@@ -84,3 +84,7 @@ DRGN-26820: On nRF54H20, SDC memory pool must not be located in global RAM
 DRGN-29455: LE Set Periodic Advertising Response Data command must be used in chronological order
   For a given sync handle, response data must be set in increasing order of event counter, subevent, and response slot.
   If the command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission, the controller returns the error code ``0x11`` (Unsupported Feature or Parameter Value).
+
+DRGN-29397: Channel index is appended only to legacy LE Advertising Report events
+  When the channel index in the advertising report is enabled, the RF channel index octet is appended after ``RSSI`` only in legacy LE Advertising Report events.
+  LE Extended Advertising Report events remain unchanged.

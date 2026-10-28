@@ -71,6 +71,9 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x010eu, 1, "CS test override: override_parameters_length %u does not match expected %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x010fu, 1, "CS test override: field of %u bytes exceeds the remaining %u bytes of override_parameters_data" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0110u, 1, "CS test: main_mode_type %u invalid" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
@@ -194,10 +197,13 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x0140u, 1, "CS test: snr_control_reflector %u unsupported, tx_snr_capability 0x%02x" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
-	{ 0x0141u, 1, "CS test: unsupported override_config bits 0x%04x" },
+	{ 0x0141u, 1, "CS test: unsupported override: ss_marker_position %u, ss_marker_value %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0142u, 1, "CS test: channel selection #3c unsupported" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0143u, 1, "CS test: %u channels > CS channel array capacity %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0150u, 1, "CS test: test already running" },
