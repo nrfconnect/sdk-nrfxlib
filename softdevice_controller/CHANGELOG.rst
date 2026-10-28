@@ -15,6 +15,7 @@ Main branch
 Added
 =====
 
+* Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series (DRGN-28737).
 * A new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`.
   This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure. (DRGN-29193)
 * The vendor-specific HCI command DTM Command, a command group for all vendor-specific DTM operations.
@@ -37,10 +38,13 @@ Added
   Autonomous channel assessment is not supported. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` vendor-specific HCI command for the central role to enable or disable channel classification reporting on an ACL connection: :c:func:`sdc_hci_cmd_vs_channel_reporting_enable`. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` support for the Decision Based Advertising Filtering feature. (DRGN-21221)
+* Support for appending the advertising channel index to legacy LE Advertising Report events.
+  See :c:func:`sdc_support_chan_idx_in_adv_report`. (DRGN-29397)
 
 Changes
 =======
 
+* Removed support for nRF52 series
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
@@ -53,8 +57,6 @@ Changes
   This change will lead to increased power usage on the Reflector when using T_IP2 greater than 20 µs. (DRGN-29194)
 * Deprecated the vendor-specific HCI command Transmitter Carrier Frequency Test, as it has been added as a subcommand to the new HCI VS DTM command.
   See the "Added" section for details. (DRGN-28862)
-* Updated the validation criteria for the procedure interval when receiving an ``LL_CS_REQ`` PDU during the Channel Sounding Start procedure.
-  This change improves interoperability with other controllers. (DRGN-28833)
 * The :c:func:`sdc_hci_cmd_le_periodic_adv_create_sync` function now returns the error code ``0x11`` if ``Sync_CTE_Type`` is not ``0``. (DRGN-27655)
 * The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
 * The controller now returns the error code ``0x11`` if the LE Set Periodic Advertising Response Data command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission.
@@ -67,22 +69,13 @@ Changes
 Bug fixes
 =========
 
-* Fixed a rare issue where the controller could assert when an ACL connection was terminated or lost while a CIS connection was active.
-  This would only occur when ``NSE > 1`` and high CPU load delayed fetching the disconnection complete event for the CIS. (DRGN-29446)
 * Fixed an issue where the controller could reject valid Periodic Advertising with Responses parameters when ``Num_Subevents`` was set to ``1``. (DRGN-28994)
-* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
 * Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.
   The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
-* Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
-* Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
-* Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
-* Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, could assert when responding in multiple response slots in the same subevent. (DRGN-29455)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, kept response data that was never transmitted because the periodic advertising synchronization was terminated or lost.
   The data could be transmitted on, or prevent responses on, a synchronization established afterwards. (DRGN-29455)
 * Fixed an issue where the controller, acting as a Periodic Advertising with Responses Scanner, would leak peripheral contexts on disconnect. (DRGN-30124)
-* Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
-  This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
 * Fixed an issue where the controller could set a sub-optimal base event in the ``LL_SUBRATE_IND`` PDU when initiating connection subrating.
   This would only occur when the connection event counter was close to wrapping, and could cause overlapping multilink scheduling. (DRGN-29751)
 * Fixed an issue where the controller, acting as a central, could use an incorrect anchor point when a subrate factor greater than ``1`` was used and another conflicting role was running. (DRGN-29737)
@@ -92,6 +85,32 @@ Bug fixes
 * Fixed a rare issue where the controller, acting as an Isochronous Broadcaster, could transmit a BIGInfo with an invalid BIG offset.
   This would only occur with an ISO interval longer than 245 ms. (DRGN-30055)
 * Fixed an issue where the controller would assert when calling the :c:func:`sdc_hci_cmd_vs_compat_mode_window_offset_set` function if the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option was not enabled. (DRGN-30119)
+* Fixed a rare issue where the controller could assert or schedule central role events to overlap when a CIG or BIG was stopped while another central role, CIG, BIG, or periodic advertiser was being started or stopped. (DRGN-29804)
+* Fixed an issue where the controller could assert when it was running a CS mode-0 step in the reflector role. (DRGN-30272)
+
+nRF Connect SDK v3.4.1
+**********************
+
+Changes
+=======
+
+* Updated the validation criteria for the procedure interval when receiving an ``LL_CS_REQ`` PDU during the Channel Sounding Start procedure.
+  This change improves interoperability with other controllers. (DRGN-28833)
+
+Bug fixes
+=========
+
+* Fixed a rare issue where the controller could assert when an ACL connection was terminated or lost while a CIS connection was active.
+  This would only occur when ``NSE > 1`` and high CPU load delayed fetching the disconnection complete event for the CIS. (DRGN-29446)
+* Fixed an issue where a peripheral connection could drop when using peripheral latency and a supervision timer that allowed a few chances to receive when peripheral latency was applied. (DRGN-21703)
+* Fixed an issue where a connection could be lost when the peripheral received a Connection Subrate Update indication that increased peripheral latency and supervision timeout.``
+  The peripheral could apply the new latency before the central had received the peripheral's acknowledgment, causing the peripheral to skip connection events and exceed the supervision timeout. (DRGN-29270)
+* Fixed an issue where the controller would not use a random delay for undirected advertisements when a high duty cycle advertiser had previously been started on the same advertising set. (DRGN-29306)
+* Fixed an issue where the controller could have a higher than expected packet loss rate as a BIS synchronized receiver in noisy environments. (DRGN-29320)
+* Fixed an issue where the controller could assert while running DTM RX tests on very noisy links. (DRGN-29228)
+* Fixed an issue where the controller, acting as a CS Reflector, would shift the CS tone phase incorrectly when IPT feature was used with multiple antenna paths. (DRGN-29459)
+* Fixed an issue where the controller could assert when an ACL connection with active CS procedures was disconnected.
+  This could occur when CS events were in a scheduling conflict with other activities. (DRGN-29669)
 
 nRF Connect SDK v3.4.0
 **********************

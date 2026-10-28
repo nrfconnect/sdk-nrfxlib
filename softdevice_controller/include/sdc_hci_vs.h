@@ -1268,6 +1268,8 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  *
  * The default event length is 7500 us.
  *
+ * The configured value is retained after issuing an HCI Reset command.
+ *
  * The event length may be set to a value that is shorter than the time needed
  * for a single packet pair on a given PHY.
  * In that case the controller will reserve time for receiving 27 bytes and transmitting
@@ -1987,6 +1989,8 @@ uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_c
  * consumption
  *   - 0x01 corresponds to LDO regulator. It provides worse power consumption but may improve some
  * of RF characteristics.
+ *
+ * The configured values are retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  *

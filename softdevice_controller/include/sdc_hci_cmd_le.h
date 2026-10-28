@@ -572,6 +572,37 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t max_ce_length;
 } sdc_hci_le_ext_create_conn_v2_array_params_t;
 
+/** @brief LE CS Test common parameters.
+ *
+ * Parameters from Main_Mode_Type through Channel_Map_Repetition.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t main_mode_type;
+    uint8_t sub_mode_type;
+    uint8_t main_mode_repetition;
+    uint8_t mode_0_steps;
+    uint8_t role;
+    uint8_t rtt_type;
+    uint8_t cs_sync_phy;
+    uint8_t cs_sync_antenna_selection;
+    uint32_t subevent_len : 24;
+    uint16_t subevent_interval;
+    uint8_t max_num_subevents;
+    int8_t transmit_power_level;
+    uint8_t t_ip1_time;
+    uint8_t t_ip2_time;
+    uint8_t t_fcs_time;
+    uint8_t t_pm_time;
+    uint8_t t_sw_time;
+    uint8_t tone_antenna_config_selection;
+    uint8_t cs_enhancements;
+    uint8_t snr_control_initiator;
+    uint8_t snr_control_reflector;
+    uint16_t drbg_nonce;
+    uint8_t channel_map_repetition;
+} sdc_hci_le_le_cs_test_common_t;
+
 /** @brief LE event mask.
  *
  * If the bit in the Event_Mask is set to a one,
@@ -4125,29 +4156,7 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief LE CS Test command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
-    uint8_t main_mode_type;
-    uint8_t sub_mode_type;
-    uint8_t main_mode_repetition;
-    uint8_t mode_0_steps;
-    uint8_t role;
-    uint8_t rtt_type;
-    uint8_t cs_sync_phy;
-    uint8_t cs_sync_antenna_selection;
-    uint32_t subevent_len : 24;
-    uint16_t subevent_interval;
-    uint8_t max_num_subevents;
-    int8_t transmit_power_level;
-    uint8_t t_ip1_time;
-    uint8_t t_ip2_time;
-    uint8_t t_fcs_time;
-    uint8_t t_pm_time;
-    uint8_t t_sw_time;
-    uint8_t tone_antenna_config_selection;
-    uint8_t cs_enhancements;
-    uint8_t snr_control_initiator;
-    uint8_t snr_control_reflector;
-    uint16_t drbg_nonce;
-    uint8_t channel_map_repetition;
+    sdc_hci_le_le_cs_test_common_t common;
     uint16_t override_config;
     uint8_t override_params_length;
     uint8_t override_params_data[];

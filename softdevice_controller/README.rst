@@ -118,6 +118,9 @@ Proprietary feature support:
 | QoS Channel Survey       |                 | X            | X         | Provides measurements of the energy levels on the Bluetooth LE channels.    |
 |                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
+| Advertising Report       |                 | X            | X         | Appends the RF channel index after ``RSSI`` in legacy LE Advertising Report |
+| channel index            |                 |              |           | events.                                                                     |
++--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 
 .. note::
