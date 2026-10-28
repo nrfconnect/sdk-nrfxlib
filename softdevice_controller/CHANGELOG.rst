@@ -38,7 +38,8 @@ Added
   Autonomous channel assessment is not supported. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` vendor-specific HCI command for the central role to enable or disable channel classification reporting on an ACL connection: :c:func:`sdc_hci_cmd_vs_channel_reporting_enable`. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` support for the Decision Based Advertising Filtering feature. (DRGN-21221)
-* Support for appending the advertising channel index to legacy LE Advertising Report events.
+* Support for appending the advertising channel index to advertising reports for legacy advertising PDUs.
+  The channel index is appended after ``RSSI`` in LE Advertising Report events, and after ``Data`` in LE Extended Advertising Report events for legacy advertising PDUs.
   See :c:func:`sdc_support_chan_idx_in_adv_report`. (DRGN-29397)
 
 Changes

@@ -1435,10 +1435,16 @@ void sdc_support_bis_sink(void);
  */
 void sdc_support_qos_channel_survey(void);
 
-/** @brief Support channel index in standard LE Advertising Reports
+/** @brief Support channel index in advertising reports for legacy advertising PDUs
  *
- * After this API is called, the controller appends the advertising channel
- * index after RSSI in standard LE Advertising Report events.
+ * After this API is called, the controller appends one octet containing the
+ * advertising channel index of the received legacy advertising PDU:
+ * - after RSSI in LE Advertising Report events.
+ * - after Data in LE Extended Advertising Report events that have the
+ *   legacy advertising PDU bit set in Event_Type.
+ *
+ * LE Extended Advertising Report events for extended advertising PDUs are
+ * not changed.
  *
  * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
  *       Use @ref sdc_support_helper() with this function to make sure
