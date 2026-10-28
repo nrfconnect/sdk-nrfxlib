@@ -346,7 +346,7 @@ typedef struct
    */
   int32_t (*lfclk_wait)(void);
 
-  /** @brief Pointer to function that triggers LFCLK callibration start
+  /** @brief Pointer to function that triggers LFCLK calibration start
    *
    * The function may used from high priority or low priority execution context.
    *
@@ -354,7 +354,7 @@ typedef struct
    */
   void (*lfclk_calibration_start)(void);
 
-  /** @brief Pointer to function that checks if LFCLK callibration is enabled
+  /** @brief Pointer to function that checks if LFCLK calibration is enabled
    *
    * The function may used from high priority or low priority execution context.
    *

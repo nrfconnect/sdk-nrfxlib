@@ -316,7 +316,7 @@ int32_t mpsl_fem_lna_configuration_clear(void);
  *  @ref mpsl_fem_lna_configuration_clear or @ref mpsl_fem_pa_configuration_clear,
  *  which both just set up the infrastructure for events which shall disable the PA/LNA.
  *
- * @param[in] type Whether to deactivate imeediately PA, LNA, or both (see @ref mpsl_fem_functionality_t).
+ * @param[in] type Whether to deactivate immediately PA, LNA, or both (see @ref mpsl_fem_functionality_t).
  */
 void mpsl_fem_deactivate_now(mpsl_fem_functionality_t type);
 
