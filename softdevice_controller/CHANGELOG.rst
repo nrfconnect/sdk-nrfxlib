@@ -12,8 +12,14 @@ All the notable changes to this project are documented on this page.
 nRF Connect SDK v3.4.2
 **********************
 
+Added
+=====
+
+* Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series devices (DRGN-28737).
+
 Changes
 =======
+
 * The controller now generates the Command Complete event for the LE Set Periodic Advertising Response Data command immediately, instead of waiting until the response has been transmitted on air. (DRGN-29455)
 * The controller now returns the error code ``0x11`` if the LE Set Periodic Advertising Response Data command sets data for a response slot that occurs earlier than a slot for which response data is already pending transmission.
   See the :ref:`softdevice_controller_limitations` section. (DRGN-29455)
