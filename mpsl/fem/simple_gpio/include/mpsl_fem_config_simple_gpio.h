@@ -40,7 +40,7 @@ extern "C" {
  */
 typedef struct
 {
-    /** Configration structure of the Simple GPIO Front End Module. */
+    /** Configuration structure of the Simple GPIO Front End Module. */
     struct
     {
         /** Time between the activation of the PA pin and the start of the radio transmission.

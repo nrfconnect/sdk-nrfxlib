@@ -19,6 +19,12 @@ Added
 * :c:func:`mpsl_temperature_last_get`, to read the die temperature stored by the last :c:func:`mpsl_temperature_get` call. (DRGN-28399)
 * Experimental support for TX/RX bypass on simple GPIO Front-End Modules, including devices that share bypass control with LNA/PA pins (for example, SKY66409-11). (KRKNWK-22452)
 
+Changes
+=======
+
+* Removed support for nRF52 series
+* Removed support for the nRF2220 Front-End Module. (KRKNWK-22331)
+
 Bug fixes
 =========
 
@@ -29,11 +35,6 @@ Bug fixes
   This issue applies only to the nRF54LM Series devices. (DRGN-29129)
 * Fixed an issue where releasing HFCLK24M using the :c:func:`mpsl_clock_hfclk_src_release` function would leave the clock running, causing increased power consumption.
   This issue applies only to the nRF54LM Series devices. (DRGN-29277)
-
-Removed
-=======
-
-* Removed support for the nRF2220 Front-End Module. (KRKNWK-22331)
 
 nRF Connect SDK v3.4.0
 **********************

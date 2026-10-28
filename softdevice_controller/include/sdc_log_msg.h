@@ -71,6 +71,9 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x010eu, 1, "CS test override: override_parameters_length %u does not match expected %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x010fu, 1, "CS test override: field of %u bytes exceeds the remaining %u bytes of override_parameters_data" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0110u, 1, "CS test: main_mode_type %u invalid" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
@@ -143,6 +146,24 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x0127u, 1, "CS test: channel_map_repetition 0 is invalid" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0128u, 1, "CS test override: invalid RFU bits 0x%04x set in override_config" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0129u, 1, "CS test override: override_parameters_length %u > %u, too long" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x012au, 1, "CS test override: override_parameters_length %u does not match expected %u" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x012bu, 1, "CS test: invalid band 0x%02x set in command" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x012cu, 1, "CS test: channel map invalid for band of %u channels" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x012du, 1, "CS test: channel map invalid for ISM24 band of %u channels" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0130u, 1, "CS test: role %u unsupported, roles_supported 0x%02x" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
@@ -194,10 +215,13 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x0140u, 1, "CS test: snr_control_reflector %u unsupported, tx_snr_capability 0x%02x" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
-	{ 0x0141u, 1, "CS test: unsupported override_config bits 0x%04x" },
+	{ 0x0141u, 1, "CS test: unsupported override: ss_marker_position %u, ss_marker_value %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0142u, 1, "CS test: channel selection #3c unsupported" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0143u, 1, "CS test: %u channels > CS channel array capacity %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0150u, 1, "CS test: test already running" },
@@ -207,6 +231,15 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0152u, 1, "CS test end: no CS test running" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0153u, 1, "CS5G test: test already running" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0154u, 1, "CS5G test: extended testmode channel map not set" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0155u, 1, "CS5G test: scheduler start failed, status 0x%02x" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0160u, 1, "CS read local caps: CS host support bit not set" },

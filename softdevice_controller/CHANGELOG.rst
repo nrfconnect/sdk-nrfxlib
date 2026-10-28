@@ -37,10 +37,13 @@ Added
   Autonomous channel assessment is not supported. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` vendor-specific HCI command for the central role to enable or disable channel classification reporting on an ACL connection: :c:func:`sdc_hci_cmd_vs_channel_reporting_enable`. (DRGN-27485)
 * :ref:`Experimental <nrf:software_maturity>` support for the Decision Based Advertising Filtering feature. (DRGN-21221)
+* Support for appending the advertising channel index to legacy LE Advertising Report events.
+  See :c:func:`sdc_support_chan_idx_in_adv_report`. (DRGN-29397)
 
 Changes
 =======
 
+* Removed support for nRF52 series
 * The controller will now allow a connection interval below the minimum required for the negotiated data length by automatically limiting the current TX octets.
   Previously, after updating data length to 251 bytes in each direction, the minimum connection interval was the time needed to TX and RX 251 bytes of data.
   Now, the minimum connection interval is set to the time needed to TX 27 bytes and RX 251 bytes of data. (DRGN-24488)
@@ -92,6 +95,7 @@ Bug fixes
 * Fixed a rare issue where the controller, acting as an Isochronous Broadcaster, could transmit a BIGInfo with an invalid BIG offset.
   This would only occur with an ISO interval longer than 245 ms. (DRGN-30055)
 * Fixed an issue where the controller would assert when calling the :c:func:`sdc_hci_cmd_vs_compat_mode_window_offset_set` function if the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option was not enabled. (DRGN-30119)
+* Fixed a rare issue where the controller could assert or schedule central role events to overlap when a CIG or BIG was stopped while another central role, CIG, BIG, or periodic advertiser was being started or stopped. (DRGN-29804)
 
 nRF Connect SDK v3.4.0
 **********************
