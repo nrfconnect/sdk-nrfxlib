@@ -117,6 +117,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_CONN_ANCHOR_POINT_UPDATE_EVENT_REPORT_ENABLE = 0xfd1f,
     /** @brief See @ref sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(). */
     SDC_HCI_OPCODE_CMD_VS_ENABLE_PERIODIC_ADV_EVENT_COUNTER_REPORTS = 0xfd20,
+    /** @brief See @ref sdc_hci_cmd_vs_min_conn_event_length_mode_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_MIN_CONN_EVENT_LENGTH_MODE_ENABLE = 0xfd21,
     /** @brief See @ref sdc_hci_cmd_vs_cs_params_set(). */
     SDC_HCI_OPCODE_CMD_VS_CS_PARAMS_SET = 0xfd22,
     /** @brief See @ref sdc_hci_cmd_vs_transmitter_carrier_test(). */
@@ -560,6 +562,14 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
+
 /** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -571,14 +581,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_vs_dtm_test_end_return_t;
-
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -876,6 +878,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t enable;
 } sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t;
 
+/** @brief Enable the minimum connection event length mode command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t enable;
+} sdc_hci_cmd_vs_min_conn_event_length_mode_enable_t;
+
 /** @brief Set custom control parameters for CS command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -923,8 +931,8 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Command parameters (union of all sub-command parameter structs). */
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_test_end_t test_end;
         sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
+        sdc_hci_cmd_vs_dtm_test_end_t test_end;
     } command_parameters;
 } sdc_hci_cmd_vs_dtm_command_t;
 
@@ -1932,6 +1940,36 @@ uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hc
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports(const sdc_hci_cmd_vs_enable_periodic_adv_event_counter_reports_t * p_params);
+
+/** @brief Enable the minimum connection event length mode.
+ *
+ * After this API is called, the controller will only allocate time to TX an empty packet in
+ * the connection event.
+ *
+ * This allows smaller connection event length and connection interval values.
+ * When enabled on the central, there is a chance to starve the peripheral of opportunities to
+ * send data. This will happen if the central is consistently sending full length packets.
+ * To avoid this, it is recommended to use @ref sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set()
+ * to set a value lower than 27 when possible to ensure the peripheral has time to send data.
+ *
+ * When enabled on the peripheral, @ref sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set() will no
+ * longer take effect and the peripheral will use the remaining time in a connection event
+ * to send as much data as possible. If the central is consistently sending full length packets,
+ * there is a chance the peripheral will be starved of time to send data.
+ *
+ * The configured value is retained after issuing an HCI Reset command.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_min_conn_event_length_mode_enable(const sdc_hci_cmd_vs_min_conn_event_length_mode_enable_t * p_params);
 
 /** @brief Set custom control parameters for CS.
  *

@@ -88,20 +88,27 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
-   * For the LE Flushable ACL Data feature, the support is experimental.
    * For the Channel Classification feature, the support is experimental.
    * For the Decision Based Advertising Filtering feature, the support is experimental.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
    * For the nRF54L Series devices, the SoftDevice Controller in non-secure mode is experimental.
    * Channel Sounding is not supported on the nRF52 and nRF53 Series devices.
-   * For the Shorter Connection Intervals feature, the minimum connection interval can be achieved using the lowest supported ACL frame space, 2 Mbps PHY, and 27-byte data length.
+   * For the Shorter Connection Intervals feature:
 
-     The minimum supported connection intervals for each device family are as follows:
+     * The minimum connection interval can be achieved using the lowest supported ACL frame space, 2 Mbps PHY, and 27-byte data length.
+     * The minimum supported connection intervals for each device family are as follows:
 
-     * nRF52 Series: 750 μs
-     * nRF53 Series: 750 μs
-     * nRF54L Series: 625 μs
-     * nRF54H Series: 750 μs
+       * nRF52 Series: 750 μs
+       * nRF53 Series: 750 μs
+       * nRF54L Series: 625 μs
+       * nRF54H Series: 750 μs
+
+     * If the minimum connection event length mode is enabled using :c:func:`sdc_hci_cmd_vs_min_conn_event_length_mode_enable`, the minimum supported connection intervals are as follows:
+
+       * nRF52 Series: 625 μs
+       * nRF53 Series: 625 μs
+       * nRF54L Series: 500 μs
+       * nRF54H Series: 625 μs
 
 .. _sdc_proprietary_feature_support:
 

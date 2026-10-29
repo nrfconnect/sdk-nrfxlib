@@ -41,6 +41,9 @@ Added
 * Support for appending the advertising channel index to advertising reports for legacy advertising PDUs.
   The channel index is appended after ``RSSI`` in LE Advertising Report events, and after ``Data`` in LE Extended Advertising Report events for legacy advertising PDUs.
   See :c:func:`sdc_support_chan_idx_in_adv_report`. (DRGN-29397)
+* :ref:`Experimental <nrf:software_maturity>` support for a vendor-specific minimum connection event length mode.
+  This enables lower connection intervals and event lengths.
+  See :c:func:`sdc_hci_cmd_vs_min_conn_event_length_mode_enable`. (DRGN-27038)
 
 Changes
 =======
@@ -66,6 +69,7 @@ Changes
   This change improves scheduling performance when multiple subrated connections are active. (DRGN-29752)
 * The controller now always cancels peripheral latency if the last received packet contained a CRC error.
   This makes it less likely that a control procedure packet containing an instant is missed. (DRGN-29906)
+* The LE Flushable ACL Data feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-27485)
 
 Bug fixes
 =========
