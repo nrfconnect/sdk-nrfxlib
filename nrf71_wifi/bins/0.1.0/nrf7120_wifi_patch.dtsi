@@ -7,16 +7,26 @@
 / {
 	soc {
 		lmac_rom_patch_addr: memory@100000 {
-			reg = <0x100000 22336>;
+			reg = <0x100000 362540>;
 		};
 
-		umac_rom_patch_addr: memory@105740 {
-			reg = <0x105740 28404>;
+		umac_rom_patch_addr: memory@160000 {
+			reg = <0x160000 589654>;
 		};
+		
+		lmac_init_pc: memory@110000 {
+            reg = <0x110000 281180>;
+        };
+		
+        umac_init_pc: memory@170000 {
+            reg = <0x170000 524118>;
+        };	
 	};
 };
 
-&wicr {
+&wicr {	
+	firmware-lmacinitpc = <&lmac_init_pc>;
+    firmware-umacinitpc = <&umac_init_pc>;
 	firmware-lmacrompatchaddr = <&lmac_rom_patch_addr>;
 	firmware-umacrompatchaddr = <&umac_rom_patch_addr>;
 };
