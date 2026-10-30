@@ -12,6 +12,11 @@ All notable changes to this project are documented in this file.
 Main branch
 ***********
 
+Added
+=====
+
+* Added support for the 32-bit RISC-V architecture.
+
 Removed
 =======
 
