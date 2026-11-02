@@ -38,12 +38,14 @@ endchoice
 
 config WIFI_NRF71_PATCH_MANIFEST_FILE
 	string
+	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0_ns/manifest.json" if WIFI_NRF71_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/manifest.json" if WIFI_NRF71_PATCH_VERSION_0_1_0
 	help
 	  Specifies the path to the Wi-Fi ROM patch manifest file.
 
 config WIFI_NRF71_PATCH_DTSI_FILE
 	string
+	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0_ns/nrf7120_wifi_patch.dtsi" if WIFI_NRF71_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/nrf7120_wifi_patch.dtsi" if WIFI_NRF71_PATCH_VERSION_0_1_0
 	help
 	  Specifies the path to the Wi-Fi ROM patch devicetree overlay file.

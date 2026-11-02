@@ -4,14 +4,18 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+#ifdef USE_NON_SECURE_ADDRESS_MAP
+#include "../0.1.0_ns/nrf7120_wifi_patch.dtsi"
+#else
+
 / {
 	soc {
-		lmac_rom_patch_addr: memory@100000 {
-			reg = <0x100000 22336>;
+		lmac_rom_patch_addr: memory@1ecfe0 {
+			reg = <0x1ecfe0 22444>;
 		};
 
-		umac_rom_patch_addr: memory@105740 {
-			reg = <0x105740 28404>;
+		umac_rom_patch_addr: memory@1f2790 {
+			reg = <0x1f2790 30484>;
 		};
 	};
 };
@@ -20,3 +24,5 @@
 	firmware-lmacrompatchaddr = <&lmac_rom_patch_addr>;
 	firmware-umacrompatchaddr = <&umac_rom_patch_addr>;
 };
+
+#endif /* USE_NON_SECURE_ADDRESS_MAP */
