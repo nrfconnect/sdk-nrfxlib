@@ -71,7 +71,7 @@ enum MPSL_TIMESLOT_SIGNAL
 {
     MPSL_TIMESLOT_SIGNAL_START            = 0,  /**< This signal indicates the start of the timeslot.
                                                 The signal will be executed in the same context as
-                                                @ref MPSL_IRQ_TIMER0_Handler. */
+                                                @ref MPSL_IRQ_RTC0_Handler. */
     MPSL_TIMESLOT_SIGNAL_TIMER0           = 1,  /**< This signal indicates the TIMER0 interrupt.
                                                 The signal will be executed in the same context as
                                                 @ref MPSL_IRQ_TIMER0_Handler.
