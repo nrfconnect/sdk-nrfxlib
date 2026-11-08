@@ -70,6 +70,10 @@ Changes
 * The controller now always cancels peripheral latency if the last received packet contained a CRC error.
   This makes it less likely that a control procedure packet containing an instant is missed. (DRGN-29906)
 * The LE Flushable ACL Data feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-27485)
+* When the controller, acting as a central, performs a connection update, the connection now keeps its position relative to the other central connections.
+  Previously, central connections had to be updated to new intervals in the order they were established to keep the configured event spacing.
+  They can now be updated in any order.
+  See the :ref:`connection_update_scheduling_and_timing` section for more details. (DRGN-29804)
 
 Bug fixes
 =========
