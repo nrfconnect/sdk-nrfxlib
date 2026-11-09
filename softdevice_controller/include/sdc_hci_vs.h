@@ -125,6 +125,12 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_TRANSMITTER_CARRIER_TEST = 0xfd23,
     /** @brief See @ref sdc_hci_cmd_vs_channel_reporting_enable(). */
     SDC_HCI_OPCODE_CMD_VS_CHANNEL_REPORTING_ENABLE = 0xfd24,
+    /** @brief See @ref sdc_hci_cmd_vs_set_conn_power_control_request_params(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_CONN_POWER_CONTROL_REQUEST_PARAMS = 0xfd25,
+    /** @brief See @ref sdc_hci_cmd_vs_set_conn_tx_power_bounds(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_CONN_TX_POWER_BOUNDS = 0xfd26,
+    /** @brief See @ref sdc_hci_cmd_vs_power_control_rsp_report_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_POWER_CONTROL_RSP_REPORT_ENABLE = 0xfd27,
 };
 
 /** @brief VS subevent Code values. */
@@ -142,6 +148,8 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_CHANNEL_CLASSIFICATION_REPORT = 0x87,
     /** @brief See @ref sdc_hci_subevent_vs_channel_reporting_enable_complete_t. */
     SDC_HCI_SUBEVENT_VS_CHANNEL_REPORTING_ENABLE_COMPLETE = 0x88,
+    /** @brief See @ref sdc_hci_subevent_vs_power_control_rsp_report_t. */
+    SDC_HCI_SUBEVENT_VS_POWER_CONTROL_RSP_REPORT = 0x89,
 };
 
 /** @brief CS Parameter Set types. */
@@ -440,6 +448,70 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t status;
     uint16_t conn_handle;
 } sdc_hci_subevent_vs_channel_reporting_enable_complete_t;
+
+/** @brief Power Control Response Report Event.
+ *
+ * The HCI_VS_power_control_rsp_report event reports the outcome of an LE Power Control Request
+ * procedure that was initiated by the host, including everything the peer returned in
+ * LL_POWER_CONTROL_RSP. This includes the Acceptable Power Reduction (APR) and the minimum and
+ * maximum power flags, which are not available in the standard
+ * HCI_LE_Transmit_Power_Reporting event.
+ *
+ * The controller generates one event for every LE Power Control Request procedure that the
+ * host initiated, with the @ref sdc_hci_cmd_vs_write_remote_tx_power command or the
+ * @ref sdc_hci_cmd_le_read_remote_transmit_power_level command, when the procedure
+ * has completed. This is also the case when the procedure did not result in a change of the
+ * peer's TX power, and when the peer rejected the request or does not support the procedure,
+ * in which case the status parameter is not zero. No event is generated for a procedure that the
+ * controller initiated, or for a connection that is terminated before the procedure completes.
+ *
+ * The controller only generates HCI_VS_power_control_rsp_report events
+ * if instructed to do so using the
+ * @ref sdc_hci_cmd_vs_power_control_rsp_report_enable command.
+ *
+ * The event is only available if the application has called @ref sdc_support_le_power_control_ext.
+ *
+ * If the application does not pull the event before the next procedure on the same connection
+ * completes, it will be overwritten.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief 0 if the peer responded with LL_POWER_CONTROL_RSP. Otherwise, the error code with
+     *         which the request failed, for example the reject reason from the peer, or Unsupported
+     *         Remote Feature if the peer does not support the procedure. The remaining parameters,
+     *         except for conn_handle, phy and requested_delta, are not valid if status is not 0.
+     */
+    uint8_t status;
+    /** @brief Connection handle of the connection the procedure was initiated on. */
+    uint16_t conn_handle;
+    /** @brief PHY bit number i.e. [1M, 2M, s8, s2] == [1, 2, 3, 4]. */
+    uint8_t phy;
+    /** @brief The adjustment, in dB, that the host requested the peer to apply to its TX power. 0
+     *         if the procedure was initiated with @ref
+     *         sdc_hci_cmd_le_read_remote_transmit_power_level.
+     */
+    int8_t requested_delta;
+    /** @brief The adjustment, in dB, that the peer applied to its TX power, from the Delta field in
+     *         LL_POWER_CONTROL_RSP. This can differ from requested_delta, for example if the peer
+     *         has reached its minimum or maximum power.
+     */
+    int8_t accepted_delta;
+    /** @brief The TX power of the peer in dBm after the adjustment, from the TxPower field in
+     *         LL_POWER_CONTROL_RSP. 126 means that the peer does not manage its TX power, and 127
+     *         means that it is not available.
+     */
+    int8_t peer_tx_power;
+    /** @brief The minimum and maximum power flags from LL_POWER_CONTROL_RSP. Bit 0 is set if the
+     *         peer's TX power is at its minimum. Bit 1 is set if the peer's TX power is at its
+     *         maximum.
+     */
+    uint8_t flags;
+    /** @brief The Acceptable Power Reduction (APR) from LL_POWER_CONTROL_RSP, in dB. It is how much
+     *         more the receiving device may reduce its TX power. 255 means that the peer could not
+     *         determine it.
+     */
+    uint8_t apr;
+} sdc_hci_subevent_vs_power_control_rsp_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -924,6 +996,65 @@ typedef struct __PACKED __ALIGN(1)
      */
     uint8_t max_delay;
 } sdc_hci_cmd_vs_channel_reporting_enable_t;
+
+/** @brief Set LE Power Control Request procedure parameters for a connection command parameter(s).
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Connection handle of the connection to set the parameters for. */
+    uint16_t conn_handle;
+    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
+     */
+    uint8_t auto_enable;
+    /** @brief Enable or Disable received APR handling in controller during LE Power Control Request
+     *         procedure.
+     */
+    uint8_t apr_enable;
+    /** @brief The valid range is [0, 4095]. */
+    uint16_t beta;
+    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in Core
+     *         Specification, Vol 6, Part B, Section 5.1.17.1.
+     */
+    int8_t lower_limit;
+    /** @brief The upper limit of the RSSI golden range. */
+    int8_t upper_limit;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
+     *         limit of RSSI Golden range.
+     */
+    int8_t lower_target_rssi;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
+     *         limit of RSSI Golden range.
+     */
+    int8_t upper_target_rssi;
+    /** @brief Duration in milliseconds to wait before initiating a new LE Power Control Request
+     *         procedure by the controller. 0 milliseconds value is an invalid value.
+     */
+    uint16_t wait_period_ms;
+    /** @brief Margin between APR value received from peer in LL_POWER_CONTROL_RSP PDU and actual
+     *         reduction in Transmit power that is applied locally. The applied decrease in local
+     *         Transmit power will be (received_apr - apr_margin) if received_apr > apr_margin,
+     *         otherwise no change.
+     */
+    uint8_t apr_margin;
+} sdc_hci_cmd_vs_set_conn_power_control_request_params_t;
+
+/** @brief Set TX power bounds for a connection command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Connection handle of the connection to set the bounds for. */
+    uint16_t conn_handle;
+    /** @brief Lowest TX power in dBm. Must not be greater than max_tx_power. */
+    int8_t min_tx_power;
+    /** @brief Highest TX power in dBm. */
+    int8_t max_tx_power;
+} sdc_hci_cmd_vs_set_conn_tx_power_bounds_t;
+
+/** @brief Power Control Response Report enable command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
+    uint8_t enable;
+} sdc_hci_cmd_vs_power_control_rsp_report_enable_t;
 
 /** @brief VS Hidden Vs Dtm Command command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -1489,7 +1620,9 @@ uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channe
  * APR value received from the peer in LL_POWER_CONTROL_RSP and the apr_margin parameter.
  *
  * When this command is issued, the controller stores the parameters and
- * uses them for the subsequent LE Power Control Request procedures across all the connections.
+ * uses them for the subsequent LE Power Control Request procedures across all the connections,
+ * except for the connections for which the parameters have been set with
+ * @ref sdc_hci_cmd_vs_set_conn_power_control_request_params.
  *
  * After HCI Reset, all parameters are set to the default values.
  *
@@ -2133,6 +2266,120 @@ __deprecated uint8_t sdc_hci_cmd_vs_transmitter_carrier_test(const sdc_hci_cmd_v
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_channel_reporting_enable(const sdc_hci_cmd_vs_channel_reporting_enable_t * p_params);
+
+/** @brief Set LE Power Control Request procedure parameters for a connection.
+ *
+ * This command sets the parameters used in LE Power Control Request
+ * procedure by the Link Layer for a single connection.
+ *
+ * The parameters are the same as for @ref sdc_hci_cmd_vs_set_power_control_request_params,
+ * and are described in detail there. In contrast to that command, the parameters set by this
+ * command apply to the connection identified by conn_handle only.
+ *
+ * Average RSSI and lower_limit parameter are used to calculate the APR value the controller
+ * sends in LL_POWER_CONTROL_RSP on this connection, also when auto_enable is not set.
+ *
+ * Once this command has been issued successfully for a connection, the parameters of that
+ * connection are no longer affected by @ref sdc_hci_cmd_vs_set_power_control_request_params.
+ * Connections for which this command has not been issued keep using the parameters set by
+ * @ref sdc_hci_cmd_vs_set_power_control_request_params, or the default values if that command
+ * has not been issued either.
+ *
+ * The parameters set by this command are discarded when the connection is terminated.
+ * They are not inherited by new connections.
+ *
+ * This command is only available if the application has called @ref
+ * sdc_support_le_power_control_ext.
+ * Otherwise, the controller rejects it with the Command Disallowed error.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_conn_power_control_request_params(const sdc_hci_cmd_vs_set_conn_power_control_request_params_t * p_params);
+
+/** @brief Set TX power bounds for a connection.
+ *
+ * This command sets the lower and upper bound of the local TX power for a single connection.
+ *
+ * The bounds are honored when the controller changes the local TX power of the connection on
+ * request from the peer, that is, when it receives LL_POWER_CONTROL_REQ, or because of the APR
+ * received from the peer when APR handling is enabled with
+ * @ref sdc_hci_cmd_vs_set_conn_power_control_request_params.
+ * The controller never changes the TX power beyond the bounds in response to such a request.
+ * If the TX power the peer requests is not available, the controller rounds it towards the bound
+ * instead of beyond it.
+ * If the TX power is already outside the bounds, a request to change it in the direction of the
+ * bounds does not change it. It is not changed in the opposite direction either.
+ *
+ * The minimum and maximum power flags in LL_POWER_CONTROL_RSP and LL_POWER_CHANGE_IND are set when
+ * the TX power has reached the lower or upper bound, respectively. This tells the peer that the TX
+ * power cannot be changed further in that direction.
+ * The flags are updated when this command is issued, also when the bounds are removed, so the
+ * next LL_POWER_CONTROL_RSP has the flags for the new bounds even if the TX power does not change.
+ * The controller does not send LL_POWER_CHANGE_IND because of this command.
+ *
+ * The bounds do not limit the TX power that the host sets itself. They do not change the TX power
+ * when the command is issued, only the changes requested afterwards.
+ * When the host sets the TX power, the minimum and maximum power flags only report the hardware
+ * limits, until the TX power is next changed on request from the peer.
+ *
+ * The values are in dBm and have the same reference as the TX power reported to the host, for
+ * example in the HCI_LE_Transmit_Power_Reporting event, i.e. they include the RF path compensation.
+ * To remove the bounds, set min_tx_power to -127 and max_tx_power to 127.
+ *
+ * The bounds apply to all PHYs of the connection. They are discarded when the connection is
+ * terminated and are not inherited by new connections.
+ *
+ * This command is only available if the application has called @ref
+ * sdc_support_le_power_control_ext.
+ * Otherwise, the controller rejects it with the Command Disallowed error.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_conn_tx_power_bounds(const sdc_hci_cmd_vs_set_conn_tx_power_bounds_t * p_params);
+
+/** @brief Power Control Response Report enable.
+ *
+ * This vendor specific command is used to enable or disable generation of
+ * VS_Power_Control_Rsp_Report events. See @ref sdc_hci_subevent_vs_power_control_rsp_report_t.
+ *
+ * When enabled, the controller generates an event for every LE Power Control Request procedure
+ * that the host initiates, with the @ref sdc_hci_cmd_vs_write_remote_tx_power command or the
+ * @ref sdc_hci_cmd_le_read_remote_transmit_power_level command, when the procedure completes.
+ * The event contains the full content of LL_POWER_CONTROL_RSP.
+ *
+ * After HCI Reset, this feature is disabled.
+ *
+ * This command is only available if the application has called @ref
+ * sdc_support_le_power_control_ext.
+ * Otherwise, the controller rejects it with the Command Disallowed error.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_power_control_rsp_report_enable(const sdc_hci_cmd_vs_power_control_rsp_report_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 
