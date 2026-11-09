@@ -121,7 +121,10 @@ PSA driver integration
 ======================
 
 Starting from version 0.9.13, the nrf_cc3xx_mbedcrypto library contains a companion nrf_cc3xx_platform library that provides access to low-level CryptoCell APIs.
-Both must be used through the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS|.
+Use nrf_cc3xx_mbedcrypto through the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS|.
+
+The nrf_cc3xx_platform library can also be used on its own.
+See :ref:`nrf_cc3xx_platform_initialization` in the :ref:`nrf_cc3xx_platform_readme`.
 
 Supported features
 ------------------
@@ -144,6 +147,9 @@ Initializing the library
 ------------------------
 
 Use the library through the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS|.
+
+If you use nrf_cc3xx_platform APIs directly without the :ref:`nrf:crypto_drivers_cc3xx` initializing them, you must initialize the nrf_cc3xx_platform library first.
+See :ref:`nrf_cc3xx_platform_initialization` in the :ref:`nrf_cc3xx_platform_readme`.
 
 .. note::
    There is no need to enable/disable the CC310 hardware by writing to the ``NRF_CRYPTOCELL->ENABLE`` and ``NRF_CRYPTOCELL_S->ENABLE`` registers.
