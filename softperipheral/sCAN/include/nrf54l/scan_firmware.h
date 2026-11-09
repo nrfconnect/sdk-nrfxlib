@@ -6,6 +6,6 @@
 
 #ifndef SCAN_FIRMWARE_H__
 #define SCAN_FIRMWARE_H__
-#include "scan_firmware_v0.1.0.h"
+#include "scan_firmware_v0.2.0.h"
 #define SOFTPERIPHERAL_META_HEADER_VERSION 2
 #endif

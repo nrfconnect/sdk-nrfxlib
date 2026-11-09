@@ -28,6 +28,7 @@ Mailboxes and filters
 *********************
 
 sCAN uses a mailbox system in which each mailbox has an associated data frame and filter.
+sCAN supports a maximum of 4 mailboxes and filters.
 After a filter match, the mailbox locks to avoid overwriting an unread frame.
 The sCAN API provides convenience functions for unlocking a mailbox after the application processes the frame.
 

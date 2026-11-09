@@ -537,9 +537,17 @@ NRF_STATIC_INLINE nrf_can_state_t nrf_can_state_get(NRF_CAN_Type const * p_reg)
            >> SP_CAN_STATUS_STATUS_STATE_Pos;
 }
 
+/* STATUS error bits 0..9, from the regif (BITERROR .. ARBITRATIONLOSTRXOK) */
+#define NRF_CAN_STATUS_ERROR_MASK                                                    \
+    (SP_CAN_STATUS_STATUS_BITERROR_Msk | SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Msk | \
+     SP_CAN_STATUS_STATUS_FORMERROR_Msk | SP_CAN_STATUS_STATUS_ACKERROR_Msk |        \
+     SP_CAN_STATUS_STATUS_CRCERROR_Msk | SP_CAN_STATUS_STATUS_BIT0ERROR_Msk |        \
+     SP_CAN_STATUS_STATUS_BIT1ERROR_Msk | SP_CAN_STATUS_STATUS_PROTOCOLERROR_Msk |   \
+     SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Msk | SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Msk)
+
 NRF_STATIC_INLINE uint32_t nrf_can_error_get(NRF_CAN_Type const * p_reg)
 {
-    return (p_reg->STATUS.STATUS & 0x1FF);
+    return (p_reg->STATUS.STATUS & NRF_CAN_STATUS_ERROR_MASK);
 }
 
 NRF_STATIC_INLINE bool nrf_can_status_error_check(uint32_t error_mask)

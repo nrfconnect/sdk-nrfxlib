@@ -110,17 +110,17 @@ The following options are available, assuming that the FLPR core has access to t
      - Input config
      - Pin pull config
    * - **P7.0**
-     - D3
-     - Output
-     - Disconnected
-     - Pull-up
-   * - **P7.1**
      - CLK
      - Output
      - Disconnected
      - Pull-down
-   * - **P7.2**
+   * - **P7.1**
      - D0
+     - Output
+     - Disconnected
+     - Pull-up
+   * - **P7.2**
+     - D1
      - Output
      - Disconnected
      - Pull-up
@@ -130,7 +130,7 @@ The following options are available, assuming that the FLPR core has access to t
      - Disconnected
      - Pull-up
    * - **P7.4**
-     - D1
+     - D3
      - Output
      - Disconnected
      - Pull-up

@@ -106,44 +106,44 @@ typedef struct
   #define SP_CAN_RXFILTER_IDFILTER_ResetValue (0x00000000UL)                                /*!< Reset value of IDFILTER register.                            */
 
 /* IDENTIFIER @Bits 0..28 : ID to match for RX */
-  #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos (0UL)                                     /*!< Position of IDENTIFIER field.                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos    (0UL)                                  /*!< Position of IDENTIFIER field.                                     */
   #define SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Msk                                                              \
                                                      (0x1FFFFFFFUL << SP_CAN_RXFILTER_IDFILTER_IDENTIFIER_Pos) \
                                                                                             /*!< Bit mask of
                                                                                              * IDENTIFIER field.*/
 
 /* USEFILTER @Bit 29 : Enable the filter to match against a received message */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos      (29UL)                                /*!< Position of USEFILTER field.                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos         (29UL)                             /*!< Position of USEFILTER field.                                      */
   #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Msk                                                           \
                                                          (0x1UL << SP_CAN_RXFILTER_IDFILTER_USEFILTER_Pos) \
                                                                                             /*!< Bit mask of USEFILTER
                                                                                              * field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Min      (0x0UL)                               /*!< Min enumerator value of USEFILTER field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Max      (0x1UL)                               /*!< Max enumerator value of USEFILTER field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Disabled (0x0UL)                               /*!< Disable                                                     */
-  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Enabled  (0x1UL)                               /*!< Enable                                                       */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Min         (0x0UL)                            /*!< Min enumerator value of USEFILTER field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Max         (0x1UL)                            /*!< Max enumerator value of USEFILTER field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Disabled    (0x0UL)                            /*!< Disable                                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_USEFILTER_Enabled     (0x1UL)                            /*!< Enable                                                       */
 
 /* INMAILBOX @Bit 30 : sCAN driver has put the data in a mailbox */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos      (30UL)                                /*!< Position of INMAILBOX field.                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos         (30UL)                             /*!< Position of INMAILBOX field.                                      */
   #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Msk                                                           \
                                                          (0x1UL << SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Pos) \
                                                                                             /*!< Bit mask of INMAILBOX
                                                                                              * field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Min      (0x0UL)                               /*!< Min enumerator value of INMAILBOX field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Max      (0x1UL)                               /*!< Max enumerator value of INMAILBOX field.                         */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Disabled (0x0UL)                               /*!< Disable                                                     */
-  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Enabled  (0x1UL)                               /*!< Enable                                                       */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Min         (0x0UL)                            /*!< Min enumerator value of INMAILBOX field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Max         (0x1UL)                            /*!< Max enumerator value of INMAILBOX field.                         */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Disabled    (0x0UL)                            /*!< Disable                                                     */
+  #define SP_CAN_RXFILTER_IDFILTER_INMAILBOX_Enabled     (0x1UL)                            /*!< Enable                                                       */
 
 /* FILTERMATCHED @Bit 31 : Indicates that the filter has been matched */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos     (31UL)                             /*!< Position of FILTERMATCHED field.                              */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos        (31UL)                          /*!< Position of FILTERMATCHED field.                              */
   #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Msk                                                              \
                                                             (0x1UL << SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Pos) \
                                                                                             /*!< Bit mask of
                                                                                              * FILTERMATCHED field.*/
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Min     (0x0UL)                            /*!< Min enumerator value of FILTERMATCHED field.                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Max     (0x1UL)                            /*!< Max enumerator value of FILTERMATCHED field.                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_NoMatch (0x0UL)                            /*!< No match                                                 */
-  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Match   (0x1UL)                            /*!< Match                                                      */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Min        (0x0UL)                         /*!< Min enumerator value of FILTERMATCHED field.                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Max        (0x1UL)                         /*!< Max enumerator value of FILTERMATCHED field.                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_NoMatch    (0x0UL)                         /*!< No match                                                 */
+  #define SP_CAN_RXFILTER_IDFILTER_FILTERMATCHED_Match      (0x1UL)                         /*!< Match                                                      */
 
 /* SP_CAN_RXFILTER_IDMASK: ID mask filter for RX */
   #define SP_CAN_RXFILTER_IDMASK_ResetValue (0x00000000UL)                                  /*!< Reset value of IDMASK register.                                */
@@ -153,15 +153,15 @@ typedef struct
   #define SP_CAN_RXFILTER_IDMASK_MASK_Msk (0x1FFFFFFFUL << SP_CAN_RXFILTER_IDMASK_MASK_Pos) /*!< Bit mask of MASK field.       */
 
 /* FILTERWIDTH @Bit 29 : Width of the mask and ID filter to apply for RX */
-  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos      (29UL)                                /*!< Position of FILTERWIDTH field.                                    */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos         (29UL)                             /*!< Position of FILTERWIDTH field.                                    */
   #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Msk                                                           \
                                                          (0x1UL << SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Pos) \
                                                                                             /*!< Bit mask of FILTERWIDTH
                                                                                              * field.*/
-  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Min      (0x0UL)                               /*!< Min enumerator value of FILTERWIDTH field.                       */
-  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Max      (0x1UL)                               /*!< Max enumerator value of FILTERWIDTH field.                       */
-  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Standard (0x0UL)                               /*!< Use standard ID width of 11 bits                            */
-  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Extended (0x1UL)                               /*!< Use extended ID width of 29 bits                            */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Min         (0x0UL)                            /*!< Min enumerator value of FILTERWIDTH field.                       */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Max         (0x1UL)                            /*!< Max enumerator value of FILTERWIDTH field.                       */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Standard    (0x0UL)                            /*!< Use standard ID width of 11 bits                            */
+  #define SP_CAN_RXFILTER_IDMASK_FILTERWIDTH_Extended    (0x1UL)                            /*!< Use extended ID width of 29 bits                            */
 
 /* ================================================== Struct SP_CAN_TXFRAME ================================================== */
 /**
@@ -182,7 +182,7 @@ typedef struct
   #define SP_CAN_TXFRAME_IDENTIFIER_ResetValue (0x00000000UL)                                      /*!< Reset value of IDENTIFIER register.                         */
 
 /* IDENTIFIER @Bits 0..28 : Frame Identifier */
-  #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos (0UL)                                           /*!< Position of IDENTIFIER field.                                    */
+  #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos    (0UL)                                        /*!< Position of IDENTIFIER field.                                    */
   #define SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Msk                                                               \
                                                       (0x1FFFFFFFUL << SP_CAN_TXFRAME_IDENTIFIER_IDENTIFIER_Pos) \
                                                                                                    /*!< Bit mask of
@@ -230,26 +230,26 @@ typedef struct
   #define SP_CAN_TXFRAME_METADATA_ResetValue (0x00000000UL)                                        /*!< Reset value of METADATA register.                             */
 
 /* EXTENDEDFORMAT @Bit 0 : Frame's IDE (Identifier Extension bit) */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos      (0UL)                                    /*!< Position of EXTENDEDFORMAT field.                              */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos         (0UL)                                 /*!< Position of EXTENDEDFORMAT field.                              */
   #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Msk                                                               \
                                                              (0x1UL << SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * EXTENDEDFORMAT field.*/
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Min      (0x0UL)                                  /*!< Min enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Max      (0x1UL)                                  /*!< Max enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Disabled (0x0UL)                                  /*!< Disable                                                 */
-  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Enabled  (0x1UL)                                  /*!< Enable                                                   */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Min         (0x0UL)                               /*!< Min enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Max         (0x1UL)                               /*!< Max enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Disabled    (0x0UL)                               /*!< Disable                                                 */
+  #define SP_CAN_TXFRAME_METADATA_EXTENDEDFORMAT_Enabled     (0x1UL)                               /*!< Enable                                                   */
 
 /* REMOTEREQUEST @Bit 1 : Frame's RTR (Remote Transmission request bit) */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos      (1UL)                                     /*!< Position of REMOTEREQUEST field.                                */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos         (1UL)                                  /*!< Position of REMOTEREQUEST field.                                */
   #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Msk                                                              \
                                                             (0x1UL << SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * REMOTEREQUEST field.*/
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Min      (0x0UL)                                   /*!< Min enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Max      (0x1UL)                                   /*!< Max enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Disabled (0x0UL)                                   /*!< Disable                                                  */
-  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Enabled  (0x1UL)                                   /*!< Enable                                                    */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Min         (0x0UL)                                /*!< Min enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Max         (0x1UL)                                /*!< Max enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Disabled    (0x0UL)                                /*!< Disable                                                  */
+  #define SP_CAN_TXFRAME_METADATA_REMOTEREQUEST_Enabled     (0x1UL)                                /*!< Enable                                                    */
 
 /* DATALENGTH @Bits 2..5 : Frame's DLC (Data Length Code) */
   #define SP_CAN_TXFRAME_METADATA_DATALENGTH_Pos (2UL)                                             /*!< Position of DATALENGTH field.                                      */
@@ -279,7 +279,7 @@ typedef struct
   #define SP_CAN_RXFRAME_IDENTIFIER_ResetValue (0x00000000UL)                                      /*!< Reset value of IDENTIFIER register.                         */
 
 /* IDENTIFIER @Bits 0..28 : Frame Identifier */
-  #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos (0UL)                                           /*!< Position of IDENTIFIER field.                                    */
+  #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos    (0UL)                                        /*!< Position of IDENTIFIER field.                                    */
   #define SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Msk                                                               \
                                                       (0x1FFFFFFFUL << SP_CAN_RXFRAME_IDENTIFIER_IDENTIFIER_Pos) \
                                                                                                    /*!< Bit mask of
@@ -327,26 +327,26 @@ typedef struct
   #define SP_CAN_RXFRAME_METADATA_ResetValue (0x00000000UL)                                        /*!< Reset value of METADATA register.                             */
 
 /* EXTENDEDFORMAT @Bit 0 : Frame's IDE (Identifier Extension bit) */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos      (0UL)                                    /*!< Position of EXTENDEDFORMAT field.                              */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos         (0UL)                                 /*!< Position of EXTENDEDFORMAT field.                              */
   #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Msk                                                               \
                                                              (0x1UL << SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * EXTENDEDFORMAT field.*/
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Min      (0x0UL)                                  /*!< Min enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Max      (0x1UL)                                  /*!< Max enumerator value of EXTENDEDFORMAT field.                */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Disabled (0x0UL)                                  /*!< Disable                                                 */
-  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Enabled  (0x1UL)                                  /*!< Enable                                                   */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Min         (0x0UL)                               /*!< Min enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Max         (0x1UL)                               /*!< Max enumerator value of EXTENDEDFORMAT field.                */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Disabled    (0x0UL)                               /*!< Disable                                                 */
+  #define SP_CAN_RXFRAME_METADATA_EXTENDEDFORMAT_Enabled     (0x1UL)                               /*!< Enable                                                   */
 
 /* REMOTEREQUEST @Bit 1 : Frame's RTR (Remote Transmission request bit) */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos      (1UL)                                     /*!< Position of REMOTEREQUEST field.                                */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos         (1UL)                                  /*!< Position of REMOTEREQUEST field.                                */
   #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Msk                                                              \
                                                             (0x1UL << SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * REMOTEREQUEST field.*/
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Min      (0x0UL)                                   /*!< Min enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Max      (0x1UL)                                   /*!< Max enumerator value of REMOTEREQUEST field.                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Disabled (0x0UL)                                   /*!< Disable                                                  */
-  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Enabled  (0x1UL)                                   /*!< Enable                                                    */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Min         (0x0UL)                                /*!< Min enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Max         (0x1UL)                                /*!< Max enumerator value of REMOTEREQUEST field.                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Disabled    (0x0UL)                                /*!< Disable                                                  */
+  #define SP_CAN_RXFRAME_METADATA_REMOTEREQUEST_Enabled     (0x1UL)                                /*!< Enable                                                    */
 
 /* DATALENGTH @Bits 2..5 : Frame's DLC (Data Length Code) */
   #define SP_CAN_RXFRAME_METADATA_DATALENGTH_Pos (2UL)                                             /*!< Position of DATALENGTH field.                                      */
@@ -376,7 +376,7 @@ typedef struct
   #define SP_CAN_STATUS_STATUS_BITERROR_Msk (0x1UL << SP_CAN_STATUS_STATUS_BITERROR_Pos)           /*!< Bit mask of BITERROR field.      */
 
 /* BITSTUFFINGERROR @Bit 1 : Receiver detects a sequence of 6 dominant or recessive bits */
-  #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos (1UL)                                          /*!< Position of BITSTUFFINGERROR field.                             */
+  #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos    (1UL)                                       /*!< Position of BITSTUFFINGERROR field.                             */
   #define SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Msk                                                         \
                                                        (0x1UL << SP_CAN_STATUS_STATUS_BITSTUFFINGERROR_Pos) \
                                                                                                    /*!< Bit mask of
@@ -408,14 +408,14 @@ typedef struct
                                                                                                     * PROTOCOLERROR field.*/
 
 /* ARBITRATIONLOST @Bit 8 : TX attempt lost arbitration */
-  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos (8UL)                                           /*!< Position of ARBITRATIONLOST field.                               */
+  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos    (8UL)                                        /*!< Position of ARBITRATIONLOST field.                               */
   #define SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Msk                                                        \
                                                       (0x1UL << SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Pos) \
                                                                                                    /*!< Bit mask of
                                                                                                     * ARBITRATIONLOST field.*/
 
 /* ARBITRATIONLOSTRXOK @Bit 9 : TX attempt lost arbitration, but there was a match for rx filter */
-  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos (9UL)                                       /*!< Position of ARBITRATIONLOSTRXOK field.                       */
+  #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos    (9UL)                                    /*!< Position of ARBITRATIONLOSTRXOK field.                       */
   #define SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Msk                                                            \
                                                           (0x1UL << SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Pos) \
                                                                                                    /*!< Bit mask of
@@ -426,10 +426,10 @@ typedef struct
   #define SP_CAN_STATUS_STATUS_STATE_Msk          (0x7UL << SP_CAN_STATUS_STATUS_STATE_Pos)        /*!< Bit mask of STATE field.               */
   #define SP_CAN_STATUS_STATUS_STATE_Min          (0x0UL)                                          /*!< Min enumerator value of STATE field.                                 */
   #define SP_CAN_STATUS_STATUS_STATE_Max          (0x4UL)                                          /*!< Max enumerator value of STATE field.                                 */
-  #define SP_CAN_STATUS_STATUS_STATE_ERRORACTIVE  (0x0UL)                                          /*!< Error-active state (REC/TEC < 96)                                */
-  #define SP_CAN_STATUS_STATUS_STATE_ERRORWARNING (0x1UL)                                          /*!< Error-warning state (REC/TEC < 128)                             */
-  #define SP_CAN_STATUS_STATUS_STATE_ERRORPASSIVE (0x2UL)                                          /*!< Error-passive state (REC/TEC < 256)                             */
-  #define SP_CAN_STATUS_STATUS_STATE_BUSOFF       (0x3UL)                                          /*!< Bus-off state (REC/TEC >= 256)                                       */
+  #define SP_CAN_STATUS_STATUS_STATE_ERRORACTIVE  (0x0UL)                                          /*!< Error-active state (TEC and REC < 96)                            */
+  #define SP_CAN_STATUS_STATUS_STATE_ERRORWARNING (0x1UL)                                          /*!< Error-warning state (TEC or REC >= 96, both < 128)              */
+  #define SP_CAN_STATUS_STATUS_STATE_ERRORPASSIVE (0x2UL)                                          /*!< Error-passive state (TEC or REC >= 128, TEC < 256)              */
+  #define SP_CAN_STATUS_STATUS_STATE_BUSOFF       (0x3UL)                                          /*!< Bus-off state (TEC >= 256)                                           */
   #define SP_CAN_STATUS_STATUS_STATE_STOPPED      (0x4UL)                                          /*!< Stopped state, sCAN doesn't participate in communication             */
 
 /* ================================================== Struct SP_CAN_SPSYNC =================================================== */
@@ -638,56 +638,56 @@ typedef struct                                                                  
   #define SP_CAN_EVENTS_TXCOMPLETE_ResetValue (0x00000000UL)                                        /*!< Reset value of EVENTS_TXCOMPLETE register.                   */
 
 /* EVENTS_TXCOMPLETE @Bit 0 : This event signals that SCAN has completed a TX operation */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos          (0UL)                             /*!< Position of EVENTS_TXCOMPLETE field.                       */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos             (0UL)                          /*!< Position of EVENTS_TXCOMPLETE field.                       */
   #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Msk                                                                       \
                                                                      (0x1UL << SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Pos) \
                                                                                                     /*!< Bit mask
                                                                                                      * of EVENTS_TXCOMPLETE field.*/
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Min          (0x0UL)                           /*!< Min enumerator value of EVENTS_TXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Max          (0x1UL)                           /*!< Max enumerator value of EVENTS_TXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_NotGenerated (0x0UL)                           /*!< Event not generated                             */
-  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Generated    (0x1UL)                           /*!< Event generated                                    */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Min             (0x0UL)                        /*!< Min enumerator value of EVENTS_TXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Max             (0x1UL)                        /*!< Max enumerator value of EVENTS_TXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_NotGenerated    (0x0UL)                        /*!< Event not generated                             */
+  #define SP_CAN_EVENTS_TXCOMPLETE_EVENTS_TXCOMPLETE_Generated       (0x1UL)                        /*!< Event generated                                    */
 
 /* SP_CAN_EVENTS_RXCOMPLETE: This event signals that SCAN has finished RX after an ID match */
   #define SP_CAN_EVENTS_RXCOMPLETE_ResetValue (0x00000000UL)                                        /*!< Reset value of EVENTS_RXCOMPLETE register.                   */
 
 /* EVENTS_RXCOMPLETE @Bit 0 : This event signals that SCAN has finished RX after an ID match */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos          (0UL)                             /*!< Position of EVENTS_RXCOMPLETE field.                       */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos             (0UL)                          /*!< Position of EVENTS_RXCOMPLETE field.                       */
   #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Msk                                                                       \
                                                                      (0x1UL << SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Pos) \
                                                                                                     /*!< Bit mask
                                                                                                      * of EVENTS_RXCOMPLETE field.*/
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Min          (0x0UL)                           /*!< Min enumerator value of EVENTS_RXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Max          (0x1UL)                           /*!< Max enumerator value of EVENTS_RXCOMPLETE field.         */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_NotGenerated (0x0UL)                           /*!< Event not generated                             */
-  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Generated    (0x1UL)                           /*!< Event generated                                    */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Min             (0x0UL)                        /*!< Min enumerator value of EVENTS_RXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Max             (0x1UL)                        /*!< Max enumerator value of EVENTS_RXCOMPLETE field.         */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_NotGenerated    (0x0UL)                        /*!< Event not generated                             */
+  #define SP_CAN_EVENTS_RXCOMPLETE_EVENTS_RXCOMPLETE_Generated       (0x1UL)                        /*!< Event generated                                    */
 
 /* SP_CAN_EVENTS_ERRORDETECTED: This event signals that SCAN has detected an error. */
   #define SP_CAN_EVENTS_ERRORDETECTED_ResetValue (0x00000000UL)                                     /*!< Reset value of EVENTS_ERRORDETECTED register.             */
 
 /* EVENTS_ERRORDETECTED @Bit 0 : This event signals that SCAN has detected an error. */
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos (0UL)                                /*!< Position of EVENTS_ERRORDETECTED field.              */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos             (0UL)                    /*!< Position of EVENTS_ERRORDETECTED field.              */
   #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Msk \
                                                                            (0x1UL << SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Pos)
                                                                                                     /*!< Bit mask of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Min          (0x0UL)                     /*!< Min enumerator value of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Max          (0x1UL)                     /*!< Max enumerator value of EVENTS_ERRORDETECTED field.*/
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_NotGenerated (0x0UL)                     /*!< Event not generated                       */
-  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Generated    (0x1UL)                     /*!< Event generated                              */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Min             (0x0UL)                  /*!< Min enumerator value of EVENTS_ERRORDETECTED field.*/
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Max             (0x1UL)                  /*!< Max enumerator value of EVENTS_ERRORDETECTED field.*/
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_NotGenerated    (0x0UL)                  /*!< Event not generated                       */
+  #define SP_CAN_EVENTS_ERRORDETECTED_EVENTS_ERRORDETECTED_Generated       (0x1UL)                  /*!< Event generated                              */
 
 /* SP_CAN_EVENTS_STATECHANGED: This event signals that SCAN's state has changed. */
   #define SP_CAN_EVENTS_STATECHANGED_ResetValue (0x00000000UL)                                      /*!< Reset value of EVENTS_STATECHANGED register.               */
 
 /* EVENTS_STATECHANGED @Bit 0 : This event signals that SCAN's state has changed. */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos          (0UL)                         /*!< Position of EVENTS_STATECHANGED field.                 */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos             (0UL)                      /*!< Position of EVENTS_STATECHANGED field.                 */
   #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Msk                                                                           \
                                                                          (0x1UL << SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Pos) \
                                                                                                     /*!<
                                                                                                      * Bit mask of EVENTS_STATECHANGED field.*/
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Min          (0x0UL)                       /*!< Min enumerator value of EVENTS_STATECHANGED field.   */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Max          (0x1UL)                       /*!< Max enumerator value of EVENTS_STATECHANGED field.   */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_NotGenerated (0x0UL)                       /*!< Event not generated                         */
-  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Generated    (0x1UL)                       /*!< Event generated                                */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Min             (0x0UL)                    /*!< Min enumerator value of EVENTS_STATECHANGED field.   */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Max             (0x1UL)                    /*!< Max enumerator value of EVENTS_STATECHANGED field.   */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_NotGenerated    (0x0UL)                    /*!< Event not generated                         */
+  #define SP_CAN_EVENTS_STATECHANGED_EVENTS_STATECHANGED_Generated       (0x1UL)                    /*!< Event generated                                */
 
 /* SP_CAN_PUBLISH_TXCOMPLETE: Publish configuration for event TXCOMPLETE */
   #define SP_CAN_PUBLISH_TXCOMPLETE_ResetValue (0x00000000UL)                                       /*!< Reset value of PUBLISH_TXCOMPLETE register.                 */
