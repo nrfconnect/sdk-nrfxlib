@@ -6,8 +6,12 @@
  * Reserve the exact manifest range for link-time overlap detection. NOLOAD
  * directive ensures patch data is not included in the ELF image, but the linker
  * will still check for overlaps with other sections.
+ *
+ * The section is not assigned to the FLASH region, so it does not move the
+ * region allocation pointer. Sections that follow stay below the patch instead
+ * of being placed after its end, which may be the end of the code partition.
  */
 .@section_name@ @patch_origin@ (NOLOAD) :
 {
 	. = . + @patch_size@;
-} > FLASH
+}

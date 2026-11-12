@@ -26,7 +26,9 @@ set(zephyr_dir ${APPLICATION_BINARY_DIR}/zephyr)
 dt_chosen(code_partition PROPERTY "zephyr,code-partition")
 dt_reg_addr(patch_region_start PATH ${code_partition})
 dt_reg_size(patch_region_size PATH ${code_partition})
-math(EXPR patch_region_end "${patch_region_start} + ${patch_region_size}")
+math(EXPR patch_region_end
+  "${patch_region_start} + ${patch_region_size} - ${CONFIG_ROM_END_OFFSET}"
+)
 
 # WICR node
 dt_nodelabel(wicr_node NODELABEL wicr REQUIRED)
@@ -115,9 +117,11 @@ foreach(idx RANGE ${last_idx})
   set(${name}_size ${size})
 
   if(addr LESS patch_region_start OR end GREATER patch_region_end)
+    math(EXPR end_hex "${end}" OUTPUT_FORMAT HEXADECIMAL)
+    math(EXPR region_end_hex "${patch_region_end}" OUTPUT_FORMAT HEXADECIMAL)
     message(WARNING
-      "${name} patch [${origin}, ${end}) is outside code partition "
-      "[${patch_region_start}, ${patch_region_end})"
+      "${name} patch [${origin}, ${end_hex}) is outside code partition "
+      "[${patch_region_start}, ${region_end_hex}) minus ROM end offset"
     )
     return()
   endif()
@@ -127,14 +131,14 @@ endforeach()
 
 # Linker reservations
 #
-# Each patch gets a NOLOAD section at its target address.
+# Each patch gets a NOLOAD section at its target address. The linker reports
+# an overlap between a patch and any other section.
 #
-# The sections are emitted in list order. Every section that follows them in
-# the image, including the 4-byte .last_section, starts at the end of the last
-# one. Requiring ascending, non-overlapping regions makes that the highest end,
-# so _flash_used includes the full span through the highest region plus
-# alignment and four bytes. The CMake linker generator keeps fixed NOLOAD
-# reservations out of the FLASH usage total.
+# The sections are not assigned to the FLASH region, so the sections that
+# follow them, including the 4-byte .last_section, stay below the patches and
+# _flash_used does not include them. The CMake linker generator also keeps
+# fixed NOLOAD reservations out of the FLASH usage total. Regions must be in
+# ascending order and must not overlap each other.
 set(previous_end 0)
 foreach(name IN LISTS patches)
   set(region_addr ${${name}_addr})
