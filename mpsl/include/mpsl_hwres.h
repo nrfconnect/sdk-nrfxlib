@@ -47,8 +47,7 @@
     defined(NRF54LS05B_ENGA_XXAA) || \
     defined(NRF54LS05A_XXAA) || \
     defined(NRF54LS05B_XXAA) || \
-    defined(NRF7120_XXAA) || \
-    defined(NRF7120E_XXAA)
+    defined(NRF7120_ENGA_XXAA)
     #ifndef NRF_PLATFORM_LUMOS
         #define NRF_PLATFORM_LUMOS
     #endif

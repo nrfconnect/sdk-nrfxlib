@@ -16,7 +16,6 @@ Main branch
 Added
 =====
 
-* Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series (DRGN-28737).
 * :c:func:`mpsl_temperature_last_get`, to read the die temperature stored by the last :c:func:`mpsl_temperature_get` call. (DRGN-28399)
 * Experimental support for TX/RX bypass on simple GPIO Front-End Modules, including devices that share bypass control with LNA/PA pins (for example, SKY66409-11). (KRKNWK-22452)
 
@@ -31,13 +30,6 @@ Bug fixes
 
 * Fixed a rare issue on the nRF54L Series where MPSL could assert with IDs ``0x28ed`` and ``0x274e`` when the HFXO required manual tuning.
   This could occur, with a very low probability, when ``NRF_CLOCK`` ``EVENTS_XOTUNERROR`` or ``EVENTS_XOTUNEFAILURE`` was triggered while radio events were scheduled. (DRGN-29773)
-
-nRF Connect SDK v3.4.1
-**********************
-
-Bug fixes
-=========
-
 * Fixed an issue where :c:func:`mpsl_init` would hang indefinitely when called after :c:func:`mpsl_uninit` if HFCLK24M was still active.
   This could occur if USB was active when :c:func:`mpsl_init` was called.
   This issue applies only to the nRF54LM Series devices. (DRGN-29129)
