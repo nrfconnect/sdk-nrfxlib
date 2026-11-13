@@ -4,20 +4,20 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if(NOT CONFIG_WIFI_NRF71_PATCH)
+if(NOT CONFIG_NRF71_WIFI_PATCH)
   return()
 endif()
 
-if(CONFIG_WIFI_NRF71_PATCH_MANIFEST_FILE STREQUAL "")
+if(CONFIG_NRF71_WIFI_PATCH_MANIFEST_FILE STREQUAL "")
   message(WARNING
-    "No WIFI_NRF71_PATCH_MANIFEST_FILE default for the selected "
-    "WIFI_NRF71_PATCH_VERSION"
+    "No NRF71_WIFI_PATCH_MANIFEST_FILE default for the selected "
+    "NRF71_WIFI_PATCH_VERSION"
   )
   return()
 endif()
 
 # Paths and tools
-set(manifest_file ${CONFIG_WIFI_NRF71_PATCH_MANIFEST_FILE})
+set(manifest_file ${CONFIG_NRF71_WIFI_PATCH_MANIFEST_FILE})
 get_filename_component(fw_dir ${manifest_file} DIRECTORY)
 set(merge_script ${ZEPHYR_BASE}/scripts/build/mergehex.py)
 set(zephyr_dir ${APPLICATION_BINARY_DIR}/zephyr)
@@ -33,7 +33,7 @@ dt_nodelabel(wicr_node NODELABEL wicr REQUIRED)
 dt_node_has_status(wicr_enabled PATH ${wicr_node} STATUS okay)
 if(NOT wicr_enabled)
   message(WARNING
-    "CONFIG_WIFI_NRF71_PATCH requires the wicr devicetree node to be enabled"
+    "CONFIG_NRF71_WIFI_PATCH requires the wicr devicetree node to be enabled"
   )
   return()
 endif()
@@ -71,7 +71,7 @@ foreach(idx RANGE ${last_idx})
     message(WARNING
       "${name} patch devicetree entry does not provide a patch region. "
       "Please include:\n"
-        "${CONFIG_WIFI_NRF71_PATCH_DTSI_FILE}"
+        "${CONFIG_NRF71_WIFI_PATCH_DTSI_FILE}"
     )
     return()
   endif()
@@ -85,7 +85,7 @@ foreach(idx RANGE ${last_idx})
       "${name} patch address mismatch: devicetree has origin=${origin} "
       "size=${size}, manifest expects origin=${manifest_origin} "
       "size=${manifest_size}. Please include:\n"
-        "${CONFIG_WIFI_NRF71_PATCH_DTSI_FILE}"
+        "${CONFIG_NRF71_WIFI_PATCH_DTSI_FILE}"
     )
     return()
   endif()
