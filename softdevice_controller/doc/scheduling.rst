@@ -308,8 +308,9 @@ The anchor point is adjusted using the window offset field of the connection upd
    Multilink scheduling - connection anchor update
 
 .. note::
-   The anchor point of each connection is calculated from its own position and not from the timing-events of the other connections.
-   This means that the connections can be updated to the desired intervals in any order, and keep the configured event spacing as long as the new connection intervals are multiples of each other.
+   The anchor is calculated from the connection prior to this one, so the connections must be updated to the desired intervals in the order they were established.
+   A connection that is lost and re-established using the same event-spacing will be placed in the original position.
+   The original connection establishment order should be used to update the intervals for this case.
 
 
 Peripheral connection setup and connection timing
