@@ -27,6 +27,8 @@ CC3XX Platform - Defines
 
 .. doxygengroup:: nrf_cc3xx_platform_defines
 
+.. _crypto_api_nrf_cc3xx_platform_init:
+
 CC3XX Platform - Initialization APIs
 ====================================
 
@@ -52,12 +54,12 @@ CC3XX Platform - KMU APIs
 
 .. doxygengroup:: nrf_cc3xx_platform_kmu
 
-CC3XX Platform - CTR-DRBG APIs
+CC3XX Platform - CTR_DRBG APIs
 ==============================
 
 .. doxygengroup:: nrf_cc3xx_platform_ctr_drbg
 
-CC3XX Platform - HMAC-DRBG APIs
+CC3XX Platform - HMAC_DRBG APIs
 ===============================
 
 .. doxygengroup:: nrf_cc3xx_platform_hmac_drbg
