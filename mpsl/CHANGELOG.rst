@@ -25,6 +25,7 @@ Changes
 
 * Removed support for nRF52 series
 * Removed support for the nRF2220 Front-End Module. (KRKNWK-22331)
+* Removed the deprecated high-frequency clock API (:c:func:`mpsl_clock_hfclk_request`, :c:func:`mpsl_clock_hfclk_release`, and :c:func:`mpsl_clock_hfclk_is_running`). (DRGN-25861)
 
 Bug fixes
 =========
