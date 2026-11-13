@@ -210,6 +210,14 @@ extern "C" {
  */
 #define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 123) : 0)
 
+/** @brief Maximum memory required when supporting the extensions to LE Power Control.
+ *
+ * This is required in addition to @ref SDC_MEM_LE_POWER_CONTROL, if @ref sdc_support_le_power_control_ext() is called.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_LE_POWER_CONTROL_EXT(num_links) ((num_links) > 0 ? (12 + (num_links) * 36) : 0)
+
 /** @brief Maximum memory required when supporting subrating.
  *
  * @param[in] num_links Total number of peripheral and central links supported.
@@ -1250,6 +1258,27 @@ void sdc_support_le_power_control_central(void);
  *       it is called at the right time.
  */
 void sdc_support_le_power_control_peripheral(void);
+
+/** @brief Support the extensions to LE Power Control
+ *
+ * After this API is called, the controller will support the following vendor-specific HCI commands:
+ * - @ref sdc_hci_cmd_vs_set_conn_power_control_request_params()
+ * - @ref sdc_hci_cmd_vs_set_conn_tx_power_bounds()
+ * - @ref sdc_hci_cmd_vs_power_control_rsp_report_enable()
+ *
+ * The extensions are not part of the build if this API is not called.
+ * If it is called, additional memory is required, see @ref SDC_MEM_LE_POWER_CONTROL_EXT().
+ * If the commands are issued without calling this API, the controller rejects them with the
+ * Command Disallowed error.
+ *
+ * @note The application is required to call @ref sdc_support_le_power_control_central() or
+ *       @ref sdc_support_le_power_control_peripheral() as well.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_le_power_control_ext(void);
 
 /** @brief Support LE Path Loss Monitoring
  *
