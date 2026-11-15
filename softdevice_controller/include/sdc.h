@@ -386,7 +386,7 @@ extern "C" {
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
 #define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) \
-     ((count) > 0 ? (13 + (count) * (4283 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
+     ((count) > 0 ? (13 + (count) * (4291 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) \
       + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
