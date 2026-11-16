@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2026 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+/* Layouts with MCUboot. */
+
+#ifdef USE_NON_SECURE_ADDRESS_MAP
+#include "../../../../nrf71_wifi/bins/0.1.0/ns_mcuboot/nrf7120_wifi_patch.dtsi"
+#else
+#include "../../../../nrf71_wifi/bins/0.1.0/secure_mcuboot/nrf7120_wifi_patch.dtsi"
+#endif
