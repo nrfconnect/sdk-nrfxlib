@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2026 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+/ {
+	soc {
+		lmac_rom_patch_addr: memory@1eb010 {
+			reg = <0x1eb010 23384>;
+		};
+
+		umac_rom_patch_addr: memory@1f0b70 {
+			reg = <0x1f0b70 37002>;
+		};
+	};
+};
+
+&wicr {
+	firmware-lmacrompatchaddr = <&lmac_rom_patch_addr>;
+	firmware-umacrompatchaddr = <&umac_rom_patch_addr>;
+};
