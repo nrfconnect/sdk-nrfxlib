@@ -218,7 +218,7 @@ static void csl_ie_write_commit(bool * p_written)
  * @retval  true  The write prepare operation to CSL IE was successful.
  * @retval  false An improperly formatted CSL IE was detected.
  */
-static bool csl_ie_write_prepare(const uint8_t * p_iterator)
+static bool csl_ie_write_prepare(uint8_t * p_iterator)
 {
     NRF_802154_ASSERT(p_iterator != NULL);
 
@@ -228,7 +228,7 @@ static bool csl_ie_write_prepare(const uint8_t * p_iterator)
         return false;
     }
 
-    mp_csl_phase_addr  = (uint8_t *)nrf_802154_frame_ie_content_address_get(p_iterator);
+    mp_csl_phase_addr  = nrf_802154_frame_ie_content_address_get(p_iterator);
     mp_csl_period_addr = mp_csl_phase_addr + sizeof(uint16_t);
 
     return true;
@@ -286,7 +286,7 @@ static void cst_ie_write_commit(bool * p_written)
  * @retval  true  The write prepare operation to CST IE was successful.
  * @retval  false An improperly formatted CST IE was detected.
  */
-static bool cst_ie_write_prepare(const uint8_t * p_iterator)
+static bool cst_ie_write_prepare(uint8_t * p_iterator)
 {
     NRF_802154_ASSERT(p_iterator != NULL);
 
@@ -296,8 +296,7 @@ static bool cst_ie_write_prepare(const uint8_t * p_iterator)
         return false;
     }
 
-    mp_cst_phase_addr = (uint8_t *)nrf_802154_frame_ie_vendor_thread_data_addr_get(
-        p_iterator);
+    mp_cst_phase_addr  = nrf_802154_frame_ie_vendor_thread_data_addr_get(p_iterator);
     mp_cst_period_addr = mp_cst_phase_addr + sizeof(uint16_t);
 
     return true;
@@ -331,7 +330,7 @@ static void csl_ie_write_commit(bool * p_written)
  * @retval  true  The write prepare operation to CSL IE was successful.
  * @retval  false An improperly formatted CSL IE was detected.
  */
-static bool csl_ie_write_prepare(const uint8_t * p_iterator)
+static bool csl_ie_write_prepare(uint8_t * p_iterator)
 {
     // Intentionally empty
     return true;
@@ -365,7 +364,7 @@ static void cst_ie_write_commit(bool * p_written)
  * @retval  true  The write prepare operation to CST IE was successful.
  * @retval  false An improperly formatted CST IE was detected.
  */
-static bool cst_ie_write_prepare(const uint8_t * p_iterator)
+static bool cst_ie_write_prepare(uint8_t * p_iterator)
 {
     // Intentionally empty
     return true;
@@ -464,14 +463,14 @@ static void link_metrics_ie_write_commit(bool * p_written)
  * @retval  true  The write prepare operation for link metrics was successful.
  * @retval  false An improperly formatted link metrics IE was detected.
  */
-static bool link_metrics_ie_write_prepare(const uint8_t * p_iterator)
+static bool link_metrics_ie_write_prepare(uint8_t * p_iterator)
 {
     NRF_802154_ASSERT(p_iterator != NULL);
 
     // Initialize the iterator at the start of IE content
     uint8_t * p_content_iterator =
-        (uint8_t *)nrf_802154_frame_ie_vendor_thread_data_addr_get(p_iterator);
-    uint8_t * ie_end = (uint8_t *)nrf_802154_frame_ie_iterator_next(p_iterator);
+        nrf_802154_frame_ie_vendor_thread_data_addr_get(p_iterator);
+    const uint8_t * ie_end = nrf_802154_frame_ie_iterator_next(p_iterator);
 
     if (nrf_802154_frame_ie_length_get(p_iterator) < IE_VENDOR_THREAD_ACK_SIZE_MIN ||
         nrf_802154_frame_ie_length_get(p_iterator) > IE_VENDOR_THREAD_ACK_SIZE_MAX)
@@ -544,8 +543,8 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
     NRF_802154_ASSERT(m_writer_state == IE_WRITER_RESET);
     m_writer_state = IE_WRITER_PREPARE;
 
-    const uint8_t * p_iterator = nrf_802154_frame_header_ie_iterator_begin(p_ie_header);
-    bool            result     = true;
+    uint8_t * p_iterator = nrf_802154_frame_header_ie_iterator_begin(p_ie_header);
+    bool      result     = true;
 
     while (nrf_802154_frame_ie_iterator_end(p_iterator, p_end_addr) == false)
     {
@@ -652,7 +651,7 @@ nrf_802154_tx_error_t nrf_802154_ie_writer_tx_setup(
     const uint8_t * p_mfr_addr;
     uint8_t       * p_ie_header;
 
-    p_ie_header = (uint8_t *)nrf_802154_frame_ie_header_get(&p_params->frame);
+    p_ie_header = nrf_802154_frame_ie_header_get(&p_params->frame);
     p_mfr_addr  = nrf_802154_frame_mfr_get(&p_params->frame);
 
     if (p_ie_header == NULL)

@@ -363,9 +363,9 @@ static bool full_parse(nrf_802154_frame_t * p_parser_data)
 {
     uint8_t         offset      = p_parser_data->helper.aux_sec_hdr_end_offset;
     uint8_t         psdu_length = nrf_802154_frame_length_get(p_parser_data);
-    const uint8_t * p_ie_header;
+    uint8_t       * p_ie_header;
     const uint8_t * p_end_addr;
-    const uint8_t * p_iterator;
+    uint8_t       * p_iterator;
 
     if (((psdu_length + PHR_SIZE) != p_parser_data->valid_data_len) ||
         (psdu_length > MAX_PACKET_SIZE))

@@ -231,7 +231,7 @@ bool nrf_802154_core_continuous_carrier(nrf_802154_term_t term_lvl);
  *                 (the driver is performing other procedure).
  */
 bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
-                                       const uint8_t   * p_data);
+                                       uint8_t         * p_data);
 
 #endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 

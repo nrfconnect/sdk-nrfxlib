@@ -132,7 +132,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 }
 
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
-                                          const uint8_t   * p_data)
+                                          uint8_t         * p_data)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_modulated_carrier, bool, term_lvl, p_data)
 }

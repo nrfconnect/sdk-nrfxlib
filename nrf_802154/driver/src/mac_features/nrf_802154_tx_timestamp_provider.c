@@ -95,9 +95,8 @@ nrf_802154_tx_error_t nrf_802154_tx_timestamp_provider_tx_setup(
         }
 
         mp_tx_timestamp_addr =
-            (uint8_t *)(nrf_802154_frame_mac_payload_get(&p_params->frame) +
-                        payload_len -
-                        NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE);
+            nrf_802154_frame_mac_payload_get(&p_params->frame) + payload_len -
+            NRF_802154_TX_TIMESTAMP_PROVIDER_TIMESTAMP_SIZE;
     }
     while (0);
 
