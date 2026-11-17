@@ -159,7 +159,7 @@ typedef struct
         struct
         {
             nrf_802154_term_t term_lvl; ///< Request priority.
-            const uint8_t   * p_data;   ///< Pointer to a buffer to modulate the carrier wave with.
+            uint8_t         * p_data;   ///< Pointer to a buffer to modulate the carrier wave with.
             bool            * p_result; ///< Modulated carrier request result.
         } modulated_carrier;            ///< Modulated carrier request details.
 #endif  // NRF_802154_CARRIER_FUNCTIONS_ENABLED
@@ -502,7 +502,7 @@ static void swi_continuous_carrier(nrf_802154_term_t term_lvl, bool * p_result)
  * @param[out]  p_result  Result of entering the modulated carrier state.
  */
 static void swi_modulated_carrier(nrf_802154_term_t term_lvl,
-                                  const uint8_t   * p_data,
+                                  uint8_t         * p_data,
                                   bool            * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
@@ -787,7 +787,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 }
 
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
-                                          const uint8_t   * p_data)
+                                          uint8_t         * p_data)
 {
     REQUEST_FUNCTION(nrf_802154_core_modulated_carrier,
                      swi_modulated_carrier,

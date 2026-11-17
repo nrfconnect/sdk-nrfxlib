@@ -19,6 +19,8 @@ Added
 * Documentation of the maximum limit of the ``PENDING_*`` peer table sizes for on-time automatic ACK generation (KRKNWK-16936).
   The limit is 512 entries for each address type on validated platforms.
   On the nRF5340 network core, the limit is 256 entries for each address type.
+* Experimental support for the nRF71 Series devices. (WZN-10243)
+* The :file:`nrf_802154_peripherals_nrf71.h` file.
 
 Removed
 =======
@@ -27,6 +29,11 @@ Removed
 * The antenna diversity user guide and related figures.
   Antenna diversity feature was implemented only on the nRF52 Series.
 * Support for the nRF54H20 SoC.
+
+Bug fixes
+=========
+
+* Fixed a bug on nRF53 Series SoCs with nRF21540 FEM GPIO SPI, where the device could not handle the first ACK response if the received frame had the longest payload, security enabled, and IE elements present. (KRKNWK-22037)
 
 nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
 **************************************************

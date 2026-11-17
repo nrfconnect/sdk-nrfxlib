@@ -103,7 +103,7 @@ static inline void host_16_to_little(uint16_t value, uint8_t * p_buffer)
  *
  * @returns   A 64-bit host-order value
  */
-static inline uint64_t little_64_to_host(uint8_t * p_buffer)
+static inline uint64_t little_64_to_host(const uint8_t * p_buffer)
 {
     NRF_802154_ASSERT(p_buffer != NULL);
 
@@ -120,7 +120,7 @@ static inline uint64_t little_64_to_host(uint8_t * p_buffer)
  *
  * @returns   A 32-bit host-order value
  */
-static inline uint32_t little_32_to_host(uint8_t * p_buffer)
+static inline uint32_t little_32_to_host(const uint8_t * p_buffer)
 {
     NRF_802154_ASSERT(p_buffer != NULL);
 
@@ -137,7 +137,7 @@ static inline uint32_t little_32_to_host(uint8_t * p_buffer)
  *
  * @returns   A 24-bit host-order value
  */
-static inline uint32_t little_24_to_host(uint8_t * p_buffer)
+static inline uint32_t little_24_to_host(const uint8_t * p_buffer)
 {
     NRF_802154_ASSERT(p_buffer != NULL);
 
@@ -154,7 +154,7 @@ static inline uint32_t little_24_to_host(uint8_t * p_buffer)
  *
  * @returns   A 16-bit host-order value
  */
-static inline uint16_t little_16_to_host(uint8_t * p_buffer)
+static inline uint16_t little_16_to_host(const uint8_t * p_buffer)
 {
     NRF_802154_ASSERT(p_buffer != NULL);
 
@@ -259,7 +259,7 @@ static inline uint64_t big_64_to_host(uint8_t * p_buffer)
  *
  * @returns   A 32-bit host-order value
  */
-static inline uint32_t big_32_to_host(uint8_t * p_buffer)
+static inline uint32_t big_32_to_host(const uint8_t * p_buffer)
 {
     NRF_802154_ASSERT(p_buffer != NULL);
 

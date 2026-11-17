@@ -13,7 +13,7 @@
 #include <platform/nrf_802154_platform_sl_lptimer.h>
 #include <zephyr/drivers/timer/nrf_grtc_timer.h>
 
-#if defined(NRF54L_SERIES)
+#if defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 
 #include <helpers/nrfx_gppi.h>
 #include <soc/interconnect/nrfx_gppi_d2ppi.h>

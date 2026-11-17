@@ -66,7 +66,7 @@
 #include "nrf_802154_utils_byteorder.h"
 #include "platform/nrf_802154_irq.h"
 
-#if defined(NRF54L_SERIES)
+#if defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 #define PPIB_RAD  NRF_PPIB10
 #define PPIB_CCM  NRF_PPIB00
 #define DPPIC_CCM NRF_DPPIC00
@@ -131,7 +131,7 @@ static void u8_string_to_u32x4_big_endian(const uint8_t * p_input,
     const uint8_t unaligned = input_len % sizeof(uint32_t);
     const uint8_t len       = unaligned > 0 ? unaligned : sizeof(uint32_t);
     const uint8_t shift     = (sizeof(uint32_t) - len) * 8;
-    uint32_t      data      = big_32_to_host((uint8_t *)p_input);
+    uint32_t      data      = big_32_to_host(p_input);
 
     p_input    += len;
     data      >>= shift;
@@ -139,7 +139,7 @@ static void u8_string_to_u32x4_big_endian(const uint8_t * p_input,
 
     for (int i = 2; i >= 0; i--)
     {
-        data        = big_32_to_host((uint8_t *)p_input);
+        data        = big_32_to_host(p_input);
         p_input    += sizeof(uint32_t);
         p_output[i] = data;
     }

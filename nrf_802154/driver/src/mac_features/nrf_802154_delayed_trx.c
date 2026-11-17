@@ -77,9 +77,14 @@
 #define RX_SETUP_TIME_MAX 290u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
 #elif defined(NRF54L_SERIES)
 NRF_STATIC_ASSERT(NRF_CONFIG_CPU_FREQ_MHZ == 128,
-                  "Currently nrf-802154 only works when frequency is 128MHz");
+                  "nRF54L family requires 128 MHz CPU frequency for nrf-802154 to work");
 #define TX_SETUP_TIME_MAX 185u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
 #define RX_SETUP_TIME_MAX 150u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
+#elif defined(NRF71_SERIES)
+NRF_STATIC_ASSERT(NRF_CONFIG_CPU_FREQ_MHZ == 256,
+                  "nRF71 family requires 256 MHz CPU frequency for nrf-802154 to work");
+#define TX_SETUP_TIME_MAX 90u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
+#define RX_SETUP_TIME_MAX 60u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
 #endif
 
 /**

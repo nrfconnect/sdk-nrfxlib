@@ -159,11 +159,25 @@
         nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL, false); \
     }                                                             \
     while (0)
+
+#define RADIO_HIGH_VOLTAGE_ENABLE()                              \
+    do                                                           \
+    {                                                            \
+        nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL, true); \
+    }                                                            \
+    while (0)
+
 #else /* NRF53_SERIES */
 #define RADIO_HIGH_VOLTAGE_DISABLE()\
     do                              \
     {                               \
     }                               \
+    while (0)
+
+#define RADIO_HIGH_VOLTAGE_ENABLE()\
+    do                             \
+    {                              \
+    }                              \
     while (0)
 #endif /* NRF53_SERIES */
 
@@ -263,6 +277,7 @@ static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver s
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
 static volatile uint8_t  m_remaining_cca_attempts;
+static bool              m_ack_radio_high_voltage;
 
 #if defined(NRF_802154_TRX_PA_MODULATION_FIX)
 static bool m_pa_modulation_fix_enabled = true;
@@ -309,22 +324,25 @@ static inline void timer_stop_and_clear(void)
 #endif
 }
 
-static void txpower_set(int8_t txpower)
+static void txpower_register_set(int8_t txpower)
 {
-#ifdef NRF53_SERIES
-    bool radio_high_voltage_enable = false;
-
-    if (txpower > 0)
-    {
-        /* To get higher than 0dBm raise operating voltage of the radio, giving 3dBm power boost */
-        radio_high_voltage_enable = true;
-    }
-    nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL, radio_high_voltage_enable);
-#endif /* NRF53_SERIES */
-
     uint32_t reg = mpsl_tx_power_dbm_to_radio_register_convert(txpower);
 
     nrf_radio_txpower_set(NRF_RADIO, reg);
+}
+
+static void txpower_set(int8_t txpower)
+{
+    /* To get higher than 0dBm raise operating voltage of the radio, giving 3dBm power boost. */
+    if (txpower > 0)
+    {
+        RADIO_HIGH_VOLTAGE_ENABLE();
+    }
+    else
+    {
+        RADIO_HIGH_VOLTAGE_DISABLE();
+    }
+    txpower_register_set(txpower);
 }
 
 /** Initialize TIMER peripheral used by the driver. */
@@ -733,7 +751,7 @@ void nrf_802154_trx_enable(void)
     fir_4205_apply();
 #endif /* NRF54L_FIR_4205_ENABLE_WORKAROUND */
 
-#if NRF54L_ERRATA_6_ENABLE_WORKAROUND
+#if NRF54L_ERRATA_6_ENABLE_WORKAROUND || NRF71_ERRATA_6_ENABLE_WORKAROUND
     // Apply MLTPAN-6
     mltpan_6_apply();
 #endif /* NRF54L_ERRATA_6_ENABLE_WORKAROUND */
@@ -1138,16 +1156,22 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
     return result;
 }
 
-void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t  rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t notifications_mask)
+void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
+                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     uint32_t ints_to_enable = 0U;
     uint32_t shorts         = SHORTS_RX;
 
+    NRF_802154_ASSERT(p_ack_tx_power != NULL);
+
     RADIO_HIGH_VOLTAGE_DISABLE();
+    txpower_register_set(p_ack_tx_power->radio_tx_power);
+    m_ack_radio_high_voltage = (p_ack_tx_power->radio_tx_power > 0);
+    (void)mpsl_fem_pa_power_control_set(p_ack_tx_power->fem_pa_power_control);
 
     timer_stop_and_clear();
 
@@ -1481,9 +1505,8 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-bool nrf_802154_trx_transmit_ack(const void                            * p_transmit_buffer,
-                                 uint32_t                                delay_us,
-                                 const nrf_802154_fal_tx_power_split_t * p_tx_power_split)
+bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer,
+                                 uint32_t     delay_us)
 {
     /* Assumptions on peripherals
      * TIMER is running, is counting from value saved in m_timer_value_on_radio_end_event,
@@ -1509,7 +1532,10 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
         return result;
     }
 
-    txpower_set(p_tx_power_split->radio_tx_power);
+    if (m_ack_radio_high_voltage)
+    {
+        RADIO_HIGH_VOLTAGE_ENABLE();
+    }
 
     uint32_t timer_cc_ramp_up_start = m_timer_value_on_radio_end_event + delay_us -
                                       TX_RAMP_UP_TIME -
@@ -1535,9 +1561,6 @@ bool nrf_802154_trx_transmit_ack(const void                            * p_trans
     // Set the moment for FEM at which real transmission starts.
     m_activate_tx_cc0_timeshifted.event.timer.counter_period.end = timer_cc_ramp_up_start +
                                                                    TX_RAMP_UP_TIME;
-
-    // Set FEM PA gain for ACK transmission
-    mpsl_fem_pa_power_control_set(p_tx_power_split->fem_pa_power_control);
 
     if (mpsl_fem_pa_configuration_set(&m_activate_tx_cc0_timeshifted, NULL) == 0)
     {
