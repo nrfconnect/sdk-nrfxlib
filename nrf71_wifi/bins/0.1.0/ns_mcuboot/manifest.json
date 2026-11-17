@@ -1,0 +1,19 @@
+{
+  "version": "0.1.0",
+  "patches": [
+    {
+      "name": "lmac",
+      "file": "lmac_patch.bin",
+      "wicr_property": "firmware-lmacrompatchaddr",
+      "origin": "0x1E2160",
+      "size": 23308
+    },
+    {
+      "name": "umac",
+      "file": "umac_patch.bin",
+      "wicr_property": "firmware-umacrompatchaddr",
+      "origin": "0x1E7C70",
+      "size": 36746
+    }
+  ]
+}

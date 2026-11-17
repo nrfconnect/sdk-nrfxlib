@@ -6,12 +6,12 @@
 
 / {
 	soc {
-		lmac_rom_patch_addr: memory@100000 {
-			reg = <0x100000 23308>;
+		lmac_rom_patch_addr: memory@1f2560 {
+			reg = <0x1f2560 23308>;
 		};
 
-		umac_rom_patch_addr: memory@105b10 {
-			reg = <0x105b10 31584>;
+		umac_rom_patch_addr: memory@1f8070 {
+			reg = <0x1f8070 36746>;
 		};
 	};
 };
