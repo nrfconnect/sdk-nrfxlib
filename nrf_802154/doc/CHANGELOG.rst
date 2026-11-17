@@ -10,23 +10,13 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
-Main branch - nRF 802.15.4 Radio Driver
-***************************************
+nRF Connect SDK v3.4.3 - nRF 802.15.4 Radio Driver
+**************************************************
 
-Added
-=====
+Bug fixes
+=========
 
-* Documentation of the maximum limit of the ``PENDING_*`` peer table sizes for on-time automatic ACK generation (KRKNWK-16936).
-  The limit is 512 entries for each address type on validated platforms.
-  On the nRF5340 network core, the limit is 256 entries for each address type.
-
-Removed
-=======
-
-* Support for the nRF52 Series.
-* The antenna diversity user guide and related figures.
-  Antenna diversity feature was implemented only on the nRF52 Series.
-* Support for the nRF54H20 SoC.
+* Fixed a bug on nRF53 Series SoCs with nRF21540 FEM GPIO SPI, where the device could not handle the first ACK response if the received frame's configuration had the longest payload, security enabled, and IE elements present. (KRKNWK-22037)
 
 nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
 **************************************************
@@ -42,7 +32,7 @@ Notable changes
 Added
 =====
 
-* Production support for the nRF54LC10A SoC (CPU application, secure and non-secure).
+* Added production support for the nRF54LC10A SoC (CPU application, secure and non-secure).
 
 Minor changes
 =============
@@ -61,7 +51,7 @@ Bug fixes
 =========
 
 * Fixed a bug on nRF53 Series SoCs where, after transmitting a frame at transmit power above 0 dBm, the radio high voltage could remain enabled during subsequent non-TX phases. (KRKNWK-21329)
-* Implemented a workaround for the FIR-4205 issue affecting the nRF54LC10A and nRF54LV10A devices.
+* Implemented a workaround for the FIR-4205 issue affecting the nRF54LC10A and nRF54LV10A.
   During the ACK reception, RADIO could perform an invalid SYNC, resulting in a frame loss rate of approximately 2%.
   The invalid SYNC causes a CRC error because RADIO returns a junk frame.
   The workaround adjusts the threshold of the synchronization correlator. (KRKNWK-22187)

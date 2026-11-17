@@ -65,6 +65,15 @@
     #define NRF_802154_SOC_SUPPORTED
 #endif
 
+#ifdef NRF_802154_SOC_NRF54H_SERIES
+    #error "Do not define NRF_802154_SOC_NRF54H_SERIES externally"
+#endif
+
+#if defined (NRF54H20_XXAA)
+    #define NRF_802154_SOC_NRF54H_SERIES
+    #define NRF_802154_SOC_SUPPORTED
+#endif
+
 #ifdef NRF_802154_SOC_NRF54L_SERIES
     #error "Do not define NRF_802154_SOC_NRF54L_SERIES externally"
 #endif
@@ -89,6 +98,10 @@
 #endif
 
 #if defined(NRF_802154_SOC_NRF53_SERIES)
+    #define NRF_802154_SOC_DPPI_PRESENT
+#endif
+
+#if defined(NRF_802154_SOC_NRF54H_SERIES)
     #define NRF_802154_SOC_DPPI_PRESENT
 #endif
 
