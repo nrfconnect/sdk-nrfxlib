@@ -185,7 +185,7 @@ static bool ie_data_set(nrf_802154_peer_ie_data_t * p_ie_data,
 {
     const uint8_t new_ie_id = nrf_802154_frame_ie_id_get(p_data);
 
-    for (const uint8_t * ie = nrf_802154_frame_header_ie_iterator_begin(p_ie_data->data);
+    for (uint8_t * ie = nrf_802154_frame_header_ie_iterator_begin(p_ie_data->data);
          !nrf_802154_frame_ie_iterator_end(ie, &p_ie_data->data[p_ie_data->len]);
          ie = nrf_802154_frame_ie_iterator_next(ie))
     {
@@ -200,7 +200,7 @@ static bool ie_data_set(nrf_802154_peer_ie_data_t * p_ie_data,
             return false;
         }
 
-        memcpy((uint8_t *)ie, p_data, data_len);
+        memcpy(ie, p_data, data_len);
         return true;
     }
 

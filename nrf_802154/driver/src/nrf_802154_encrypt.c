@@ -58,7 +58,7 @@ static inline void memcpy_rev(void * p_dst, const void * p_src, size_t n)
 {
     for (size_t i = 0; i < n; i++)
     {
-        *((uint8_t *)p_dst + i) = *((uint8_t *)p_src + n - 1 - i);
+        *((uint8_t *)p_dst + i) = *((const uint8_t *)p_src + n - 1 - i);
     }
 }
 
@@ -102,11 +102,11 @@ static bool a_data_and_m_data_prepare(
     // It is assumed that the provided frame has a placeholder of appropriate length for MIC
     // at the end. The algorithm inputs should only contain MAC payload, so the MIC placeholder
     // of the below length should be removed
-    uint8_t * p_mac_hdr   = (uint8_t *)nrf_802154_frame_psdu_get(p_frame_data);
+    uint8_t * p_mac_hdr   = nrf_802154_frame_psdu_get(p_frame_data);
     uint8_t   mac_hdr_len =
         nrf_802154_frame_mac_header_length_get(p_frame_data) + open_payload_len;
     uint8_t * p_mac_payload =
-        (uint8_t *)(nrf_802154_frame_mac_payload_get(p_frame_data) + open_payload_len);
+        nrf_802154_frame_mac_payload_get(p_frame_data) + open_payload_len;
     uint8_t mac_payload_len =
         nrf_802154_frame_mac_payload_length_get(p_frame_data) - open_payload_len;
 
@@ -160,7 +160,7 @@ bool aes_ccm_data_key_prepare(const nrf_802154_frame_t  * p_frame_data,
     nrf_802154_key_id_t key_id =
     {
         .mode     = nrf_802154_frame_sec_ctrl_key_id_mode_get(p_frame_data),
-        .p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_frame_data),
+        .p_key_id = nrf_802154_frame_key_id_get(p_frame_data),
     };
 
     return NRF_802154_SECURITY_ERROR_NONE ==

@@ -205,8 +205,8 @@ static uint8_t destination_set(const nrf_802154_frame_t * p_frame_data,
                                nrf_802154_frame_t       * p_ack_data)
 {
     uint8_t   bytes_written   = 0U;
-    uint8_t * p_ack_dst_panid = (uint8_t *)nrf_802154_frame_dst_panid_get(p_ack_data);
-    uint8_t * p_ack_dst_addr  = (uint8_t *)nrf_802154_frame_dst_addr_get(p_ack_data);
+    uint8_t * p_ack_dst_panid = nrf_802154_frame_dst_panid_get(p_ack_data);
+    uint8_t * p_ack_dst_addr  = nrf_802154_frame_dst_addr_get(p_ack_data);
 
     const uint8_t * p_frame_src_panid = nrf_802154_frame_src_panid_get(p_frame_data);
     const uint8_t * p_frame_dst_panid = nrf_802154_frame_dst_panid_get(p_frame_data);
@@ -288,7 +288,7 @@ static uint8_t security_key_id_set(const nrf_802154_frame_t * p_frame_data,
                                    nrf_802154_frame_t       * p_ack_data)
 {
     const uint8_t * p_frame_key_id = nrf_802154_frame_key_id_get(p_frame_data);
-    uint8_t       * p_ack_key_id   = (uint8_t *)nrf_802154_frame_key_id_get(p_ack_data);
+    uint8_t       * p_ack_key_id   = nrf_802154_frame_key_id_get(p_ack_data);
     uint8_t         key_id_size    =
         key_id_size_get(nrf_802154_frame_sec_ctrl_key_id_mode_get(p_ack_data));
 
@@ -305,8 +305,7 @@ static bool frame_counter_set(nrf_802154_frame_t * p_ack_data,
 {
     nrf_802154_key_id_t ack_key_id;
     uint32_t            new_fc_value;
-    uint8_t           * p_frame_counter = (uint8_t *)nrf_802154_frame_counter_get(
-        p_ack_data);
+    uint8_t           * p_frame_counter = nrf_802154_frame_counter_get(p_ack_data);
 
     if (p_frame_counter == NULL)
     {
@@ -316,7 +315,7 @@ static bool frame_counter_set(nrf_802154_frame_t * p_ack_data,
     }
 
     ack_key_id.mode     = nrf_802154_frame_sec_ctrl_key_id_mode_get(p_ack_data);
-    ack_key_id.p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_ack_data);
+    ack_key_id.p_key_id = nrf_802154_frame_key_id_get(p_ack_data);
 
     if (NRF_802154_SECURITY_ERROR_NONE !=
         nrf_802154_security_pib_frame_counter_get_next(&new_fc_value, &ack_key_id))
@@ -343,8 +342,7 @@ static bool security_header_set(const nrf_802154_frame_t * p_frame_data,
     uint8_t fc_bytes_written    = 0U;
     uint8_t ack_sec_ctrl_offset = nrf_802154_frame_addressing_end_offset_get(
         p_ack_data);
-    uint8_t * ack_sec_ctrl = (uint8_t *)nrf_802154_frame_addressing_end_get(
-        p_ack_data);
+    uint8_t       * ack_sec_ctrl   = nrf_802154_frame_addressing_end_get(p_ack_data);
     const uint8_t * frame_sec_ctrl = nrf_802154_frame_sec_ctrl_get(p_frame_data);
 
     if ((ack_sec_ctrl == NULL) || (frame_sec_ctrl == NULL))
