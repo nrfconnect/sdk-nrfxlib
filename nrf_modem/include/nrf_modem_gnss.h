@@ -40,6 +40,9 @@ extern "C" {
 /** The number of GPS satellites. */
 #define NRF_MODEM_GNSS_NUM_GPS_SATELLITES 32
 
+/** @brief Maximum reference week number. */
+#define NRF_MODEM_GNSS_MAX_REF_WEEK 16383
+
 /** @defgroup nrf_modem_gnss_system_id GNSS system IDs
  *
  * @brief Used to indicate the GNSS system type.
@@ -298,21 +301,24 @@ extern "C" {
  *
  * @details Data model #nrf_modem_gnss_agnss_gal_data_ephemeris.
  *
- * @note This type is only supported by devices with Galileo support.
+ * @note This is only supported by the following modem firmware:
+ *       - lpwa-cellular_nrf92
  */
 #define NRF_MODEM_GNSS_AGNSS_GAL_EPHEMERIDES                  10
 /** @brief Galileo almanac assistance A-GNSS parameters.
  *
  * @details Data model #nrf_modem_gnss_agnss_gal_data_almanac.
  *
- * @note This type is only supported by devices with Galileo support.
+ * @note This is only supported by the following modem firmware:
+ *       - lpwa-cellular_nrf92
  */
 #define NRF_MODEM_GNSS_AGNSS_GAL_ALMANAC                      11
 /** @brief GPS-to-Galileo Time Offset (GGTO) assistance A-GNSS parameters.
  *
  * @details Data model #nrf_modem_gnss_agnss_data_ggto.
  *
- * @note This type is only supported by devices with Galileo support.
+ * @note This is only supported by the following modem firmware:
+ *       - lpwa-cellular_nrf92
  */
 #define NRF_MODEM_GNSS_AGNSS_GGTO                             12
 
@@ -1160,7 +1166,8 @@ int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t han
  *
  * @note GPS L1 C/A can't be disabled and remains enabled even if the corresponding bit is not set.
  *
- * @note Galileo E1 OS signal can only be enabled on devices with Galileo support.
+ * @note Galileo E1 OS signal can only be enabled with the following modem firmware:
+ *       - lpwa-cellular_nrf92
  *
  * @param[in] signal_mask Signal bitmask, see @ref nrf_modem_gnss_signal_bitmask.
  *
@@ -1286,7 +1293,8 @@ int32_t nrf_modem_gnss_nmea_mask_set(uint16_t nmea_mask);
  *
  * Default value: #NRF_MODEM_GNSS_NMEA_TALKER_MODE_STANDARD
  *
- * @note This is only supported by devices with Galileo support.
+ * @note This is only supported by the following modem firmware:
+ *       - lpwa-cellular_nrf92
  *
  * @param[in] talker_mode NMEA talker mode, see @ref nrf_modem_gnss_nmea_talker_modes.
  *
@@ -1411,7 +1419,7 @@ int32_t nrf_modem_gnss_stop(void);
  *          The GNSS module stores this between sessions to get a fix faster on the next startup.
  *          This can for instance be used to trigger cold or warm starts.
  *
- * @note This is considered a debug feature, and is not supposed to be used in production code.
+ * @note This is considered a testing feature, and is not supposed to be used in production code.
  *
  * @param[in] delete_mask Objects to be deleted as a bitmask, see
  *                        @ref nrf_modem_gnss_delete_bitmask.
@@ -1487,6 +1495,41 @@ int32_t nrf_modem_gnss_prio_mode_disable(void);
  * @retval -NRF_ESHUTDOWN The modem was shut down.
  */
 int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
+
+/** @brief Sets the GPS reference week number.
+ *
+ * @details GPS navigation data contains the week number modulo 1024, which makes the full week
+ *          number ambiguous. GNSS resolves the ambiguity using the reference week number, so that
+ *          the resolved week number is within approximately 9.8 years from the reference week.
+ *          The reference week number is stored into non-volatile memory.
+ *
+ *          This can be used, for example, when running cold starts with an old signal recording
+ *          or with a simulator scenario whose time is far enough in the past. In that case,
+ *          the sequence should be:
+ *          1. Stop GNSS and delete the data using @ref nrf_modem_gnss_nv_data_delete.
+ *          2. Set the reference week number using this function.
+ *          3. Start GNSS using @ref nrf_modem_gnss_start.
+ *
+ * @note This is only supported by the following modem firmware:
+ *       - lpwa-cellular_nrf92
+ *
+ * @note This is considered a testing feature, and is not supposed to be used in production code.
+ *       Deleting the GPS week number using #NRF_MODEM_GNSS_DELETE_GPS_WEEK resets the reference
+ *       week number to the default value of the modem firmware.
+ *
+ * @param[in] week Reference week number, as the number of weeks since 1980-01-06.
+ *                 Range [0 .. #NRF_MODEM_GNSS_MAX_REF_WEEK].
+ *
+ * @retval 0 on success.
+ * @retval -NRF_EPERM The Modem library is not initialized.
+ * @retval -NRF_EACCES GNSS is not enabled in system or functional mode.
+ * @retval -NRF_EINVAL The week number is out of range, the GNSS stack returned an error,
+ *                     the operation is not supported by the modem firmware or
+ *                     the operation cannot be executed while GNSS is running.
+ * @retval -NRF_ENOMEM There is not enough shared memory for this request.
+ * @retval -NRF_ESHUTDOWN The modem was shut down.
+ */
+int32_t nrf_modem_gnss_ref_week_set(uint16_t week);
 
 /** @brief Enables 1PPS functionality.
  *
