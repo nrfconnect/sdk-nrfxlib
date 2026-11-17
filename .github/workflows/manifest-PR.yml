@@ -32,9 +32,39 @@ jobs:
             echo "Error: Unsupported base branch: ${{ github.event.pull_request.base.ref }}" >&2
             exit 1
           fi
+      - name: Check manifest PR branch
+        id: check-manifest-branch
+        if: ${{ github.event.action == 'synchronize' || github.event.pull_request.merged == true }}
+        env:
+          GH_TOKEN: ${{ secrets.NCS_GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          branch="auto-manifest-${REPO_NAME}-${PR_NUMBER}"
+          status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --user "x-access-token:${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/nordicbuilder/sdk-nrf/branches/${branch}")
+
+          if [[ "$status" == "200" ]]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$status" == "404" ]]; then
+            echo "Manifest PR branch ${branch} does not exist; skipping branch update."
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Unexpected response while checking manifest PR branch: HTTP ${status}" >&2
+            exit 1
+          fi
       - name: handle manifest PR
+        if: >-
+          ${{
+            (github.event.action != 'synchronize' &&
+             github.event.pull_request.merged != true) ||
+            steps.check-manifest-branch.outputs.exists == 'true'
+          }}
         uses: nrfconnect/action-manifest-pr@main
         with:
           token: ${{ secrets.NCS_GITHUB_TOKEN }}
           manifest-pr-title-details: ${{ github.event.pull_request.title }}
           base-branch: ${{ steps.set-base-branch.outputs.base_branch }}
+          forked-repo: NordicBuilder/sdk-nrf
