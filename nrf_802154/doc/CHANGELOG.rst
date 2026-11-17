@@ -10,6 +10,14 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+nRF Connect SDK v3.4.3 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Bug fixes
+=========
+
+* Fixed a bug on nRF53 Series SoCs with nRF21540 FEM GPIO SPI, where the device could not handle the first ACK response if the received frame's configuration had the longest payload, security enabled, and IE elements present. (KRKNWK-22037)
+
 nRF Connect SDK v3.4.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
