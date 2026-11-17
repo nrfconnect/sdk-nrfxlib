@@ -12,6 +12,16 @@ All notable changes to this project are documented in this file.
 nrf_modem
 *********
 
+Core library
+============
+
+* Updated the :ref:`nrf_modem_rs_capture_api` documentation to state that the interface is provided for evaluation purposes only.
+
+Sockets
+=======
+
+* Fixed a bug where socket events would not be reported on modem fault and shutdown when using poll callbacks set with the :c:macro:`NRF_SO_POLLCB` socket option.
+
 nrf_modem 3.4.0
 ***************
 

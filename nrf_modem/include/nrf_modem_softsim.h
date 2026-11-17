@@ -14,6 +14,7 @@
  * @note This is only supported by the following modem firmware:
  *       - mfw_nrf91x1
  *       - mfw_nrf9151-ntn
+ *       - lpwa-cellular_nrf92
  */
 #ifndef NRF_MODEM_SOFTSIM_H__
 #define NRF_MODEM_SOFTSIM_H__
