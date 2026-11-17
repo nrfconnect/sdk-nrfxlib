@@ -1152,9 +1152,14 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 
     nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());
 
+    nrf_802154_fal_tx_power_split_t ack_tx_power = {0};
+
+    (void)nrf_802154_tx_power_split_pib_power_get(&ack_tx_power);
+
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
                                  ru_tr_mode,
-                                 m_trx_receive_frame_notifications_mask);
+                                 m_trx_receive_frame_notifications_mask,
+                                 &ack_tx_power);
 
     if (ru_tr_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
@@ -2190,9 +2195,14 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     /* We don't change receive buffer, receive will go to the same that was already used */
     request_preconditions_for_state(m_state);
 
+    nrf_802154_fal_tx_power_split_t ack_tx_power = {0};
+
+    (void)nrf_802154_tx_power_split_pib_power_get(&ack_tx_power);
+
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
                                  TRX_RAMP_UP_SW_TRIGGER,
-                                 m_trx_receive_frame_notifications_mask);
+                                 m_trx_receive_frame_notifications_mask,
+                                 &ack_tx_power);
 
 #if NRF_802154_NOTIFY_CRCERROR
 
@@ -2212,6 +2222,22 @@ void nrf_802154_trx_receive_ack_crcerror(void)
     on_bad_ack();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+static void received_frame_stats_update(void)
+{
+    nrf_802154_stat_counter_increment_received_frames();
+
+#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
+    uint64_t ts = timer_coord_timestamp_get();
+
+    if (ts != NRF_802154_NO_TIMESTAMP)
+    {
+        ts -= RX_PHYEND_EVENT_LATENCY_US;
+    }
+
+    nrf_802154_stat_timestamp_write_last_rx_end_timestamp(ts);
+#endif
 }
 
 void nrf_802154_trx_receive_frame_received(void)
@@ -2255,21 +2281,6 @@ void nrf_802154_trx_receive_frame_received(void)
 
     if (m_flags.frame_filtered || nrf_802154_pib_promiscuous_get())
     {
-        nrf_802154_stat_counter_increment_received_frames();
-
-#if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-        uint64_t ts = timer_coord_timestamp_get();
-
-        if (ts != NRF_802154_NO_TIMESTAMP)
-        {
-            ts -= RX_PHYEND_EVENT_LATENCY_US;
-        }
-
-        nrf_802154_stat_timestamp_write_last_rx_end_timestamp(ts);
-#endif
-
-        nrf_802154_sl_ant_div_rx_frame_received_notify();
-
         bool send_ack = false;
 
         if (m_flags.frame_filtered &&
@@ -2290,14 +2301,12 @@ void nrf_802154_trx_receive_frame_received(void)
 
             if (is_state_allowed_for_prio(m_rsch_priority, RADIO_STATE_TX_ACK))
             {
-                nrf_802154_fal_tx_power_split_t split_power = {0};
-
-                (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
-
                 if (nrf_802154_trx_transmit_ack(nrf_802154_tx_work_buffer_get(mp_ack),
-                                                ACK_IFS,
-                                                &split_power))
+                                                ACK_IFS))
                 {
+                    received_frame_stats_update();
+                    nrf_802154_sl_ant_div_rx_frame_received_notify();
+
                     /* Intentionally empty: transmitting ack, because we can. */
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 
@@ -2332,6 +2341,9 @@ void nrf_802154_trx_receive_frame_received(void)
                 }
                 else
                 {
+                    received_frame_stats_update();
+                    nrf_802154_sl_ant_div_rx_frame_received_notify();
+
                     mp_current_rx_buffer->free = false;
 
                     switch_to_idle();
@@ -2347,6 +2359,9 @@ void nrf_802154_trx_receive_frame_received(void)
                     nrf_802154_stat_counter_increment_coex_denied_requests();
                 }
 
+                received_frame_stats_update();
+                nrf_802154_sl_ant_div_rx_frame_received_notify();
+
                 mp_current_rx_buffer->free = false;
 
                 switch_to_idle();
@@ -2356,6 +2371,9 @@ void nrf_802154_trx_receive_frame_received(void)
         }
         else
         {
+            received_frame_stats_update();
+            nrf_802154_sl_ant_div_rx_frame_received_notify();
+
             request_preconditions_for_state(m_state);
             /* Filter out received ACK frame if promiscuous mode is disabled. */
             if (((p_received_data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) != FRAME_TYPE_ACK) ||

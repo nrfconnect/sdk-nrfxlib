@@ -223,10 +223,12 @@ void nrf_802154_trx_cca_configuration_update(void);
  *                  responsibility to prepare the stimulation of this (D)PPI.
  * @param[in] notifications_mask Selects additional notifications generated during a frame reception.
  *                  It is bitwise combination of @ref nrf_802154_trx_receive_notifications_t values.
+ * @param[in] p_ack_tx_power ACK transmit power split to pre-stage before RX.
  */
-void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t  rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t notifications_mask);
+void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
+                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power);
 
 /**@brief Puts the trx module into receive ACK mode.
  *
@@ -386,7 +388,6 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
  * @param[in] p_transmit_buffer     Pointer to a buffer containing ACK frame to be transmitted.
  *                                  Caller is responsible for preparing an ACK frame according to the 802.15.4 protocol.
  * @param[in] delay_us              Delay (in microseconds)
- * @param[in] p_tx_power_split      Pointer to the structure holding TX power split into raw components in dBm.
  *
  * @retval true     If the function was called in time and ACK frame is scheduled for transmission.
  *                  When transmission starts the function @ref nrf_802154_trx_transmit_ack_started will be called.
@@ -397,9 +398,8 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
  *                  The TIMER peripheral is stopped and it is not possible to trigger @ref nrf_802154_trx_transmit_ack
  *                  again without receiving another frame again. No handlers will be called.
  */
-bool nrf_802154_trx_transmit_ack(const void                            * p_transmit_buffer,
-                                 uint32_t                                delay_us,
-                                 const nrf_802154_fal_tx_power_split_t * p_tx_power_split);
+bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer,
+                                 uint32_t     delay_us);
 
 /**@brief Puts trx module into IDLE mode.
  *
