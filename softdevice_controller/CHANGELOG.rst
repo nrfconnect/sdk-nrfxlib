@@ -9,6 +9,13 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.4.3
+**********************
+
+Bug fixes
+=========
+* Fixed an issue where the controller could assert when it was running a CS mode-0 step in the reflector role. (DRGN-30272)
+
 nRF Connect SDK v3.4.2
 **********************
 
