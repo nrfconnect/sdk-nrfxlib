@@ -153,9 +153,7 @@ enum sdc_hci_vs_cs_param_type
     SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET = 0x01,
     /** @brief CS board distance offset params set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_BOARD_DISTANCE_OFFSET_SET = 0x02,
-    /** @brief CS voltage regulator mode set. */
-    SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET = 0x03,
-    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x04,
+    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x03,
 };
 
 /** @brief Command type for DTM meta commands. */
@@ -232,12 +230,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cs_t_pm_length_us;
 } sdc_hci_vs_cs_t_pm_params_t;
-
-/** @brief CS voltage regulator mode. */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t cs_vreg_mode_enable_ldo;
-} sdc_hci_vs_cs_vreg_mode_params_t;
 
 /** @brief VS DTM HCI Command. */
 typedef struct __PACKED __ALIGN(1)
@@ -562,14 +554,6 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
-/** @brief DTM Transmitter carrier frequency test command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_dtm_command_header_t header;
-    uint8_t tx_channel;
-    int8_t tx_power_level;
-} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
-
 /** @brief DTM Test End with Transmitted Packet Count command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -581,6 +565,14 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_vs_dtm_test_end_return_t;
+
+/** @brief DTM Transmitter carrier frequency test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    sdc_hci_vs_dtm_command_header_t header;
+    uint8_t tx_channel;
+    int8_t tx_power_level;
+} sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -894,7 +886,6 @@ typedef struct __PACKED __ALIGN(1)
         sdc_hci_vs_cs_event_length_params_t cs_event_length_params;
         sdc_hci_vs_cs_t_pm_params_t cs_t_pm_params;
         sdc_hci_vs_cs_board_distance_offset_params_t cs_board_distance_offset_params;
-        sdc_hci_vs_cs_vreg_mode_params_t cs_vreg_mode_params;
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
 
@@ -931,8 +922,8 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Command parameters (union of all sub-command parameter structs). */
     union __PACKED __ALIGN(1) {
         sdc_hci_vs_dtm_command_header_t header;
-        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
         sdc_hci_cmd_vs_dtm_test_end_t test_end;
+        sdc_hci_cmd_vs_dtm_transmitter_carrier_test_t transmitter_carrier_test;
     } command_parameters;
 } sdc_hci_cmd_vs_dtm_command_t;
 
@@ -2019,14 +2010,6 @@ uint8_t sdc_hci_cmd_vs_min_conn_event_length_mode_enable(const sdc_hci_cmd_vs_mi
  *   distance_estimate_with_offset = distance_estimate_without_offset - distance_offset
  *
  *   Note: Currently the distance offset is not applied to RTT measurements.
- *
- * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET:
- *   Set the voltage regulator mode used for CS procedures.
- *   May not be supported on some platforms.
- *   - 0x00 corresponds to DC/DC regulator. It is used by default. Provides the best power
- * consumption
- *   - 0x01 corresponds to LDO regulator. It provides worse power consumption but may improve some
- * of RF characteristics.
  *
  * The configured values are retained after issuing an HCI Reset command.
  *

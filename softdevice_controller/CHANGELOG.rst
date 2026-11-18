@@ -16,8 +16,6 @@ Added
 =====
 
 * Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series (DRGN-28737).
-* A new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`.
-  This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure. (DRGN-29193)
 * The vendor-specific HCI command DTM Command, a command group for all vendor-specific DTM operations.
   See :c:func:`sdc_hci_cmd_vs_dtm_command`. (DRGN-28862)
 * The HCI VS DTM sub-command Test End.
@@ -96,6 +94,9 @@ Bug fixes
 * Fixed an issue where the controller would assert when calling the :c:func:`sdc_hci_cmd_vs_compat_mode_window_offset_set` function if the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option was not enabled. (DRGN-30119)
 * Fixed a rare issue where the controller could assert or schedule central role events to overlap when a CIG or BIG was stopped while another central role, CIG, BIG, or periodic advertiser was being started or stopped. (DRGN-29804)
 * Fixed an issue where the controller could assert when it was running a CS mode-0 step in the reflector role. (DRGN-30272)
+* Fixed a rare issue where the controller could restart scanning after the host had disabled it.
+  This could happen when the host disabled scanning after the LE Create Connection Cancel command, before it received the LE Connection Complete event for the cancelled connection.
+  The controller would then reject the next scan enable command with the error code Command Disallowed (0x0C). (DRGN-30452)
 
 nRF Connect SDK v3.4.1
 **********************
