@@ -206,6 +206,9 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 	{ 0x0143u, 1, "CS test: %u channels > CS channel array capacity %u" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
+	{ 0x0145u, 1, "CS5G read remote FAE: peer has no CS5G support" },
+#endif
+#if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0150u, 1, "CS test: test already running" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
@@ -564,9 +567,6 @@ static const mpsl_log_msg_entry_t sdc_log_msgs[] = {
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0263u, 1, "CS set default security reqs: NADM unsupported" },
-#endif
-#if SDC_LOG_PRINT_LEVEL >= 1
-	{ 0x0270u, 1, "CS VS params set: LDO vreg mode unsupported on this SoC" },
 #endif
 #if SDC_LOG_PRINT_LEVEL >= 1
 	{ 0x0271u, 1, "CS VS params set: unknown cs_param_type %u" },

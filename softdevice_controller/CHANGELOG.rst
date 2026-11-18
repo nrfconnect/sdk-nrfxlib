@@ -16,8 +16,6 @@ Added
 =====
 
 * Production support for the nRF54LS05A, nRF54LS05B Series (DRGN-27483) and nRF54LV10A Series (DRGN-28737).
-* A new control parameter `SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET` to :c:func:`sdc_hci_cmd_vs_cs_params_set`.
-  This allows for setting the voltage regulator mode to be used during a Channel Sounding procedure. (DRGN-29193)
 * The vendor-specific HCI command DTM Command, a command group for all vendor-specific DTM operations.
   See :c:func:`sdc_hci_cmd_vs_dtm_command`. (DRGN-28862)
 * The HCI VS DTM sub-command Test End.
