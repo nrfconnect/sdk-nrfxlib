@@ -9,6 +9,8 @@ The library utilizes services provided by the :ref:`mpsl`.
 The |controller| is distributed in different variants containing different features.
 The libraries are available as soft-float, softfp-float, and hard-float builds for the nRF52, nRF54H and nRF54L Series, and as a soft-float build for the nRF53 Series.
 
+.. include:: ../doc/nrf52_series_ncs_note.rst
+
 |BLE| feature support:
 
 +--------------------------------+-----------------+--------------+-----------+
