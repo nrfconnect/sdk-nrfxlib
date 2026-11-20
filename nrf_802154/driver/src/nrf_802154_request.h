@@ -165,7 +165,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl);
  * @retval  false  The driver cannot enter the modulated carrier state due to an ongoing operation.
  */
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
-                                          const uint8_t   * p_data);
+                                          uint8_t         * p_data);
 
 #endif /* NRF_802154_CARRIER_FUNCTIONS_ENABLED */
 

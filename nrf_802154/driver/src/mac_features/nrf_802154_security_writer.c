@@ -81,7 +81,7 @@ static void key_id_prepare(const nrf_802154_frame_t * p_frame_data,
             SWITCH_CASE_FALLTHROUGH;
 
         case KEY_ID_MODE_3:
-            p_key_id->p_key_id = (uint8_t *)nrf_802154_frame_key_id_get(p_frame_data);
+            p_key_id->p_key_id = nrf_802154_frame_key_id_get(p_frame_data);
             break;
 
         default:
@@ -109,7 +109,7 @@ static nrf_802154_security_error_t frame_counter_inject(
 {
     uint32_t  frame_counter;
     uint8_t * p_frame_counter =
-        (uint8_t *)nrf_802154_frame_counter_get(p_frame_data);
+        nrf_802154_frame_counter_get(p_frame_data);
     nrf_802154_security_error_t err;
 
     err = nrf_802154_security_pib_frame_counter_get_next(&frame_counter, p_key_id);

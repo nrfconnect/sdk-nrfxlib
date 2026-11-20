@@ -60,7 +60,7 @@
 #define RX_RAMP_UP_TIME                   40 // us
 #define RX_RAMP_DOWN_TIME                 0  // us
 #define MAX_RAMP_DOWN_TIME                6  // us
-#if defined(NRF54L_SERIES)
+#if defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 #define RX_TX_TURNAROUND_TIME_HW          15 // us
 #else
 #define RX_TX_TURNAROUND_TIME_HW          20 // us

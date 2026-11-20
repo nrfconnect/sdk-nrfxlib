@@ -223,7 +223,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_psdu_offset_get(
  *
  * @returns  PSDU start address of the frame.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_psdu_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_psdu_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -384,7 +384,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_dst_panid_offset_get(
  *
  * @returns  Address of the Destination PAN field.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_panid_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_dst_panid_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -404,7 +404,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_offset_get(
  *
  * @returns  Address of the Destination Address field.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addr_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_dst_addr_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -546,7 +546,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_counter_offset_get(
  *
  * @returns  Address of the Frame Counter field.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_counter_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_counter_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -566,7 +566,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_key_id_offset_get(
  *
  * @returns  Address of the Key ID field.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_id_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_key_id_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -636,7 +636,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_header_offset_get(
  *
  * @returns  Address of the IE header.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_header_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_header_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -656,7 +656,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_offset_get(
  *
  * @returns  Address of the MAC payload.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_payload_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_mac_payload_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -766,7 +766,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_addressing_end_offset_get(
  *
  * @returns  End address of the addressing section.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_addressing_end_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_addressing_end_get(
     const nrf_802154_frame_t * p_parser_data);
 
 /**
@@ -787,8 +787,8 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
  * @returns  Information element iterator.
  *
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
-    const uint8_t * p_ie_header);
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_header_ie_iterator_begin(
+    uint8_t * p_ie_header);
 
 /**
  * @brief Gets payload address of currently iterated IE.
@@ -800,8 +800,8 @@ __STATIC_INLINE__ const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
  * @note  The user must ensure that the payload is properly bounded.
  *
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_content_address_get(
-    const uint8_t * p_ie_iterator);
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_content_address_get(
+    uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets length of currently iterated IE.
@@ -821,8 +821,8 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_it
  * @returns  Next information element iterator.
  *
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_iterator_next(
-    const uint8_t * p_ie_iterator);
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_iterator_next(
+    uint8_t * p_ie_iterator);
 
 /**
  * @brief Gets identifier of currently iterated IE.
@@ -901,8 +901,8 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
  *
  * @returns  Current vendor-specific IE thread data address.
  */
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
-    const uint8_t * p_ie_iterator);
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
+    uint8_t * p_ie_iterator);
 
 #ifndef NRF_802154_FRAME_DECLARE_ONLY
 
@@ -924,7 +924,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_psdu_offset_get(
     return PSDU_OFFSET;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_psdu_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_psdu_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     return &p_parser_data->p_frame[PSDU_OFFSET];
@@ -1035,7 +1035,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_dst_panid_offset_get(
     return p_parser_data->mhr.dst.panid_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_panid_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_dst_panid_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_dst_panid_offset_get(p_parser_data);
@@ -1054,7 +1054,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_dst_addr_offset_get(
     return p_parser_data->mhr.dst.addr_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_dst_addr_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_dst_addr_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_dst_addr_offset_get(p_parser_data);
@@ -1194,7 +1194,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_counter_offset_get(
     return p_parser_data->mhr.aux_sec_hdr.frame_counter_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_counter_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_counter_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_counter_offset_get(p_parser_data);
@@ -1213,7 +1213,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_key_id_offset_get(
     return p_parser_data->mhr.aux_sec_hdr.key_id_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_key_id_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_key_id_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_key_id_offset_get(p_parser_data);
@@ -1276,7 +1276,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_header_offset_get(
     return p_parser_data->mhr.header_ie_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_header_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_header_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_ie_header_offset_get(p_parser_data);
@@ -1295,7 +1295,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_mac_payload_offset_get(
     return p_parser_data->mac_payload.mac_payload_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_mac_payload_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_mac_payload_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_mac_payload_offset_get(p_parser_data);
@@ -1407,7 +1407,7 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_addressing_end_offset_get(
     return p_parser_data->helper.addressing_end_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_addressing_end_get(
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_addressing_end_get(
     const nrf_802154_frame_t * p_parser_data)
 {
     uint8_t offset = nrf_802154_frame_addressing_end_offset_get(p_parser_data);
@@ -1426,14 +1426,14 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_aux_sec_hdr_end_offset_get(
     return p_parser_data->helper.aux_sec_hdr_end_offset;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_header_ie_iterator_begin(
-    const uint8_t * p_ie_header)
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_header_ie_iterator_begin(
+    uint8_t * p_ie_header)
 {
     return p_ie_header;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_content_address_get(
-    const uint8_t * p_ie_iterator)
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_content_address_get(
+    uint8_t * p_ie_iterator)
 {
     return p_ie_iterator + IE_DATA_OFFSET;
 }
@@ -1443,8 +1443,8 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_length_get(const uint8_t * p_ie_it
     return p_ie_iterator[IE_LENGTH_OFFSET] & IE_LENGTH_MASK;
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_iterator_next(
-    const uint8_t * p_ie_iterator)
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_iterator_next(
+    uint8_t * p_ie_iterator)
 {
     return nrf_802154_frame_ie_content_address_get(p_ie_iterator)
            + nrf_802154_frame_ie_length_get(p_ie_iterator);
@@ -1467,7 +1467,7 @@ __STATIC_INLINE__ bool nrf_802154_frame_ie_iterator_end(const uint8_t * p_ie_ite
 
 __STATIC_INLINE__ uint32_t nrf_802154_frame_ie_vendor_oui_get(const uint8_t * p_ie_iterator)
 {
-    return little_24_to_host((uint8_t *)&p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_OUI_OFFSET]);
+    return little_24_to_host(&p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_OUI_OFFSET]);
 }
 
 __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
@@ -1476,8 +1476,8 @@ __STATIC_INLINE__ uint8_t nrf_802154_frame_ie_vendor_thread_subtype_get(
     return p_ie_iterator[IE_DATA_OFFSET + IE_VENDOR_THREAD_SUBTYPE_OFFSET];
 }
 
-__STATIC_INLINE__ const uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
-    const uint8_t * p_ie_iterator)
+__STATIC_INLINE__ uint8_t * nrf_802154_frame_ie_vendor_thread_data_addr_get(
+    uint8_t * p_ie_iterator)
 {
     return nrf_802154_frame_ie_content_address_get(p_ie_iterator) +
            IE_VENDOR_THREAD_DATA_OFFSET;

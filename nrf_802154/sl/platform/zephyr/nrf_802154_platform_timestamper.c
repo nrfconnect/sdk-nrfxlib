@@ -16,7 +16,7 @@
 
 static int32_t m_timestamp_cc_channel;
 
-#if defined(NRF54L_SERIES)
+#if defined(NRF54L_SERIES) || defined(NRF71_SERIES)
 
 /* To trigger GRTC.TASKS_CAPTURE[#cc] with RADIO.EVENT_{?}, the following connection chain must be
  * created:
