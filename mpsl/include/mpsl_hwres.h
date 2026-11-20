@@ -20,6 +20,7 @@
 /*  The xx_SERIES macros are defined here to keep this file independent
     of the MDK. This allows the header file to be used in nrfx without
     creating circular dependencies. */
+/* TODO DRGN-29867: remove 52 when downstream stops depending on this. */
 #if defined(NRF52805_XXAA) || defined(NRF52810_XXAA) || \
     defined(NRF52811_XXAA) || defined(NRF52820_XXAA) || \
     defined(NRF52832_XXAA) || defined(NRF52832_XXAB) || \
@@ -66,6 +67,7 @@ extern "C" {
 
 #ifndef MPSL_RESERVED_PPI_CHANNELS
 /* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
+/* TODO DRGN-29867: remove 52 when downstream stops depending on this. */
 #if defined(NRF52_SERIES)
     #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
     /* This corresponds to the PPI channels 19, 30, and 31. */
@@ -91,6 +93,7 @@ extern "C" {
 
 #ifndef MPSL_TIMER0
 /* Defines which timer is being used by the MPSL implementation */
+/* TODO DRGN-29867: remove 52 when downstream stops depending on this. */
 #if defined(NRF52_SERIES)
     #define MPSL_TIMER0 NRF_TIMER0
 #elif defined(NRF53_SERIES)
