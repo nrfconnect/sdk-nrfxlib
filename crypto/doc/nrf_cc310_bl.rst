@@ -10,6 +10,8 @@ nrf_cc310_bl crypto library
 The nrf_cc310_bl library is a software library that is used as a backend by the :ref:`nrf:doc_bl_crypto` library in the |NCS| to interface with Arm CryptoCell CC310 hardware accelerator that is available on the nRF52840 SoC and the nRF91 Series.
 The library adds hardware support for cryptographic algorithms to be used in bootloader-specific use cases.
 
+.. include:: ../../doc/nrf52_series_ncs_note.rst
+
 The nrf_cc310_bl library supports the following cryptographic algorithms:
 
 * ECDSA verify using NIST curve secp256r1

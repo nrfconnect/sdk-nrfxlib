@@ -11,6 +11,8 @@ nrf_cc3xx_mbedcrypto library
 The nrf_cc3xx_mbedcrypto library is a software library used by the :ref:`nrf:crypto_drivers_cc3xx` in the |NCS| to interface with the Arm CryptoCell hardware accelerator that is available on the nRF52840 SoC, the nRF53 Series, and the nRF91 Series.
 The library adds hardware support for selected PSA Crypto algorithms.
 
+.. include:: ../../doc/nrf52_series_ncs_note.rst
+
 .. note::
    Since the update of Mbed TLS to v4.1.0 in the |NCS|, the library is used exclusively for integration with the TF-PSA-Crypto reference implementation.
 

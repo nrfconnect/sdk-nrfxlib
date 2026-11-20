@@ -6,6 +6,8 @@ Gazell Link Layer
 The Gazell Link Layer library is available as soft-float and hard-float builds for the nRF52 Series.
 It is also available for the network core in the nRF53 Series.
 
+.. include:: ../doc/nrf52_series_ncs_note.rst
+
 See the :ref:`nrf:ug_gzll` user guide for information about how to use the libraries in the |NCS|.
 
 .. toctree::

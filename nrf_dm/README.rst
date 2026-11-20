@@ -5,6 +5,9 @@ Nordic Distance Measurement library
 
 The Distance Measurement library measures the distance between devices.
 It can be used with nRF52 Series and nRF53 Series devices.
+
+.. include:: ../doc/nrf52_series_ncs_note.rst
+
 It does the following:
 
 * Provides an easy-to-use interface for measuring distances.
