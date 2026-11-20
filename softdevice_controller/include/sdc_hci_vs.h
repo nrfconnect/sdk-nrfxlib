@@ -153,9 +153,7 @@ enum sdc_hci_vs_cs_param_type
     SDC_HCI_VS_CS_PARAM_TYPE_CS_T_PM_SET = 0x01,
     /** @brief CS board distance offset params set. */
     SDC_HCI_VS_CS_PARAM_TYPE_CS_BOARD_DISTANCE_OFFSET_SET = 0x02,
-    /** @brief CS voltage regulator mode set. */
-    SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET = 0x03,
-    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x04,
+    SDC_HCI_VS_CS_PARAM_TYPE_MAX = 0x03,
 };
 
 /** @brief Command type for DTM meta commands. */
@@ -232,12 +230,6 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cs_t_pm_length_us;
 } sdc_hci_vs_cs_t_pm_params_t;
-
-/** @brief CS voltage regulator mode. */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t cs_vreg_mode_enable_ldo;
-} sdc_hci_vs_cs_vreg_mode_params_t;
 
 /** @brief VS DTM HCI Command. */
 typedef struct __PACKED __ALIGN(1)
@@ -894,7 +886,6 @@ typedef struct __PACKED __ALIGN(1)
         sdc_hci_vs_cs_event_length_params_t cs_event_length_params;
         sdc_hci_vs_cs_t_pm_params_t cs_t_pm_params;
         sdc_hci_vs_cs_board_distance_offset_params_t cs_board_distance_offset_params;
-        sdc_hci_vs_cs_vreg_mode_params_t cs_vreg_mode_params;
     } cs_param_data;
 } sdc_hci_cmd_vs_cs_params_set_t;
 
@@ -2019,14 +2010,6 @@ uint8_t sdc_hci_cmd_vs_min_conn_event_length_mode_enable(const sdc_hci_cmd_vs_mi
  *   distance_estimate_with_offset = distance_estimate_without_offset - distance_offset
  *
  *   Note: Currently the distance offset is not applied to RTT measurements.
- *
- * If cs_param_type is SDC_HCI_VS_CS_PARAM_TYPE_CS_VREG_MODE_SET:
- *   Set the voltage regulator mode used for CS procedures.
- *   May not be supported on some platforms.
- *   - 0x00 corresponds to DC/DC regulator. It is used by default. Provides the best power
- * consumption
- *   - 0x01 corresponds to LDO regulator. It provides worse power consumption but may improve some
- * of RF characteristics.
  *
  * The configured values are retained after issuing an HCI Reset command.
  *
