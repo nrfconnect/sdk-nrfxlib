@@ -81,6 +81,8 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 | Decision Based Advertising     |                 |              | X         |
 | Filtering                      |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
+| Unified Test Protocol          |                 |              | X         |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -93,6 +95,7 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
    * For the nRF54L Series devices, the SoftDevice Controller in non-secure mode is experimental.
    * Channel Sounding is not supported on the nRF52 and nRF53 Series devices.
+   * For the Unified Test Protocol feature, the support is experimental.
    * For the Shorter Connection Intervals feature:
 
      * The minimum connection interval can be achieved using the lowest supported ACL frame space, 2 Mbps PHY, and 27-byte data length.
