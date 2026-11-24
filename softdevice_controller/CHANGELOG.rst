@@ -97,6 +97,8 @@ Bug fixes
 * Fixed a rare issue where the controller could restart scanning after the host had disabled it.
   This could happen when the host disabled scanning after the LE Create Connection Cancel command, before it received the LE Connection Complete event for the cancelled connection.
   The controller would then reject the next scan enable command with the error code Command Disallowed (0x0C). (DRGN-30452)
+* Fixed an issue where the controller could busy-wait for up to 200 milliseconds when generating the LE CS Test End Complete event.
+  This could only happen if the controller was running a CS test in the reflector role and was still waiting for the first CS sync packet when it received the LE CS Test End command. (DRGN-30427)
 
 nRF Connect SDK v3.4.1
 **********************
