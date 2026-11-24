@@ -28,6 +28,7 @@ Added
 
     * ``LE CS Set Default Security Requirements``
     * ``LE CS Set Security Requirements``
+
 * :c:func:`sdc_support_mpsl_fem` and :c:func:`sdc_support_mpsl_coex`
   The application must now call these APIs to enable FEM or coex integration.
   This allows applications to reduce the NVM usage of SDC when these features are not required.
@@ -42,6 +43,15 @@ Added
 * :ref:`Experimental <nrf:software_maturity>` support for a vendor-specific minimum connection event length mode.
   This enables lower connection intervals and event lengths.
   See :c:func:`sdc_hci_cmd_vs_min_conn_event_length_mode_enable`. (DRGN-27038)
+* :ref:`Experimental <nrf:software_maturity>` support for the Unified Test Protocol (UTP) over HCI and over-the-air (OTA) transports.
+  The following HCI commands and events now have :ref:`Experimental <nrf:software_maturity>` support:
+
+    * ``LE UTP Send``
+    * ``LE Enable UTP OTA``
+    * ``LE UTP Receive``
+
+  See :c:func:`sdc_support_utp_hci`, :c:func:`sdc_support_utp_ota_central`, :c:func:`sdc_support_utp_ota_peripheral`, and :c:enumerator:`SDC_CFG_TYPE_UTP_CFG`.
+  Nordic vendor-specific UTP additions can be enabled using :c:func:`sdc_support_utp_vs`. (DRGN-30387)
 
 Changes
 =======
@@ -97,6 +107,8 @@ Bug fixes
 * Fixed a rare issue where the controller could restart scanning after the host had disabled it.
   This could happen when the host disabled scanning after the LE Create Connection Cancel command, before it received the LE Connection Complete event for the cancelled connection.
   The controller would then reject the next scan enable command with the error code Command Disallowed (0x0C). (DRGN-30452)
+* Fixed an issue where the controller could busy-wait for up to 200 milliseconds when generating the LE CS Test End Complete event.
+  This could only happen if the controller was running a CS test in the reflector role and was still waiting for the first CS sync packet when it received the LE CS Test End command. (DRGN-30427)
 
 nRF Connect SDK v3.4.1
 **********************

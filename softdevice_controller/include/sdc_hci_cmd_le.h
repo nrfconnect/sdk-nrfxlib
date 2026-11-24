@@ -315,6 +315,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE_V2 = 0x2097,
     /** @brief See @ref sdc_hci_cmd_le_frame_space_update(). */
     SDC_HCI_OPCODE_CMD_LE_FRAME_SPACE_UPDATE = 0x209d,
+    /** @brief See @ref sdc_hci_cmd_le_enable_utp_ota(). */
+    SDC_HCI_OPCODE_CMD_LE_ENABLE_UTP_OTA = 0x209f,
+    /** @brief See @ref sdc_hci_cmd_le_utp_send(). */
+    SDC_HCI_OPCODE_CMD_LE_UTP_SEND = 0x20a0,
     /** @brief See @ref sdc_hci_cmd_le_conn_rate_request(). */
     SDC_HCI_OPCODE_CMD_LE_CONN_RATE_REQUEST = 0x20a1,
     /** @brief See @ref sdc_hci_cmd_le_set_default_rate_params(). */
@@ -424,6 +428,8 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_CS_TEST_END_COMPLETE = 0x33,
     /** @brief See @ref sdc_hci_subevent_le_frame_space_update_complete_t. */
     SDC_HCI_SUBEVENT_LE_FRAME_SPACE_UPDATE_COMPLETE = 0x35,
+    /** @brief See @ref sdc_hci_subevent_le_utp_receive_t. */
+    SDC_HCI_SUBEVENT_LE_UTP_RECEIVE = 0x36,
     /** @brief See @ref sdc_hci_subevent_le_conn_rate_change_t. */
     SDC_HCI_SUBEVENT_LE_CONN_RATE_CHANGE = 0x37,
     /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_v2_t. */
@@ -651,6 +657,29 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t le_periodic_advertising_subevent_data_request_event : 1;
     uint8_t le_periodic_advertising_response_report_event : 1;
     uint8_t le_enhanced_connection_complete_event_v2 : 1;
+    uint8_t rfu_le_event_mask_41 : 1;
+    uint8_t rfu_le_event_mask_42 : 1;
+    uint8_t rfu_le_event_mask_43 : 1;
+    uint8_t rfu_le_event_mask_44 : 1;
+    uint8_t rfu_le_event_mask_45 : 1;
+    uint8_t rfu_le_event_mask_46 : 1;
+    uint8_t rfu_le_event_mask_47 : 1;
+    uint8_t rfu_le_event_mask_48 : 1;
+    uint8_t rfu_le_event_mask_49 : 1;
+    uint8_t rfu_le_event_mask_50 : 1;
+    uint8_t rfu_le_event_mask_51 : 1;
+    uint8_t rfu_le_event_mask_52 : 1;
+    uint8_t rfu_le_event_mask_53 : 1;
+    uint8_t rfu_le_event_mask_54 : 1;
+    uint8_t rfu_le_event_mask_55 : 1;
+    uint8_t rfu_le_event_mask_56 : 1;
+    uint8_t rfu_le_event_mask_57 : 1;
+    uint8_t rfu_le_event_mask_58 : 1;
+    uint8_t rfu_le_event_mask_59 : 1;
+    uint8_t rfu_le_event_mask_60 : 1;
+    uint8_t rfu_le_event_mask_61 : 1;
+    uint8_t rfu_le_event_mask_62 : 1;
+    uint8_t rfu_le_event_mask_63 : 1;
 } sdc_hci_le_le_event_mask_t;
 
 /** @brief LE features.
@@ -2594,6 +2623,19 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t spacing_types;
 } sdc_hci_subevent_le_frame_space_update_complete_t;
 
+/** @brief LE UTP Receive.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.7.65.49
+ *
+ * This event is used by the IUT to transmit UTP messages to the Upper Tester.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t utp_data_length;
+    uint8_t utp_data[];
+} sdc_hci_subevent_le_utp_receive_t;
+
 /** @brief LE Connection Rate Change.
  *
  * The description below is extracted from Core_v6.3,
@@ -4178,6 +4220,19 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t phys;
     uint16_t spacing_types;
 } sdc_hci_cmd_le_frame_space_update_t;
+
+/** @brief LE Enable UTP OTA command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t enable;
+} sdc_hci_cmd_le_enable_utp_ota_t;
+
+/** @brief LE UTP Send command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t utp_data_length;
+    uint8_t utp_data[];
+} sdc_hci_cmd_le_utp_send_t;
 
 /** @brief LE Connection Rate Request command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -12501,6 +12556,48 @@ uint8_t sdc_hci_cmd_le_set_host_feature_v2(const sdc_hci_cmd_le_set_host_feature
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_frame_space_update(const sdc_hci_cmd_le_frame_space_update_t * p_params);
+
+/** @brief LE Enable UTP OTA.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.152
+ *
+ * This command enables or disables UTP OTA mode on a device to permit it to process
+ * UTP messages over the Link Layer. Enabling UTP OTA mode when it is already
+ * enabled, or disabling it when already disabled, has no effect.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_Enable_UTP_Mode command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_enable_utp_ota(const sdc_hci_cmd_le_enable_utp_ota_t * p_params);
+
+/** @brief LE UTP Send.
+ *
+ * The description below is extracted from Core_v6.3,
+ * Vol 4, Part E, Section 7.8.153
+ *
+ * This command is used by the Upper Tester to transmit UTP messages to the IUT.
+ *
+ * Event(s) generated (unless masked away):
+ *
+ * When the HCI_LE_UTP_Send command has completed, an HCI_Command_Complete
+ * event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_utp_send(const sdc_hci_cmd_le_utp_send_t * p_params);
 
 /** @brief LE Connection Rate Request.
  *

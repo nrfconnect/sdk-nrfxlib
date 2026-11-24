@@ -144,6 +144,12 @@ extern "C" {
 /** @brief Default number of extended feature pages that can be stored in the controller. */
 #define SDC_DEFAULT_EXTENDED_FEATURE_PAGE_COUNT 10
 
+/** @brief Default size (in octets) of a UTP HCI buffer. */
+#define SDC_DEFAULT_UTP_HCI_BUFFER_SIZE 256
+
+/** @brief Default size (in octets) of a UTP OTA buffer. */
+#define SDC_DEFAULT_UTP_OTA_BUFFER_SIZE 64
+
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -401,6 +407,18 @@ extern "C" {
  */
 #define SDC_MEM_SCAN_DECISION_INSTRUCTIONS(num_tests) (17 + (num_tests) * 19)
 
+/** @brief Maximum memory required to support UTP over HCI.
+ *
+ * @param[in] buffer_size  Buffer size (in octets) of each of the two buffers of the UTP HCI session.
+ */
+#define SDC_MEM_UTP_HCI(buffer_size) (38 + 2 * (buffer_size))
+
+/** @brief Maximum memory required to support UTP over the air (OTA).
+ *
+ * @param[in] buffer_size  Buffer size (in octets) of each of the two buffers of a UTP OTA session.
+ */
+#define SDC_MEM_UTP_OTA(buffer_size) (38 + 2 * (buffer_size))
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the assertion handler.
@@ -494,6 +512,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_EXTENDED_FEATURE_PAGE_COUNT,
     /** See @ref sdc_cfg_t::scan_decision_instructions_count. */
     SDC_CFG_TYPE_SCAN_DECISION_INSTRUCTIONS_COUNT,
+    /** See @ref sdc_cfg_t::utp_cfg. */
+    SDC_CFG_TYPE_UTP_CFG,
 };
 
 
@@ -624,6 +644,28 @@ typedef struct
      */
     uint8_t num_antennas_supported;
 } sdc_cfg_cs_cfg_t;
+
+
+typedef struct
+{
+    /** Data size (in octets) of each of the two buffers of the UTP HCI session.
+     *  Odd values are rounded up to the next even value.
+     *
+     *  Must not be 0 if @ref sdc_support_utp_hci() has been called. Ignored otherwise.
+     *
+     *  Default: @ref SDC_DEFAULT_UTP_HCI_BUFFER_SIZE.
+     */
+    uint16_t hci_buffer_size;
+    /** Data size (in octets) of each of the two buffers of a UTP OTA session.
+     *  Odd values are rounded up to the next even value.
+     *
+     *  Must not be 0 if @ref sdc_support_utp_ota_central() or @ref sdc_support_utp_ota_peripheral()
+     *  has been called. Ignored otherwise.
+     *
+     *  Default: @ref SDC_DEFAULT_UTP_OTA_BUFFER_SIZE.
+     */
+    uint16_t ota_buffer_size;
+} sdc_cfg_utp_cfg_t;
 
 
 /** @brief SoftDevice Controller configuration.  */
@@ -777,6 +819,11 @@ typedef union
      *  Default: @ref SDC_DEFAULT_SCAN_DECISION_INSTRUCTIONS_COUNT.
      */
     uint8_t scan_decision_instructions_count;
+    /** Configures the UTP sessions.
+     *
+     *  Default: See @ref sdc_cfg_utp_cfg_t.
+     */
+    sdc_cfg_utp_cfg_t utp_cfg;
 } sdc_cfg_t;
 
 
@@ -1826,6 +1873,61 @@ void sdc_support_decision_scan(void);
  *       it is called at the right time.
  */
 void sdc_support_decision_adv(void);
+
+/** @brief Support Unified Test Protocol (UTP) over HCI.
+ *
+ * After this API is called, the controller will support the HCI command
+ * @ref sdc_hci_cmd_le_utp_send().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_utp_hci(void);
+
+/** @brief Support Unified Test Protocol (UTP) over the air (OTA) for the central role.
+ *
+ * After this API is called, the controller will support the HCI command
+ * @ref sdc_hci_cmd_le_enable_utp_ota().
+ *
+ * @note The application is required to call both @ref sdc_support_utp_ota_central()
+ *       and @ref sdc_support_utp_ota_peripheral() if both central and peripheral roles are to
+ *       support UTP OTA.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_utp_ota_central(void);
+
+/** @brief Support Unified Test Protocol (UTP) over the air (OTA) for the peripheral role.
+ *
+ * After this API is called, the controller will support the HCI command
+ * @ref sdc_hci_cmd_le_enable_utp_ota().
+ *
+ * @note The application is required to call both @ref sdc_support_utp_ota_central()
+ *       and @ref sdc_support_utp_ota_peripheral() if both central and peripheral roles are to
+ *       support UTP OTA.
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_utp_ota_peripheral(void);
+
+/** @brief Support the Nordic vendor-specific additions to the Unified Test Protocol (UTP).
+ *
+ * After this API is called, the controller will support UTP_Set_Vendor_Specific_Data,
+ * UTP_Vendor_Specific_Control and UTP_Report_Vendor_Specific_Data with the Nordic company ID.
+ *
+ * @note The application is also required to call at least one of @ref sdc_support_utp_hci(),
+ *       @ref sdc_support_utp_ota_central() or @ref sdc_support_utp_ota_peripheral().
+ *
+ * @note This API must be called before @ref sdc_cfg_set() and @ref sdc_enable().
+ *       Use @ref sdc_support_helper() with this function to make sure
+ *       it is called at the right time.
+ */
+void sdc_support_utp_vs(void);
 
 #ifdef __cplusplus
 }
