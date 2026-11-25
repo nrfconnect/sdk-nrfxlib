@@ -25,12 +25,8 @@
 extern "C" {
 #endif
 
-#if defined(NRF52_SERIES)
-#define MPSL_FEM_CONFIG_SIMPLE_GPIO_PPI_CHANNELS_COUNT  2
-#else
 #define MPSL_FEM_CONFIG_SIMPLE_GPIO_DPPI_CHANNELS_COUNT 3
 #define MPSL_FEM_CONFIG_SIMPLE_GPIO_EGU_CHANNELS_COUNT  3
-#endif
 
 /** @brief Configuration parameters for the Front End Module Simple GPIO variant.
  *
@@ -74,8 +70,7 @@ typedef struct
      * opposed to the PA path. Works together with @c fem_config.bypass_gain_db.
      *
      * Bypass is active only when @c fem_config.bypass_gain_db is not @c 0 and
-     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true. On nRF52 series (PPI) TX bypass is
-     * not supported.
+     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true.
      *
      * When MPSL chooses bypass for a transmission, PA timing also drives this pin (activate and
      * deactivate in parallel with @c pa_pin_config). When MPSL chooses the PA path, @c pa_pin_config
@@ -102,8 +97,7 @@ typedef struct
      * Works together with @c fem_config.bypass_gain_db.
      *
      * RX bypass is active only when @c fem_config.bypass_gain_db is not @c 0 and
-     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true. On nRF52 series (PPI) RX bypass is
-     * not supported.
+     * @ref mpsl_fem_gpiote_pin_config_t.enable is @c true.
      *
      * When enabled, @ref mpsl_fem_lna_is_configured reports @c fem_config.bypass_gain_db instead
      * of @c fem_config.lna_gain_db, and LNA timing drives this pin in parallel with
@@ -129,10 +123,6 @@ typedef struct
      */
     mpsl_fem_gpiote_pin_config_t rx_bypass_pin_config;
 
-#if defined(NRF52_SERIES)
-    /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      ppi_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_PPI_CHANNELS_COUNT];
-#else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      dppi_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_DPPI_CHANNELS_COUNT];
     /** Number of EGU instance for which @c egu_channels apply. */
@@ -140,8 +130,6 @@ typedef struct
     /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
      *  need to be provided to Front End Module to operate. */
     uint8_t                      egu_channels[MPSL_FEM_CONFIG_SIMPLE_GPIO_EGU_CHANNELS_COUNT];
-#endif
-
 } mpsl_fem_simple_gpio_interface_config_t;
 
 /** @brief Configures the PA and LNA device interface.

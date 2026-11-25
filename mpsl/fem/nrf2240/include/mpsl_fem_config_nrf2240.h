@@ -69,13 +69,8 @@ typedef struct
     /** TWI interface. */
     mpsl_fem_twi_if_t             twi_if;
 
-#if defined(NRF52_SERIES)
-    /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                       ppi_channels[3];
-#else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
     uint8_t                       dppi_channels[2];
-#endif
 
     /** TWI register initialization map. */
     mpsl_fem_twi_reg_map_t        twi_regs_init_map;

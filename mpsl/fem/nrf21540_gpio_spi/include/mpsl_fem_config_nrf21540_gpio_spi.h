@@ -26,9 +26,7 @@
 extern "C" {
 #endif
 
-#if defined(NRF52_SERIES)
-#define MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_PPI_CHANNELS_COUNT  3
-#elif defined(NRF53_SERIES)
+#if defined(NRF53_SERIES)
 #define MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_DPPI_CHANNELS_COUNT 4
 #define MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_EGU_CHANNELS_COUNT  3
 #else
@@ -65,11 +63,6 @@ typedef struct
 
     /** SPI interface configuration. */
     mpsl_fem_spi_config_t        spi_config;
-
-#if defined(NRF52_SERIES)
-    /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      ppi_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_PPI_CHANNELS_COUNT];
-#else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      dppi_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_DPPI_CHANNELS_COUNT];
     /** Number of EGU instance for which @c egu_channels apply. */
@@ -77,7 +70,6 @@ typedef struct
     /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
      *  need to be provided to Front End Module to operate. */
     uint8_t                      egu_channels[MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_EGU_CHANNELS_COUNT];
-#endif
 
     /** Flag that indicates if PA gain should be changeable in runtime. If this flag is set,
      *  @c fem_config.pa_gains_db must contain correct values corresponding to POUTA and POUTB gains.
