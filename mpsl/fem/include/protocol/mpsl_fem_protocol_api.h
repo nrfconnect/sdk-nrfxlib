@@ -57,23 +57,13 @@ typedef uint8_t mpsl_fem_event_type_t;
 
 /** @brief Type representing a multiple-subscribable hardware event.
  *
- *  For nRF52 series this is an address of an event within a peripheral. This
- *  event can be written to @c EEP register of a PPI channel, to make the
- *  PPI channel be driven by the event. For nRF52 series an event can be
- *  published to multiple PPI channels by hardware design, which makes it possible
- *  for multiple tasks to subscribe to it.
- *
- *  For nRF53 series, this is a number of a DPPI channel which is configured
+ *  For SoC series equipped with DPPI, this is a number of a DPPI channel which is configured
  *  in such a way that certain event publishes to the DPPI channel and the
  *  DPPI channel is enabled. Ensuring above is responsibility of a user
  *  of the provided API. Multiple tasks can then subscribe to the DPPI channel
  *  (by hardware design), thus indirectly to the event.
  */
-#ifdef PPI_PRESENT
-typedef uint32_t mpsl_subscribable_hw_event_t;
-#else
 typedef uint8_t mpsl_subscribable_hw_event_t;
-#endif
 
 /** @brief MPSL Front End Module event. */
 typedef struct
@@ -119,13 +109,6 @@ typedef struct
           /** Generic event, used in case of type equal to @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;
     } event;
-
-#if defined(NRF52_SERIES)
-    /** False to ignore the PPI channel below and use the one set by application. True to use the PPI channel below. */
-    bool                       override_ppi;
-    /** PPI channel to be used for this event. */
-    uint8_t                    ppi_ch_id;
-#endif
 } mpsl_fem_event_t;
 
 /** @brief Represents components of tx_power to be applied for stages on transmit path. */
