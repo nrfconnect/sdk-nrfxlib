@@ -525,7 +525,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t rfu_49_7 : 1;
     uint8_t rfu_50_0 : 1;
     uint8_t rfu_50_1 : 1;
-    uint8_t rfu_50_2 : 1;
+    uint8_t hci_le_receiver_test_v4 : 1;
     uint8_t rfu_50_3 : 1;
     uint8_t rfu_50_4 : 1;
     uint8_t rfu_50_5 : 1;
