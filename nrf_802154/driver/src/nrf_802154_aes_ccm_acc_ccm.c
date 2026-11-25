@@ -96,9 +96,26 @@ static bool             m_initialized;              ///< Module init status.
 static nrf_ccm_config_t m_ccm_config;               ///< CCM configuration used during the next transmission.
 static uint32_t         m_key[4];                   ///< Key used during the next transmission.
 static uint32_t         m_nonce[4];                 ///< Nonce used during the next transmission.
+static bool             m_adatamask_modified;       ///< ADATAMASK was changed from its reset value.
+
+/* ADATAMASK reset value is the Bluetooth configuration (masks NESN/SN/MD of the BLE data
+ * channel PDU header). The CCM instance is shared with the Bluetooth controller, which relies on
+ * this value, so it must be restored when the 802.15.4 driver releases the peripheral.
+ */
+#if defined(CCM_ADATAMASK_ResetValue)
+#define CCM_ADATAMASK_RESET CCM_ADATAMASK_ResetValue
+#else
+#define CCM_ADATAMASK_RESET 0xE3
+#endif
 
 static void ccm_disable(void)
 {
+    if (m_adatamask_modified)
+    {
+        nrf_ccm_adatamask_set(NRF_802154_CCM_INSTANCE, CCM_ADATAMASK_RESET);
+        m_adatamask_modified = false;
+    }
+
     nrf_802154_irq_disable(nrfx_get_irq_number(NRF_802154_CCM_INSTANCE));
     nrf_ccm_subscribe_clear(NRF_802154_CCM_INSTANCE, NRF_CCM_TASK_START);
     nrf_ccm_subscribe_clear(NRF_802154_CCM_INSTANCE, NRF_CCM_TASK_STOP);
@@ -160,6 +177,7 @@ static void ccm_peripheral_configure(void)
     nrf_ccm_event_clear(NRF_802154_CCM_INSTANCE, NRF_CCM_EVENT_END);
     nrf_ccm_int_enable(NRF_802154_CCM_INSTANCE, NRF_CCM_INT_ERROR_MASK | NRF_CCM_INT_END_MASK);
     nrf_ccm_adatamask_set(NRF_802154_CCM_INSTANCE, 0xff);
+    m_adatamask_modified = true;
 }
 
 static void ppi_configure(void)
