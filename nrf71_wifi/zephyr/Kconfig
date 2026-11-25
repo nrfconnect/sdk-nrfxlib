@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if WIFI_NRF71
+if NRF71_WIFI
 
-config WIFI_NRF71_PATCH
+config NRF71_WIFI_PATCH
 	bool "Include nRF7120 Wi-Fi ROM patches in the application image"
 	depends on !IS_BOOTLOADER_IMG
 	help
@@ -22,47 +22,47 @@ config WIFI_NRF71_PATCH
 	  data. Only the merged output used for programming and signing
 	  includes the patches.
 
-if WIFI_NRF71_PATCH
+if NRF71_WIFI_PATCH
 
-choice WIFI_NRF71_PATCH_VERSION
+choice NRF71_WIFI_PATCH_VERSION
 	prompt "nRF7120 Wi-Fi ROM patch version"
-	default WIFI_NRF71_PATCH_VERSION_0_1_0
+	default NRF71_WIFI_PATCH_VERSION_0_1_0
 	help
 	  Out-of-tree modules can add further choice entries with matching
-	  WIFI_NRF71_PATCH_MANIFEST_FILE and WIFI_NRF71_PATCH_DTSI_FILE values.
+	  NRF71_WIFI_PATCH_MANIFEST_FILE and NRF71_WIFI_PATCH_DTSI_FILE values.
 
-config WIFI_NRF71_PATCH_VERSION_0_1_0
+config NRF71_WIFI_PATCH_VERSION_0_1_0
 	bool "0.1.0"
 
 endchoice
 
-config WIFI_NRF71_PATCH_MANIFEST_FILE
+config NRF71_WIFI_PATCH_MANIFEST_FILE
 	string
 	# Secure without MCUboot
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/secure/manifest.json" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && !TRUSTED_EXECUTION_NONSECURE && !BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && !TRUSTED_EXECUTION_NONSECURE && !BOOTLOADER_MCUBOOT
 	# Secure with MCUboot
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/secure_mcuboot/manifest.json" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && !TRUSTED_EXECUTION_NONSECURE && BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && !TRUSTED_EXECUTION_NONSECURE && BOOTLOADER_MCUBOOT
 	# Non-secure without MCUboot
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/ns/manifest.json" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE && !BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE && !BOOTLOADER_MCUBOOT
 	# Non-secure with MCUboot
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/nrf71_wifi/bins/0.1.0/ns_mcuboot/manifest.json" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE && BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && TRUSTED_EXECUTION_NONSECURE && BOOTLOADER_MCUBOOT
 	help
 	  Specifies the path to the Wi-Fi ROM patch manifest file. The default
 	  matches the selected version, security mode, and MCUboot usage.
 
-config WIFI_NRF71_PATCH_DTSI_FILE
+config NRF71_WIFI_PATCH_DTSI_FILE
 	string
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/dts/vendor/nordic/wifi/nrf7120_wifi_patch_0_1_0.dtsi" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && !BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && !BOOTLOADER_MCUBOOT
 	default "$(ZEPHYR_NRFXLIB_MODULE_DIR)/dts/vendor/nordic/wifi/nrf7120_wifi_patch_0_1_0_mcuboot.dtsi" if \
-		WIFI_NRF71_PATCH_VERSION_0_1_0 && BOOTLOADER_MCUBOOT
+		NRF71_WIFI_PATCH_VERSION_0_1_0 && BOOTLOADER_MCUBOOT
 	help
 	  Specifies the path to the Wi-Fi ROM patch devicetree overlay file.
 
-endif # WIFI_NRF71_PATCH
+endif # NRF71_WIFI_PATCH
 
-endif # WIFI_NRF71
+endif # NRF71_WIFI
