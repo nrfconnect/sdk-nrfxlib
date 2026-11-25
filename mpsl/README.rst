@@ -7,6 +7,8 @@ The Multiprotocol Service Layer (MPSL) is a set of libraries that provide common
 
 The libraries are available as soft-float, softfp-float, and hard-float builds for the nRF52, nRF54H and nRF54L Series and as a soft-float build for the nRF53 Series.
 
+.. include:: ../doc/nrf52_series_ncs_note.rst
+
 These libraries provide the following key features:
 
 * Timeslot.
