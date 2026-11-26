@@ -15,6 +15,10 @@ nRF Connect SDK v3.4.3
 Bug fixes
 =========
 * Fixed an issue where the controller could assert when it was running a CS mode-0 step in the reflector role. (DRGN-30272)
+* Fixed an issue where the controller did not configure the CCM ``HEADERMASK`` or ``ADATAMASK`` for encrypted ACL connections.
+  This could cause MIC verification failures on encrypted ACL reception if the register value was configured outside the controller. (DRGN-30499, DRGN-28923)
+* Fixed an issue where the controller could busy-wait for up to 200 milliseconds when generating the LE CS Test End Complete event.
+  This could only happen if the controller was running a CS test in the reflector role and was still waiting for the first CS sync packet when it received the LE CS Test End command. (DRGN-30427)
 
 nRF Connect SDK v3.4.2
 **********************
