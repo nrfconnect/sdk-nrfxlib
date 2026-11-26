@@ -39,6 +39,8 @@ extern "C" {
 typedef enum
 {
     NRF_SCAN_EVT_TX_COMPLETE,   ///< TX has finished, if mode is ONESHOT this happens even if there are errors or arbitration was lost
+                                ///< (error NRF_SCAN_ERROR_ARBITRATION_LOST; the winning frame, if it matches a filter, gives
+                                ///< NRF_SCAN_EVT_RX_COMPLETE too, usually in the same IRQ after TX_COMPLETE)
     NRF_SCAN_EVT_RX_COMPLETE,   ///< RX has finished after an ID match
     NRF_SCAN_EVT_ERROR,         ///< sCAN has detected an error
     NRF_SCAN_EVT_STATE_CHANGED, ///< sCAN state has changed
@@ -60,7 +62,7 @@ typedef enum
 {
     NRF_SCAN_SUCCESS = 0,
     NRF_SCAN_ERROR_PROTOCOL,           ///< Generic error response.
-    NRF_SCAN_ERROR_BIT_STUFFING_ERROR, ///< RX. Node receives 6 consecutive dominant/recessive bits between SOF and CRC.
+    NRF_SCAN_ERROR_BIT_STUFFING_ERROR, ///< RX. Node receives 6 consecutive dominant/recessive bits between SOF and CRC. TX: own recessive stuff bit read dominant in arbitration (TEC unchanged).
     NRF_SCAN_ERROR_BIT0_ERROR,         ///< TX. Node can't send dominant bit.
     NRF_SCAN_ERROR_BIT1_ERROR,         ///< TX. Node can't send recessive bit.
     NRF_SCAN_ERROR_FORM_ERROR,         ///< RX. Node receives an invalid value in a bit that belongs to SOF/EOF fields or ACK/CRC delimiters.
@@ -70,15 +72,16 @@ typedef enum
     NRF_SCAN_ERROR_UNSUPPORTED,        ///< API level error. Config parameter combination is not supported
     NRF_SCAN_ERROR_INVALID_PARAM,      ///< API level error. Invalid config parameter
     NRF_SCAN_ERROR_INVALID_STATE,      ///< API level error. nrfx driver in invalid state
+    NRF_SCAN_ERROR_ARBITRATION_LOST,   ///< TX. Another node won arbitration
 } nrf_scan_error_t;
 
 /** @brief sCAN state definitions */
 typedef enum
 {
-    NRF_SCAN_STATE_ERROR_ACTIVE = 0, ///< TEC/REC < 96
-    NRF_SCAN_STATE_ERROR_WARNING,    ///< TEC/REC < 128
-    NRF_SCAN_STATE_ERROR_PASSIVE,    ///< TEC/REC < 256
-    NRF_SCAN_STATE_BUS_OFF,          ///< TEC/REC >= 256
+    NRF_SCAN_STATE_ERROR_ACTIVE = 0, ///< TEC and REC < 96
+    NRF_SCAN_STATE_ERROR_WARNING,    ///< TEC or REC >= 96, both < 128
+    NRF_SCAN_STATE_ERROR_PASSIVE,    ///< TEC or REC >= 128, TEC < 256
+    NRF_SCAN_STATE_BUS_OFF,          ///< TEC >= 256
     NRF_SCAN_STATE_STOPPED,          ///< No participation in CAN communication
 } nrf_scan_state_t;
 
@@ -413,11 +416,17 @@ nrf_scan_error_t nrf_scan_unlock_rx_mailbox(nrf_scan_t const * p_scan, uint8_t i
  * @param[in] p_tx_frame Pointer to the TX frame structure that will be sent on the bus.
  *
  * @note This function must not be called before @ref nrf_scan_timing has been called at least once. This function can't be called when mode of operation is LISTENONLY.
+ * @note ONESHOT: on @ref NRF_SCAN_EVT_TX_COMPLETE read @ref nrf_scan_get_status. NRF_SCAN_ERROR_ARBITRATION_LOST means another node won;
+ *       its frame, if it matches a filter, arrives as @ref NRF_SCAN_EVT_RX_COMPLETE (usually same IRQ, after TX_COMPLETE). Resend if needed.
+ * @note BUS_OFF: the node drives nothing, receives no frames and reports no errors; it only waits for
+ *       128 x 11 recessive bits, then goes ERROR_ACTIVE (@ref NRF_SCAN_EVT_STATE_CHANGED). Sends are
+ *       refused; a send started through DPPI is dropped without any event. @ref NRF_SCAN_EVT_TX_COMPLETE
+ *       comes only for the send pending when bus-off is entered.
  *
  * @retval NRF_SCAN_SUCCESS          TX transaction has been dispatched successfully (does not imply correct reception).
  * @retval NRF_SCAN_ERROR_BUSY       There is another TX transaction in the queue.
  * @retval NRF_SCAN_ERROR_INVALID_STATE nrfx driver state is invalid.
- * @retval NRF_SCAN_ERROR_INVALID_PARAM sCAN configuration contains an invalid parameter.
+ * @retval NRF_SCAN_ERROR_INVALID_PARAM sCAN configuration contains an invalid parameter, or the node is bus-off.
  */
 nrf_scan_error_t nrf_scan_send(nrf_scan_t const * p_scan,
                                nrf_scan_frame_t * p_tx_frame);

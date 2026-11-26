@@ -9,6 +9,22 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v3.5.0
+**********************
+
+This version extends capabilities and provides minor bug fixes for current soft peripherals.
+See the following list of changes:
+
+* Added:
+
+  * Soft Peripheral sCAN has been updated to version 0.2.0.
+    For details, see the :ref:`scan_changelog` page.
+
+* Bug fixes:
+
+  * Fixed fault confinement and arbitration loss reporting for Soft Peripheral sCAN.
+    For details, see the :ref:`scan_changelog` page.
+
 nRF Connect SDK v3.4.1
 **********************
 

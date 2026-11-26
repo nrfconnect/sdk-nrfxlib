@@ -659,6 +659,11 @@ nrf_scan_error_t nrf_scan_status_to_err(nrf_scan_t const * p_scan)
         {
             err = NRF_SCAN_ERROR_CRC_ERROR;
         } break;
+        case SP_CAN_STATUS_STATUS_ARBITRATIONLOST_Msk:
+        case SP_CAN_STATUS_STATUS_ARBITRATIONLOSTRXOK_Msk:
+        {
+            err = NRF_SCAN_ERROR_ARBITRATION_LOST;
+        } break;
         default:
         {
             err = NRF_SCAN_ERROR_PROTOCOL;
@@ -716,86 +721,87 @@ nrf_scan_status_t nrf_scan_get_status(nrf_scan_t const * p_scan)
 
 void nrf_scan_irq_handler(void)
 {
-    if (nrf_vpr_event_check(NRF_VPR, offsetof(NRF_VPR_Type, EVENTS_TRIGGERED[SP_VPR_EVENT_IDX])))
+    /* Entering this handler already means the soft peripheral raised its event. On some VPR
+     * versions the event flag can be cleared again by the VPR before it is read here, so it is
+     * cleared without being checked and the peripheral events below are always examined. A
+     * spurious entry finds none of them set and does nothing. */
+    nrf_vpr_event_clear(NRF_VPR, offsetof(NRF_VPR_Type, EVENTS_TRIGGERED[SP_VPR_EVENT_IDX]));
+
+    can_control_block_t * p_cb = &m_cb[m_current_request.drv_inst_idx];
+
+    // Check for TX completion event
+    if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_TXCOMPLETE))
     {
-        nrf_vpr_event_clear(NRF_VPR, offsetof(NRF_VPR_Type, EVENTS_TRIGGERED[SP_VPR_EVENT_IDX]));
+        nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_TXCOMPLETE);
 
-        can_control_block_t * p_cb = &m_cb[m_current_request.drv_inst_idx];
-
-        // Check for TX completion event
-        if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_TXCOMPLETE))
+        if ((p_cb->prepared_pending == true) && (p_cb->transfer_in_progress == true)) // There was an ongoing transfer and we have one on hold.
         {
-            nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_TXCOMPLETE);
+            p_cb->prepared_pending = false;
+        }
+        else
+        {
+            p_cb->transfer_in_progress = false;
+        }
 
-            if ((p_cb->prepared_pending == true) && (p_cb->transfer_in_progress == true)) // There was an ongoing transfer and we have one on hold.
+        p_cb->evt = NRF_SCAN_EVT_TX_COMPLETE;
+        p_cb->handler(&p_cb->evt, p_cb->p_context);
+    }
+
+    // Check for RX completion event
+    if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_RXCOMPLETE))
+    {
+        nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_RXCOMPLETE);
+
+        for (uint8_t i = 0; i < NRF_SCAN_RXFILTER_MAX_BUFFER_SIZE; i++)
+        {
+          //get matched element index that is not in any mailbox
+            bool filter_matched =
+                nrf_can_rxfilter_filtermatched_get((NRF_CAN_Type *)p_cb->p_hw_instance, i);
+            bool in_mailbox =
+                nrf_can_rxfilter_inmailbox_get((NRF_SP_CAN_Type *)p_cb->p_hw_instance, i);
+            if (filter_matched && !in_mailbox)
             {
-                p_cb->prepared_pending = false;
+                memset(&(m_scan_rx_mailbox[i].rx_frame), 0,
+                       sizeof(m_scan_rx_mailbox[i].rx_frame));
+                nrf_can_frame_t tmp;
+                nrf_can_rxframe_get(p_cb->p_hw_instance, i, &tmp);
+                m_scan_rx_mailbox[i].rx_frame.identifier  = tmp.identifier;
+                m_scan_rx_mailbox[i].rx_frame.ide         = tmp.extended_format;
+                m_scan_rx_mailbox[i].rx_frame.rtr         = tmp.remote_request;
+                m_scan_rx_mailbox[i].rx_frame.data_length = tmp.length;
+                memcpy(m_scan_rx_mailbox[i].rx_frame.data, tmp.data, tmp.length);
+                m_scan_rx_mailbox[i].ready = true;
+
+              // mark as in mailbox
+                nrf_can_rxfilter_inmailbox_set((NRF_SP_CAN_Type *)p_cb->p_hw_instance, i, 1);
+              // set context to index global variable
+                nrf_scan_context_t * cntxt;
+                cntxt                       = (nrf_scan_context_t *)(p_cb->p_context);
+                cntxt->last_updated_mailbox = i;
+              //Clear filter matched bit to allow overriding, use nrf_scan_unlock_rx_mailbox
             }
-            else
-            {
-                p_cb->transfer_in_progress = false;
-            }
-
-            p_cb->evt = NRF_SCAN_EVT_TX_COMPLETE;
-            p_cb->handler(&p_cb->evt, p_cb->p_context);
         }
 
-        // Check for RX completion event
-        if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_RXCOMPLETE))
-        {
-            nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_RXCOMPLETE);
+        p_cb->evt = NRF_SCAN_EVT_RX_COMPLETE;
+        p_cb->handler(&p_cb->evt, p_cb->p_context);
+    }
 
-            for (uint8_t i = 0; i < NRF_SCAN_RXFILTER_MAX_BUFFER_SIZE; i++)
-            {
-              //get matched element index that is not in any mailbox
-                bool filter_matched =
-                    nrf_can_rxfilter_filtermatched_get((NRF_CAN_Type *)p_cb->p_hw_instance, i);
-                bool in_mailbox =
-                    nrf_can_rxfilter_inmailbox_get((NRF_SP_CAN_Type *)p_cb->p_hw_instance, i);
-                if (filter_matched && !in_mailbox)
-                {
-                    memset(&(m_scan_rx_mailbox[i].rx_frame), 0,
-                           sizeof(m_scan_rx_mailbox[i].rx_frame));
-                    nrf_can_frame_t tmp;
-                    nrf_can_rxframe_get(p_cb->p_hw_instance, i, &tmp);
-                    m_scan_rx_mailbox[i].rx_frame.identifier  = tmp.identifier;
-                    m_scan_rx_mailbox[i].rx_frame.ide         = tmp.extended_format;
-                    m_scan_rx_mailbox[i].rx_frame.rtr         = tmp.remote_request;
-                    m_scan_rx_mailbox[i].rx_frame.data_length = tmp.length;
-                    memcpy(m_scan_rx_mailbox[i].rx_frame.data, tmp.data, tmp.length);
-                    m_scan_rx_mailbox[i].ready = true;
+    if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_ERRORDETECTED))
+    {
+        nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_ERRORDETECTED);
 
-                  // mark as in mailbox
-                    nrf_can_rxfilter_inmailbox_set((NRF_SP_CAN_Type *)p_cb->p_hw_instance, i, 1);
-                  // set context to index global variable
-                    nrf_scan_context_t * cntxt;
-                    cntxt                       = (nrf_scan_context_t *)(p_cb->p_context);
-                    cntxt->last_updated_mailbox = i;
-                  //Clear filter matched bit to allow overriding, use nrf_scan_unlock_rx_mailbox
-                }
-            }
+        p_cb->evt = NRF_SCAN_EVT_ERROR;
 
-            p_cb->evt = NRF_SCAN_EVT_RX_COMPLETE;
-            p_cb->handler(&p_cb->evt, p_cb->p_context);
-        }
+        p_cb->handler(&p_cb->evt, p_cb->p_context);
+    }
 
-        if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_ERRORDETECTED))
-        {
-            nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_ERRORDETECTED);
+    if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_STATECHANGED))
+    {
+        nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_STATECHANGED);
 
-            p_cb->evt = NRF_SCAN_EVT_ERROR;
+        p_cb->evt = NRF_SCAN_EVT_STATE_CHANGED;
 
-            p_cb->handler(&p_cb->evt, p_cb->p_context);
-        }
-
-        if (nrf_can_event_check(p_cb->p_hw_instance, NRF_CAN_EVENT_STATECHANGED))
-        {
-            nrf_can_event_clear(p_cb->p_hw_instance, NRF_CAN_EVENT_STATECHANGED);
-
-            p_cb->evt = NRF_SCAN_EVT_STATE_CHANGED;
-
-            p_cb->handler(&p_cb->evt, p_cb->p_context);
-        }
+        p_cb->handler(&p_cb->evt, p_cb->p_context);
     }
 }
 
